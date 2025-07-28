@@ -8,18 +8,24 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-load_dotenv()
+# ------------------------
+# Load environment
+# ------------------------
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+ENV_MODE = os.getenv("ENV_MODE", "local")
+
+if ENV_MODE == "production":
+    load_dotenv(BASE_DIR / ".env.prod")
+else:
+    load_dotenv(BASE_DIR / ".env")
 
 # ------------------------
 # Security and debugging
 # ------------------------
 
 SECRET_KEY = os.getenv('SECRET_KEY', '!!!_DEFINE_SECRET_KEY_!!!')
-
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
-
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 # ------------------------
