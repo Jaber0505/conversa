@@ -1,0 +1,14 @@
+# Node (React)
+frontend/node_modules/
+frontend/build/
+frontend/.env.local
+
+# Python (Django)
+backend/venv/
+__pycache__/
+*.py[cod]
+*.log
+db.sqlite3
+
+# VSCode config
+.vscode/
