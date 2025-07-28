@@ -1,4 +1,8 @@
+version: "3.9"
+
 services:
+
+  # PostgreSQL Database
   db:
     image: postgres:15
     restart: always
@@ -11,6 +15,7 @@ services:
     ports:
       - "5432:5432"
 
+  # Django Backend (Gunicorn)
   backend:
     build: ./backend
     command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
@@ -26,5 +31,14 @@ services:
       - DJANGO_DB_PASSWORD=postgres
       - DJANGO_DB_HOST=db
 
+  # React Frontend (Nginx)
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+# 📦 Docker named volume for persistent database storage
 volumes:
   postgres_data:
