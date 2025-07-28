@@ -13,7 +13,7 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ------------------------
-# Sécurité et debug
+# Security and debugging
 # ------------------------
 
 SECRET_KEY = os.getenv('SECRET_KEY', '!!!_DEFINE_SECRET_KEY_!!!')
@@ -33,7 +33,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Tes apps ici plus tard : 'events',
 ]
 
 MIDDLEWARE = [
@@ -67,7 +66,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 ASGI_APPLICATION = 'config.asgi.application'
 
 # ------------------------
-# Base de données
+# Database
 # ------------------------
 
 DATABASES = {
@@ -82,7 +81,7 @@ DATABASES = {
 }
 
 # ------------------------
-# Validation des mots de passe
+# Password validation
 # ------------------------
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -101,7 +100,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # ------------------------
-# Internationalisation
+# Internationalization
 # ------------------------
 
 LANGUAGE_CODE = 'en-us'
@@ -110,13 +109,13 @@ USE_I18N = True
 USE_TZ = True
 
 # ------------------------
-# Fichiers statiques
+# Static files
 # ------------------------
 
 STATIC_URL = 'static/'
 
 # ------------------------
-# Clé primaire par défaut
+# Default primary key
 # ------------------------
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
