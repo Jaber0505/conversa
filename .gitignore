@@ -5,6 +5,7 @@ frontend/.env.local
 
 # Python (Django)
 backend/venv/
+backend/.env
 __pycache__/
 *.py[cod]
 *.log
@@ -12,3 +13,7 @@ db.sqlite3
 
 # VSCode config
 .vscode/
+
+# OS-generated files
+.DS_Store
+Thumbs.db
