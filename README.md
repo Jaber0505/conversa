@@ -56,7 +56,7 @@ ALLOWED_HOSTS=localhost,127.0.0.1
 DJANGO_DB_ENGINE=django.db.backends.postgresql  
 DJANGO_DB_NAME=conversadb  
 DJANGO_DB_USER=postgres  
-DJANGO_DB_PASSWORD=postgres  
+DJANGO_DB_PASSWORD=postgres
 DJANGO_DB_HOST=db  
 DJANGO_DB_PORT=5432  
 
