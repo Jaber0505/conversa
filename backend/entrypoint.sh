@@ -1,4 +1,5 @@
-echo "📦 Applying Django migrations..."
+#!/bin/sh
+echo "Applying Django migrations..."
 python manage.py migrate --noinput
 
 if [ "$ENV_MODE" = "production" ]; then
@@ -6,5 +7,5 @@ if [ "$ENV_MODE" = "production" ]; then
   python manage.py collectstatic --noinput --clear
 fi
 
-echo "🚀 Starting Gunicorn..."
+echo "Starting Gunicorn..."
 exec gunicorn config.wsgi:application --bind 0.0.0.0:8000
