@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'users',
     'corsheaders',
     'drf_spectacular',
 ]
@@ -138,3 +139,8 @@ CORS_ALLOWED_ORIGINS = [
     "https://conversa-si1a.onrender.com",
     "http://localhost:3000",
 ]
+
+# ------------------------
+# Default user model
+# ------------------------
+AUTH_USER_MODEL = 'users.User'
