@@ -70,20 +70,15 @@ DJANGO_DB_PORT=5432
 
 ---
 
-## Structure du projet
-
-Conversa/  
-├── backend/            -> application Django (API)  
-├── frontend/           -> application React (interface utilisateur)  
-├── pgadmin/            -> configuration pour pgAdmin  
-├── scripts/            -> scripts PowerShell pour automatiser le dev  
-├── docker-compose.yml  -> configuration multi-service Docker  
-└── README.md
-
----
-
 ## Auteur
 
 Projet réalisé par **Jaber Boudouh**  
 dans le cadre d’un **Travail de Fin d’Études** à l’**ICC – Institut des Carrières Commerciales**  
 Bachelier en Informatique de gestion – année académique 2024–2025
+
+---
+
+## Deploy to Render
+
+[![Deploy to Render](https://img.shields.io/badge/Deploy%20to%20Render-✅-blue?logo=render)](https://api.render.com/deploy/srv-d24137ndiees73a4uv40?key=z9IIQZ5MXOQ)
+
