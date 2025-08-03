@@ -1,5 +1,8 @@
 # Conversa
 
+[![Tests CI](https://github.com/Jaber0505/Conversa/actions/workflows/test.yml/badge.svg)](https://github.com/Jaber0505/Conversa/actions/workflows/test.yml)
+[![Deploy to Render](https://img.shields.io/badge/🚀%20Déployer%20en%20prod-Render-blue?style=for-the-badge)](https://api.render.com/deploy/srv-d24137ndiees73a4uv40?key=z9IIQZ5MXOQ)
+
 **Conversa** est une plateforme web permettant d’organiser ou de rejoindre des événements linguistiques immersifs dans des bars à Bruxelles.  
 En petits groupes, les participants pratiquent une langue étrangère à travers des jeux collaboratifs conçus pour favoriser l’expression orale et l’échange.
 
@@ -13,7 +16,7 @@ Ce projet est développé en **Django + React** dans le cadre d’un **Travail d
 - Frontend : React 18 (Create React App)  
 - Base de données : PostgreSQL  
 - Conteneurisation : Docker + Docker Compose  
-- Déploiement : Render.com
+- Déploiement : GitHub Actions + Render.com
 
 ---
 
@@ -53,6 +56,15 @@ scripts/rebuild-dev.ps1
 
 ---
 
+## Tests & Couverture
+
+Lancer les tests avec couverture :
+
+docker compose exec backend coverage run -m pytest
+docker compose exec backend coverage report
+
+---
+
 ## Exemple de fichier `.env` pour le backend
 
 Contenu recommandé du fichier `backend/.env` :
@@ -75,10 +87,4 @@ DJANGO_DB_PORT=5432
 Projet réalisé par **Jaber Boudouh**  
 dans le cadre d’un **Travail de Fin d’Études** à l’**ICC – Institut des Carrières Commerciales**  
 Bachelier en Informatique de gestion – année académique 2024–2025
-
----
-
-## Deploy to Render
-
-[![Deploy to Render](https://img.shields.io/badge/Deploy%20to%20Render-✅-blue?logo=render)](https://api.render.com/deploy/srv-d24137ndiees73a4uv40?key=z9IIQZ5MXOQ)
 
