@@ -41,8 +41,7 @@ jobs:
           "
 
       - name: Deploy to Render
-        if: ${{ success() }}
-        run: |
-          curl -X GET "$RENDER_DEPLOY_HOOK_URL"
+        if: ${{ success() && github.event_name == 'push' }}
+        run: curl -X GET "$RENDER_DEPLOY_HOOK_URL"
         env:
           RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}

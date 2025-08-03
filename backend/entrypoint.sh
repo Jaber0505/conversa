@@ -1,11 +1,7 @@
 #!/bin/sh
-echo "Applying Django migrations..."
-python manage.py migrate --noinput
 
-if [ "$ENV_MODE" = "production" ]; then
-  echo "🧹 Collecting static files..."
-  python manage.py collectstatic --noinput --clear
-fi
+/wait-for-postgres.sh db
 
-echo "Starting Gunicorn..."
+python manage.py migrate
+
 exec gunicorn config.wsgi:application --bind 0.0.0.0:8000
