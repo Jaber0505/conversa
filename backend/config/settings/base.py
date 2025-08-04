@@ -1,8 +1,9 @@
-from pathlib import Path
 import os
-from dotenv import load_dotenv
+from pathlib import Path
 
-load_dotenv()
+if os.getenv("ENV_MODE", "dev") == "dev":
+    from dotenv import load_dotenv
+    load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -85,7 +86,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Keys and security (to be defined elsewhere)
 # ------------------------------
 
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'insecure-default-key') 
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'insecure-default-key')
 ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', 'localhost').split(',')
 
 # ------------------------------

@@ -12,7 +12,7 @@ RUN pip install --upgrade pip && pip install -r /${REQUIREMENTS_FILE}
 
 COPY backend /app
 
-RUN python manage.py collectstatic --noinput
+RUN DJANGO_SETTINGS_MODULE=config.settings.prod python manage.py collectstatic --noinput
 
 FROM python:3.11-slim
 
