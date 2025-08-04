@@ -22,9 +22,7 @@ services:
       dockerfile: docker/Dockerfile.backend
       args:
         REQUIREMENTS_FILE: requirements/dev.txt
-    command: >
-      sh -c "python manage.py migrate &&
-             python manage.py test"
+    entrypoint: ["/entrypoint.ci.sh"]
     environment:
       DJANGO_SETTINGS_MODULE: config.settings.dev
       DJANGO_SECRET_KEY: dummy
@@ -40,6 +38,7 @@ services:
         condition: service_healthy
     networks:
       - conversa
+
 
 volumes:
   postgres_data_ci:

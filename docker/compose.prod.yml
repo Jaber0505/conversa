@@ -1,0 +1,40 @@
+services:
+  db:
+    image: postgres:15
+    restart: always
+    volumes:
+      - postgres_data_prod:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: conversadb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - conversa
+
+  backend:
+    image: ghcr.io/${GITHUB_REPOSITORY,,}-backend:latest
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.prod
+      DJANGO_SECRET_KEY: dummy-prod-key
+      DJANGO_DEBUG: "False"
+      DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1
+      DJANGO_DB_NAME: conversadb
+      DJANGO_DB_USER: postgres
+      DJANGO_DB_PASSWORD: postgres
+      DJANGO_DB_HOST: db
+      DJANGO_DB_PORT: 5432
+    depends_on:
+      - db
+    entrypoint: ["/entrypoint.prod.sh"]
+    networks:
+      - conversa
+
+volumes:
+  postgres_data_prod:
+
+networks:
+  conversa:
+    name: docker_conversa
