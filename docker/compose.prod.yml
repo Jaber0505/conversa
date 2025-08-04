@@ -46,4 +46,4 @@ volumes:
 
 networks:
   conversa:
-    external: true
+    driver: bridge

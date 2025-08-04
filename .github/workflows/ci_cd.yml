@@ -63,6 +63,10 @@ jobs:
         run: |
           docker compose -f docker/compose.base.yml -f docker/compose.ci.yml up --build --exit-code-from backend
 
+      - name: Cleanup Docker containers
+        if: always()
+        run: docker compose -f docker/compose.base.yml -f docker/compose.ci.yml down --volumes
+
   deploy:
     name: Deploy to Render
     runs-on: ubuntu-latest
@@ -70,6 +74,13 @@ jobs:
     if: success()
 
     steps:
+      - name: Check Render Hook URL
+        run: |
+          if [ -z "${{ secrets.RENDER_DEPLOY_HOOK_URL }}" ]; then
+            echo "Missing RENDER_DEPLOY_HOOK_URL secret"
+            exit 1
+          fi
+
       - name: Trigger Render Deploy Hook
         run: |
           curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
