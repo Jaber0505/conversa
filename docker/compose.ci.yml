@@ -1,3 +1,5 @@
+version: "3.9"
+
 services:
   db:
     image: postgres:15
@@ -16,10 +18,9 @@ services:
   backend:
     build:
       context: ../
-      dockerfile: docker/Dockerfile.ci
-    command: >
-      sh -c "python manage.py migrate &&
-             python manage.py test"
+      dockerfile: docker/Dockerfile.backend
+      args:
+        CI_MODE: "true"
     depends_on:
       db:
         condition: service_healthy
@@ -29,7 +30,7 @@ services:
       DJANGO_DB_PASSWORD: postgres
       DJANGO_DB_HOST: db
       DJANGO_DB_PORT: 5432
-      DJANGO_SETTINGS_MODULE: config.settings.dev
+      DJANGO_SETTINGS_MODULE: config.settings.test
       DJANGO_SECRET_KEY: dummy
       DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1
       DJANGO_DEBUG: "False"

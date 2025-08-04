@@ -8,13 +8,15 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
+# Installer les dépendances
 ARG REQUIREMENTS_FILE=requirements/dev.txt
 COPY backend/requirements /requirements
 RUN pip install --upgrade pip && pip install -r /${REQUIREMENTS_FILE}
 
+# Copier le code source
 COPY backend /app
 
-# Scripts d'entrée (utilisés *uniquement* en CI ou Prod)
+# Scripts d'entrée
 ARG CI_MODE=false
 COPY docker/entrypoint.prod.sh /entrypoint.prod.sh
 COPY docker/entrypoint.ci.sh /entrypoint.ci.sh
@@ -30,12 +32,22 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
+# Récupérer ce qui vient du build
 COPY --from=build /usr/local/lib/python3.11 /usr/local/lib/python3.11
 COPY --from=build /usr/local/bin /usr/local/bin
 COPY --from=build /app /app
-
-# Copie du bon entrypoint (conditionné dans le docker-compose)
 COPY --from=build /entrypoint.prod.sh /entrypoint.prod.sh
 COPY --from=build /entrypoint.ci.sh /entrypoint.ci.sh
+
+RUN chmod +x /entrypoint.prod.sh /entrypoint.ci.sh
+
+# Argument d'environnement pour activer le bon entrypoint
+ARG CI_MODE=false
+
+# ✅ ENTRYPOINT dynamique en fonction de CI_MODE
+ENTRYPOINT ["/bin/bash", "-c", "if [ \"$CI_MODE\" = \"true\" ]; then /entrypoint.ci.sh; else /entrypoint.prod.sh; fi"]
+
+# Commande par défaut (prod)
+CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000"]
 
 EXPOSE 8000
