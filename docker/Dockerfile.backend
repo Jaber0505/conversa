@@ -5,19 +5,18 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-ARG REQUIREMENTS_FILE=requirements/dev.txt
+ARG REQUIREMENTS_FILE=requirements/prod.txt
 
 COPY backend/requirements /requirements
 RUN pip install --upgrade pip && pip install -r /${REQUIREMENTS_FILE}
 
 COPY backend /app
 
-COPY docker/entrypoint.prod.sh /entrypoint.prod.sh
-COPY docker/entrypoint.ci.sh /entrypoint.ci.sh
-RUN chmod +x /entrypoint.prod.sh /entrypoint.ci.sh
+# ✅ Seul script utile en production
+COPY docker/entrypoint.prod.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 
-# --- Final image ---
 FROM python:3.11-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -29,8 +28,6 @@ COPY --from=build /usr/local/lib/python3.11 /usr/local/lib/python3.11
 COPY --from=build /usr/local/bin /usr/local/bin
 COPY --from=build /app /app
 
-# 🔽 Ajoute cette ligne :
-COPY --from=build /entrypoint.prod.sh /entrypoint.prod.sh
-COPY --from=build /entrypoint.ci.sh /entrypoint.ci.sh
-
 EXPOSE 8000
+
+ENTRYPOINT ["/entrypoint.sh"]
