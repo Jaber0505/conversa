@@ -1,0 +1,61 @@
+# compose.base.yml — sans interpolation de variables
+services:
+  db:
+    image: postgres:15
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - conversa
+
+  backend:
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.backend
+      args:
+        REQUIREMENTS_FILE: requirements/dev.txt
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ../backend:/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./env/.env.dev
+    depends_on:
+      - db
+    networks:
+      - conversa
+
+  frontend:
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.frontend
+      target: dev
+    volumes:
+      - ../frontend:/app
+      - node_modules_frontend:/app/node_modules
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./env/.env.dev
+    networks:
+      - conversa
+
+  pgadmin:
+    image: dpage/pgadmin4
+    env_file:
+      - ./env/.env.dev
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+    networks:
+      - conversa
+
+volumes:
+  postgres_data:
+  node_modules_frontend:
+
+networks:
+  conversa:
+    external: true

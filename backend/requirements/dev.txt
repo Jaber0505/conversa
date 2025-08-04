@@ -1,0 +1,12 @@
+-r base.txt
+django-environ
+drf-spectacular
+ipython
+black
+flake8
+coverage
+pytest-cov
+django-debug-toolbar
+django-extensions
+python-dotenv
+
