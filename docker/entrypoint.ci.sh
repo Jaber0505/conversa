@@ -1,11 +1,8 @@
 #!/bin/sh
 set -e
 
-echo "📦 Checking migrations plan..."
-python manage.py showmigrations --plan || echo "🔍 Migrations check failed"
-
-echo "🛠️ Applying migrations..."
+echo "📦 CI : Applying migrations"
 python manage.py migrate --noinput
 
-echo "🧪 Running tests..."
+echo "✅ CI : Running tests"
 python manage.py test

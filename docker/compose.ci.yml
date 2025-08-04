@@ -1,47 +1,38 @@
 services:
   db:
     image: postgres:15
-    restart: always
-    volumes:
-      - postgres_data_ci:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: ${DJANGO_DB_USER:-postgres}
-      POSTGRES_PASSWORD: ${DJANGO_DB_PASSWORD:-postgres}
-      POSTGRES_DB: ${DJANGO_DB_NAME:-conversadb}
+      POSTGRES_DB: conversadb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
       timeout: 3s
       retries: 5
-    networks:
-      - conversa
+    volumes:
+      - postgres_data_ci:/var/lib/postgresql/data
 
   backend:
     build:
       context: ../
-      dockerfile: docker/Dockerfile.backend
-      args:
-        REQUIREMENTS_FILE: requirements/dev.txt
-    entrypoint: ["/entrypoint.ci.sh"]
-    environment:
-      DJANGO_SETTINGS_MODULE: config.settings.dev
-      DJANGO_SECRET_KEY: dummy
-      DJANGO_DEBUG: "False"
-      DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1
-      DJANGO_DB_NAME: conversadb
-      DJANGO_DB_USER: postgres
-      DJANGO_DB_PASSWORD: ${DJANGO_DB_PASSWORD:-postgres}
-      DJANGO_DB_HOST: db
-      DJANGO_DB_PORT: 5432
+      dockerfile: docker/Dockerfile.ci
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py test"
     depends_on:
       db:
         condition: service_healthy
-    networks:
-      - conversa
-
+    environment:
+      DJANGO_DB_NAME: conversadb
+      DJANGO_DB_USER: postgres
+      DJANGO_DB_PASSWORD: postgres
+      DJANGO_DB_HOST: db
+      DJANGO_DB_PORT: 5432
+      DJANGO_SETTINGS_MODULE: config.settings.dev
+      DJANGO_SECRET_KEY: dummy
+      DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1
+      DJANGO_DEBUG: "False"
 
 volumes:
   postgres_data_ci:
-
-networks:
-  conversa: {}

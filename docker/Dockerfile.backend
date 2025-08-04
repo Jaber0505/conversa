@@ -1,3 +1,6 @@
+# -------------------
+# Étape 1 : Build base
+# -------------------
 FROM python:3.11-slim AS build
 
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -5,18 +8,21 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-ARG REQUIREMENTS_FILE=requirements/prod.txt
-
+ARG REQUIREMENTS_FILE=requirements/dev.txt
 COPY backend/requirements /requirements
 RUN pip install --upgrade pip && pip install -r /${REQUIREMENTS_FILE}
 
 COPY backend /app
 
-# ✅ Seul script utile en production
-COPY docker/entrypoint.prod.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+# Scripts d'entrée (utilisés *uniquement* en CI ou Prod)
+ARG CI_MODE=false
+COPY docker/entrypoint.prod.sh /entrypoint.prod.sh
+COPY docker/entrypoint.ci.sh /entrypoint.ci.sh
+RUN chmod +x /entrypoint.prod.sh /entrypoint.ci.sh
 
-
+# -------------------
+# Étape 2 : Final image
+# -------------------
 FROM python:3.11-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -28,6 +34,8 @@ COPY --from=build /usr/local/lib/python3.11 /usr/local/lib/python3.11
 COPY --from=build /usr/local/bin /usr/local/bin
 COPY --from=build /app /app
 
-EXPOSE 8000
+# Copie du bon entrypoint (conditionné dans le docker-compose)
+COPY --from=build /entrypoint.prod.sh /entrypoint.prod.sh
+COPY --from=build /entrypoint.ci.sh /entrypoint.ci.sh
 
-ENTRYPOINT ["/entrypoint.sh"]
+EXPOSE 8000
