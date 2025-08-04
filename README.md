@@ -1,7 +1,6 @@
 # Conversa
 
-[![Tests CI](https://github.com/Jaber0505/Conversa/actions/workflows/test.yml/badge.svg)](https://github.com/Jaber0505/Conversa/actions/workflows/test.yml)
-[![Deploy to Render](https://img.shields.io/badge/🚀%20Déployer%20en%20prod-Render-blue?style=for-the-badge)](https://api.render.com/deploy/srv-d24137ndiees73a4uv40?key=z9IIQZ5MXOQ)
+[![CI/CD](https://github.com/Jaber0505/conversa/actions/workflows/ci_cd.yml/badge.svg)](https://github.com/Jaber0505/conversa/actions/workflows/ci_cd.yml)
 
 **Conversa** est une plateforme web permettant d’organiser ou de rejoindre des événements linguistiques immersifs dans des bars à Bruxelles.  
 En petits groupes, les participants pratiquent une langue étrangère à travers des jeux collaboratifs conçus pour favoriser l’expression orale et l’échange.
