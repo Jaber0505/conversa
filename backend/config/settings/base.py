@@ -2,10 +2,8 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 
-# Charger les variables d’environnement depuis .env (utile hors Docker aussi)
 load_dotenv()
 
-# Racine du projet
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # ------------------------------
@@ -84,14 +82,14 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # ------------------------------
-# Clés et sécurité (à définir ailleurs)
+# Keys and security (to be defined elsewhere)
 # ------------------------------
 
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'insecure-default-key') 
 ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', 'localhost').split(',')
 
 # ------------------------------
-# Clé par défaut des modèles
+# Default model key
 # ------------------------------
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

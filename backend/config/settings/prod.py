@@ -2,7 +2,7 @@ from .base import *
 import os
 
 # ------------------------------
-# Environnement PROD
+# Environment: production Render
 # ------------------------------
 
 DEBUG = os.getenv("DJANGO_DEBUG", "False") == "True"
@@ -16,14 +16,14 @@ if not ALLOWED_HOSTS or ALLOWED_HOSTS == [""]:
     raise Exception("ALLOWED_HOSTS must be set in production.")
 
 # ------------------------------
-# Base de données (PostgreSQL)
+# PostgreSQL database (Render)
 # ------------------------------
 
 DATABASES = {
     "default": {
         "ENGINE": os.getenv("DJANGO_DB_ENGINE", "django.db.backends.postgresql"),
-        "NAME": os.getenv("DJANGO_DB_NAME"),
-        "USER": os.getenv("DJANGO_DB_USER"),
+        "NAME": os.getenv("DJANGO_DB_NAME", "conversadb"),
+        "USER": os.getenv("DJANGO_DB_USER", "postgres"),
         "PASSWORD": os.getenv("DJANGO_DB_PASSWORD"),
         "HOST": os.getenv("DJANGO_DB_HOST"),
         "PORT": os.getenv("DJANGO_DB_PORT", "5432"),
@@ -31,7 +31,7 @@ DATABASES = {
 }
 
 # ------------------------------
-# Sécurité renforcée
+# Security: headers + HTTPS
 # ------------------------------
 
 SECURE_HSTS_SECONDS = 31536000
@@ -41,13 +41,19 @@ SECURE_HSTS_PRELOAD = True
 SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = "DENY"
 
 # ------------------------------
-# Static / media
+# Static / Media
 # ------------------------------
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_ROOT = BASE_DIR / "media"
+
+STATIC_URL = "/static/"
+MEDIA_URL = "/media/"
 
 # ------------------------------
 # Logging

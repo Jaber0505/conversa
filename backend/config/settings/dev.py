@@ -2,7 +2,7 @@ from .base import *
 import os
 
 # ------------------------------
-# Environnement DEV
+# Environment DEV
 # ------------------------------
 
 DEBUG = os.getenv("DJANGO_DEBUG", "True") == "True"
@@ -12,7 +12,7 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-secret-key")
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
 # ------------------------------
-# Base de données locale
+# Local database
 # ------------------------------
 
 DATABASES = {

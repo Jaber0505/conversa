@@ -1,0 +1,49 @@
+services:
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_DB: ${DJANGO_DB_NAME}
+      POSTGRES_USER: ${DJANGO_DB_USER}
+      POSTGRES_PASSWORD: ${DJANGO_DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - conversa
+
+  backend:
+    image: ghcr.io/${GITHUB_REPOSITORY,,}-backend:latest
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.prod
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+      DJANGO_DEBUG: "False"
+      DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS}
+      DJANGO_DB_NAME: ${DJANGO_DB_NAME}
+      DJANGO_DB_USER: ${DJANGO_DB_USER}
+      DJANGO_DB_PASSWORD: ${DJANGO_DB_PASSWORD}
+      DJANGO_DB_HOST: db
+      DJANGO_DB_PORT: 5432
+    command: >
+      sh -c "python manage.py migrate &&
+             gunicorn config.wsgi:application --bind 0.0.0.0:8000"
+    depends_on:
+      - db
+    networks:
+      - conversa
+    ports:
+      - "8000:8000"
+
+  frontend:
+    image: ghcr.io/${GITHUB_REPOSITORY,,}-frontend:latest
+    networks:
+      - conversa
+    ports:
+      - "5173:80"
+    restart: always
+
+volumes:
+  postgres_data:
+
+networks:
+  conversa:
+    external: true

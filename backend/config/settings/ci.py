@@ -2,16 +2,17 @@ from .base import *
 import os
 
 # ------------------------------
-# CI ENVIRONMENT
+# CI environment (GitHub Actions)
 # ------------------------------
 
 DEBUG = False
+
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "ci-secret-key")
 
-ALLOWED_HOSTS = ["*"]  # en CI on teste souvent sans host restriction
+ALLOWED_HOSTS = ["*"]
 
 # ------------------------------
-# In-memory test database
+# Database in memory (fast)
 # ------------------------------
 
 DATABASES = {
@@ -22,7 +23,7 @@ DATABASES = {
 }
 
 # ------------------------------
-# Optimisations pour tests
+# Optimization for testing
 # ------------------------------
 
 PASSWORD_HASHERS = [
@@ -30,3 +31,19 @@ PASSWORD_HASHERS = [
 ]
 
 EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": True,
+    "handlers": {
+        "null": {
+            "class": "logging.NullHandler",
+        },
+    },
+    "root": {
+        "handlers": ["null"],
+        "level": "DEBUG",
+    },
+}
+
+STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
