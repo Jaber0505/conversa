@@ -4,17 +4,24 @@ echo "=== DEBUG: ENVIRONMENT VARIABLES ==="
 echo "SECRET_KEY=$SECRET_KEY"
 echo "DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE"
 
-echo "📦 Checking migrations plan..."
-python manage.py showmigrations
+set -e
 
-echo "🛠️ Applying migrations..."
+echo "📦 Running migrations..."
 python manage.py migrate --noinput
 
 echo "👑 Creating superuser (if needed)..."
-python create_superuser.py
+python manage.py shell << END
+from django.contrib.auth import get_user_model
+User = get_user_model()
+if not User.objects.filter(email="admin@conversa.be").exists():
+    User.objects.create_superuser("admin@conversa.be", "admin123")
+    print("✅ Superuser created.")
+else:
+    print("ℹ️ Superuser already exists.")
+END
 
 echo "🧹 Collecting static files..."
 python manage.py collectstatic --noinput
 
-echo "🎯 Starting Gunicorn server..."
-gunicorn config.wsgi:application --bind 0.0.0.0:8000
+echo "🚀 Starting Gunicorn..."
+exec gunicorn config.wsgi:application --bind 0.0.0.0:8000
