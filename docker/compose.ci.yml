@@ -25,6 +25,7 @@ services:
       db:
         condition: service_healthy
     environment:
+      CI_MODE: "true"
       DJANGO_DB_NAME: conversadb
       DJANGO_DB_USER: postgres
       DJANGO_DB_PASSWORD: postgres
