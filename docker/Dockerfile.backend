@@ -2,17 +2,18 @@ FROM python:3.11-slim AS build
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
+ENV DJANGO_SETTINGS_MODULE=config.settings.prod
+ENV DJANGO_SECRET_KEY=dummy-secret-key
 
 WORKDIR /app
 
 ARG REQUIREMENTS_FILE=requirements/prod.txt
-
 COPY backend/requirements /requirements
 RUN pip install --upgrade pip && pip install -r /${REQUIREMENTS_FILE}
 
 COPY backend /app
 
-RUN DJANGO_SETTINGS_MODULE=config.settings.prod python manage.py collectstatic --noinput
+RUN python manage.py collectstatic --noinput
 
 FROM python:3.11-slim
 
