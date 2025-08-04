@@ -31,6 +31,13 @@ DATABASES = {
 }
 
 # ------------------------------
+# WhiteNoise static files handling
+# ------------------------------
+
+MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+# ------------------------------
 # Security: headers + HTTPS
 # ------------------------------
 
