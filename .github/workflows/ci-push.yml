@@ -14,7 +14,7 @@ jobs:
       contents: read
 
     env:
-      IMAGE_PREFIX: ghcr.io/${{ github.repository_owner }}/conversa
+      IMAGE_PREFIX: ghcr.io/jaber0505/conversa
 
     steps:
       - name: Checkout code
@@ -29,10 +29,10 @@ jobs:
 
       - name: Build & Push Backend Image
         run: |
-          docker build -t $IMAGE_PREFIX/backend:latest -f docker/Dockerfile.backend .
-          docker push $IMAGE_PREFIX/backend:latest
+          docker build -t $IMAGE_PREFIX-backend:latest -f docker/Dockerfile.backend .
+          docker push $IMAGE_PREFIX-backend:latest
 
       - name: Build & Push Frontend Image
         run: |
-          docker build -t $IMAGE_PREFIX/frontend:latest -f docker/Dockerfile.frontend --target build .
-          docker push $IMAGE_PREFIX/frontend:latest
+          docker build -t $IMAGE_PREFIX-frontend:latest -f docker/Dockerfile.frontend --target build .
+          docker push $IMAGE_PREFIX-frontend:latest
