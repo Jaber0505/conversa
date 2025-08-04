@@ -15,10 +15,10 @@ services:
         REQUIREMENTS_FILE: requirements/dev.txt
     command: >
       sh -c "python manage.py migrate &&
-             python manage.py test"
+            python manage.py test"
     environment:
       DJANGO_SETTINGS_MODULE: config.settings.dev
-      DJANGO_SECRET_KEY: dummy-value
+      DJANGO_SECRET_KEY: dummy
       DJANGO_DEBUG: "False"
       DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1
       DJANGO_DB_NAME: conversadb

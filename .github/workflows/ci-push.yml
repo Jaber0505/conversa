@@ -2,7 +2,8 @@ name: Build & Push Docker Images (GHCR)
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   build-and-push:
@@ -13,7 +14,7 @@ jobs:
       contents: read
 
     env:
-      IMAGE_PREFIX: ghcr.io/${{ github.repository }}
+      IMAGE_PREFIX: ghcr.io/${{ github.repository_owner }}/conversa
 
     steps:
       - name: Checkout code

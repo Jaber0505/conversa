@@ -2,7 +2,8 @@ name: Build & Test (CI)
 
 on:
   push:
-    branches: [main, develop]
+    branches: 
+      - develop
   pull_request:
 
 jobs:
