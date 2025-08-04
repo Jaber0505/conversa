@@ -1,9 +1,12 @@
+version: "3.8"
+
 services:
   db:
     image: postgres:15
     restart: always
     volumes:
       - postgres_data_ci:/var/lib/postgresql/data
+    env_file: []
     networks:
       - conversa
 
@@ -13,22 +16,19 @@ services:
       dockerfile: docker/Dockerfile.backend
       args:
         REQUIREMENTS_FILE: requirements/dev.txt
-    command: >
-      sh -c "python manage.py migrate &&
-             python manage.py test"
-    env_file: 
-      - path: []
-        required: false
+    env_file: []
+    command: >-
+      sh -c "python manage.py migrate && python manage.py test"
     environment:
       DJANGO_SETTINGS_MODULE: config.settings.dev
-      DJANGO_SECRET_KEY: dummy
+      DJANGO_SECRET_KEY: "dummy"
       DJANGO_DEBUG: "False"
-      DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1
+      DJANGO_ALLOWED_HOSTS: "localhost,127.0.0.1"
       DJANGO_DB_NAME: conversadb
       DJANGO_DB_USER: postgres
-      DJANGO_DB_PASSWORD: $DJANGO_DB_PASSWORD
+      DJANGO_DB_PASSWORD: ${DJANGO_DB_PASSWORD}
       DJANGO_DB_HOST: db
-      DJANGO_DB_PORT: 5432
+      DJANGO_DB_PORT: "5432"
     depends_on:
       - db
     networks:
@@ -39,9 +39,7 @@ services:
       context: ../
       dockerfile: docker/Dockerfile.frontend
       target: build
-    env_file: 
-      - path: []
-        required: false
+    env_file: []
     networks:
       - conversa
 
