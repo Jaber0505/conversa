@@ -1,8 +1,7 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
-echo "📦 CI : Applying migrations"
-python manage.py migrate --noinput
+echo "Running CI tests..."
 
-echo "✅ CI : Running tests"
-python manage.py test
+python manage.py migrate --noinput
+exec pytest --cov
