@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 
-if os.getenv("ENV_MODE", "dev") == "dev":
+if os.getenv("ENV_MODE", "dev") != "production":
     from dotenv import load_dotenv
     load_dotenv()
 
