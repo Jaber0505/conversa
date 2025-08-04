@@ -46,4 +46,3 @@ volumes:
 
 networks:
   conversa:
-    external: true
