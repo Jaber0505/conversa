@@ -1,9 +1,28 @@
-# compose.dev.yml — ajoute toutes les variables d’environnement
 services:
-  db:
+  backend:
     env_file:
       - ./env/.env.dev
+    volumes:
+      - ../backend:/app
+    command: python manage.py runserver 0.0.0.0:8000
+
+  frontend:
+    env_file:
+      - ./env/.env.dev
+    volumes:
+      - ../frontend:/app
+      - node_modules_frontend:/app/node_modules
+      
+  pgadmin:
+    image: dpage/pgadmin4
+    env_file:
+      - ./env/.env.dev
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+    networks:
+      - conversa
     environment:
-      POSTGRES_DB: ${DJANGO_DB_NAME}
-      POSTGRES_USER: ${DJANGO_DB_USER}
-      POSTGRES_PASSWORD: ${DJANGO_DB_PASSWORD}
+      PGADMIN_DEFAULT_EMAIL: admin@conversa.local
+      PGADMIN_DEFAULT_PASSWORD: changeme
