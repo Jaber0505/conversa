@@ -1,9 +1,13 @@
-from .base import *
 import os
+
+from .base import *
+from dotenv import load_dotenv
 
 # ------------------------------
 # Environment DEV
 # ------------------------------
+
+load_dotenv()
 
 DEBUG = os.getenv("DJANGO_DEBUG", "True") == "True"
 

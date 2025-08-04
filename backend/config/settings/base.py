@@ -1,10 +1,6 @@
 import os
 from pathlib import Path
 
-if os.getenv("ENV_MODE", "dev") != "production":
-    from dotenv import load_dotenv
-    load_dotenv()
-
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # ------------------------------
