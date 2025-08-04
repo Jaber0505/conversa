@@ -10,6 +10,9 @@ python manage.py showmigrations
 echo "🛠️ Applying migrations..."
 python manage.py migrate --noinput
 
+echo "👑 Creating superuser (if needed)..."
+python create_superuser.py
+
 echo "🧹 Collecting static files..."
 python manage.py collectstatic --noinput
 
