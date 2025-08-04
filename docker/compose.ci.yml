@@ -16,7 +16,9 @@ services:
     command: >
       sh -c "python manage.py migrate &&
              python manage.py test"
-    env_file: []  # <- Écrase le env_file du base
+    env_file: 
+      - path: []
+        required: false
     environment:
       DJANGO_SETTINGS_MODULE: config.settings.dev
       DJANGO_SECRET_KEY: dummy
@@ -37,7 +39,9 @@ services:
       context: ../
       dockerfile: docker/Dockerfile.frontend
       target: build
-    env_file: []  # <- Pour éviter aussi la même erreur
+    env_file: 
+      - path: []
+        required: false
     networks:
       - conversa
 
