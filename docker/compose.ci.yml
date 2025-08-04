@@ -45,5 +45,4 @@ volumes:
   postgres_data_ci:
 
 networks:
-  conversa:
-    external: true
+  conversa: {}
