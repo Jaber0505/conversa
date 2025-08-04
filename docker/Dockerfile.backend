@@ -12,11 +12,8 @@ RUN pip install --upgrade pip && pip install -r /${REQUIREMENTS_FILE}
 
 COPY backend /app
 
-# 🔽 Copie les deux scripts d'entrée
 COPY docker/entrypoint.prod.sh /entrypoint.prod.sh
 COPY docker/entrypoint.ci.sh /entrypoint.ci.sh
-
-# 🔽 Rends-les exécutables
 RUN chmod +x /entrypoint.prod.sh /entrypoint.ci.sh
 
 
@@ -31,5 +28,9 @@ WORKDIR /app
 COPY --from=build /usr/local/lib/python3.11 /usr/local/lib/python3.11
 COPY --from=build /usr/local/bin /usr/local/bin
 COPY --from=build /app /app
+
+# 🔽 Ajoute cette ligne :
+COPY --from=build /entrypoint.prod.sh /entrypoint.prod.sh
+COPY --from=build /entrypoint.ci.sh /entrypoint.ci.sh
 
 EXPOSE 8000
