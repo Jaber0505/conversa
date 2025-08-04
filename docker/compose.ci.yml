@@ -15,7 +15,7 @@ services:
         REQUIREMENTS_FILE: requirements/dev.txt
     command: >
       sh -c "python manage.py migrate &&
-            python manage.py test"
+             python manage.py test"
     environment:
       DJANGO_SETTINGS_MODULE: config.settings.dev
       DJANGO_SECRET_KEY: dummy
