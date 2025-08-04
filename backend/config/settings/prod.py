@@ -1,5 +1,9 @@
-from .base import *
 import os
+import sys
+from .base import *
+
+
+
 
 # ------------------------------
 # Environment: production Render
@@ -7,9 +11,9 @@ import os
 
 DEBUG = os.getenv("DJANGO_DEBUG", "False") == "True"
 
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
-if not SECRET_KEY:
-    raise Exception("SECRET_KEY is not set in environment variables.")
+print("FULL ENV:", dict(os.environ))
+
+SECRET_KEY = os.environ["SECRET_KEY"]  # 🔐 Plus strict
 
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
 if not ALLOWED_HOSTS or ALLOWED_HOSTS == [""]:
