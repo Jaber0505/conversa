@@ -1,9 +1,18 @@
 services:
   db:
+    image: postgres:15
+    restart: always
     volumes:
       - postgres_data_ci:/var/lib/postgresql/data
+    networks:
+      - conversa
 
   backend:
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.backend
+      args:
+        REQUIREMENTS_FILE: requirements/dev.txt
     command: >
       sh -c "python manage.py migrate &&
              python manage.py test"
@@ -17,12 +26,14 @@ services:
       DJANGO_DB_PASSWORD: ${DJANGO_DB_PASSWORD:-postgres}
       DJANGO_DB_HOST: db
       DJANGO_DB_PORT: 5432
-
-  frontend:
-    build:
-      context: ../
-      dockerfile: docker/Dockerfile.frontend
-      target: build
+    depends_on:
+      - db
+    networks:
+      - conversa
 
 volumes:
   postgres_data_ci:
+
+networks:
+  conversa:
+    external: true
