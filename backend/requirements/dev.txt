@@ -9,4 +9,4 @@ pytest-cov
 django-debug-toolbar
 django-extensions
 python-dotenv
-
+gunicorn

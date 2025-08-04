@@ -12,6 +12,7 @@ RUN pip install --upgrade pip && pip install -r /${REQUIREMENTS_FILE}
 
 COPY backend /app
 
+
 FROM python:3.11-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -20,11 +21,12 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
 COPY --from=build /usr/local/lib/python3.11 /usr/local/lib/python3.11
+COPY --from=build /usr/local/bin /usr/local/bin
 COPY --from=build /app /app
-
-EXPOSE 8000
 
 COPY docker/entrypoint.prod.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
+
+EXPOSE 8000
 
 ENTRYPOINT ["/entrypoint.sh"]

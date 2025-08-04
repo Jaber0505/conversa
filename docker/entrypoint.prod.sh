@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -e
+set -e  # Arrête le script si une commande échoue (sauf les "|| echo ...")
 
 echo "📦 Checking migrations plan..."
 python manage.py showmigrations --plan || echo "🔍 Migrations check failed"
