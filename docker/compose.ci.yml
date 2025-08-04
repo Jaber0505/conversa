@@ -4,6 +4,15 @@ services:
     restart: always
     volumes:
       - postgres_data_ci:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${DJANGO_DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DJANGO_DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${DJANGO_DB_NAME:-conversadb}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
     networks:
       - conversa
 
@@ -27,7 +36,8 @@ services:
       DJANGO_DB_HOST: db
       DJANGO_DB_PORT: 5432
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - conversa
 
