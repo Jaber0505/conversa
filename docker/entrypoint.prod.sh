@@ -1,14 +1,17 @@
-#!/bin/sh
+#!/bin/bash
 
 echo "=== DEBUG: ENVIRONMENT VARIABLES ==="
-printenv | grep SECRET_KEY
-printenv | grep DJANGO_SETTINGS_MODULE
+echo "SECRET_KEY=$SECRET_KEY"
+echo "DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE"
 
 echo "📦 Checking migrations plan..."
-python manage.py showmigrations --plan || echo "🔍 Migrations check failed"
+python manage.py showmigrations
 
 echo "🛠️ Applying migrations..."
-python manage.py migrate || echo "⚠️ Migrations failed, continuing anyway"
+python manage.py migrate --noinput
+
+echo "🧹 Collecting static files..."
+python manage.py collectstatic --noinput
 
 echo "🎯 Starting Gunicorn server..."
 gunicorn config.wsgi:application --bind 0.0.0.0:8000
