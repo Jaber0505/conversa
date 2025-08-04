@@ -30,7 +30,7 @@ services:
       DJANGO_DB_PASSWORD: postgres
       DJANGO_DB_HOST: db
       DJANGO_DB_PORT: 5432
-      DJANGO_SETTINGS_MODULE: config.settings.test
+      DJANGO_SETTINGS_MODULE: config.settings.ci
       DJANGO_SECRET_KEY: dummy
       DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1
       DJANGO_DEBUG: "False"
