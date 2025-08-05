@@ -42,8 +42,8 @@ jobs:
       - name: 🧹 Install lint tools
         run: pip install ruff
 
-      - name: 🧽 Run linter on backend
-        run: ruff check backend
+      - name: 🧽 Run linter (auto-fix) on backend
+        run: ruff check backend --fix --output-format github
 
       - name: 🧪 Run tests with coverage
         working-directory: backend
