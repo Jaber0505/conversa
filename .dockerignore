@@ -18,7 +18,7 @@ docker/
 !docker/entrypoints/entrypoint.prod.sh
 !docker/entrypoints/entrypoint.ci.sh
 !docker/entrypoints/entrypoint.sh
-!docker/nginx.conf
+!docker/nginx/default.conf
 pgadmin/
 tests/
 
