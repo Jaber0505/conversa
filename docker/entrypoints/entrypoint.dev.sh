@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "🔧 [DEV] Starting Django development server..."
+echo "🔧 ENV_MODE=$ENV_MODE"
 echo "📦 Using settings: $DJANGO_SETTINGS_MODULE"
 echo "🐘 Connecting to DB at: $DJANGO_DB_HOST:$DJANGO_DB_PORT"
 

@@ -1,8 +1,6 @@
 #!/bin/bash
 set -e
 
-echo "ENV_MODE=$ENV_MODE"
-
 case "$ENV_MODE" in
   "ci")
     echo "✅ Running CI entrypoint"

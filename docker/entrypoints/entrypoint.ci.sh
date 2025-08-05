@@ -1,8 +1,9 @@
 #!/bin/bash
 set -e
 
-echo "🔎 CI testing launched for Conversa"
-echo "📦 Python environment : $(python --version)"
+echo "🔎 ENV_MODE=$ENV_MODE"
+echo "📦 Using settings: $DJANGO_SETTINGS_MODULE"
+echo "🧪 Python environment : $(python --version)"
 echo "🗂️ Current directory : $(pwd)"
 echo "📁 File contents :"
 ls -la
