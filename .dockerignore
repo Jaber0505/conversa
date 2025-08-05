@@ -15,9 +15,9 @@ htmlcov/
 # Dossiers non nécessaires à l’image en build
 docker/
 !docker/entrypoints/
-!docker/entrypoints/entrypoint.prod.sh
-!docker/entrypoints/entrypoint.ci.sh
-!docker/entrypoints/entrypoint.sh
+!docker/entrypoints/*
+!docker/nginx/
+!docker/nginx/*
 frontend/
 pgadmin/
 tests/
