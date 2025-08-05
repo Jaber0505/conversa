@@ -188,8 +188,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build-push
-    if: ${{ needs.test.result == 'success' && needs.build-and-push.result == 'success' }}
-
+    
     steps:
       - name: 🚀 Trigger Render backend deployment
         uses: actions/github-script@v6
