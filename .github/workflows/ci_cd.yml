@@ -13,7 +13,13 @@ jobs:
       REGISTRY: ghcr.io
       VERSION: ${{ github.sha }}
       DJANGO_SETTINGS_MODULE: config.settings.ci
-      
+      DEBUG: ${{ secrets.CI_DEBUG }}
+      SECRET_KEY: ${{ secrets.CI_SECRET_KEY }}
+      DJANGO_ALLOWED_HOSTS: ${{ secrets.CI_DJANGO_ALLOWED_HOSTS }}
+      DJANGO_SU_NAME: ${{ secrets.CI_DJANGO_SU_NAME }}
+      DJANGO_SU_PASSWORD: ${{ secrets.CI_DJANGO_SU_PASSWORD }}
+      DJANGO_SU_EMAIL: ${{ secrets.CI_DJANGO_SU_EMAIL }}
+
     steps:
       - name: 🛎 Checkout code
         uses: actions/checkout@v3
@@ -59,9 +65,70 @@ jobs:
           files: backend/coverage.xml
           fail_ci_if_error: true
 
-  build-and-push:
+  migrate:
+    name: 🧱 Apply migrations to Render DB
     runs-on: ubuntu-latest
     needs: test
+
+    env:
+      DJANGO_SETTINGS_MODULE: config.settings.prod
+      DEBUG: ${{ secrets.DEBUG }}
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      DJANGO_ALLOWED_HOSTS: ${{ secrets.DJANGO_ALLOWED_HOSTS }}
+      DJANGO_DB_ENGINE: ${{ secrets.DJANGO_DB_ENGINE }}
+      DJANGO_DB_NAME: ${{ secrets.DJANGO_DB_NAME }}
+      DJANGO_DB_USER: ${{ secrets.DJANGO_DB_USER }}
+      DJANGO_DB_PASSWORD: ${{ secrets.DJANGO_DB_PASSWORD }}
+      DJANGO_DB_HOST: ${{ secrets.DJANGO_DB_HOST }}
+      DJANGO_DB_PORT: ${{ secrets.DJANGO_DB_PORT }}
+
+    steps:
+      - name: 🛎 Checkout code
+        uses: actions/checkout@v3
+
+      - name: 🐍 Setup Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: 📦 Install dependencies
+        run: |
+          pip install -r backend/requirements/prod.txt
+
+      - name: 🔍 Check for unapplied model changes (makemigrations)
+        working-directory: backend
+        run: |
+          python manage.py makemigrations --check --dry-run
+
+      - name: 🧱 Apply migrations to Render DB
+        working-directory: backend
+        run: |
+          python manage.py migrate --noinput
+
+      - name: 👑 Create superuser if missing
+        working-directory: backend
+        run: |
+          python manage.py shell <<EOF
+          from django.contrib.auth import get_user_model
+          import os
+
+          User = get_user_model()
+          username = os.getenv("DJANGO_SU_NAME")
+          email = os.getenv("DJANGO_SU_EMAIL")
+          password = os.getenv("DJANGO_SU_PASSWORD")
+
+          if not all([username, email, password]):
+              print("❌ Missing superuser env vars. Skipping.")
+          elif not User.objects.filter(email=email).exists():
+              User.objects.create_superuser(username=username, email=email, password=password)
+              print("✅ Superuser created:", email)
+          else:
+              print("ℹ️ Superuser already exists:", email)
+          EOF
+
+  build-and-push:
+    runs-on: ubuntu-latest
+    needs: migrate
     permissions:
       contents: read
       packages: write

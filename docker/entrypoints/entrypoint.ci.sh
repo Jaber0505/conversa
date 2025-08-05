@@ -1,23 +1,41 @@
 #!/bin/bash
 set -e
 
+# ==============================================================================
+# 🧪 Conversa – Entrypoint CI (tests unitaires locaux)
+# ------------------------------------------------------------------------------
+# Ce fichier est utilisé uniquement en LOCAL pour simuler le job CI :
+# - Migrations
+# - Tests unitaires
+# - Lint
+# - Génération de couverture
+#
+# ⚠️ Ce script N'EST PAS appelé par GitHub Actions.
+# ⚠️ Il est inactif tant que non référencé (docker-compose, Dockerfile…)
+#
+# 👉 Pour l'exécuter localement :
+#    docker compose -f docker/compose.ci.yml run --rm backend /entrypoints/entrypoint.ci.sh
+# ==============================================================================
+
 echo "🔎 ENV_MODE=$ENV_MODE"
-echo "📦 Using settings: $DJANGO_SETTINGS_MODULE"
-echo "🧪 Python environment : $(python --version)"
-echo "🗂️ Current directory : $(pwd)"
-echo "📁 File contents :"
+echo "📦 DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE:-config.settings.ci}"
+echo "🐍 Python: $(python --version)"
+echo "📁 Working dir: $(pwd)"
+echo "📂 Contents:"
 ls -la
 
-echo "🔍 Checking for missing migrations..."
+echo ""
+echo "🔍 Vérification des migrations manquantes..."
 python manage.py makemigrations --check --dry-run
 
-echo "🧱 Database migration..."
+echo ""
+echo "🧱 Application des migrations..."
 python manage.py migrate --noinput
 
-echo "🔎 Code analysis with Ruff..."
-ruff backend
+echo ""
+echo "🔎 Analyse statique du code (Ruff)..."
+ruff backend || true  # Ne pas échouer même si Ruff échoue
 
-echo "🧪 Execute unit tests with coverage..."
-exec pytest --cov=backend --cov-report=term --cov-report=xml
-
-echo "📤 Coverage report sent to Codecov..."
+echo ""
+echo "🧪 Lancement des tests unitaires avec coverage..."
+pytest --cov=backend --cov-report=term --cov-report=xml

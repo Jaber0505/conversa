@@ -2,44 +2,23 @@
 # Docker Compose - Continuous Integration (CI)
 # ------------------------------------------------------------------------------
 # Utilisé dans les workflows GitHub Actions (CI/CD)
-# - Configure PostgreSQL et le backend Django avec les variables de test
+# - Lance uniquement le backend Django avec SQLite (pas de base PostgreSQL)
 # - Toutes les variables sont injectées par GitHub Secrets
 # ==============================================================================
 
 services:
-  db:
-    image: postgres:15
-    environment:
-      POSTGRES_DB: ${DJANGO_DB_NAME}
-      POSTGRES_USER: ${DJANGO_DB_USER}
-      POSTGRES_PASSWORD: ${DJANGO_DB_PASSWORD}
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DJANGO_DB_USER}"]
-      interval: 5s
-      timeout: 3s
-      retries: 5
-    tmpfs:
-      - /var/lib/postgresql/data
-
   backend:
     build:
       context: ../
       dockerfile: docker/Dockerfile.backend
       args:
         REQUIREMENTS_FILE: requirements/ci.txt
-    depends_on:
-      db:
-        condition: service_healthy
     environment:
-      DEBUG: ${DEBUG}
       ENV_MODE: ${ENV_MODE}
-      SECRET_KEY: ${SECRET_KEY}
-      DJANGO_SETTINGS_MODULE: ${DJANGO_SETTINGS_MODULE}
-      DJANGO_DB_NAME: ${DJANGO_DB_NAME}
-      DJANGO_DB_USER: ${DJANGO_DB_USER}
-      DJANGO_DB_PASSWORD: ${DJANGO_DB_PASSWORD}
-      DJANGO_DB_HOST: ${DJANGO_DB_HOST}
-      DJANGO_DB_PORT: ${DJANGO_DB_PORT}
-      DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS}
-      DJANGO_SU_NAME: ${DJANGO_SU_NAME}
-      DJANGO_SU_PASSWORD: ${DJANGO_SU_PASSWORD}
+      DEBUG: ${CI_DEBUG}
+      SECRET_KEY: ${CI_SECRET_KEY}
+      DJANGO_SETTINGS_MODULE: ${CI_DJANGO_SETTINGS_MODULE}
+      CI_DJANGO_ALLOWED_HOSTS: ${CI_DJANGO_ALLOWED_HOSTS}
+      CI_DJANGO_SU_NAME: ${CI_DJANGO_SU_NAME}
+      CI_DJANGO_SU_PASSWORD: ${CI_DJANGO_SU_PASSWORD}
+      CI_DJANGO_SU_EMAIL: ${CI_DJANGO_SU_EMAIL}

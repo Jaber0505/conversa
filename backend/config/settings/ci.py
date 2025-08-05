@@ -1,22 +1,22 @@
 """
 Django settings – ENV: Continuous Integration (CI)
 Utilisé exclusivement dans les pipelines automatisées (GitHub Actions, etc.)
-Optimisé pour la vitesse d’exécution des tests unitaires.
+Optimisé pour la vitesse d’exécution des tests unitaires avec SQLite en mémoire.
 """
 
-import os
 from .base import *
+import os
 
 # ==============================================================================
-# CI environment (GitHub Actions, etc.)
+# Environnement CI (GitHub Actions, etc.)
 # ==============================================================================
 
-DEBUG = os.getenv("DEBUG", "False") == "True"
-SECRET_KEY = os.getenv("SECRET_KEY", "ci-secret-key")
-ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "*").split(",")
+DEBUG = os.getenv("CI_DEBUG", "False").lower() in ("true", "1", "yes")
+SECRET_KEY = os.getenv("CI_SECRET_KEY", "ci-secret-key")
+ALLOWED_HOSTS = os.getenv("CI_DJANGO_ALLOWED_HOSTS", "*").split(",")
 
 # ==============================================================================
-# In-memory database
+# Base de données SQLite (ultra rapide, en mémoire)
 # ==============================================================================
 
 DATABASES = {
@@ -27,7 +27,7 @@ DATABASES = {
 }
 
 # ==============================================================================
-# Optimizations to speed up testing
+# Performances & simplifications pour les tests
 # ==============================================================================
 
 PASSWORD_HASHERS = [
@@ -40,9 +40,7 @@ LOGGING = {
     "version": 1,
     "disable_existing_loggers": True,
     "handlers": {
-        "null": {
-            "class": "logging.NullHandler",
-        },
+        "null": {"class": "logging.NullHandler"},
     },
     "root": {
         "handlers": ["null"],
@@ -56,9 +54,9 @@ STORAGES = {
     },
 }
 
-# ============================================================================== #
-# Required config for tests (URLs, static, etc.)
-# ============================================================================== #
+# ==============================================================================
+# Autres paramètres nécessaires
+# ==============================================================================
 
 ROOT_URLCONF = "config.urls"
 WSGI_APPLICATION = "config.wsgi.application"
@@ -66,6 +64,5 @@ ASGI_APPLICATION = "config.asgi.application"
 
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
-
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
