@@ -92,6 +92,7 @@ jobs:
       - name: 🐳 Build and push backend image
         run: |
           docker build \
+            --no-cache
             --build-arg REQUIREMENTS_FILE=requirements/prod.txt \
             --target final \
             -t ${{ env.IMAGE_PREFIX }}-backend:latest \
