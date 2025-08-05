@@ -194,7 +194,7 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            await fetch(process.env.RENDER_DEPLOY_HOOK_BACKEND, { method: 'POST' });
+            await fetch(process.env.RENDER_DEPLOY_HOOK_BACKEND_URL, { method: 'POST' });
         env:
           RENDER_DEPLOY_HOOK_BACKEND_URL: ${{ secrets.RENDER_DEPLOY_HOOK_BACKEND_URL }}
 
@@ -202,6 +202,6 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            await fetch(process.env.RENDER_DEPLOY_HOOK_FRONTEND, { method: 'POST' });
+            await fetch(process.env.RENDER_DEPLOY_HOOK_FRONTEND_URL, { method: 'POST' });
         env:
           RENDER_DEPLOY_HOOK_FRONTEND_URL: ${{ secrets.RENDER_DEPLOY_HOOK_FRONTEND_URL }}
