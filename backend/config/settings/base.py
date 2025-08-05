@@ -111,3 +111,24 @@ ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', 'localhost').split(',')
 # ==============================================================================
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+__all__ = [
+    "BASE_DIR",
+    "INSTALLED_APPS",
+    "MIDDLEWARE",
+    "ROOT_URLCONF",
+    "TEMPLATES",
+    "WSGI_APPLICATION",
+    "ASGI_APPLICATION",
+    "LANGUAGE_CODE",
+    "TIME_ZONE",
+    "USE_I18N",
+    "USE_TZ",
+    "STATIC_URL",
+    "STATIC_ROOT",
+    "MEDIA_URL",
+    "MEDIA_ROOT",
+    "SECRET_KEY",
+    "ALLOWED_HOSTS",
+    "DEFAULT_AUTO_FIELD",
+]

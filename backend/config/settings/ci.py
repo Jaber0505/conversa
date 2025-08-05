@@ -5,7 +5,24 @@ Optimisé pour la vitesse d’exécution des tests unitaires.
 """
 
 import os
-from .base import *
+from .base import (
+    BASE_DIR,
+    INSTALLED_APPS,
+    MIDDLEWARE,
+    ROOT_URLCONF,
+    TEMPLATES,
+    WSGI_APPLICATION,
+    ASGI_APPLICATION,
+    LANGUAGE_CODE,
+    TIME_ZONE,
+    USE_I18N,
+    USE_TZ,
+    STATIC_URL,
+    STATIC_ROOT,
+    MEDIA_URL,
+    MEDIA_ROOT,
+    DEFAULT_AUTO_FIELD,
+)
 
 # ==============================================================================
 # CI environment (GitHub Actions, etc.)
