@@ -12,12 +12,15 @@ htmlcov/
 .env.*
 *.env
 
-# Dossiers non nécessaires à l’image en build
-docker/
+# Inclure certains fichiers de docker/ 
+!docker/
 !docker/entrypoints/
 !docker/entrypoints/*
 !docker/nginx/
 !docker/nginx/*
+docker/*
+
+# Dossiers non nécessaires à l’image en build
 frontend/
 pgadmin/
 tests/
