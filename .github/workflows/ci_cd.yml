@@ -196,7 +196,7 @@ jobs:
           script: |
             await fetch(process.env.RENDER_DEPLOY_HOOK_BACKEND, { method: 'POST' });
         env:
-          RENDER_DEPLOY_HOOK_BACKEND: ${{ secrets.RENDER_DEPLOY_HOOK_BACKEND }}
+          RENDER_DEPLOY_HOOK_BACKEND_URL: ${{ secrets.RENDER_DEPLOY_HOOK_BACKEND_URL }}
 
       - name: 🚀 Trigger Render deployment (Frontend)
         uses: actions/github-script@v6
@@ -204,4 +204,4 @@ jobs:
           script: |
             await fetch(process.env.RENDER_DEPLOY_HOOK_FRONTEND, { method: 'POST' });
         env:
-          RENDER_DEPLOY_HOOK_FRONTEND: ${{ secrets.RENDER_DEPLOY_HOOK_FRONTEND }}
+          RENDER_DEPLOY_HOOK_FRONTEND_URL: ${{ secrets.RENDER_DEPLOY_HOOK_FRONTEND_URL }}
