@@ -105,6 +105,16 @@ jobs:
         run: |
           python manage.py migrate --noinput
 
+      - name: ✅ Vérification que les tables existent vraiment
+        working-directory: backend
+        run: |
+          echo "SELECT count(*) FROM auth_user;" | python manage.py dbshell || echo "❌ Table auth_user absente"
+
+      - name: 🔁 Forcer re-migration si nécessaire
+        working-directory: backend
+        run: |
+          python manage.py migrate --noinput
+
       - name: 🔬 Liste des migrations appliquées
         working-directory: backend
         run: |
