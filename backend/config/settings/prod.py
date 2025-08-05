@@ -1,54 +1,63 @@
+"""
+Django settings - ENV: Production (Render)
+This file is used in a live environment.
+All variables are injected by Render (or GitHub Actions upstream).
+"""
+
 import os
-import sys
 from .base import *
 
+# ==============================================================================
+# Debug (must be disabled in production)
+# ==============================================================================
 
+DEBUG = os.getenv("DEBUG", "False") == "True"
 
+# ==============================================================================
+# Secret key (mandatory for production, no fallback)
+# ==============================================================================
 
-# ------------------------------
-# Environment: production Render
-# ------------------------------
+SECRET_KEY = os.environ["SECRET_KEY"]
 
-DEBUG = os.getenv("DJANGO_DEBUG", "False") == "True"
-
-print("FULL ENV:", dict(os.environ))
-
-SECRET_KEY = os.environ["SECRET_KEY"]  # 🔐 Plus strict
+# ==============================================================================
+# Authorized hosts (mandatory for prod)
+# ==============================================================================
 
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
 if not ALLOWED_HOSTS or ALLOWED_HOSTS == [""]:
     raise Exception("ALLOWED_HOSTS must be set in production.")
 
-# ------------------------------
-# PostgreSQL database (Render)
-# ------------------------------
+# ==============================================================================
+# PostgreSQL database
+# ==============================================================================
 
 DATABASES = {
     "default": {
-        "ENGINE": os.getenv("DJANGO_DB_ENGINE", "django.db.backends.postgresql"),
-        "NAME": os.getenv("DJANGO_DB_NAME", "conversadb"),
-        "USER": os.getenv("DJANGO_DB_USER", "postgres"),
-        "PASSWORD": os.getenv("DJANGO_DB_PASSWORD"),
-        "HOST": os.getenv("DJANGO_DB_HOST"),
-        "PORT": os.getenv("DJANGO_DB_PORT", "5432"),
+        "ENGINE": os.environ["DJANGO_DB_ENGINE"],
+        "NAME": os.environ["DJANGO_DB_NAME"],
+        "USER": os.environ["DJANGO_DB_USER"],
+        "PASSWORD": os.environ["DJANGO_DB_PASSWORD"],
+        "HOST": os.environ["DJANGO_DB_HOST"],
+        "PORT": os.environ["DJANGO_DB_PORT"],
     }
 }
 
-STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "staticfiles"
-
-# ------------------------------
-# WhiteNoise static files handling
-# ------------------------------
+# ==============================================================================
+# Gestion des fichiers statiques via WhiteNoise
+# ==============================================================================
 
 MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
-# ------------------------------
-# Security: headers + HTTPS
-# ------------------------------
+# ==============================================================================
+# Sécurité (headers, cookies, SSL, etc.)
+# ==============================================================================
 
-SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_SECONDS = 31536000  # 1 an
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 
@@ -59,19 +68,13 @@ SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = "DENY"
 
-# ------------------------------
-# Static / Media
-# ------------------------------
+# ==============================================================================
+# Logging (stdout, format structuré)
+# ==============================================================================
 
-STATIC_ROOT = BASE_DIR / "staticfiles"
-MEDIA_ROOT = BASE_DIR / "media"
-
-STATIC_URL = "/static/"
-MEDIA_URL = "/media/"
-
-# ------------------------------
-# Logging
-# ------------------------------
+LOG_LEVEL = os.getenv("DJANGO_LOG_LEVEL", "INFO").upper()
+if LOG_LEVEL not in ("DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"):
+    LOG_LEVEL = "INFO"
 
 LOGGING = {
     "version": 1,
@@ -90,6 +93,25 @@ LOGGING = {
     },
     "root": {
         "handlers": ["console"],
-        "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+        "level": LOG_LEVEL,
     },
 }
+
+
+# ============================================================================== #
+# Sanity check – fail early if critical env vars are missing                    #
+# ============================================================================== #
+
+REQUIRED_VARS = [
+    "SECRET_KEY",
+    "DJANGO_ALLOWED_HOSTS",
+    "DJANGO_DB_NAME",
+    "DJANGO_DB_USER",
+    "DJANGO_DB_PASSWORD",
+    "DJANGO_DB_HOST",
+    "DJANGO_DB_PORT",
+]
+
+for var in REQUIRED_VARS:
+    if not os.getenv(var):
+        raise Exception(f"[CRITICAL] Missing environment variable: {var}")

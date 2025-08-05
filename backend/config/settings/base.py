@@ -1,12 +1,22 @@
+"""
+Django base settings for Conversa project.
+This file is shared by all environments (dev, ci, prod).
+Each environment file (e.g. dev.py) extends this file.
+"""
+
 import os
 import sys
 from pathlib import Path
 
+# ==============================================================================
+# Project basis
+# ==============================================================================
+
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-# ------------------------------
-# Apps Django
-# ------------------------------
+# ==============================================================================
+# Applications Django
+# ==============================================================================
 
 DJANGO_APPS = [
     'django.contrib.admin',
@@ -17,13 +27,19 @@ DJANGO_APPS = [
     'django.contrib.staticfiles',
 ]
 
-PROJECT_APPS = []
+THIRD_PARTY_APPS = [
+    
+]
 
-INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS
+PROJECT_APPS = [
+    
+]
 
-# ------------------------------
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
+
+# ==============================================================================
 # Middleware
-# ------------------------------
+# ==============================================================================
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -35,9 +51,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# ------------------------------
+# ==============================================================================
 # Templating
-# ------------------------------
+# ==============================================================================
 
 ROOT_URLCONF = 'config.urls'
 
@@ -57,37 +73,41 @@ TEMPLATES = [
     },
 ]
 
+# ==============================================================================
+# ASGI/WSGI configuration
+# ==============================================================================
+
 WSGI_APPLICATION = 'config.wsgi.application'
 ASGI_APPLICATION = 'config.asgi.application'
 
-# ------------------------------
-# Internationalisation
-# ------------------------------
+# ==============================================================================
+# Internationalization
+# ==============================================================================
 
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# ------------------------------
-# Static & Media
-# ------------------------------
+# ==============================================================================
+# Static files and media
+# ==============================================================================
 
 STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
-
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# ------------------------------
-# Keys and security (to be defined elsewhere)
-# ------------------------------
+# ==============================================================================
+# Basic safety (overloaded by environments)
+# ==============================================================================
 
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'insecure-default-key')
+SECRET_KEY = os.getenv('SECRET_KEY', 'insecure-default-key')
 ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', 'localhost').split(',')
 
-# ------------------------------
-# Default model key
-# ------------------------------
+# ==============================================================================
+# Default model
+# ==============================================================================
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

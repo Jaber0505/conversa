@@ -1,22 +1,23 @@
-import os
-import sys
+"""
+Django settings – ENV: Continuous Integration (CI)
+Utilisé exclusivement dans les pipelines automatisées (GitHub Actions, etc.)
+Optimisé pour la vitesse d’exécution des tests unitaires.
+"""
 
+import os
 from .base import *
 
+# ==============================================================================
+# CI environment (GitHub Actions, etc.)
+# ==============================================================================
 
-# ------------------------------
-# CI environment (GitHub Actions)
-# ------------------------------
+DEBUG = os.getenv("DEBUG", "False") == "True"
+SECRET_KEY = os.getenv("SECRET_KEY", "ci-secret-key")
+ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "*").split(",")
 
-DEBUG = False
-
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "ci-secret-key")
-
-ALLOWED_HOSTS = ["*"]
-
-# ------------------------------
-# Database in memory (fast)
-# ------------------------------
+# ==============================================================================
+# In-memory database
+# ==============================================================================
 
 DATABASES = {
     "default": {
@@ -25,9 +26,9 @@ DATABASES = {
     }
 }
 
-# ------------------------------
-# Optimization for testing
-# ------------------------------
+# ==============================================================================
+# Optimizations to speed up testing
+# ==============================================================================
 
 PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.MD5PasswordHasher",
@@ -49,4 +50,8 @@ LOGGING = {
     },
 }
 
-STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}

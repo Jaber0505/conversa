@@ -1,28 +1,94 @@
+# ==============================================================================
+# Docker Compose - Local Development Environment (DEV)
+# ------------------------------------------------------------------------------
+# This file defines all the services required for local development:
+# - PostgreSQL database (with persistent volume)
+# - Django backend (automatic reload, dev server)
+# - React frontend (Vite development server or equivalent)
+# - pgAdmin interface to view PostgreSQL database
+#
+# Environment variables: placed in ./env/.env.dev (unversioned)
+# Each service can access them via `env_file`.
+#
+# Recommended launch:
+# docker compose -f docker/compose.dev.yml up --build
+# ==============================================================================
+
 services:
-  backend:
+  db:
+    image: postgres:15
+    restart: always
     env_file:
       - ./env/.env.dev
+    environment:
+      POSTGRES_DB: ${DJANGO_DB_NAME}
+      POSTGRES_USER: ${DJANGO_DB_USER}
+      POSTGRES_PASSWORD: ${DJANGO_DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - conversa
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DJANGO_DB_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  backend:
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.backend
+      args:
+        REQUIREMENTS_FILE: requirements/dev.txt
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000"
     volumes:
       - ../backend:/app
-    command: python manage.py runserver 0.0.0.0:8000
-
-  frontend:
     env_file:
       - ./env/.env.dev
+    environment:
+      ENV_MODE: ${ENV_MODE}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - conversa
+
+  frontend:
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.frontend
+      target: dev
+    ports:
+      - "5173:5173"
     volumes:
       - ../frontend:/app
       - node_modules_frontend:/app/node_modules
-      
-  pgadmin:
-    image: dpage/pgadmin4
     env_file:
       - ./env/.env.dev
-    ports:
-      - "5050:80"
-    depends_on:
-      - db
     networks:
       - conversa
+
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - "5050:80"
+    env_file:
+      - ./env/.env.dev
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@conversa.local
-      PGADMIN_DEFAULT_PASSWORD: changeme
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - conversa
+
+volumes:
+  postgres_data:
+  node_modules_frontend:
+
+networks:
+  conversa:

@@ -1,84 +1,128 @@
-name: CI/CD (Build → Test → Deploy)
+name: CI/CD Pipeline - Conversa
 
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_PREFIX: ${{ env.REGISTRY }}/${{ github.repository }}
+  VERSION: ${{ github.sha }}
 
 jobs:
-  build:
-    name: Build & Push Docker Images (GHCR)
+  test:
     runs-on: ubuntu-latest
 
-    permissions:
-      packages: write
-      contents: read
+    steps:
+      - name: 🛎 Checkout code
+        uses: actions/checkout@v3
 
-    env:
-      DJANGO_DB_PASSWORD: ${{ secrets.DJANGO_DB_PASSWORD }}
-      POSTGRES_PASSWORD: ${{ secrets.DJANGO_DB_PASSWORD }}
+      - name: 🐍 Setup Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: 💾 Cache pip packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('backend/requirements/ci.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: 📦 Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements/ci.txt
+
+      - name: 🔍 Verify database migrations
+        run: python backend/manage.py makemigrations --check --dry-run
+
+      - name: 🧹 Install lint tools
+        run: pip install ruff
+
+      - name: 🧽 Run linter on backend
+        run: ruff backend
+
+      - name: 🧪 Run tests with coverage
+        working-directory: backend
+        run: pytest --cov=. --cov-report=term --cov-report=xml
+
+      - name: 📤 Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: backend/coverage.xml
+          fail_ci_if_error: true
+
+  build-and-push:
+    runs-on: ubuntu-latest
+    needs: test
+
+    permissions:
+      contents: read
+      packages: write
 
     steps:
-      - name: ⬇️ Checkout code
-        uses: actions/checkout@v4
+      - name: 🛎 Checkout code
+        uses: actions/checkout@v3
 
-      - name: 🏷️ Set lowercase image prefix
-        id: meta
-        run: echo "IMAGE_PREFIX=ghcr.io/${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
+      - name: ⚙️ Setup Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-      - name: 🔐 Log in to GHCR
-        uses: docker/login-action@v3
+      - name: 💾 Cache Docker layers
+        uses: actions/cache@v3
         with:
-          registry: ghcr.io
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: 🔐 Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 🐳 Build & Push Backend image
+      - name: 🐳 Build and push backend image
         run: |
-          docker build -t $IMAGE_PREFIX-backend:latest -f docker/Dockerfile.backend .
-          docker push $IMAGE_PREFIX-backend:latest
+          docker build \
+            --build-arg REQUIREMENTS_FILE=requirements/prod.txt \
+            --target final \
+            -t ${{ env.IMAGE_PREFIX }}-backend:latest \
+            -t ${{ env.IMAGE_PREFIX }}-backend:${{ env.VERSION }} \
+            -f docker/Dockerfile.backend .
+          docker push ${{ env.IMAGE_PREFIX }}-backend:latest
+          docker push ${{ env.IMAGE_PREFIX }}-backend:${{ env.VERSION }}
 
-      - name: 🐳 Build & Push Frontend image
+      - name: 🐳 Build and push frontend image
         run: |
-          docker build -t $IMAGE_PREFIX-frontend:latest -f docker/Dockerfile.frontend --target build .
-          docker push $IMAGE_PREFIX-frontend:latest
+          docker build \
+            --target prod \
+            -t ${{ env.IMAGE_PREFIX }}-frontend:latest \
+            -t ${{ env.IMAGE_PREFIX }}-frontend:${{ env.VERSION }} \
+            -f docker/Dockerfile.frontend .
+          docker push ${{ env.IMAGE_PREFIX }}-frontend:latest
+          docker push ${{ env.IMAGE_PREFIX }}-frontend:${{ env.VERSION }}
 
-  test:
-    name: 🧪 Run Django Tests via Docker Compose
-    runs-on: ubuntu-latest
-    needs: build
-
-    env:
-      DJANGO_DB_PASSWORD: ${{ secrets.DJANGO_DB_PASSWORD }}
-      POSTGRES_PASSWORD: ${{ secrets.DJANGO_DB_PASSWORD }}
-
-    steps:
-      - name: ⬇️ Checkout code
-        uses: actions/checkout@v4
-
-      - name: ⚙️ Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: 🧪 Run tests with Docker Compose
-        run: |
-          docker compose -f docker/compose.base.yml -f docker/compose.ci.yml up --build --exit-code-from backend
-
-      - name: 🧹 Cleanup Docker containers
+      - name: 🧹 Clean up Docker images (optional)
         if: always()
-        run: docker compose -f docker/compose.base.yml -f docker/compose.ci.yml down --volumes
+        run: docker image prune -f
 
   deploy:
-    name: 🚀 Deploy to Render
     runs-on: ubuntu-latest
-    needs: test
-    if: success()
+    needs: build-and-push
+    if: ${{ needs.test.result == 'success' && needs.build-and-push.result == 'success' }}
 
     steps:
-      - name: 🛡️ Check Render Hook URL
-        run: |
-          if [ -z "${{ secrets.RENDER_DEPLOY_HOOK_URL }}" ]; then
-            echo "Missing RENDER_DEPLOY_HOOK_URL secret"
-            exit 1
-          fi
-
-      - name: 🚀 Trigger Render Deploy Hook
-        run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+      - name: 🚀 Trigger Render deployment
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fetch = require('node-fetch');
+            await fetch(process.env.RENDER_DEPLOY_HOOK_URL, { method: 'POST' });
+        env:
+          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}

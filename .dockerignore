@@ -1,0 +1,29 @@
+# Ignorer les environnements et caches
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.pytest_cache/
+venv/
+htmlcov/
+.coverage
+
+# Ne pas inclure les fichiers d'environnement
+.env
+.env.*
+*.env
+
+# Dossiers non nécessaires à l’image en build
+docker/
+frontend/
+pgadmin/
+tests/
+
+# Logs ou fichiers temporaires
+*.log
+*.db
+*.sqlite3
+
+# Fichiers d'éditeur
+.vscode/
+.idea/
+*.swp

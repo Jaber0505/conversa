@@ -1,24 +1,31 @@
-import os
-import sys
+"""
+Django settings - ENV: Development
+Used for local development.
+Variables are loaded from `.env.dev` via python-dotenv.
+"""
 
+import os
 from .base import *
 from dotenv import load_dotenv
 
-# ------------------------------
-# Environment DEV
-# ------------------------------
+# ============================================================================== #
+# Load local .env.dev file (unversioned, for dev only)
+# ============================================================================== #
 
 load_dotenv()
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.dev")
 
-DEBUG = os.getenv("DJANGO_DEBUG", "True") == "True"
+# ============================================================================== #
+# Debug & security keys
+# ============================================================================== #
 
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-secret-key")
-
+DEBUG = os.getenv("DEBUG", "True") == "True"
+SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key")
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
-# ------------------------------
-# Local database
-# ------------------------------
+# ============================================================================== #
+# Local PostgreSQL database
+# ============================================================================== #
 
 DATABASES = {
     "default": {
@@ -31,14 +38,11 @@ DATABASES = {
     }
 }
 
-# ------------------------------
-# Debug toolbar (optionnel)
-# ------------------------------
+# ============================================================================== #
+# Optional: dev-only extensions (e.g. debug toolbar)
+# ============================================================================== #
 
 if os.getenv("USE_DEBUG_TOOLBAR", "False") == "True":
     INSTALLED_APPS += ["debug_toolbar"]
     MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")
-
-    INTERNAL_IPS = [
-        "127.0.0.1",
-    ]
+    INTERNAL_IPS = ["127.0.0.1"]

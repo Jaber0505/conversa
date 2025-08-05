@@ -1,19 +1,59 @@
+# ==============================================================================
+# Dockerfile – Frontend React + Vite – Multi-stage build
+# ==============================================================================
+
+# -------------------------
+# Étape 1 : Base Node.js
+# -------------------------
 FROM node:20-alpine AS base
+
 WORKDIR /app
+
+# Copier uniquement package.json et package-lock.json pour optimiser le cache Docker
 COPY frontend/package.json frontend/package-lock.json ./
+
+# Installer les dépendances avec npm ci (fiable et rapide)
 RUN npm ci
 
+# -------------------------
+# Étape 2 : Développement
+# -------------------------
 FROM base AS dev
+
+# Copier tout le code frontend
 COPY frontend/ ./
+
+# Installer les dépendances optionnelles spécifiques à Alpine (rollup)
 RUN npm install --optional @rollup/rollup-linux-x64-musl || true
+
+# Lancer le serveur de dev Vite (écoute sur 5173 par défaut)
 CMD ["npm", "run", "dev"]
 
+# -------------------------
+# Étape 3 : Build production
+# -------------------------
 FROM base AS build
+
+# Copier tout le code frontend
 COPY frontend/ ./
+
+# Compiler le frontend en production
 RUN npm run build
 
+# -------------------------
+# Étape 4 : Serveur Nginx pour servir les fichiers statiques
+# -------------------------
 FROM nginx:alpine AS prod
+
+# Supprimer le contenu par défaut de Nginx
 RUN rm -rf /usr/share/nginx/html/*
+
+# Copier les fichiers buildés depuis l’étape build
 COPY --from=build /app/dist /usr/share/nginx/html
+COPY docker/nginx/nginx.conf /etc/nginx/nginx.conf
+
+# Exposer le port 80
 EXPOSE 80
+
+# Lancer Nginx au premier plan
 CMD ["nginx", "-g", "daemon off;"]
