@@ -43,7 +43,7 @@ jobs:
         run: pip install ruff
 
       - name: 🧽 Run linter on backend
-        run: ruff backend
+        run: ruff check backend
 
       - name: 🧪 Run tests with coverage
         working-directory: backend
