@@ -27,7 +27,7 @@ COPY backend /app
 # Copier les scripts d'entrée
 COPY docker/entrypoints/entrypoint.prod.sh /entrypoint.prod.sh
 COPY docker/entrypoints/entrypoint.ci.sh /entrypoint.ci.sh
-COPY docker/entrypoints/entrypoint.dynamic.sh /entrypoint.sh
+COPY docker/entrypoints/entrypoint.sh /entrypoint.sh
 
 # Donner les droits d'exécution
 RUN chmod +x /entrypoint.prod.sh /entrypoint.ci.sh /entrypoint.sh
