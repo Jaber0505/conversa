@@ -19,7 +19,6 @@ docker/
 !docker/entrypoints/entrypoint.ci.sh
 !docker/entrypoints/entrypoint.sh
 !docker/nginx.conf
-frontend/
 pgadmin/
 tests/
 
