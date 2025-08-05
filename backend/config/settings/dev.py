@@ -29,7 +29,7 @@ ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split("
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
+        "ENGINE": os.getenv("DJANGO_DB_ENGINE", "django.db.backends.postgresql"),
         "NAME": os.getenv("DJANGO_DB_NAME", "conversadb"),
         "USER": os.getenv("DJANGO_DB_USER", "postgres"),
         "PASSWORD": os.getenv("DJANGO_DB_PASSWORD", "postgres"),

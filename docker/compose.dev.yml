@@ -20,16 +20,12 @@ services:
     restart: always
     env_file:
       - ./env/.env.dev
-    environment:
-      POSTGRES_DB: ${DJANGO_DB_NAME}
-      POSTGRES_USER: ${DJANGO_DB_USER}
-      POSTGRES_PASSWORD: ${DJANGO_DB_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - conversa
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DJANGO_DB_USER}"]
+      test: ["CMD-SHELL", "pg_isready -U conversa_user"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -48,8 +44,6 @@ services:
       - ../backend:/app
     env_file:
       - ./env/.env.dev
-    environment:
-      ENV_MODE: ${ENV_MODE}
     depends_on:
       db:
         condition: service_healthy
@@ -77,9 +71,6 @@ services:
       - "5050:80"
     env_file:
       - ./env/.env.dev
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
     depends_on:
       db:
         condition: service_healthy

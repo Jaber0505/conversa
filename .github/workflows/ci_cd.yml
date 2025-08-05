@@ -38,6 +38,9 @@ jobs:
       - name: 🔍 Verify database migrations
         run: python backend/manage.py makemigrations --check --dry-run
 
+      - name: 🚧 Run migration dry-run (plan only)
+        run: python backend/manage.py migrate --plan --database=default
+
       - name: 🧹 Install lint tools
         run: pip install ruff
 
