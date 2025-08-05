@@ -105,6 +105,16 @@ jobs:
         run: |
           python manage.py migrate --noinput
 
+      - name: 🔬 Liste des migrations appliquées
+        working-directory: backend
+        run: |
+          python manage.py showmigrations
+
+      - name: 🧾 Liste des tables après migration
+        working-directory: backend
+        run: |
+          python manage.py dbshell -c "\dt"
+
       - name: 👑 Create superuser if missing
         working-directory: backend
         run: |
