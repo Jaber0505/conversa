@@ -12,7 +12,8 @@ jobs:
     env:
       REGISTRY: ghcr.io
       VERSION: ${{ github.sha }}
-
+      DJANGO_SETTINGS_MODULE: config.settings.ci
+      
     steps:
       - name: 🛎 Checkout code
         uses: actions/checkout@v3
