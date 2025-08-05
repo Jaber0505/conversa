@@ -124,7 +124,6 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const fetch = require('node-fetch');
             await fetch(process.env.RENDER_DEPLOY_HOOK_URL, { method: 'POST' });
         env:
           RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
