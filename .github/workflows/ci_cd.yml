@@ -139,7 +139,7 @@ jobs:
 
       - name: 🗃️ Upload DB logs if failed
         if: failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: db-tables-log
           path: backend/tables.log
