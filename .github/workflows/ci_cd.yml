@@ -141,9 +141,9 @@ jobs:
                 email=os.getenv('DJANGO_SU_EMAIL'),
                 password=os.getenv('DJANGO_SU_PASSWORD')
             )
-              print('✅ Superuser created.')
+            print('✅ Superuser created.')
           else:
-              print('ℹ️ Superuser already exists.')" | python manage.py shell
+            print('ℹ️ Superuser already exists.')" | python manage.py shell
 
   build-push:
     name: Build and Push
