@@ -66,6 +66,7 @@ secrets.*
 # ============================
 .DS_Store
 Thumbs.db
+.ruff_cache
 
 # ============================
 # Docker (temp files)
