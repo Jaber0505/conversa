@@ -163,6 +163,8 @@ ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost").split(",")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+AUTH_USER_MODEL = "users.User"
+
 # ==============================================================================
 # 📤 Export des variables importantes (pour __init__.py)
 # ==============================================================================
