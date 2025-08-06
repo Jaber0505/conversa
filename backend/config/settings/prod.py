@@ -13,6 +13,9 @@ from .base import *
 
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
+if DEBUG:
+    raise Exception("[SECURITY] DEBUG must be False in production.")
+
 # ==============================================================================
 # Secret key (mandatory for production, no fallback)
 # ==============================================================================
@@ -66,6 +69,7 @@ SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 X_FRAME_OPTIONS = "DENY"
 
 # ==============================================================================
@@ -97,6 +101,11 @@ LOGGING = {
     },
 }
 
+DEFAULT_RESPONSE_HEADERS = {
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "X-Conversa-Version": "1.0.0",
+}
 
 # ============================================================================== #
 # Sanity check – fail early if critical env vars are missing                    #

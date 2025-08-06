@@ -1,7 +1,4 @@
 -r base.txt
-Django>=5.2,<6.0
-psycopg-binary
+
+# Serveur WSGI
 gunicorn
-django-environ
-djangorestframework
-drf-spectacular
