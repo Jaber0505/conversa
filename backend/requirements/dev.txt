@@ -10,3 +10,4 @@ django-debug-toolbar
 django-extensions
 python-dotenv
 gunicorn
+ruff>=0.4.0

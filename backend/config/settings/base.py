@@ -5,7 +5,6 @@ Each environment file (e.g. dev.py) extends this file.
 """
 
 import os
-import sys
 from pathlib import Path
 
 # ==============================================================================

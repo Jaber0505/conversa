@@ -1,5 +1,4 @@
 import os
-import sys
 import subprocess
 import importlib
 import unittest
@@ -8,7 +7,6 @@ from django.test import SimpleTestCase, override_settings
 from django.urls import reverse, resolve, get_resolver
 from django.conf import settings
 from django.conf.urls.static import static
-from unittest import mock
 
 class ProdSettingsEdgeCaseTests(unittest.TestCase):
     def test_prod_settings_without_log_level(self):
