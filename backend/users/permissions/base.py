@@ -30,3 +30,11 @@ class IsAdminOrReadOnly(BasePermission):
         if request.method in SAFE_METHODS:
             return True
         return request.user and request.user.is_staff
+
+class IsAuthenticatedAndActive(BasePermission):
+    """
+    Autorise uniquement les utilisateurs authentifiés **et actifs** (is_active=True).
+    """
+    def has_permission(self, request, view):
+        user = request.user
+        return bool(user and user.is_authenticated and user.is_active)

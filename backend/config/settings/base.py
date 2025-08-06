@@ -56,6 +56,9 @@ REST_FRAMEWORK = {
         'user': '1000/day',
         'anon': '100/day',
     }
+    'DEFAULT_PERMISSION_CLASSES': [
+        'users.permissions.base.IsAuthenticatedAndActive',
+    ],
 }
 
 # ==============================================================================

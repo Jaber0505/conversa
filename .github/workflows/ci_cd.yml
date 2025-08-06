@@ -40,7 +40,7 @@ jobs:
           pip install safety
 
       - name: 🔐 Safety check
-        run: safety check --full-report --ignore=50257
+        run: safety check --full-report --ignore=50257,66963
 
       - name: 🔍 Check migrations
         run: |

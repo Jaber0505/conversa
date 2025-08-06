@@ -4,4 +4,5 @@ __all__ = [
     "IsSelf",
     "IsSelfOrReadOnly",
     "IsAdminOrReadOnly",
+    "IsAuthenticatedAndActive",
 ]

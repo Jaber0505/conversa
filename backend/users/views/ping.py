@@ -1,9 +1,9 @@
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
 from drf_spectacular.utils import extend_schema
+from users.permissions.base import IsAuthenticatedAndActive
 
 
 @extend_schema(
@@ -14,7 +14,7 @@ from drf_spectacular.utils import extend_schema
     responses={200: None, 401: None}
 )
 class PingAuthView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedAndActive]
 
     def head(self, request):
         return Response(status=status.HTTP_200_OK)

@@ -1,18 +1,16 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 
 from users.serializers import UserMeSerializer, UserMeUpdateSerializer
-from users.permissions.base import IsSelf
+from users.permissions.base import IsSelf, IsAuthenticatedAndActive
 from drf_spectacular.utils import extend_schema, OpenApiResponse
-
 
 @extend_schema(
     summary="Consulter, modifier ou supprimer son propre profil",
     description=(
         "Permet à l'utilisateur connecté de consulter (`GET`), modifier (`PATCH`) ou supprimer (`DELETE`) son propre profil. "
-        "L'accès est strictement limité à l'utilisateur lui-même grâce à la permission `IsSelf`."
+        "L'accès est strictement limité à l'utilisateur lui-même grâce aux permissions `IsAuthenticatedAndActive` et `IsSelf`."
     ),
     tags=["Utilisateurs"],
     responses={
@@ -23,7 +21,7 @@ from drf_spectacular.utils import extend_schema, OpenApiResponse
     },
 )
 class MeView(APIView):
-    permission_classes = [IsAuthenticated, IsSelf]
+    permission_classes = [IsAuthenticatedAndActive, IsSelf]
 
     def get(self, request):
         self.check_object_permissions(request, request.user)

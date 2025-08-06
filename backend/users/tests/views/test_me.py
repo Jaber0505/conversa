@@ -1,5 +1,14 @@
 import pytest
+from django.contrib.auth import get_user_model
+from rest_framework import status
 
+@pytest.mark.django_db
+def test_me_view_blocks_inactive_user(auth_client, user):
+    user.is_active = False
+    user.save()
+
+    response = auth_client.get("/api/me/")
+    assert response.status_code == status.HTTP_403_FORBIDDEN
 
 @pytest.mark.django_db
 def test_get_me(auth_client):
