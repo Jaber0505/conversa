@@ -147,22 +147,23 @@ jobs:
       - name: 👑 Create superuser if missing
         working-directory: backend
         run: |
+          echo "👑 Creating superuser if it doesn't exist..."
           python manage.py shell <<EOF
-            from django.contrib.auth import get_user_model
-            import os
+          from django.contrib.auth import get_user_model
+          import os
 
-            User = get_user_model()
-            username = os.getenv("DJANGO_SU_NAME")
-            email = os.getenv("DJANGO_SU_EMAIL")
-            password = os.getenv("DJANGO_SU_PASSWORD")
+          User = get_user_model()
+          username = os.getenv("DJANGO_SU_NAME")
+          email = os.getenv("DJANGO_SU_EMAIL")
+          password = os.getenv("DJANGO_SU_PASSWORD")
 
-            if not all([username, email, password]):
-                print("❌ Missing environment variables for superuser. Skipping.")
-            elif not User.objects.filter(email=email).exists():
-                User.objects.create_superuser(username=username, email=email, password=password)
-                print(f"✅ Superuser created: {email}")
-            else:
-                print(f"ℹ️ Superuser already exists: {email}")
+          if not all([username, email, password]):
+              print("❌ Missing environment variables for superuser. Skipping.")
+          elif not User.objects.filter(email=email).exists():
+              User.objects.create_superuser(username=username, email=email, password=password)
+              print(f"✅ Superuser created: {email}")
+          else:
+              print(f"ℹ️ Superuser already exists: {email}")
           EOF
 
   build-push:
