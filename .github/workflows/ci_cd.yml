@@ -56,6 +56,11 @@ jobs:
       - name: 🧹 Lint
         run: ruff check backend --output-format github
 
+      - name: 🧹 Clean Python caches
+        run: |
+          find . -type d -name "__pycache__" -exec rm -rf {} +
+          find . -type f -name "*.pyc" -delete
+
       - name: 🧪 Run tests
         working-directory: backend
         run: |
