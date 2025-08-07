@@ -1,7 +1,6 @@
 import pytest
 from django.urls import reverse
 from rest_framework import status
-from rest_framework_simplejwt.tokens import RefreshToken
 
 
 @pytest.mark.django_db
@@ -55,8 +54,10 @@ def test_token_refresh(api_client, user):
     payload = {"email": user.email, "password": "MotDePasse123"}
     response = api_client.post(login_url, payload)
 
-    refresh_token = response.data["refresh"]
+    assert response.status_code == 200
+    assert "refresh" in response.data
 
+    refresh_token = response.data["refresh"]
     refresh_url = reverse("token_refresh")
     response = api_client.post(refresh_url, {"refresh": refresh_token})
 
@@ -94,6 +95,10 @@ def test_logout_success(api_client, user):
     login_url = reverse("token_obtain_pair")
     payload = {"email": user.email, "password": "MotDePasse123"}
     login_response = api_client.post(login_url, payload)
+
+    assert login_response.status_code == 200
+    assert "access" in login_response.data
+    assert "refresh" in login_response.data
 
     refresh_token = login_response.data["refresh"]
     access_token = login_response.data["access"]

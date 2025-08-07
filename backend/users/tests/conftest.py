@@ -22,14 +22,17 @@ def user_data():
 
 @pytest.fixture
 def user(db, user_data):
-    """Crée un utilisateur actif avec mot de passe valide."""
-    return User.objects.create_user(**user_data)
+    """Crée un utilisateur actif avec mot de passe correctement hashé."""
+    user = User(**user_data)
+    user.set_password(user_data["password"])
+    user.save()
+    return user
 
 
 @pytest.fixture
 def superuser(db):
-    """Crée un superutilisateur."""
-    return User.objects.create_superuser(
+    """Crée un superutilisateur avec mot de passe sécurisé."""
+    superuser = User.objects.create_superuser(
         email="admin@example.com",
         password="Admin1234!",
         first_name="Admin",
@@ -38,6 +41,9 @@ def superuser(db):
         language_native="fr",
         consent_given=True,
     )
+    superuser.set_password("Admin1234!")  # sécurité
+    superuser.save()
+    return superuser
 
 
 @pytest.fixture
@@ -54,9 +60,12 @@ def auth_client(user):
         "email": user.email,
         "password": "MotDePasse123"
     }, format="json")
+
+    assert response.status_code == 200, f"Login failed: {response.status_code} - {response.content}"
+    assert "access" in response.data, f"Response missing 'access': {response.data}"
+
     token = response.data["access"]
     client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
-    assert response.status_code == 200, f"Login failed: {response.status_code} - {response.content}"
     return client
 
 
@@ -68,7 +77,10 @@ def superuser_client(superuser):
         "email": superuser.email,
         "password": "Admin1234!"
     }, format="json")
+
+    assert response.status_code == 200, f"Login failed: {response.status_code} - {response.content}"
+    assert "access" in response.data, f"Response missing 'access': {response.data}"
+
     token = response.data["access"]
     client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
-    assert response.status_code == 200, f"Login failed: {response.status_code} - {response.content}"
     return client

@@ -27,7 +27,7 @@ def test_register_serializer_valid_data():
     assert user.language_native == payload["language_native"]
     assert user.languages_spoken == payload["languages_spoken"]
     assert user.first_name == payload["first_name"]
-    assert user.birth_date is not None  # Vérifie que birth_date a bien été généré
+    assert user.birth_date is not None
 
 
 @pytest.mark.django_db
@@ -88,6 +88,7 @@ def test_register_serializer_invalid_languages_spoken_format():
     assert not serializer.is_valid()
     assert "languages_spoken" in serializer.errors
 
+
 @pytest.mark.django_db
 def test_register_serializer_languages_spoken_empty_list():
     """Vérifie qu’une liste vide pour languages_spoken est acceptée."""
@@ -108,3 +109,41 @@ def test_register_serializer_languages_spoken_empty_list():
     user = serializer.save()
 
     assert user.languages_spoken == []
+
+
+@pytest.mark.django_db
+def test_register_serializer_duplicate_email(user):
+    """Vérifie qu’un email déjà utilisé est rejeté."""
+    payload = {
+        "email": user.email,
+        "password": "MotDePasse123",
+        "first_name": "Anna",
+        "last_name": "Martin",
+        "age": 22,
+        "language_native": "fr",
+        "languages_spoken": ["en"],
+        "bio": "",
+        "consent_given": True,
+    }
+    serializer = RegisterSerializer(data=payload)
+    assert not serializer.is_valid()
+    assert "email" in serializer.errors
+
+
+@pytest.mark.django_db
+def test_register_serializer_missing_consent_field():
+    """Vérifie que le champ consent_given est requis."""
+    payload = {
+        "email": "no_consent@example.com",
+        "password": "MotDePasse123",
+        "first_name": "Laura",
+        "last_name": "Durand",
+        "age": 20,
+        "language_native": "fr",
+        "languages_spoken": ["en"],
+        "bio": "",
+        # consent_given manquant
+    }
+    serializer = RegisterSerializer(data=payload)
+    assert not serializer.is_valid()
+    assert "consent_given" in serializer.errors

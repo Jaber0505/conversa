@@ -1,9 +1,21 @@
 import pytest
+from django.test import override_settings
 from django.urls import reverse
 from rest_framework import status
 
+
+@override_settings(
+    REST_FRAMEWORK={
+        "DEFAULT_THROTTLE_CLASSES": [
+            "rest_framework.throttling.SimpleRateThrottle",
+        ],
+        "DEFAULT_THROTTLE_RATES": {
+            "reset_password": "5/min",
+        },
+    }
+)
 @pytest.mark.django_db
-def test_password_reset_throttling_exceeded(api_client, settings):
+def test_password_reset_throttling_exceeded(api_client):
     url = reverse("reset-password")
     email = {"email": "spam@example.com"}
 

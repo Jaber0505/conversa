@@ -4,13 +4,12 @@ from django.utils import timezone
 
 from users.serializers.public import PublicUserSerializer
 
-
 @pytest.mark.django_db
 def test_public_user_serializer_outputs_expected_fields(user):
     """Vérifie que tous les champs attendus sont bien présents et correctement formatés."""
 
-    # Simule un utilisateur de 30 ans
-    birth_date = timezone.now().date() - timedelta(days=365 * 30)
+    today = timezone.now().date()
+    birth_date = today.replace(year=today.year - 30)
     user.birth_date = birth_date
     user.bio = "Passionné de découvertes culturelles"
     user.language_native = "fr"
@@ -39,7 +38,6 @@ def test_public_user_serializer_outputs_expected_fields(user):
     assert "en" in data["languages_spoken"]
     assert data["bio"] == "Passionné de découvertes culturelles"
 
-
 @pytest.mark.django_db
 def test_public_user_serializer_allows_blank_bio(user):
     """Vérifie que le champ bio peut être vide sans déclencher d’erreur."""
@@ -53,3 +51,14 @@ def test_public_user_serializer_allows_blank_bio(user):
 
     assert data["bio"] == ""
     assert isinstance(data["languages_spoken"], list)
+
+@pytest.mark.django_db
+def test_public_user_serializer_languages_spoken_can_be_empty(user):
+    user.languages_spoken = []
+    user.birth_date = timezone.now().date().replace(year=timezone.now().year - 28)
+    user.save()
+
+    serializer = PublicUserSerializer(user)
+    data = serializer.data
+
+    assert data["languages_spoken"] == []
