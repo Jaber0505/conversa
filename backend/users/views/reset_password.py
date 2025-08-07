@@ -20,10 +20,6 @@ User = get_user_model()
     description="""
         Permet à un utilisateur de demander un lien de réinitialisation de mot de passe.
 
-        Pour des raisons de sécurité et de respect du RGPD, la réponse reste **générique**, que l’email soit valide ou non.
-
-        Si l’adresse est enregistrée, un email contenant un lien sécurisé (`uid` + `token`) est envoyé.
-
         Cette route est **limitée à 5 tentatives par heure** par IP pour éviter les abus.
     """,
     request={
