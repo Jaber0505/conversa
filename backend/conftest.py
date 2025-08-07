@@ -1,9 +1,6 @@
 import pytest
-from django.contrib.auth import get_user_model
 from rest_framework.test import APIClient
-
-User = get_user_model()
-
+from django.contrib.auth import get_user_model
 
 @pytest.fixture
 def user_data():
@@ -14,16 +11,14 @@ def user_data():
         "last_name": "Doe",
     }
 
-
 @pytest.fixture
 def user(db, user_data):
+    User = get_user_model()
     return User.objects.create_user(**user_data)
-
 
 @pytest.fixture
 def client():
     return APIClient()
-
 
 @pytest.fixture
 def auth_client(client, user, user_data):
