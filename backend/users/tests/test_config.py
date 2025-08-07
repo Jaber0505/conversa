@@ -2,7 +2,6 @@ import os
 import subprocess
 import importlib
 import unittest
-import datetime
 
 from django.test import SimpleTestCase, override_settings
 from django.urls import reverse, resolve, get_resolver
