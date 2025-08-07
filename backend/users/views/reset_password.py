@@ -45,7 +45,8 @@ User = get_user_model()
             "content": {
                 "application/json": {
                     "example": {
-                        "detail": "Si cette adresse est enregistrée, un lien de réinitialisation a été envoyé par email."
+                        "detail": "Si cette adresse est enregistrée, un lien de réinitialisation "
+                        "a été envoyé par email."
                     }
                 }
             }
@@ -75,7 +76,10 @@ class RequestPasswordResetView(APIView):
             uid = urlsafe_base64_encode(force_bytes(user.pk))
             token = default_token_generator.make_token(user)
 
-            reset_link = f"{request.build_absolute_uri('/')}reset-password/confirm/?uid={uid}&token={token}"
+            reset_link = (
+                f"{request.build_absolute_uri('/')}"
+                f"reset-password/confirm/?uid={uid}&token={token}"
+            )
 
             send_mail(
                 subject="Réinitialisation de votre mot de passe",
@@ -119,7 +123,12 @@ class RequestPasswordResetView(APIView):
             "description": "Mot de passe réinitialisé avec succès.",
             "content": {
                 "application/json": {
-                    "example": {"detail": "Votre mot de passe a été mis à jour. Vous pouvez désormais vous connecter avec votre nouveau mot de passe."}
+                    "example": {
+                        "detail": (
+                            "Votre mot de passe a été mis à jour." 
+                            "Vous pouvez désormais vous connecter avec votre nouveau mot de passe."
+                        )
+                    }
                 }
             }
         },
@@ -156,12 +165,21 @@ class ConfirmPasswordResetView(APIView):
             return Response({"detail": "Token invalide ou expiré."}, status=400)
 
         if len(new_password) < 8:
-            return Response({"detail": "Le mot de passe doit contenir au moins 8 caractères."}, status=400)
+            return Response(
+                {"detail": "Le mot de passe doit contenir au moins 8 caractères."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         user.set_password(new_password)
         user.save()
 
         return Response(
-            {"detail": "Votre mot de passe a été mis à jour. Vous pouvez désormais vous connecter avec votre nouveau mot de passe."},
-            status=200
+            {
+                "detail": (
+                    "Votre mot de passe a été mis à jour. "
+                    "Vous pouvez désormais vous connecter avec votre nouveau mot de passe."
+                )
+            },
+            status=status.HTTP_200_OK
         )
+
