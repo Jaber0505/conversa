@@ -31,7 +31,12 @@ DATABASES = {
 # ==============================================================================
 
 REST_FRAMEWORK["DEFAULT_THROTTLE_CLASSES"] = []
-REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"] = {}
+REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"] = {
+    "user": "100/min",
+    "anon": "10/min",
+    "login": "5/min",
+    "reset_password": "5/hour",
+}
 
 PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.MD5PasswordHasher",

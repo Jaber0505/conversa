@@ -27,7 +27,6 @@ class ProdSettingsEdgeCaseTests(unittest.TestCase):
 
 
 class UrlsStaticDebugTests(SimpleTestCase):
-    @override_settings(DEBUG=True)
     def test_static_urls_included_when_debug(self):
         resolver = get_resolver()
         patterns = [pattern.pattern.regex.pattern for pattern in resolver.url_patterns]
@@ -113,7 +112,6 @@ class UrlsFullCoverageTests(SimpleTestCase):
         url = reverse('admin:index')
         self.assertEqual(resolve(url).view_name, 'admin:index')
 
-    @override_settings(DEBUG=True)
     def test_static_and_media_urls(self):
         try:
             patterns = static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

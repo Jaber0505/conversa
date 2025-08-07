@@ -4,19 +4,6 @@ from rest_framework import status
 from django.test import override_settings
 
 
-@override_settings(
-    REST_FRAMEWORK={
-        "DEFAULT_THROTTLE_CLASSES": [
-            "rest_framework.throttling.UserRateThrottle",
-            "rest_framework.throttling.AnonRateThrottle",
-        ],
-        "DEFAULT_THROTTLE_RATES": {
-            "user": "100/min",
-            "anon": "10/min",
-            "login": "3/seconds",
-        },
-    }
-)
 @pytest.mark.django_db
 def test_login_throttle_exceeded(api_client, user):
     url = reverse("token_obtain_pair")

@@ -63,7 +63,9 @@ class UserMeSerializer(serializers.ModelSerializer):
             "export": reverse("user-export", request=request),
         }
 
+
 class UserMeUpdateSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(read_only=True, help_text="Adresse e-mail (non modifiable).")
     first_name = serializers.CharField(help_text="Prénom à afficher dans le profil.")
     last_name = serializers.CharField(help_text="Nom à afficher dans le profil.")
     bio = serializers.CharField(
@@ -75,7 +77,11 @@ class UserMeUpdateSerializer(serializers.ModelSerializer):
         child=serializers.CharField(),
         help_text="Liste mise à jour des langues parlées par l’utilisateur."
     )
+    is_profile_public = serializers.BooleanField(help_text="Indique si le profil est visible publiquement.")
 
     class Meta:
         model = User
-        fields = ["first_name", "last_name", "bio", "languages_spoken"]
+        fields = [
+            "email", "first_name", "last_name",
+            "bio", "languages_spoken", "is_profile_public"
+        ]

@@ -11,7 +11,7 @@ from .base import *
 # Debug (must be disabled in production)
 # ==============================================================================
 
-DEBUG = os.getenv("DEBUG", "False").lower() == "true"
+DEBUG = os.getenv("DEBUG", "").lower() in ("true", "1", "yes")
 
 if DEBUG:
     raise Exception("[SECURITY] DEBUG must be False in production.")
@@ -28,7 +28,7 @@ SECRET_KEY = os.environ["SECRET_KEY"]
 
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
 if not any(ALLOWED_HOSTS):
-    raise Exception("[SECURITY] ALLOWED_HOSTS must not be empty in production.")
+    raise Exception("ALLOWED_HOSTS must be set")
 
 # ==============================================================================
 # PostgreSQL database

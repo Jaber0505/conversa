@@ -1,9 +1,26 @@
 import pytest
+import datetime
 from django.utils import timezone
 from rest_framework.test import APIClient
 from users.models import User
-import datetime
 
+# =============================================================================
+# Throttling global pour tous les tests (login, reset_password, etc.)
+# =============================================================================
+
+@pytest.fixture(autouse=True, scope="function")
+def global_throttle_override(settings):
+    settings.REST_FRAMEWORK["DEFAULT_THROTTLE_CLASSES"] = [
+        "rest_framework.throttling.SimpleRateThrottle",
+    ]
+    settings.REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"] = {
+        "login": "10/minute",
+        "reset_password": "10/minute",
+    }
+
+# =============================================================================
+# Utilisateurs & clients API
+# =============================================================================
 
 @pytest.fixture
 def user_data():
@@ -22,7 +39,6 @@ def user_data():
 
 @pytest.fixture
 def user(db, user_data):
-    """Crée un utilisateur actif avec mot de passe correctement hashé."""
     user = User(**user_data)
     user.set_password(user_data["password"])
     user.save()
@@ -31,7 +47,6 @@ def user(db, user_data):
 
 @pytest.fixture
 def superuser(db):
-    """Crée un superutilisateur avec mot de passe sécurisé."""
     superuser = User.objects.create_superuser(
         email="admin@example.com",
         password="Admin1234!",
@@ -41,20 +56,18 @@ def superuser(db):
         language_native="fr",
         consent_given=True,
     )
-    superuser.set_password("Admin1234!")  # sécurité
+    superuser.set_password("Admin1234!")
     superuser.save()
     return superuser
 
 
 @pytest.fixture
 def api_client():
-    """Client API non authentifié (visiteur)."""
     return APIClient()
 
 
 @pytest.fixture
 def auth_client(user):
-    """Client API authentifié avec utilisateur normal."""
     client = APIClient()
     response = client.post("/api/auth/token/", {
         "email": user.email,
@@ -71,7 +84,6 @@ def auth_client(user):
 
 @pytest.fixture
 def superuser_client(superuser):
-    """Client API authentifié avec superutilisateur."""
     client = APIClient()
     response = client.post("/api/auth/token/", {
         "email": superuser.email,
