@@ -50,7 +50,7 @@ def api_client():
 def auth_client(user):
     """Client API authentifié avec utilisateur normal."""
     client = APIClient()
-    response = client.post("/api/users/login/", {
+    response = client.post("/api/auth/token/", {
         "email": user.email,
         "password": "MotDePasse123"
     }, format="json")
@@ -63,7 +63,7 @@ def auth_client(user):
 def superuser_client(superuser):
     """Client API authentifié avec superutilisateur."""
     client = APIClient()
-    response = client.post("/api/users/login/", {
+    response = client.post("/api/auth/token/", {
         "email": superuser.email,
         "password": "Admin1234!"
     }, format="json")

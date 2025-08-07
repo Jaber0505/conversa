@@ -44,7 +44,6 @@ class SpectacularTokenRefreshView(TokenRefreshView):
     """Rafraîchir un token d’accès JWT"""
     pass
 
-
 @extend_schema(
     summary="Ping d'authentification",
     description="""

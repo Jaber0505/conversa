@@ -16,7 +16,9 @@ def factory():
 
 
 def make_request(factory, method, user):
-    return factory.generic(method=method, path="/fake-endpoint", HTTP_AUTHORIZATION="", user=user)
+    request = factory.generic(method=method, path="/fake-endpoint")
+    request.user = user
+    return request
 
 
 # === IsSelf ===
