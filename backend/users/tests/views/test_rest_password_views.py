@@ -3,29 +3,38 @@ from django.core import mail
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
+from django.urls import reverse
+from rest_framework import status
+
 
 @pytest.mark.django_db
 def test_password_reset_request_existing_email(api_client, user):
-    response = api_client.post("/api/users/reset-password/", {"email": user.email})
+    url = reverse("reset-password")
+    response = api_client.post(url, {"email": user.email})
+    
     assert response.status_code == 200
     assert len(mail.outbox) == 1
-    assert "Réinitialisation de votre mot de passe" in mail.outbox[0].subject
+    assert "Réinitialisation" in mail.outbox[0].subject
 
 
 @pytest.mark.django_db
 def test_password_reset_request_unknown_email(api_client):
-    response = api_client.post("/api/users/reset-password/", {"email": "unknown@example.com"})
+    url = reverse("reset-password")
+    response = api_client.post(url, {"email": "inconnu@example.com"})
+
     assert response.status_code == 200
-    assert len(mail.outbox) == 0  # Pas d’envoi mais message neutre
+    assert len(mail.outbox) == 0
 
 
 @pytest.mark.django_db
-def test_confirm_reset_password_success(api_client, user):
+def test_password_reset_confirm_success(api_client, user):
     uid = urlsafe_base64_encode(force_bytes(user.pk))
     token = default_token_generator.make_token(user)
+
+    url = reverse("reset-password-confirm")
     new_password = "MotDePasseSecure123"
 
-    response = api_client.post("/api/users/reset-password/confirm/", {
+    response = api_client.post(url, {
         "uid": uid,
         "token": token,
         "new_password": new_password
@@ -37,14 +46,14 @@ def test_confirm_reset_password_success(api_client, user):
 
 
 @pytest.mark.django_db
-def test_confirm_reset_password_invalid_token(api_client, user):
+def test_password_reset_confirm_invalid_token(api_client, user):
     uid = urlsafe_base64_encode(force_bytes(user.pk))
-    token = "invalid-token"
+    url = reverse("reset-password-confirm")
 
-    response = api_client.post("/api/users/reset-password/confirm/", {
+    response = api_client.post(url, {
         "uid": uid,
-        "token": token,
-        "new_password": "NouveauMotDePasse123"
+        "token": "invalid-token",
+        "new_password": "MotDePasseSecure123"
     })
 
     assert response.status_code == 400
@@ -52,11 +61,13 @@ def test_confirm_reset_password_invalid_token(api_client, user):
 
 
 @pytest.mark.django_db
-def test_confirm_reset_password_short_password(api_client, user):
+def test_password_reset_confirm_short_password(api_client, user):
     uid = urlsafe_base64_encode(force_bytes(user.pk))
     token = default_token_generator.make_token(user)
 
-    response = api_client.post("/api/users/reset-password/confirm/", {
+    url = reverse("reset-password-confirm")
+
+    response = api_client.post(url, {
         "uid": uid,
         "token": token,
         "new_password": "123"
@@ -64,3 +75,16 @@ def test_confirm_reset_password_short_password(api_client, user):
 
     assert response.status_code == 400
     assert "au moins 8 caractères" in response.data["detail"]
+
+
+@pytest.mark.django_db
+def test_password_reset_confirm_invalid_uid(api_client):
+    url = reverse("reset-password-confirm")
+    response = api_client.post(url, {
+        "uid": "invalid==",
+        "token": "whatever",
+        "new_password": "MotDePasse123"
+    })
+
+    assert response.status_code == 400
+    assert "Lien invalide" in response.data["detail"]

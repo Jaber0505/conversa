@@ -1,4 +1,6 @@
 import uuid
+
+from datetime import date
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, Group, Permission
 from django.db import models
 from django.utils import timezone
@@ -88,6 +90,14 @@ class User(AbstractBaseUser, PermissionsMixin):
         help_text="Les permissions spécifiques de cet utilisateur.",
         verbose_name="permissions d’utilisateur",
     )
+    
+    @property
+    def age(self):
+        today = date.today()
+        return (
+            today.year - self.birth_date.year
+            - ((today.month, today.day) < (self.birth_date.month, self.birth_date.day))
+        )
 
     objects = UserManager()
 

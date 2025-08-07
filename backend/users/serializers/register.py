@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
+from datetime import date
 
 from users.models import User
 
@@ -79,6 +80,13 @@ class RegisterSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
+        age = validated_data.pop("age")
+
+        today = date.today()
+        birth_date = date(today.year - age, today.month, today.day)
+
+        validated_data["birth_date"] = birth_date
+
         password = validated_data.pop("password")
         user = User.objects.create_user(password=password, **validated_data)
         return user

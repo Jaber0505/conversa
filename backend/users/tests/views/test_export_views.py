@@ -1,13 +1,38 @@
 import pytest
-
-@pytest.mark.django_db
-def test_export_user_data(auth_client):
-    response = auth_client.get("/api/users/me/export/")
-    assert response.status_code == 200
-    assert "email" in response.data["export"]
+from rest_framework import status
+from django.urls import reverse
 
 
 @pytest.mark.django_db
-def test_export_user_data_unauthenticated(client):
-    response = client.get("/api/users/me/export/")
-    assert response.status_code == 401
+def test_export_data_view_authenticated(auth_client, user):
+    url = reverse("user-export")
+    response = auth_client.get(url)
+
+    assert response.status_code == status.HTTP_200_OK
+    assert "export" in response.data
+
+    export_data = response.data["export"]
+
+    expected_fields = {
+        "id",
+        "email",
+        "first_name",
+        "last_name",
+        "bio",
+        "language_native",
+        "languages_spoken",
+        "date_joined",
+        "is_profile_public",
+        "links",
+    }
+
+    assert set(export_data.keys()) == expected_fields
+    assert export_data["email"] == user.email
+
+
+@pytest.mark.django_db
+def test_export_data_view_unauthenticated(api_client):
+    url = reverse("user-export")
+    response = api_client.get(url)
+
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED

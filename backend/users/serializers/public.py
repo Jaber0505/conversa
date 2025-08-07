@@ -33,7 +33,9 @@ class PublicUserSerializer(serializers.ModelSerializer):
         help_text="Nom visible publiquement."
     )
     age = serializers.IntegerField(
-        help_text="Âge de l’utilisateur affiché sur le profil public."
+        source="age",
+        read_only=True,
+        help_text="Âge de l’utilisateur affiché sur le profil public (calculé à partir de la date de naissance)."
     )
     language_native = serializers.CharField(
         help_text="Langue maternelle de l’utilisateur."

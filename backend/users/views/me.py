@@ -1,3 +1,5 @@
+import uuid
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
@@ -30,6 +32,20 @@ from drf_spectacular.utils import extend_schema, OpenApiResponse
     },
     tags=["Utilisateurs"]
 )
+@extend_schema(
+    methods=["DELETE"],
+    summary="Supprimer son compte (RGPD)",
+    description="""
+        Cette route permet à l’utilisateur connecté de supprimer son compte.  
+        Les données personnelles sont anonymisées.
+        Le compte est désactivé, conformément au RGPD.  
+        Toutes les sessions sont invalidées immédiatement.
+    """,
+    responses={
+        200: OpenApiResponse(description="Compte supprimé avec succès."),
+    },
+    tags=["Utilisateurs"]
+)
 class MeView(APIView):
     permission_classes = [IsAuthenticatedAndActive]
 
@@ -48,3 +64,24 @@ class MeView(APIView):
         return Response(
             UserMeSerializer(request.user, context={"request": request}).data
         )
+
+    def delete(self, request):
+        user = request.user
+
+        user.email = f"deleted_{user.pk}@deleted.local"
+        user.first_name = ""
+        user.last_name = ""
+        user.bio = ""
+        user.languages_spoken = []
+        user.is_profile_public = False
+        user.consent_given = False
+        user.is_active = False
+        user.jwt_key = uuid.uuid4()
+
+        user.save()
+
+        return Response(
+            {"detail": "Votre compte a été supprimé conformément au RGPD."},
+            status=200
+        )
+
