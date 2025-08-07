@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from users.models import User
 from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
+
+from users.models import User
 
 
 @extend_schema_serializer(
@@ -19,26 +20,48 @@ from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
                 "consent_given": True,
             },
             request_only=True,
-        ),
+        )
     ]
 )
 class RegisterSerializer(serializers.ModelSerializer):
-    """
-    Sérialiseur utilisé lors de l'inscription d'un nouvel utilisateur.
-
-    - Le mot de passe est écrit uniquement (`write_only`) et doit faire au moins 8 caractères.
-    - L'âge doit être ≥ 18.
-    - Le consentement (`consent_given`) est requis pour respecter le RGPD.
-    - Utilise `create_user()` pour le hash automatique du mot de passe.
-    """
-
-    password = serializers.CharField(write_only=True, min_length=8)
+    password = serializers.CharField(
+        write_only=True,
+        min_length=8,
+        help_text="Mot de passe confidentiel (minimum 8 caractères)."
+    )
+    email = serializers.EmailField(
+        help_text="Adresse email utilisée pour se connecter à la plateforme."
+    )
+    first_name = serializers.CharField(
+        help_text="Prénom affiché publiquement sur le profil."
+    )
+    last_name = serializers.CharField(
+        help_text="Nom de famille affiché publiquement sur le profil."
+    )
+    age = serializers.IntegerField(
+        help_text="Âge de l'utilisateur (minimum requis : 18 ans)."
+    )
+    bio = serializers.CharField(
+        help_text="Texte libre pour vous présenter aux autres joueurs.",
+        allow_blank=True,
+        required=False
+    )
+    language_native = serializers.CharField(
+        help_text="Langue maternelle principale."
+    )
+    languages_spoken = serializers.ListField(
+        child=serializers.CharField(),
+        help_text="Langues parlées en plus de la langue maternelle."
+    )
+    consent_given = serializers.BooleanField(
+        help_text="Consentement explicite au traitement des données personnelles (RGPD)."
+    )
 
     class Meta:
         model = User
         fields = (
-            "email", "password", "first_name", "last_name", "age", "bio",
-            "language_native", "languages_spoken", "consent_given"
+            "email", "password", "first_name", "last_name",
+            "age", "bio", "language_native", "languages_spoken", "consent_given"
         )
 
     def validate_age(self, value):

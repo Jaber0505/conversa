@@ -7,16 +7,20 @@ from users.models import User
 from users.serializers import PublicUserSerializer
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 
-
 @extend_schema(
-    summary="Voir le profil public d’un utilisateur",
-    description=(
-        "Ce endpoint permet de consulter les informations publiques d’un utilisateur via son ID. "
-        "Si le profil est privé ou inexistant, une erreur 404 est renvoyée."
-    ),
+    summary="Voir un profil utilisateur public",
+    description="""
+        Ce endpoint permet de consulter les informations publiques d’un utilisateur à partir de son identifiant (`pk`).
+
+        Le profil doit être marqué comme **public** (`is_profile_public=True`) pour être accessible.
+        
+        Si le profil n’existe pas ou est privé, une erreur `404 Not Found` est renvoyée.
+
+        ✅ Aucun token n’est requis. Accessible même en étant déconnecté.
+    """,
     responses={
         200: PublicUserSerializer,
-        404: OpenApiResponse(description="Profil inexistant ou privé."),
+        404: OpenApiResponse(description="Profil inexistant ou privé.")
     },
     tags=["Utilisateurs"],
 )

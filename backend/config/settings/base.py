@@ -6,6 +6,7 @@ Each environment file (e.g. dev.py) extends this file.
 
 import os
 from pathlib import Path
+from datetime import timedelta
 
 # ==============================================================================
 # 📁 Chemin de base du projet
@@ -29,6 +30,7 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
+    'rest_framework_simplejwt.token_blacklist',
     "drf_spectacular",
 ]
 
@@ -55,9 +57,20 @@ REST_FRAMEWORK = {
         "rest_framework.throttling.AnonRateThrottle",
     ],
     "DEFAULT_THROTTLE_RATES": {
-        "user": "1000/day",
-        "anon": "100/day",
+        "user": "100/min",
+        "anon": "10/min",
+        "login": "5/min",
+        "reset_password": "5/hour",
     },
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
 }
 
 # ==============================================================================
@@ -82,6 +95,10 @@ SPECTACULAR_SETTINGS = {
             }
         }
     },
+    "EXCLUDE_PATH_FORMATS": [
+        "/auth/token/",
+        "/auth/token/refresh/",
+    ],
 }
 
 # ==============================================================================
@@ -188,4 +205,7 @@ __all__ = [
     "SECRET_KEY",
     "ALLOWED_HOSTS",
     "DEFAULT_AUTO_FIELD",
+    "AUTH_USER_MODEL",
+    "REST_FRAMEWORK",
+    "SPECTACULAR_SETTINGS",
 ]

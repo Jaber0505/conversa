@@ -1,21 +1,26 @@
 from django.urls import path
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-
 from users.views import (
     RegisterView,
     MeView,
     ExportDataView,
     PublicUserProfileView,
-    PingAuthView,
-    RequestPasswordResetView, 
-    ConfirmPasswordResetView
+    RequestPasswordResetView,
+    ConfirmPasswordResetView,
+)
+
+from users.views.jwt import (
+    SpectacularTokenObtainPairView,
+    SpectacularTokenRefreshView,
+    PingAuthView, 
+    LogoutView,
 )
 
 urlpatterns = [
     # Authentification
-    path("auth/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
-    path("auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("auth/token/", SpectacularTokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("auth/token/refresh/", SpectacularTokenRefreshView.as_view(), name="token_refresh"),
     path("auth/ping/", PingAuthView.as_view(), name="auth-ping"),
+    path("auth/logout/", LogoutView.as_view(), name="logout"),
 
     # Utilisateur connecté
     path("users/me/", MeView.as_view(), name="user-me"),

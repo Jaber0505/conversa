@@ -5,14 +5,10 @@ echo "🔧 ENV_MODE=$ENV_MODE"
 echo "📦 Using settings: $DJANGO_SETTINGS_MODULE"
 echo "🐘 Connecting to DB at: $DJANGO_DB_HOST:$DJANGO_DB_PORT"
 
-# Attendre que la DB soit prête (juste au cas où)
-echo "⏳ Waiting for PostgreSQL to be ready..."
-while ! pg_isready -h "$DJANGO_DB_HOST" -p "$DJANGO_DB_PORT" -U "$DJANGO_DB_USER" > /dev/null 2>&1; do
-  sleep 1
-done
-echo "✅ PostgreSQL is ready."
-
 # Appliquer automatiquement les migrations (utile en dev)
+echo "🧱 Making migrations if needed..."
+python manage.py makemigrations --noinput
+
 echo "⚙️ Applying migrations..."
 python manage.py migrate --noinput
 
@@ -20,14 +16,19 @@ python manage.py migrate --noinput
 echo "👑 Creating superuser if needed..."
 python manage.py shell << END
 from django.contrib.auth import get_user_model
+from datetime import date
 User = get_user_model()
-if not User.objects.filter(username='${DJANGO_SU_NAME}').exists():
+if not User.objects.filter(email='${DJANGO_SU_EMAIL}').exists():
     User.objects.create_superuser(
-        username='${DJANGO_SU_NAME}',
         email='${DJANGO_SU_EMAIL}',
-        password='${DJANGO_SU_PASSWORD}'
+        password='${DJANGO_SU_PASSWORD}',
+        first_name='Admin',
+        last_name='User',
+        birth_date=date(1990, 1, 1),  # ← requis
+        language_native='fr'          # ← requis
     )
 END
+
 
 # Lancer le serveur
 echo "🚀 Launching Django dev server at http://0.0.0.0:8000"

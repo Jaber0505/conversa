@@ -18,14 +18,16 @@ services:
   db:
     image: postgres:15
     restart: always
-    env_file:
-      - ./env/.env.dev
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: conversa_db
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - conversa
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U conversa_user"]
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -37,7 +39,6 @@ services:
       dockerfile: docker/Dockerfile.backend
       args:
         REQUIREMENTS_FILE: requirements/dev.txt
-    command: python manage.py runserver 0.0.0.0:8000
     ports:
       - "8000:8000"
     volumes:
@@ -47,6 +48,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    entrypoint: ["/entrypoints/entrypoint.dev.sh"]
     networks:
       - conversa
 

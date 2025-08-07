@@ -1,4 +1,9 @@
-.\docker\script\stop-dev.ps1
-.\build-backend.ps1
-.\build-frontend.ps1
-.\start-dev.ps1
+Write-Host "Rebuild complet des services Docker (sans cache)..."
+
+docker compose -f docker/compose.dev.yml down --volumes --remove-orphans
+
+docker compose -f docker/compose.dev.yml build --no-cache
+
+docker compose -f docker/compose.dev.yml up --detach
+
+Write-Host "Rebuild termine. Les conteneurs sont relances en arriere-plan."

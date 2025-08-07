@@ -1,21 +1,30 @@
 from django.contrib.auth.tokens import default_token_generator
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes, force_str
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
 from rest_framework.permissions import AllowAny
+from rest_framework import status
+
+from drf_spectacular.utils import extend_schema, OpenApiExample
+from users.throttles import PasswordResetThrottle
 
 User = get_user_model()
 
 @extend_schema(
     summary="Demander une réinitialisation de mot de passe",
-    description=(
-        "Permet à un utilisateur de demander un lien de réinitialisation de mot de passe.\n"
-        "Un email contenant un lien sécurisé sera envoyé si l'adresse est connue."
-    ),
+    description="""
+        Permet à un utilisateur de demander un lien de réinitialisation de mot de passe.
+
+        Pour des raisons de sécurité et de respect du RGPD, la réponse reste **générique**, que l’email soit valide ou non.
+
+        Si l’adresse est enregistrée, un email contenant un lien sécurisé (`uid` + `token`) est envoyé.
+
+        Cette route est **limitée à 5 tentatives par heure** par IP pour éviter les abus.
+    """,
     request={
         "application/json": {
             "type": "object",
@@ -29,17 +38,33 @@ User = get_user_model()
             "required": ["email"]
         }
     },
-    responses={200: None},
-    examples=[
-        OpenApiExample(
-            name="Réponse générique",
-            value={"detail": "Si cet email est enregistré, un lien a été envoyé."},
-            response_only=True
-        )
-    ]
+    responses={
+        200: {
+            "description": "Lien de réinitialisation envoyé (si compte existant).",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "detail": "Si cette adresse est enregistrée, un lien de réinitialisation a été envoyé par email."
+                    }
+                }
+            }
+        },
+        429: {
+            "description": "Trop de tentatives. Attends avant de réessayer.",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "detail": "Trop de tentatives. Réessaie dans une heure."
+                    }
+                }
+            }
+        }
+    },
+    tags=["Utilisateurs"]
 )
 class RequestPasswordResetView(APIView):
     permission_classes = [AllowAny]
+    throttle_classes = [PasswordResetThrottle]
 
     def post(self, request):
         email = request.data.get("email")
@@ -58,15 +83,22 @@ class RequestPasswordResetView(APIView):
                 recipient_list=[email],
             )
 
-        # Ne jamais révéler si l’email est connu ou non
-        return Response({"detail": "Si cet email est enregistré, un lien a été envoyé."}, status=200)
+        return Response({"detail": "Si cet email est enregistré, un lien a été envoyé."})
 
 @extend_schema(
     summary="Confirmer la réinitialisation de mot de passe",
-    description=(
-        "Permet de réinitialiser le mot de passe en soumettant un nouveau mot de passe "
-        "accompagné du `uid` et du `token` fournis dans le lien reçu par email."
-    ),
+    description="""
+        Cette route permet à un utilisateur de finaliser la réinitialisation de son mot de passe.
+
+        Le lien contient deux éléments indispensables :
+        - le `uid` (identifiant encodé en base64),
+        - le `token` (valide temporairement, généré par Django).
+
+        En cas de succès, un nouveau mot de passe est défini.  
+        En cas d’échec (lien expiré ou invalide), une erreur est retournée.
+
+        Le mot de passe doit contenir au moins 8 caractères.
+    """,
     request={
         "application/json": {
             "type": "object",
@@ -79,23 +111,28 @@ class RequestPasswordResetView(APIView):
         }
     },
     responses={
-        200: None,
-        400: None
+        200: {
+            "description": "Mot de passe réinitialisé avec succès.",
+            "content": {
+                "application/json": {
+                    "example": {"detail": "Votre mot de passe a été mis à jour. Vous pouvez désormais vous connecter avec votre nouveau mot de passe."}
+                }
+            }
+        },
+        400: {
+            "description": "Lien invalide, expiré ou mot de passe incorrect.",
+            "content": {
+                "application/json": {
+                    "examples": {
+                        "token_invalid": {"value": {"detail": "Token invalide ou expiré."}},
+                        "too_short": {"value": {"detail": "Le mot de passe doit contenir au moins 8 caractères."}},
+                        "uid_invalid": {"value": {"detail": "Lien invalide."}}
+                    }
+                }
+            }
+        }
     },
-    examples=[
-        OpenApiExample(
-            name="Réinitialisation réussie",
-            value={"detail": "Mot de passe mis à jour avec succès."},
-            response_only=True,
-            status_codes=["200"]
-        ),
-        OpenApiExample(
-            name="Lien ou token invalide",
-            value={"detail": "Token invalide ou expiré."},
-            response_only=True,
-            status_codes=["400"]
-        )
-    ]
+    tags=["Utilisateurs"]
 )
 class ConfirmPasswordResetView(APIView):
     permission_classes = [AllowAny]
@@ -120,4 +157,7 @@ class ConfirmPasswordResetView(APIView):
         user.set_password(new_password)
         user.save()
 
-        return Response({"detail": "Mot de passe mis à jour avec succès."})
+        return Response(
+            {"detail": "Votre mot de passe a été mis à jour. Vous pouvez désormais vous connecter avec votre nouveau mot de passe."},
+            status=200
+        )

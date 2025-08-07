@@ -1,6 +1,9 @@
 from rest_framework import serializers
 from rest_framework.reverse import reverse
+from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
+
 from users.models import User
+
 
 @extend_schema_serializer(
     examples=[
@@ -28,12 +31,19 @@ from users.models import User
     ]
 )
 class UserMeSerializer(serializers.ModelSerializer):
-    """
-    Sérialiseur pour afficher les données personnelles de l'utilisateur connecté.
-    Exclut les champs sensibles comme le mot de passe et les rôles internes.
-    Fournit des liens HATEOAS pour les actions possibles.
-    """
-    links = serializers.SerializerMethodField()
+    id = serializers.IntegerField(help_text="Identifiant unique de l’utilisateur.")
+    email = serializers.EmailField(help_text="Adresse e-mail utilisée pour se connecter.")
+    first_name = serializers.CharField(help_text="Prénom visible dans le profil.")
+    last_name = serializers.CharField(help_text="Nom visible dans le profil.")
+    bio = serializers.CharField(help_text="Présentation personnelle de l’utilisateur.", allow_blank=True)
+    language_native = serializers.CharField(help_text="Langue maternelle principale.")
+    languages_spoken = serializers.ListField(
+        child=serializers.CharField(),
+        help_text="Liste des langues supplémentaires que l’utilisateur parle."
+    )
+    date_joined = serializers.DateTimeField(help_text="Date de création du compte.")
+    is_profile_public = serializers.BooleanField(help_text="Indique si le profil est visible publiquement.")
+    links = serializers.SerializerMethodField(help_text="Liens HATEOAS vers les actions sur le profil.")
 
     class Meta:
         model = User
@@ -53,12 +63,19 @@ class UserMeSerializer(serializers.ModelSerializer):
             "export": reverse("user-export", request=request),
         }
 
-
 class UserMeUpdateSerializer(serializers.ModelSerializer):
-    """
-    Sérialiseur pour mettre à jour le profil de l'utilisateur.
-    Ne permet de modifier que certains champs définis.
-    """
+    first_name = serializers.CharField(help_text="Prénom à afficher dans le profil.")
+    last_name = serializers.CharField(help_text="Nom à afficher dans le profil.")
+    bio = serializers.CharField(
+        help_text="Texte libre pour se présenter.",
+        allow_blank=True,
+        required=False
+    )
+    languages_spoken = serializers.ListField(
+        child=serializers.CharField(),
+        help_text="Liste mise à jour des langues parlées par l’utilisateur."
+    )
+
     class Meta:
         model = User
         fields = ["first_name", "last_name", "bio", "languages_spoken"]

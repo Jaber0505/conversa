@@ -1,4 +1,4 @@
-from .base import IsSelf, IsSelfOrReadOnly, IsAdminOrReadOnly
+from .base import IsSelf, IsSelfOrReadOnly, IsAdminOrReadOnly, IsAuthenticatedAndActive
 
 __all__ = [
     "IsSelf",

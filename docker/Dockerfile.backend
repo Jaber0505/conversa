@@ -24,13 +24,16 @@ RUN pip install --upgrade pip && pip install --no-cache-dir -r /${REQUIREMENTS_F
 # Copier le code source
 COPY backend /app
 
-# Copier les scripts d'entrée
-COPY docker/entrypoints/entrypoint.prod.sh /entrypoint.prod.sh
-COPY docker/entrypoints/entrypoint.ci.sh /entrypoint.ci.sh
-COPY docker/entrypoints/entrypoint.sh /entrypoint.sh
+# Créer dossier pour les scripts d’entrée
+RUN mkdir -p /entrypoints
 
-# Donner les droits d'exécution
-RUN chmod +x /entrypoint.prod.sh /entrypoint.ci.sh /entrypoint.sh
+# Copier les scripts d'entrée dans /entrypoints/
+COPY docker/entrypoints/entrypoint.dev.sh /entrypoints/entrypoint.dev.sh
+COPY docker/entrypoints/entrypoint.prod.sh /entrypoints/entrypoint.prod.sh
+COPY docker/entrypoints/entrypoint.ci.sh /entrypoints/entrypoint.ci.sh
+COPY docker/entrypoints/entrypoint.sh /entrypoints/entrypoint.sh
+
+RUN chmod +x /entrypoints/*.sh
 
 # -------------------
 # Étape 2 : Image finale
@@ -42,20 +45,19 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-# Copier les binaires et libs Python depuis l'image build
+# Copier les binaires Python
 COPY --from=build /usr/local/lib/python3.11 /usr/local/lib/python3.11
 COPY --from=build /usr/local/bin /usr/local/bin
 
-# Copier l'application et les scripts d'entrée
+# Copier le code de l'application
 COPY --from=build /app /app
-COPY --from=build /entrypoint.prod.sh /entrypoint.prod.sh
-COPY --from=build /entrypoint.ci.sh /entrypoint.ci.sh
-COPY --from=build /entrypoint.sh /entrypoint.sh
 
-RUN chmod +x /entrypoint.prod.sh /entrypoint.ci.sh /entrypoint.sh
+# Copier les scripts d'entrée dans /entrypoints/
+COPY --from=build /entrypoints /entrypoints
+RUN chmod +x /entrypoints/*.sh
 
 # Entrypoint dynamique
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/entrypoints/entrypoint.sh"]
 
 # Commande par défaut (prod)
 CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000"]
