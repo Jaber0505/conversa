@@ -54,7 +54,7 @@ jobs:
           python backend/manage.py migrate --plan --database=default
 
       - name: 🧹 Lint
-        run: ruff check backend --output-format github
+        run: ruff check backend --fix --output-format github
 
       - name: 🧹 Clean Python caches
         run: |

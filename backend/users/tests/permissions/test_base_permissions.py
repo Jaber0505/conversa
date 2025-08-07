@@ -1,6 +1,5 @@
 import pytest
 from rest_framework.permissions import SAFE_METHODS
-from rest_framework.request import Request
 from rest_framework.test import APIRequestFactory
 
 from users.permissions.base import (
