@@ -1,7 +1,5 @@
 import pytest
 from users.serializers.me import UserMeSerializer, UserMeUpdateSerializer
-from users.models import User
-
 
 @pytest.mark.django_db
 def test_user_me_serializer_output_structure(user, client):

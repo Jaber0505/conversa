@@ -3,13 +3,14 @@ from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes, force_str
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
+from django.utils.http import urlsafe_base64_decode
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework import status
 
-from drf_spectacular.utils import extend_schema, OpenApiExample
+from drf_spectacular.utils import extend_schema
 from users.throttles import PasswordResetThrottle
 
 User = get_user_model()
@@ -83,7 +84,10 @@ class RequestPasswordResetView(APIView):
                 recipient_list=[email],
             )
 
-        return Response({"detail": "Si cet email est enregistré, un lien a été envoyé."})
+        return Response(
+            {"detail": "Si cet email est enregistré, un lien a été envoyé."},
+            status=status.HTTP_200_OK
+        )
 
 @extend_schema(
     summary="Confirmer la réinitialisation de mot de passe",

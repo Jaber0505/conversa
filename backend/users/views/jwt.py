@@ -12,13 +12,8 @@ from users.throttles import LoginThrottle
 @extend_schema(
     summary="Authentification via JWT",
     description="""
-        Permet d'obtenir un `access_token` et un `refresh_token` en envoyant l'adresse email et le mot de passe.
-
-        Aucune information ne sera fournie sur la validité ou l’existence du compte associé à l’email ou au mot de passe.  
-        Que ce soit en cas d’échec ou de succès, la réponse reste neutre pour des raisons de **sécurité** et de **protection des données personnelles** (conformité RGPD).
-
-        Limite de requêtes : `5 tentatives par minute` par IP.  
-        Un dépassement entraînera une erreur `429 Too Many Requests`.
+        Aucune information ne sera divulguée sur l’existence du compte.
+        Limite : `5 tentatives par minute` par IP.
 
         Réponse :
         - `200 OK` : authentification réussie, tokens retournés
@@ -56,17 +51,6 @@ class SpectacularTokenRefreshView(TokenRefreshView):
         Permet de vérifier la validité d’un token d’authentification JWT.  
         Cette route utilise la méthode `HEAD` et ne retourne aucun contenu.
 
-        - Si l’utilisateur est authentifié **et actif**, la réponse sera `200 OK`.
-        - Si le token est manquant, expiré ou associé à un compte désactivé, la réponse sera `401 Unauthorized`.
-
-        Ce endpoint est utile pour :
-        - les **clients front-end** qui veulent vérifier l’état de session de manière silencieuse,
-        - les **tests automatisés** pour valider l’authentification,
-        - ou encore pour implémenter un **auto-refresh** côté client si `401` est détecté.
-
-        - `HEAD` : recommandé côté front pour un check rapide et sans charge
-        - `GET` : uniquement présent pour permettre l'affichage dans Swagger
-
         Réponse :
         - 200 OK : authentifié
         - 401 Unauthorized : token invalide ou expiré
@@ -91,7 +75,6 @@ class PingAuthView(APIView):
     summary="Déconnexion (invalider le refresh token)",
     description="""
         Permet de se déconnecter en invalidant le `refresh token` JWT.  
-        L'utilisateur doit être authentifié (`access token` requis), et fournir son `refresh token` dans le corps de la requête.
 
         - Si le token est valide, il est mis sur liste noire.
         - Sinon, une réponse 400 est retournée.
