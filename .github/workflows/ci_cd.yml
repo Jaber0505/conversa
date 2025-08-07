@@ -33,6 +33,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
+      - name: 🐍 Debug DJANGO_SETTINGS_MODULE
+        working-directory: backend
+        run: |
+          echo "settings: $DJANGO_SETTINGS_MODULE"
+          python -c "import os; print('env DJANGO_SETTINGS_MODULE =', os.environ.get('DJANGO_SETTINGS_MODULE'))"
+
       - name: 📦 Install dependencies
         run: |
           pip install --upgrade pip
@@ -52,7 +58,7 @@ jobs:
 
       - name: 🧪 Run tests
         working-directory: backend
-        run: pytest
+        run: pytest --ds=config.settings.ci
 
       - name: 📊 Upload coverage
         uses: codecov/codecov-action@v4
