@@ -10,7 +10,7 @@ def test_register_success(client):
         "email": "new@example.com",
         "password": "Strong123!",
         "first_name": "New",
-        "last_name": "User"
+        "last_name": "User",
         "birth_date": "2000-01-01"
     })
     assert response.status_code == 201
