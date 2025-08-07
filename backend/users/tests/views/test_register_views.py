@@ -11,6 +11,7 @@ def test_register_success(client):
         "password": "Strong123!",
         "first_name": "New",
         "last_name": "User"
+        "birth_date": "2000-01-01"
     })
     assert response.status_code == 201
     assert "detail" in response.data
