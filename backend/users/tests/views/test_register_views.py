@@ -1,6 +1,8 @@
 import pytest
 from django.urls import reverse
 from rest_framework import status
+from django.utils import timezone
+from datetime import timedelta
 
 
 @pytest.mark.django_db
@@ -25,16 +27,15 @@ def test_register_success(api_client):
     from users.models import User
     assert User.objects.filter(email="newuser@example.com").exists()
 
-
 @pytest.mark.django_db
 def test_register_duplicate_email(api_client, user):
     url = reverse("user-register")
     payload = {
-        "email": user.email,
+        "email": user.email, 
         "password": "MotDePasse123",
         "first_name": "Alice",
         "last_name": "Martin",
-        "age": 25,
+        "birth_date": str(timezone.now().date() - timedelta(days=365 * 25)),
         "language_native": "fr",
         "languages_spoken": ["en", "de"],
         "bio": "",
@@ -44,7 +45,6 @@ def test_register_duplicate_email(api_client, user):
     response = api_client.post(url, data=payload)
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert "email" in response.data
-
 
 @pytest.mark.django_db
 def test_register_missing_consent(api_client):

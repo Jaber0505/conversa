@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
 from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
 from datetime import date
 
@@ -31,7 +32,8 @@ class RegisterSerializer(serializers.ModelSerializer):
         help_text="Mot de passe confidentiel (minimum 8 caractères)."
     )
     email = serializers.EmailField(
-        help_text="Adresse email utilisée pour se connecter à la plateforme."
+        help_text="Adresse email utilisée pour se connecter à la plateforme.",
+        validators=[UniqueValidator(queryset=User.objects.all(), message="Un compte avec cet email existe déjà.")]
     )
     first_name = serializers.CharField(
         help_text="Prénom affiché publiquement sur le profil."

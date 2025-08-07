@@ -56,6 +56,7 @@ def auth_client(user):
     }, format="json")
     token = response.data["access"]
     client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
+    assert response.status_code == 200, f"Login failed: {response.status_code} - {response.content}"
     return client
 
 
@@ -69,4 +70,5 @@ def superuser_client(superuser):
     }, format="json")
     token = response.data["access"]
     client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
+    assert response.status_code == 200, f"Login failed: {response.status_code} - {response.content}"
     return client
