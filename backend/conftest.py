@@ -9,6 +9,7 @@ def user_data():
         "password": "StrongPassword123!",
         "first_name": "John",
         "last_name": "Doe",
+        "birth_date": datetime.date(2000, 1, 1),
     }
 
 @pytest.fixture
