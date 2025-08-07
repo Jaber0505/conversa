@@ -58,7 +58,9 @@ jobs:
 
       - name: 🧪 Run tests
         working-directory: backend
-        run: pytest --ds=config.settings.ci
+        run: |
+          export PYTHONPATH=$(pwd)
+          pytest --ds=config.settings.ci
 
       - name: 📊 Upload coverage
         uses: codecov/codecov-action@v4
