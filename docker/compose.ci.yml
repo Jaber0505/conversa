@@ -1,10 +1,25 @@
 # ==============================================================================
-# Docker Compose - Continuous Integration (CI)
+# Docker Compose – Intégration continue (CI)
 # ------------------------------------------------------------------------------
-# Utilisé dans les workflows GitHub Actions (CI/CD)
-# - Lance uniquement le backend Django avec SQLite (pas de base PostgreSQL)
-# - Toutes les variables sont injectées par GitHub Secrets
+# But :
+#   Fournir l'environnement minimal pour exécuter les tests automatisés
+#   (GitHub Actions, pipelines CI/CD).
+#   Utilise SQLite en mémoire (pas de PostgreSQL) pour plus de rapidité.
+#
+# Pré-requis :
+#   - Variables injectées via GitHub Secrets ou ./docker/env/.env.ci
+#   - Fichier requirements/ci.txt pour les dépendances spécifiques aux tests.
+#
+# Variables d'environnement attendues :
+#   DEBUG                → false pour éviter les logs debug
+#   SECRET_KEY           → Clé Django pour la CI
+#   DJANGO_SETTINGS_MODULE → Module de config Django (ex: config.settings.ci)
+#   DJANGO_ALLOWED_HOSTS → Généralement "*"
+#   DJANGO_SU_EMAIL      → Email du superutilisateur
+#   DJANGO_SU_NAME       → Nom du superutilisateur
+#   DJANGO_SU_PASSWORD   → Mot de passe du superutilisateur
 # ==============================================================================
+
 
 services:
   backend:
@@ -13,12 +28,18 @@ services:
       dockerfile: docker/Dockerfile.backend
       args:
         REQUIREMENTS_FILE: requirements/ci.txt
+    env_file:
+      - ./env/.env.ci
     environment:
-      ENV_MODE: ${ENV_MODE}
-      DEBUG: ${CI_DEBUG}
-      SECRET_KEY: ${CI_SECRET_KEY}
-      DJANGO_SETTINGS_MODULE: ${CI_DJANGO_SETTINGS_MODULE}
-      CI_DJANGO_ALLOWED_HOSTS: ${CI_DJANGO_ALLOWED_HOSTS}
-      CI_DJANGO_SU_NAME: ${CI_DJANGO_SU_NAME}
-      CI_DJANGO_SU_PASSWORD: ${CI_DJANGO_SU_PASSWORD}
-      CI_DJANGO_SU_EMAIL: ${CI_DJANGO_SU_EMAIL}
+      ENV_MODE: ci
+      DJANGO_SETTINGS_MODULE: ${DJANGO_SETTINGS_MODULE:-config.settings.ci}
+      DEBUG: ${DEBUG:-0}
+      SECRET_KEY: ${SECRET_KEY:-ci-secret}
+      DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-*}
+      DJANGO_SU_NAME: ${DJANGO_SU_NAME:-admin}
+      DJANGO_SU_PASSWORD: ${DJANGO_SU_PASSWORD:-admin}
+      DJANGO_SU_EMAIL: ${DJANGO_SU_EMAIL:-admin@example.com}
+    volumes:
+      - ../backend:/app/backend
+      - ../reports:/app/backend/tests_reports
+

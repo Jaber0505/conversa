@@ -1,0 +1,76 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Tests (SQLite)
+    runs-on: ubuntu-latest
+    env:
+      ENV_MODE: ci
+      DJANGO_SETTINGS_MODULE: config.settings.ci
+      SECRET_KEY: test-secret
+      DEBUG: "0"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install CI deps
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements/ci.txt
+
+      - name: Run tests
+        working-directory: backend
+        run: |
+          python manage.py makemigrations --check --dry-run
+          python manage.py migrate --noinput
+          pytest --maxfail=1 -q
+
+  migrate_and_deploy:
+    name: Migrate DB (Render) + Deploy
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install PROD deps
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements/prod.txt
+
+      - name: Run Django migrations on Render Postgres
+        working-directory: backend
+        env:
+          DJANGO_SETTINGS_MODULE: config.settings.prod
+          DEBUG: "0"
+          SECRET_KEY: ${{ secrets.PROD_SECRET_KEY }}
+          DJANGO_ALLOWED_HOSTS: ${{ secrets.PROD_ALLOWED_HOSTS }}
+          DJANGO_DB_NAME: ${{ secrets.PROD_DB_NAME }}
+          DJANGO_DB_USER: ${{ secrets.PROD_DB_USER }}
+          DJANGO_DB_PASSWORD: ${{ secrets.PROD_DB_PASSWORD }}
+          DJANGO_DB_HOST: ${{ secrets.PROD_DB_HOST }}
+          DJANGO_DB_PORT: ${{ secrets.PROD_DB_PORT }}
+        run: |
+          python manage.py migrate --noinput
+
+      - name: Trigger Render deploy (backend)
+        if: ${{ success() }}
+        run: curl -X POST "$RENDER_BACKEND_DEPLOY_HOOK"
+        env:
+          RENDER_BACKEND_DEPLOY_HOOK: ${{ secrets.RENDER_BACKEND_DEPLOY_HOOK }}
+
+      - name: Trigger Render deploy (frontend)
+        if: ${{ success() }}
+        run: curl -X POST "$RENDER_FRONTEND_DEPLOY_HOOK"
+        env:
+          RENDER_FRONTEND_DEPLOY_HOOK: ${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK }}

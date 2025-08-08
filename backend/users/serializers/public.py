@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
+from drf_spectacular.utils import extend_schema_serializer, OpenApiExample, extend_schema_field
 
 from users.models import User
 
@@ -23,29 +23,8 @@ from users.models import User
     ]
 )
 class PublicUserSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(
-        help_text="Identifiant unique de l’utilisateur."
-    )
-    first_name = serializers.CharField(
-        help_text="Prénom visible publiquement."
-    )
-    last_name = serializers.CharField(
-        help_text="Nom visible publiquement."
-    )
-    age = serializers.IntegerField(
-        read_only=True,
-        help_text="Âge de l’utilisateur affiché sur le profil public (calculé à partir de la date de naissance)."
-    )
-    language_native = serializers.CharField(
-        help_text="Langue maternelle de l’utilisateur."
-    )
-    languages_spoken = serializers.ListField(
-        child=serializers.CharField(),
-        help_text="Langues supplémentaires que l’utilisateur parle."
-    )
-    bio = serializers.CharField(
-        help_text="Présentation publique de l’utilisateur.",
-        allow_blank=True
+    age = serializers.SerializerMethodField(
+        help_text="Âge de l’utilisateur affiché sur le profil public (calculé automatiquement)."
     )
 
     class Meta:
@@ -60,3 +39,7 @@ class PublicUserSerializer(serializers.ModelSerializer):
             "bio",
         ]
         read_only_fields = fields
+
+    @extend_schema_field(serializers.IntegerField(help_text="Âge calculé automatiquement à partir de la date de naissance."))
+    def get_age(self, obj) -> int:
+        return obj.age

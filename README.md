@@ -2,6 +2,8 @@
 
 [![CI/CD](https://github.com/Jaber0505/conversa/actions/workflows/ci_cd.yml/badge.svg)](https://github.com/Jaber0505/conversa/actions/workflows/ci_cd.yml)
 
+![Coverage](https://codecov.io/gh/ton-user/ton-repo/branch/main/graph/badge.svg)
+
 **Conversa** est une plateforme web permettant d’organiser ou de rejoindre des événements linguistiques immersifs dans des bars à Bruxelles.  
 En petits groupes, les participants pratiquent une langue étrangère à travers des jeux collaboratifs conçus pour favoriser l’expression orale et l’échange.
 

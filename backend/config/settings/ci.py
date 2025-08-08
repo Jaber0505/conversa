@@ -1,24 +1,20 @@
 """
-Django settings – ENV: Continuous Integration (CI)
-Utilisé exclusivement dans les pipelines automatisées (GitHub Actions, etc.)
-Optimisé pour la vitesse d’exécution des tests unitaires avec SQLite en mémoire.
+Paramètres Django - Intégration continue (CI).
+Tests rapides avec SQLite en mémoire.
 """
 
-from .base import *
+from __future__ import annotations
+
 import os
 
-# ==============================================================================
-# Environnement CI (GitHub Actions, etc.)
-# ==============================================================================
+from .base import *  # noqa: F403
 
-DEBUG = os.getenv("CI_DEBUG", "False").lower() in ("true", "1", "yes")
-SECRET_KEY = os.getenv("CI_SECRET_KEY", "ci-secret-key")
-ALLOWED_HOSTS = os.getenv("CI_DJANGO_ALLOWED_HOSTS", "*").split(",")
+# ── Général
+DEBUG = os.getenv("CI_DEBUG", "false").lower() in {"true", "1", "yes"}
+SECRET_KEY = os.getenv("CI_SECRET_KEY", "ci-insecure-key")
+ALLOWED_HOSTS = [h.strip() for h in os.getenv("CI_DJANGO_ALLOWED_HOSTS", "*").split(",") if h.strip()]
 
-# ==============================================================================
-# Base de données SQLite (ultra rapide, en mémoire)
-# ==============================================================================
-
+# ── DB SQLite (mémoire)
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
@@ -26,51 +22,40 @@ DATABASES = {
     }
 }
 
-# ==============================================================================
-# Performances & simplifications pour les tests
-# ==============================================================================
+# ── CORS permissif pour la CI
+CORS_ALLOW_ALL_ORIGINS = True
 
-REST_FRAMEWORK["DEFAULT_THROTTLE_CLASSES"] = []
-REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"] = {
+# ── Tests plus rapides
+REST_FRAMEWORK["DEFAULT_THROTTLE_CLASSES"] = []  # type: ignore[name-defined]  # noqa: F405
+REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"] = {  # type: ignore[name-defined]  # noqa: F405
     "user": "100/min",
     "anon": "10/min",
     "login": "5/min",
     "reset_password": "5/hour",
 }
 
-PASSWORD_HASHERS = [
-    "django.contrib.auth.hashers.MD5PasswordHasher",
-]
-
+PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
 EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 
+# ── Logging minimal
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": True,
-    "handlers": {
-        "null": {"class": "logging.NullHandler"},
-    },
-    "root": {
-        "handlers": ["null"],
-        "level": "DEBUG",
-    },
+    "handlers": {"null": {"class": "logging.NullHandler"}},
+    "root": {"handlers": ["null"], "level": "WARNING"},
 }
 
+# ── Statics (si besoin de collectstatic en CI)
 STORAGES = {
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
+    "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
 }
 
-# ==============================================================================
-# Autres paramètres nécessaires
-# ==============================================================================
-
+# ── URLs / WSGI / ASGI (clarifiés)
 ROOT_URLCONF = "config.urls"
 WSGI_APPLICATION = "config.wsgi.application"
 ASGI_APPLICATION = "config.asgi.application"
 
 STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = BASE_DIR / "staticfiles"  # noqa: F405
 MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_ROOT = BASE_DIR / "media"  # noqa: F405

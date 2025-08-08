@@ -1,59 +1,19 @@
 # ==============================================================================
-# Dockerfile – Frontend React + Vite – Multi-stage build
+# Frontend Angular + Vite (multi-stage dev/build/prod) – dev utilisé en compose.dev
 # ==============================================================================
 
-# -------------------------
-# Étape 1 : Base Node.js
-# -------------------------
 FROM node:20-alpine AS base
-
 WORKDIR /app
 
-# Copier uniquement package.json et package-lock.json pour optimiser le cache Docker
-COPY frontend/package.json frontend/package-lock.json ./
+FROM base AS deps-dev
+ENV NODE_ENV=development
+COPY frontend/package*.json ./
+RUN npm ci --include=dev
 
-# Installer les dépendances avec npm ci (fiable et rapide)
-RUN npm ci
-
-# -------------------------
-# Étape 2 : Développement
-# -------------------------
-FROM base AS dev
-
-# Copier tout le code frontend
+FROM deps-dev AS dev
+WORKDIR /app
 COPY frontend/ ./
+EXPOSE 5173
+CMD ["sh", "-lc", "npm run dev -- --host 0.0.0.0 --port 5173"]
 
-# Installer les dépendances optionnelles spécifiques à Alpine (rollup)
-RUN npm install --optional @rollup/rollup-linux-x64-musl || true
-
-# Lancer le serveur de dev Vite (écoute sur 5173 par défaut)
-CMD ["npm", "run", "dev"]
-
-# -------------------------
-# Étape 3 : Build production
-# -------------------------
-FROM base AS build
-
-# Copier tout le code frontend
-COPY frontend/ ./
-
-# Compiler le frontend en production
-RUN npm run build
-
-# -------------------------
-# Étape 4 : Serveur Nginx pour servir les fichiers statiques
-# -------------------------
-FROM nginx:alpine AS prod
-
-# Supprimer le contenu par défaut de Nginx
-RUN rm -rf /usr/share/nginx/html/*
-
-# Copier les fichiers buildés depuis l’étape build
-COPY --from=build /app/dist /usr/share/nginx/html
-COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf
-
-# Exposer le port 80
-EXPOSE 80
-
-# Lancer Nginx au premier plan
-CMD ["nginx", "-g", "daemon off;"]
+# (stages build/prod conservés si besoin plus tard)

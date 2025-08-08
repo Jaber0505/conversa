@@ -1,65 +1,39 @@
 # ==============================================================================
-# Dockerfile – Backend Django (multi-env, multi-stage)
-# Compatible avec DEV, CI, PROD
+# Backend Django (multi-env REQUIREMENTS_FILE)
 # ==============================================================================
 
-# -------------------
-# Étape 1 : Build base
-# -------------------
 FROM python:3.11-slim AS build
-
-# Variables d'environnement Python
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=on
 WORKDIR /app
 
-# Argument pour choisir le fichier requirements à installer
 ARG REQUIREMENTS_FILE=requirements/dev.txt
 
-# Copier et installer les dépendances
-COPY backend/requirements /requirements
-RUN pip install --upgrade pip && pip install --no-cache-dir -r /${REQUIREMENTS_FILE}
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential libpq-dev \
+ && rm -rf /var/lib/apt/lists/*
 
-# Copier le code source
-COPY backend /app
+COPY ./requirements /requirements
+RUN pip install --upgrade pip && pip install -r /${REQUIREMENTS_FILE}
 
-# Créer dossier pour les scripts d’entrée
-RUN mkdir -p /entrypoints
-
-# Copier les scripts d'entrée dans /entrypoints/
-COPY docker/entrypoints/entrypoint.dev.sh /entrypoints/entrypoint.dev.sh
-COPY docker/entrypoints/entrypoint.prod.sh /entrypoints/entrypoint.prod.sh
-COPY docker/entrypoints/entrypoint.ci.sh /entrypoints/entrypoint.ci.sh
-COPY docker/entrypoints/entrypoint.sh /entrypoints/entrypoint.sh
-
+COPY docker/entrypoints /entrypoints
 RUN chmod +x /entrypoints/*.sh
 
-# -------------------
-# Étape 2 : Image finale
-# -------------------
+COPY backend /app/backend
+
 FROM python:3.11-slim AS final
-
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
 WORKDIR /app
 
-# Copier les binaires Python
-COPY --from=build /usr/local/lib/python3.11 /usr/local/lib/python3.11
-COPY --from=build /usr/local/bin /usr/local/bin
+RUN addgroup --system django && adduser --system --ingroup django django
 
-# Copier le code de l'application
+COPY --from=build /usr/local /usr/local
 COPY --from=build /app /app
-
-# Copier les scripts d'entrée dans /entrypoints/
 COPY --from=build /entrypoints /entrypoints
-RUN chmod +x /entrypoints/*.sh
+RUN chmod +x /entrypoints/*.sh && chown -R django:django /app /entrypoints
 
-# Entrypoint dynamique
+USER django
 ENTRYPOINT ["/entrypoints/entrypoint.sh"]
-
-# Commande par défaut (prod)
+# CMD ignoré en dev/ci (on route vers entrypoint.dev.sh ou .ci.sh)
 CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000"]
 
 EXPOSE 8000

@@ -1,0 +1,4 @@
+-r base.txt
+
+# Sécurité et optimisations
+whitenoise==6.6.*

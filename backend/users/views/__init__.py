@@ -3,7 +3,7 @@ from .me import MeView
 from .export import ExportDataView
 from .public import PublicUserProfileView
 from .reset_password import RequestPasswordResetView, ConfirmPasswordResetView
-from .jwt import SpectacularTokenObtainPairView, SpectacularTokenRefreshView, LogoutView, PingAuthView
+from .auth import CustomTokenObtainPairView, CustomTokenRefreshView, LogoutView, PingAuthView
 
 __all__ = [
     "RegisterView",
@@ -12,8 +12,8 @@ __all__ = [
     "PublicUserProfileView",
     "RequestPasswordResetView",
     "ConfirmPasswordResetView",
-    "SpectacularTokenObtainPairView",
-    "SpectacularTokenRefreshView",
+    "CustomTokenObtainPairView",
+    "CustomTokenRefreshView",
     "LogoutView",
     "PingAuthView",
 ]

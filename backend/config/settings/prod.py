@@ -1,119 +1,83 @@
 """
-Django settings - ENV: Production (Render)
-This file is used in a live environment.
-All variables are injected by Render (or GitHub Actions upstream).
+Paramètres Django - Production (Render).
+Variables sensibles injectées via l'hébergeur / secrets.
 """
 
+from __future__ import annotations
+
 import os
-from .base import *
 
-# ==============================================================================
-# Debug (must be disabled in production)
-# ==============================================================================
+from .base import *  # noqa: F403
 
-DEBUG = os.getenv("DEBUG", "").lower() in ("true", "1", "yes")
-
+# ── Sécurité de base
+DEBUG = os.getenv("DEBUG", "0") in {"1", "true", "True"}
 if DEBUG:
-    raise Exception("[SECURITY] DEBUG must be False in production.")
+    raise Exception("[SECURITY] DEBUG doit être désactivé en production.")
 
-# ==============================================================================
-# Secret key (mandatory for production, no fallback)
-# ==============================================================================
+SECRET_KEY = os.getenv("SECRET_KEY")
+if not SECRET_KEY:
+    raise Exception("[CRITICAL] SECRET_KEY manquante.")
 
-SECRET_KEY = os.environ["SECRET_KEY"]
+ALLOWED_HOSTS_ENV = os.getenv("DJANGO_ALLOWED_HOSTS", "")
+if not ALLOWED_HOSTS_ENV:
+    raise Exception("[CRITICAL] DJANGO_ALLOWED_HOSTS manquant.")
+ALLOWED_HOSTS = [h.strip() for h in ALLOWED_HOSTS_ENV.split(",") if h.strip()]
 
-# ==============================================================================
-# Authorized hosts (mandatory for prod)
-# ==============================================================================
+# ── CORS / CSRF
+CORS_ALLOWED_ORIGINS = [
+    o.strip() for o in os.getenv("CORS_ALLOWED_ORIGINS", "").split(",") if o.strip()
+]
+CSRF_TRUSTED_ORIGINS = [
+    o.strip() for o in os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",") if o.strip()
+]
 
-ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
-if not any(ALLOWED_HOSTS):
-    raise Exception("ALLOWED_HOSTS must be set")
-
-# ==============================================================================
-# PostgreSQL database
-# ==============================================================================
-
+# ── Base de données (Render Postgres + SSL)
 DATABASES = {
     "default": {
-        "ENGINE": os.environ["DJANGO_DB_ENGINE"],
-        "NAME": os.environ["DJANGO_DB_NAME"],
-        "USER": os.environ["DJANGO_DB_USER"],
-        "PASSWORD": os.environ["DJANGO_DB_PASSWORD"],
-        "HOST": os.environ["DJANGO_DB_HOST"],
-        "PORT": os.environ["DJANGO_DB_PORT"],
+        "ENGINE": os.getenv("DJANGO_DB_ENGINE", "django.db.backends.postgresql"),
+        "NAME": os.getenv("DJANGO_DB_NAME"),
+        "USER": os.getenv("DJANGO_DB_USER"),
+        "PASSWORD": os.getenv("DJANGO_DB_PASSWORD"),
+        "HOST": os.getenv("DJANGO_DB_HOST"),
+        "PORT": os.getenv("DJANGO_DB_PORT", "5432"),
+        "OPTIONS": {"sslmode": os.getenv("DJANGO_DB_SSLMODE", "require")},
+        "CONN_MAX_AGE": 600,
     }
 }
 
-# ==============================================================================
-# Gestion des fichiers statiques via WhiteNoise
-# ==============================================================================
+# ── Statics Django (si servis par l'app; sinon laisse Nginx du frontend)
+# Active WhiteNoise uniquement si tu sers les statics Django ici.
+if os.getenv("ENABLE_WHITENOISE", "0") in {"1", "true", "True"}:
+    MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")  # noqa: F405
+    STORAGES = {
+        "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
+    }
 
-MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
-STORAGES = {
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
-}
-
-WHITENOISE_AUTOREFRESH = False
-WHITENOISE_USE_FINDERS = False
-
-# ==============================================================================
-# Sécurité (headers, cookies, SSL, etc.)
-# ==============================================================================
-
-SECURE_HSTS_SECONDS = 31536000  # 1 an
+# ── Sécurité HTTP renforcée
+SECURE_HSTS_SECONDS = 31536000
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
-
 SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
-SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = "DENY"
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-X_FRAME_OPTIONS = "DENY"
 
-# ==============================================================================
-# Logging (stdout, format structuré)
-# ==============================================================================
-
+# ── Logging
 LOG_LEVEL = os.getenv("DJANGO_LOG_LEVEL", "INFO").upper()
-if LOG_LEVEL not in ("DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"):
+if LOG_LEVEL not in {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}:
     LOG_LEVEL = "INFO"
 
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
-    "formatters": {
-        "verbose": {
-            "format": "{levelname} {asctime} {module} {message}",
-            "style": "{",
-        },
-    },
-    "handlers": {
-        "console": {
-            "class": "logging.StreamHandler",
-            "formatter": "verbose",
-        },
-    },
-    "root": {
-        "handlers": ["console"],
-        "level": LOG_LEVEL,
-    },
+    "formatters": {"verbose": {"format": "{levelname} {asctime} {module} {message}", "style": "{"}},
+    "handlers": {"console": {"class": "logging.StreamHandler", "formatter": "verbose"}},
+    "root": {"handlers": ["console"], "level": LOG_LEVEL},
 }
 
-DEFAULT_RESPONSE_HEADERS = {
-    "X-Content-Type-Options": "nosniff",
-    "X-Frame-Options": "DENY",
-    "X-Conversa-Version": "1.0.0",
-}
-
-# ============================================================================== #
-# Sanity check – fail early if critical env vars are missing                    #
-# ============================================================================== #
-
+# ── Variables critiques obligatoires
 REQUIRED_VARS = [
     "SECRET_KEY",
     "DJANGO_ALLOWED_HOSTS",
@@ -123,7 +87,6 @@ REQUIRED_VARS = [
     "DJANGO_DB_HOST",
     "DJANGO_DB_PORT",
 ]
-
-for var in REQUIRED_VARS:
-    if not os.getenv(var):
-        raise Exception(f"[CRITICAL] Missing environment variable: {var}")
+_missing = [v for v in REQUIRED_VARS if not os.getenv(v)]
+if _missing:
+    raise Exception(f"[CRITICAL] Variables manquantes : {', '.join(_missing)}")

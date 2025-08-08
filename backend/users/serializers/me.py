@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework.reverse import reverse
-from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
+from drf_spectacular.utils import extend_schema_serializer, OpenApiExample, extend_schema_field
 
 from users.models import User
 
@@ -13,7 +13,7 @@ from users.models import User
                 "id": 1,
                 "email": "jaber@conversa.be",
                 "first_name": "Jaber",
-                "last_name": "Boudouh",
+                "last_name": "Bo",
                 "bio": "Amoureux des langues et des rencontres culturelles",
                 "language_native": "fr",
                 "languages_spoken": ["en", "ar"],
@@ -54,6 +54,7 @@ class UserMeSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["id", "email", "date_joined"]
 
+    @extend_schema_field(serializers.DictField())
     def get_links(self, obj):
         request = self.context.get("request")
         return {

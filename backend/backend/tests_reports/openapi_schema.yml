@@ -1,0 +1,528 @@
+openapi: 3.0.3
+info:
+  title: Conversa API
+  version: 1.0.0
+  description: 'API RESTful pour la plateforme Conversa : utilisateurs, événements,
+    paiements...'
+paths:
+  /api/users/{id}/public/:
+    get:
+      operationId: users_public_retrieve
+      description: "\n        Ce endpoint permet de consulter les informations publiques\
+        \ d’un utilisateur à partir de son identifiant (`pk`).\n\n        Le profil\
+        \ doit être marqué comme **public** (`is_profile_public=True`) pour être accessible.\n\
+        \        \n        Si le profil n’existe pas ou est privé, une erreur `404\
+        \ Not Found` est renvoyée.\n\n        ✅ Aucun token n’est requis. Accessible\
+        \ même en étant déconnecté.\n    "
+      summary: Voir un profil utilisateur public
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Utilisateurs
+      security:
+      - jwtAuth: []
+      - BearerAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicUser'
+              examples:
+                ProfilPublicD’unUtilisateur:
+                  value:
+                    id: 12
+                    first_name: Anna
+                    last_name: Dubois
+                    age: 30
+                    language_native: fr
+                    languages_spoken:
+                    - en
+                    - nl
+                    bio: Curieuse de découvrir de nouvelles cultures.
+                  summary: Exemple de réponse publique
+          description: ''
+        '404':
+          description: Profil inexistant ou privé.
+  /api/users/me/:
+    get:
+      operationId: users_me_retrieve
+      description: "\n        Retourne les informations personnelles de l’utilisateur\
+        \ connecté.  \n        Ce profil inclut des champs non sensibles ainsi que\
+        \ des liens HATEOAS\n        pour interagir avec l’API (édition, export, etc.).\n\
+        \    "
+      summary: Afficher le profil de l'utilisateur connecté
+      tags:
+      - Utilisateurs
+      security:
+      - jwtAuth: []
+      - BearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserMe'
+              examples:
+                ProfilComplet:
+                  value:
+                    id: 1
+                    email: jaber@conversa.be
+                    first_name: Jaber
+                    last_name: Bo
+                    bio: Amoureux des langues et des rencontres culturelles
+                    language_native: fr
+                    languages_spoken:
+                    - en
+                    - ar
+                    date_joined: '2025-08-06T09:15:00Z'
+                    is_profile_public: true
+                    links:
+                      self: /api/users/me/
+                      update: /api/users/me/
+                      delete: /api/users/me/
+                      export: /api/users/me/export/
+                  summary: Profil complet
+          description: ''
+    patch:
+      operationId: users_me_partial_update
+      description: "\n        Retourne les informations personnelles de l’utilisateur\
+        \ connecté.  \n        Ce profil inclut des champs non sensibles ainsi que\
+        \ des liens HATEOAS\n        pour interagir avec l’API (édition, export, etc.).\n\
+        \    "
+      summary: Afficher le profil de l'utilisateur connecté
+      tags:
+      - Utilisateurs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserMeUpdateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUserMeUpdateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUserMeUpdateRequest'
+      security:
+      - jwtAuth: []
+      - BearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserMe'
+              examples:
+                ProfilComplet:
+                  value:
+                    id: 1
+                    email: jaber@conversa.be
+                    first_name: Jaber
+                    last_name: Bo
+                    bio: Amoureux des langues et des rencontres culturelles
+                    language_native: fr
+                    languages_spoken:
+                    - en
+                    - ar
+                    date_joined: '2025-08-06T09:15:00Z'
+                    is_profile_public: true
+                    links:
+                      self: /api/users/me/
+                      update: /api/users/me/
+                      delete: /api/users/me/
+                      export: /api/users/me/export/
+                  summary: Profil complet
+          description: ''
+    delete:
+      operationId: users_me_destroy
+      description: "\n        Retourne les informations personnelles de l’utilisateur\
+        \ connecté.  \n        Ce profil inclut des champs non sensibles ainsi que\
+        \ des liens HATEOAS\n        pour interagir avec l’API (édition, export, etc.).\n\
+        \    "
+      summary: Afficher le profil de l'utilisateur connecté
+      tags:
+      - Utilisateurs
+      security:
+      - jwtAuth: []
+      - BearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserMe'
+              examples:
+                ProfilComplet:
+                  value:
+                    id: 1
+                    email: jaber@conversa.be
+                    first_name: Jaber
+                    last_name: Bo
+                    bio: Amoureux des langues et des rencontres culturelles
+                    language_native: fr
+                    languages_spoken:
+                    - en
+                    - ar
+                    date_joined: '2025-08-06T09:15:00Z'
+                    is_profile_public: true
+                    links:
+                      self: /api/users/me/
+                      update: /api/users/me/
+                      delete: /api/users/me/
+                      export: /api/users/me/export/
+                  summary: Profil complet
+          description: ''
+  /api/users/me/export/:
+    get:
+      operationId: users_me_export_retrieve
+      description: "\n        Ce endpoint permet à l’utilisateur connecté d’exporter\
+        \ toutes ses données personnelles \n        au format JSON, en conformité\
+        \ avec le RGPD.  \n        Les données retournées incluent les informations\
+        \ de profil stockées dans la base de données.\n    "
+      summary: Exporter les données personnelles de l’utilisateur
+      tags:
+      - Utilisateurs
+      security:
+      - jwtAuth: []
+      - BearerAuth: []
+      responses:
+        '200':
+          description: Données exportées avec succès (format JSON)
+        '403':
+          description: Accès interdit (utilisateur non autorisé)
+  /api/users/register/:
+    post:
+      operationId: users_register_create
+      description: "\n        Ce endpoint permet à un nouvel utilisateur de s’inscrire\
+        \ sur la plateforme Conversa.\n\n        Il est accessible à tous (`AllowAny`),\
+        \ sans authentification préalable.  \n        L’utilisateur doit fournir les\
+        \ champs requis : email, mot de passe, prénom, etc.\n\n        Si les données\
+        \ sont valides, un nouveau compte est créé et une réponse `201 Created` est\
+        \ renvoyée.\n    "
+      summary: Créer un compte utilisateur
+      tags:
+      - Utilisateurs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+            examples:
+              ExempleD’inscription:
+                value:
+                  email: alice@example.com
+                  password: MotDePasse123
+                  first_name: Alice
+                  last_name: Martin
+                  birth_date: '2003-08-07'
+                  bio: J’adore les langues
+                  language_native: fr
+                  languages_spoken:
+                  - en
+                  - es
+                  consent_given: true
+                summary: Exemple complet de payload d’inscription
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - BearerAuth: []
+      - {}
+      responses:
+        '201':
+          description: Inscription réussie.
+        '400':
+          description: Données invalides (email déjà utilisé, etc.)
+  /api/users/reset-password/:
+    post:
+      operationId: users_reset_password_create
+      description: "\n        Permet à un utilisateur de demander un lien de réinitialisation\
+        \ de mot de passe.\n        Cette route est **limitée à 5 tentatives par heure**\
+        \ par IP pour éviter les abus.\n    "
+      summary: Demander une réinitialisation de mot de passe
+      tags:
+      - Utilisateurs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: alice@example.com
+              required:
+              - email
+      security:
+      - jwtAuth: []
+      - BearerAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                ResetEmailSent:
+                  value:
+                    detail: Si cette adresse est enregistrée, un lien de réinitialisation
+                      a été envoyé par email.
+                  summary: reset_email_sent
+          description: Lien de réinitialisation envoyé (si compte existant).
+        '429':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                TooManyRequests:
+                  value:
+                    detail: Trop de tentatives. Réessaie dans une heure.
+                  summary: too_many_requests
+          description: Trop de tentatives. Attends avant de réessayer.
+  /api/users/reset-password/confirm/:
+    post:
+      operationId: users_reset_password_confirm_create
+      description: "\n        Cette route permet à un utilisateur de finaliser la\
+        \ réinitialisation de son mot de passe.\n        Le lien contient deux éléments\
+        \ indispensables :\n        - le `uid` (identifiant encodé en base64),\n \
+        \       - le `token` (valide temporairement, généré par Django).\n       \
+        \ En cas de succès, un nouveau mot de passe est défini.  \n        En cas\
+        \ d’échec (lien expiré ou invalide), une erreur est retournée.\n        Le\
+        \ mot de passe doit contenir au moins 8 caractères.\n    "
+      summary: Confirmer la réinitialisation de mot de passe
+      tags:
+      - Utilisateurs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                uid:
+                  type: string
+                  example: Mg
+                token:
+                  type: string
+                  example: 1x2v8v-7eb83a4d7f251b63ebc
+                new_password:
+                  type: string
+                  example: MonNouveauMotDePasse123
+              required:
+              - uid
+              - token
+              - new_password
+      security:
+      - jwtAuth: []
+      - BearerAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                ResetSuccess:
+                  value:
+                    detail: Votre mot de passe a été mis à jour. Vous pouvez désormais
+                      vous connecter avec votre nouveau mot de passe.
+                  summary: reset_success
+          description: Mot de passe réinitialisé avec succès.
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                TokenInvalid:
+                  value:
+                    detail: Token invalide ou expiré.
+                  summary: token_invalid
+                TooShort:
+                  value:
+                    detail: Le mot de passe doit contenir au moins 8 caractères.
+                  summary: too_short
+                UidInvalid:
+                  value:
+                    detail: Lien invalide.
+                  summary: uid_invalid
+          description: Lien invalide, expiré ou mot de passe incorrect.
+components:
+  schemas:
+    PatchedUserMeUpdateRequest:
+      type: object
+      properties:
+        first_name:
+          type: string
+          minLength: 1
+          description: Prénom à afficher dans le profil.
+        last_name:
+          type: string
+          minLength: 1
+          description: Nom à afficher dans le profil.
+        bio:
+          type: string
+          description: Texte libre pour se présenter.
+        languages_spoken:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: Liste mise à jour des langues parlées par l’utilisateur.
+        is_profile_public:
+          type: boolean
+          description: Indique si le profil est visible publiquement.
+    PublicUser:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        first_name:
+          type: string
+          readOnly: true
+          description: Prénom réel de l’utilisateur.
+        last_name:
+          type: string
+          readOnly: true
+          description: Nom réel de l’utilisateur.
+        age:
+          type: integer
+          description: Âge de l’utilisateur affiché sur le profil public (calculé
+            automatiquement).
+          readOnly: true
+        language_native:
+          type: string
+          readOnly: true
+          description: Langue maternelle principale déclarée par l’utilisateur.
+        languages_spoken:
+          readOnly: true
+          description: Liste de langues parlées par l’utilisateur (au moins niveau
+            conversationnel).
+        bio:
+          type: string
+          readOnly: true
+          description: Texte libre pour décrire son parcours ou ses centres d’intérêt.
+    RegisterRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          minLength: 1
+          description: Adresse email utilisée pour se connecter à la plateforme.
+        password:
+          type: string
+          writeOnly: true
+          minLength: 8
+          description: Mot de passe confidentiel (minimum 8 caractères).
+        first_name:
+          type: string
+          minLength: 1
+          description: Prénom affiché publiquement sur le profil.
+        last_name:
+          type: string
+          minLength: 1
+          description: Nom de famille affiché publiquement sur le profil.
+        birth_date:
+          type: string
+          format: date
+          description: Date de naissance (vous devez avoir au moins 18 ans).
+        bio:
+          type: string
+          description: Texte libre pour vous présenter aux autres joueurs.
+        language_native:
+          type: string
+          minLength: 1
+          description: Langue maternelle principale.
+        languages_spoken:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: Langues parlées en plus de la langue maternelle.
+        consent_given:
+          type: boolean
+          description: Consentement explicite au traitement des données personnelles
+            (RGPD).
+      required:
+      - birth_date
+      - consent_given
+      - email
+      - first_name
+      - language_native
+      - languages_spoken
+      - last_name
+      - password
+    UserMe:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identifiant unique de l’utilisateur.
+        email:
+          type: string
+          format: email
+          description: Adresse e-mail utilisée pour se connecter.
+        first_name:
+          type: string
+          description: Prénom visible dans le profil.
+        last_name:
+          type: string
+          description: Nom visible dans le profil.
+        bio:
+          type: string
+          description: Présentation personnelle de l’utilisateur.
+        language_native:
+          type: string
+          description: Langue maternelle principale.
+        languages_spoken:
+          type: array
+          items:
+            type: string
+          description: Liste des langues supplémentaires que l’utilisateur parle.
+        date_joined:
+          type: string
+          format: date-time
+          description: Date de création du compte.
+        is_profile_public:
+          type: boolean
+          description: Indique si le profil est visible publiquement.
+        links:
+          type: object
+          additionalProperties: {}
+          readOnly: true
+          description: Liens HATEOAS vers les actions sur le profil.
+      required:
+      - bio
+      - date_joined
+      - email
+      - first_name
+      - id
+      - is_profile_public
+      - language_native
+      - languages_spoken
+      - last_name
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

@@ -10,7 +10,7 @@ pnpm-debug.log*
 lerna-debug.log*
 
 # ============================
-# Node.js / React (frontend)
+# Node.js / Angular (frontend)
 # ============================
 frontend/node_modules/
 frontend/dist*/
@@ -21,6 +21,29 @@ frontend/coverage/
 frontend/npm-debug.log*
 frontend/yarn-debug.log*
 frontend/yarn-error.log*
+frontend/dist
+frontend/tmp
+frontend/out-tsc
+frontend/bazel-out
+frontend/node_modules
+frontend/npm-debug.log
+frontend/yarn-error.log
+frontend/.idea/
+frontend/.project
+frontend/.classpath
+frontend/.c9/
+frontend/*.launch
+frontend/.settings/
+frontend/*.sublime-workspace
+frontend/.angular/cache
+frontend/.sass-cache/
+frontend/connect.lock
+frontend/coverage
+frontend/libpeerconnection.log
+frontend/testem.log
+frontend/typings
+frontend/.DS_Store
+frontend/Thumbs.db
 
 # ============================
 # Python / Django (backend)
@@ -37,6 +60,7 @@ backend/htmlcov/
 backend/.pytest_cache/
 backend/.mypy_cache/
 coverage.xml
+backend/schema.yml
 
 # ============================
 # Environment (.env)

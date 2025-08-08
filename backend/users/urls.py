@@ -8,19 +8,25 @@ from users.views import (
     ConfirmPasswordResetView,
 )
 
-from users.views.jwt import (
-    SpectacularTokenObtainPairView,
-    SpectacularTokenRefreshView,
+from users.views.auth import (
     PingAuthView, 
     LogoutView,
+    CustomTokenObtainPairView,
+    CustomTokenRefreshView
 )
+
+from drf_spectacular.views import SpectacularAPIView
+from drf_spectacular.openapi import AutoSchema
+
+class CustomSpectacularAPIView(SpectacularAPIView):
+    schema = AutoSchema()
 
 urlpatterns = [
     # Authentification
-    path("auth/token/", SpectacularTokenObtainPairView.as_view(), name="token_obtain_pair"),
-    path("auth/token/refresh/", SpectacularTokenRefreshView.as_view(), name="token_refresh"),
-    path("auth/ping/", PingAuthView.as_view(), name="auth-ping"),
-    path("auth/logout/", LogoutView.as_view(), name="logout"),
+    path('auth/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('auth/token/refresh/', CustomTokenRefreshView.as_view(), name='token_refresh'),
+    path('auth/logout/', LogoutView.as_view(), name='auth_logout'),
+    path('auth/ping/', PingAuthView.as_view(), name='auth_ping'),
 
     # Utilisateur connecté
     path("users/me/", MeView.as_view(), name="user-me"),

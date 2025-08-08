@@ -1,33 +1,13 @@
-# ==============================================================================
-# Docker Compose - Local Development Environment (DEV)
-# ------------------------------------------------------------------------------
-# This file defines all the services required for local development:
-# - PostgreSQL database (with persistent volume)
-# - Django backend (automatic reload, dev server)
-# - React frontend (Vite development server or equivalent)
-# - pgAdmin interface to view PostgreSQL database
-#
-# Environment variables: placed in ./env/.env.dev (unversioned)
-# Each service can access them via `env_file`.
-#
-# Recommended launch:
-# docker compose -f docker/compose.dev.yml up --build
-# ==============================================================================
-
 services:
   db:
-    image: postgres:15
+    image: postgres:15-alpine
     restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: conversa_db
+    env_file: [./env/.env.dev]
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    networks:
-      - conversa
+    networks: [conversa]
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-conversa_db}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -39,45 +19,44 @@ services:
       dockerfile: docker/Dockerfile.backend
       args:
         REQUIREMENTS_FILE: requirements/dev.txt
-    ports:
-      - "8000:8000"
+    environment:
+      ENV_MODE: development
+    env_file: [./env/.env.dev]
+    working_dir: /app/backend
     volumes:
-      - ../backend:/app
-    env_file:
-      - ./env/.env.dev
+      - ../backend:/app/backend
+    ports: ["8000:8000"]
     depends_on:
-      db:
-        condition: service_healthy
-    entrypoint: ["/entrypoints/entrypoint.dev.sh"]
-    networks:
-      - conversa
+      db: { condition: service_healthy }
+    networks: [conversa]
 
   frontend:
     build:
       context: ../
       dockerfile: docker/Dockerfile.frontend
       target: dev
-    ports:
-      - "5173:5173"
+    environment:
+      NODE_ENV: development
+      CHOKIDAR_USEPOLLING: "true"
+    working_dir: /app
     volumes:
       - ../frontend:/app
       - node_modules_frontend:/app/node_modules
-    env_file:
-      - ./env/.env.dev
-    networks:
-      - conversa
+    ports: ["5173:5173"]
+    command: sh -lc "npm run dev -- --host 0.0.0.0 --port 5173"
+    depends_on:
+      backend: { condition: service_started }
+    networks: [conversa]
+
 
   pgadmin:
-    image: dpage/pgadmin4
-    ports:
-      - "5050:80"
-    env_file:
-      - ./env/.env.dev
+    image: dpage/pgadmin4:latest
+    pull_policy: always
+    env_file: [./env/.env.dev]
+    ports: ["5050:80"]
     depends_on:
-      db:
-        condition: service_healthy
-    networks:
-      - conversa
+      db: { condition: service_healthy }
+    networks: [conversa]
 
 volumes:
   postgres_data:
