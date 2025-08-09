@@ -9,8 +9,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test:
-    name: Tests (SQLite)
+  checks:
+    name: Django checks (SQLite)
     runs-on: ubuntu-latest
     env:
       ENV_MODE: ci
@@ -36,16 +36,15 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements/ci.txt
 
-      - name: Run tests
-        working-directory: backend
+      - name: Django checks + migrations (SQLite)
         run: |
-          python manage.py makemigrations --check --dry-run
-          python manage.py migrate --noinput
-          pytest --maxfail=1 -q
+          python backend/manage.py check --deploy
+          python backend/manage.py makemigrations --check --dry-run
+          python backend/manage.py migrate --noinput
 
   migrate_and_deploy:
     name: Migrate DB (Render) + Deploy
-    needs: test
+    needs: checks
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
