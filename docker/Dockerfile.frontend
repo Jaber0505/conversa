@@ -10,11 +10,11 @@ CMD ["ng", "serve", "--host", "0.0.0.0", "--port", "4200"]
 # ---------- BUILD PROD ----------
 FROM node:20-alpine AS build
 WORKDIR /app
+ENV NODE_ENV=production
 COPY frontend/package*.json ./
 RUN npm ci --no-audit --no-fund
 COPY frontend/ ./
-# Angular 17/18: sort dans dist/<app>/browser/
-RUN npm run build
+RUN npm run build -- --configuration production
 
 # ---------- RUNTIME PROD (NGINX) ----------
 FROM nginx:alpine AS prod
