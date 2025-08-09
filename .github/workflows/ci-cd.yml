@@ -5,6 +5,8 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  # (optionnel) déclencheur manuel
+  workflow_dispatch:
 
 concurrency:
   group: ci-cd-${{ github.ref }}
@@ -22,30 +24,8 @@ env:
   NODE_VERSION: "20"
 
 jobs:
-  changes:
-    name: Detect changes
-    runs-on: ubuntu-latest
-    outputs:
-      backend: ${{ steps.filter.outputs.backend }}
-      frontend: ${{ steps.filter.outputs.frontend }}
-    steps:
-      - uses: actions/checkout@v4
-      - id: filter
-        uses: dorny/paths-filter@v3
-        with:
-          filters: |
-            backend:
-              - 'backend/**'
-              - 'docker/Dockerfile.backend'
-            frontend:
-              - 'frontend/**'
-              - 'docker/Dockerfile.frontend'
-              - 'docker/nginx/**'
-
   test-backend:
     name: Test backend
-    needs: changes
-    if: needs.changes.outputs.backend == 'true'
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -104,8 +84,6 @@ jobs:
 
   test-frontend:
     name: Test frontend
-    needs: changes
-    if: needs.changes.outputs.frontend == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -120,8 +98,7 @@ jobs:
 
   build-backend:
     name: Build & push backend image
-    needs: [changes, test-backend]
-    if: needs.changes.outputs.backend == 'true'
+    needs: [test-backend]
     runs-on: ubuntu-latest
     outputs:
       IMAGE_REF: ${{ steps.out.outputs.TAG_SHA }}
@@ -156,8 +133,7 @@ jobs:
 
   build-frontend:
     name: Build & push frontend image
-    needs: [changes, test-frontend]
-    if: needs.changes.outputs.frontend == 'true'
+    needs: [test-frontend]
     runs-on: ubuntu-latest
     outputs:
       IMAGE_REF: ${{ steps.out.outputs.TAG_SHA }}
@@ -192,8 +168,7 @@ jobs:
 
   migrate-and-deploy:
     name: Migrate DB and deploy to Render
-    needs: [changes, build-backend, build-frontend]
-    if: needs.changes.outputs.backend == 'true' || needs.changes.outputs.frontend == 'true'
+    needs: [build-backend, build-frontend]
     runs-on: ubuntu-latest
     steps:
       - uses: docker/login-action@v3
@@ -203,7 +178,6 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Migrate using backend image (prod DB)
-        if: needs.changes.outputs.backend == 'true'
         env:
           DJANGO_SETTINGS_MODULE: config.settings.prod
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
@@ -233,15 +207,12 @@ jobs:
             "$REF" python manage.py migrate --noinput
 
       - name: Trigger Render deploy (backend)
-        if: needs.changes.outputs.backend == 'true'
         run: curl -fsSL -X POST "${{ secrets.RENDER_DEPLOY_HOOK_BACKEND_URL }}"
 
       - name: Trigger Render deploy (frontend)
-        if: needs.changes.outputs.frontend == 'true'
         run: curl -fsSL -X POST "${{ secrets.RENDER_DEPLOY_HOOK_FRONTEND_URL }}"
 
       - name: Wait & health check backend
-        if: needs.changes.outputs.backend == 'true'
         run: |
           for i in {1..30}; do
             code=$(curl -s -o /dev/null -w "%{http_code}" "${{ vars.BACKEND_HEALTH_URL }}")
@@ -256,7 +227,6 @@ jobs:
           exit 1
 
       - name: Wait & health check frontend
-        if: needs.changes.outputs.frontend == 'true'
         run: |
           for i in {1..30}; do
             code=$(curl -s -o /dev/null -w "%{http_code}" "${{ vars.FRONTEND_URL }}")
