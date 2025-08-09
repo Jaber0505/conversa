@@ -101,7 +101,7 @@ jobs:
           DJANGO_DB_HOST: ${{ secrets.DJANGO_DB_HOST }}
           DJANGO_DB_PORT: ${{ secrets.DJANGO_DB_PORT }}
         run: |
-          python manage.py migrate --noinput
+          python manage.py migrate --noinput --fake-initial
 
       - name: Trigger Render deploy (backend)
         if: ${{ success() }}
