@@ -1,20 +1,10 @@
 # ---------- DEV ----------
 FROM node:20-alpine AS dev
 WORKDIR /app
-
-# Copier uniquement les fichiers de dépendances
 COPY frontend/package*.json ./
-
-# Installer dépendances une fois (au build), strictes via lockfile
 RUN npm ci --no-audit --no-fund
-
-# Mettre les binaires Angular dans le PATH
 ENV PATH=/app/node_modules/.bin:$PATH
-
-# Exposer le port Angular
 EXPOSE 4200
-
-# Un SEUL point d'entrée pour dev
 CMD ["ng", "serve", "--host", "0.0.0.0", "--port", "4200"]
 
 # ---------- BUILD PROD ----------
@@ -23,12 +13,14 @@ WORKDIR /app
 COPY frontend/package*.json ./
 RUN npm ci --no-audit --no-fund
 COPY frontend/ ./
+# Angular 17/18: sort dans dist/<app>/browser/
 RUN npm run build
 
 # ---------- RUNTIME PROD (NGINX) ----------
 FROM nginx:alpine AS prod
-RUN rm -rf /usr/share/nginx/html/*
-COPY --from=build /app/dist/ /usr/share/nginx/html/
 COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf
+RUN rm -rf /usr/share/nginx/html/*
+COPY --from=build /app/dist/*/browser/ /usr/share/nginx/html/
+
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
