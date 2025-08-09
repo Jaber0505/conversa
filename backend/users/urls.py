@@ -18,8 +18,24 @@ from users.views.auth import (
 from drf_spectacular.views import SpectacularAPIView
 from drf_spectacular.openapi import AutoSchema
 
+
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
+
+
+
 class CustomSpectacularAPIView(SpectacularAPIView):
     schema = AutoSchema()
+
+class PingView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        return Response({
+            "status": "ok",
+            "message": "Backend opérationnel – communication établie ✅"
+        })
 
 urlpatterns = [
     # Authentification
@@ -41,4 +57,6 @@ urlpatterns = [
     # Password reset
     path("users/reset-password/", RequestPasswordResetView.as_view(), name="reset-password"),
     path("users/reset-password/confirm/", ConfirmPasswordResetView.as_view(), name="reset-password-confirm"),
+
+    path("ping", PingView.as_view(), name="ping"),
 ]

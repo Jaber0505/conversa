@@ -1,21 +1,29 @@
 #!/usr/bin/env python
-"""Django's command-line utility for administrative tasks."""
+"""
+Point d’entrée en ligne de commande pour Django.
+- Utilise la variable d’environnement DJANGO_SETTINGS_MODULE si définie.
+- Par défaut, bascule sur 'config.settings.dev' pour le développement.
+- Permet d’exécuter les commandes Django (migrate, runserver, createsuperuser, etc.).
+"""
+
 import os
 import sys
 
-def main():
-    """Run administrative tasks."""
-    # On configure Django pour utiliser le module 'config' qui redirige selon ENV_MODE
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config")
+
+def main() -> None:
+    os.environ.setdefault(
+        "DJANGO_SETTINGS_MODULE",
+        os.getenv("DJANGO_SETTINGS_MODULE", "config.settings.dev"),
+    )
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
         raise ImportError(
-            "Couldn't import Django. Are you sure it's installed and "
-            "available on your PYTHONPATH environment variable? Did you "
-            "forget to activate a virtual environment?"
+            "Impossible d’importer Django. Vérifie que les dépendances sont installées "
+            "(pip install -r requirements/dev.txt) et que l’environnement Python est actif."
         ) from exc
     execute_from_command_line(sys.argv)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

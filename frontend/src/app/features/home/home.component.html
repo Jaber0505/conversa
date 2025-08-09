@@ -1,0 +1,14 @@
+<main class="home">
+  <h1>Conversa – Frontend</h1>
+
+  <button type="button" (click)="tester()" [disabled]="loading">
+    {{ loading ? 'Test en cours…' : 'Tester l\'API' }}
+  </button>
+
+  <div class="result" *ngIf="status || message">
+    <p>Status : <strong>{{ status }}</strong></p>
+    <p>Message : {{ message }}</p>
+  </div>
+
+  <p class="error" *ngIf="error">{{ error }}</p>
+</main>

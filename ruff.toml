@@ -1,8 +1,35 @@
-line-length = 130
+# Version minimale de Ruff
 target-version = "py311"
 
-[lint]
-select = ["F", "E"]
-ignore = ["F403", "F405"]
-[format]
-quote-style = "double"
+# Taille max d’une ligne
+line-length = 88
+
+# Inclure et exclure certains fichiers
+exclude = [
+    ".git",
+    "__pycache__",
+    "migrations",
+    "venv",
+    ".venv",
+    "node_modules",
+]
+
+# Active les règles importantes
+select = [
+    "E",    # Erreurs pycodestyle
+    "F",    # Erreurs Pyflakes
+    "B",    # Erreurs flake8-bugbear
+    "I",    # Import order (isort)
+    "S",    # Sécurité
+]
+
+# Ignore certaines règles spécifiques si besoin
+ignore = [
+    "E501", # Ligne trop longue (on laisse Black gérer)
+]
+
+# Formattage automatique compatible Black
+extend-select = ["I"]
+
+# Fix auto quand possible
+fix = true

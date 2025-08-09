@@ -1,33 +1,42 @@
-# Ignorer les environnements et caches
-__pycache__/
-*.py[cod]
-*.egg-info/
-*.pytest_cache/
-venv/
-htmlcov/
-.coverage
-
-# Ne pas inclure les fichiers d'environnement
-.env
-.env.*
-*.env
-
-# Dossiers non nécessaires à l’image en build
-docker/
-!docker/entrypoints/
-!docker/entrypoints/entrypoint.prod.sh
-!docker/entrypoints/entrypoint.ci.sh
-!docker/entrypoints/entrypoint.sh
-!docker/nginx/default.conf
-pgadmin/
-tests/
-
-# Logs ou fichiers temporaires
-*.log
-*.db
-*.sqlite3
-
-# Fichiers d'éditeur
-.vscode/
+# OS / Éditeur
+.DS_Store
 .idea/
+.vscode/
 *.swp
+*.swo
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+.env
+venv/
+.venv/
+
+# Node / Angular
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+
+# Logs / Cache
+*.log
+*.tmp
+*.pid
+*.seed
+.cache/
+.coverage
+pytest_cache/
+
+# Docker
+docker/*.log
+docker/tmp/
+
+# Git
+.git
+.gitignore
+
+# Autres fichiers inutiles au build
+README.md

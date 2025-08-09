@@ -1,19 +1,16 @@
-import "zone.js";
-import { bootstrapApplication } from "@angular/platform-browser";
-import { provideHttpClient } from "@angular/common/http";
-import { provideRouter, Routes, withEnabledBlockingInitialNavigation } from "@angular/router";
-import { AppComponent } from "./app/app.component";
-import { HomeComponent } from "./app/home.component";
-import { NotFoundComponent } from "./app/not-found.component";
+/**
+ * Bootstrap Angular + HttpClient (Angular 20).
+ */
+import { bootstrapApplication } from '@angular/platform-browser';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
-const routes: Routes = [
-  { path: "", component: HomeComponent },
-  { path: "**", component: NotFoundComponent },
-];
+import { App } from './app/app';
+import { routes } from './app/app.routes';
 
-bootstrapApplication(AppComponent, {
+bootstrapApplication(App, {
   providers: [
-    provideRouter(routes, withEnabledBlockingInitialNavigation()),
-    provideHttpClient(),
+    provideRouter(routes),
+    provideHttpClient(withInterceptorsFromDi()),
   ],
 }).catch(err => console.error(err));

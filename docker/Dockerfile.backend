@@ -1,39 +1,54 @@
-# ==============================================================================
-# Backend Django (multi-env REQUIREMENTS_FILE)
-# ==============================================================================
+# Dockerfile backend multi-stages (dev + prod)
+# Contexte de build attendu = racine du repo.
+# Utilise requirements/base|dev|prod.txt depuis /requirements (à la racine).
 
-FROM python:3.11-slim AS build
-ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=on
+# ---------- BASE ----------
+FROM python:3.11-slim AS base
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
 WORKDIR /app
 
-ARG REQUIREMENTS_FILE=requirements/dev.txt
-
+# Dépendances système nécessaires (psycopg2)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential libpq-dev \
- && rm -rf /var/lib/apt/lists/*
+    build-essential gcc libpq-dev curl && \
+    rm -rf /var/lib/apt/lists/*
 
-COPY ./requirements /requirements
-RUN pip install --upgrade pip && pip install -r /${REQUIREMENTS_FILE}
+# Copier les requirements (racine du repo)
+COPY requirements/ /req/
+RUN python -m pip install --upgrade pip
 
-COPY docker/entrypoints /entrypoints
-RUN chmod +x /entrypoints/*.sh
+# ---------- DEV ----------
+FROM base AS dev
+# Installer deps de dev
+RUN pip install -r /req/dev.txt
+# Le code backend est monté en volume par docker-compose (pas de COPY ici)
+EXPOSE 8000
+ENV DJANGO_SETTINGS_MODULE=config.settings.dev
+CMD bash -lc "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
 
-COPY backend /app/backend
-
-FROM python:3.11-slim AS final
-ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
+# ---------- PROD ----------
+FROM python:3.11-slim AS prod
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
 WORKDIR /app
 
-RUN addgroup --system django && adduser --system --ingroup django django
+# Runtime libpq uniquement
+RUN apt-get update && apt-get install -y --no-install-recommends libpq5 && \
+    rm -rf /var/lib/apt/lists/*
 
-COPY --from=build /usr/local /usr/local
-COPY --from=build /app /app
-COPY --from=build /entrypoints /entrypoints
-RUN chmod +x /entrypoints/*.sh && chown -R django:django /app /entrypoints
+# Copier et installer uniquement les deps prod
+COPY requirements/prod.txt /req/prod.txt
+COPY requirements/base.txt /req/base.txt
+RUN python -m pip install --upgrade pip && \
+    pip install -r /req/prod.txt && \
+    pip install gunicorn uvicorn
 
-USER django
-ENTRYPOINT ["/entrypoints/entrypoint.sh"]
-# CMD ignoré en dev/ci (on route vers entrypoint.dev.sh ou .ci.sh)
-CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000"]
+# Copier le code backend
+COPY backend/ /app/
 
+# ASGI en prod (Gunicorn + workers Uvicorn)
 EXPOSE 8000
+ENV DJANGO_SETTINGS_MODULE=config.settings.prod
+CMD ["bash", "-lc", "gunicorn config.asgi:application -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000 --workers=${WORKERS:-2} --threads=${THREADS:-4} --timeout=60"]
