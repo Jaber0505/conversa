@@ -1,48 +1,53 @@
-# ---- BUILDER : compile les deps (si roues C natives) ----
+# ---- BUILDER : compile les wheels ----
 FROM python:3.11-slim AS builder
 ENV PIP_NO_CACHE_DIR=1
 WORKDIR /wheels
-RUN apt-get update && apt-get install -y --no-install-recommends build-essential gcc libpq-dev \
-  && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential gcc libpq-dev \
+ && rm -rf /var/lib/apt/lists/*
+
 COPY requirements/base.txt requirements/prod.txt /tmp/req/
-RUN python -m pip install --upgrade pip wheel \
-  && pip wheel -r /tmp/req/prod.txt
+RUN --mount=type=cache,target=/root/.cache/pip \
+    python -m pip install --upgrade pip wheel \
+ && pip wheel -r /tmp/req/prod.txt
 
 # ---- RUNTIME : image finale légère ----
 FROM python:3.11-slim
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PIP_NO_CACHE_DIR=1
+    PIP_NO_CACHE_DIR=1 \
+    DJANGO_SETTINGS_MODULE=config.settings.prod \
+    PYTHONHASHSEED=random \
+    PORT=8000
+
 WORKDIR /app
 
-# libs runtime (psycopg2)
-RUN apt-get update && apt-get install -y --no-install-recommends libpq5 \
-  && rm -rf /var/lib/apt/lists/*
+# lib runtime pour psycopg2
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libpq5 \
+ && rm -rf /var/lib/apt/lists/*
 
-# installe les wheels construites
+# wheels précompilées + serveur
 COPY --from=builder /wheels /wheels
 RUN python -m pip install --upgrade pip \
-  && pip install /wheels/* \
-  && pip install gunicorn uvicorn
+ && pip install /wheels/* \
+ && pip install gunicorn uvicorn
 
-# code app
+# code app + config gunicorn
 COPY backend/ /app/
+# important: copier le fichier de conf au bon endroit (même dossier que CMD)
+# (si ton fichier est déjà dans backend/, il est copié par la ligne précédente)
 
-# ENV pour Render/prod
-ENV DJANGO_SETTINGS_MODULE=config.settings.prod \
-    PYTHONHASHSEED=random
-
-# Expose le port fourni par Render (PORT), fallback 8000 local
 EXPOSE 8000
-ENV PORT=8000
 
-# Commande ASGI (proxy headers + forwarded IPs)
+# ASGI + gunicorn.conf.py (filtre /healthz)
 CMD bash -lc "gunicorn config.asgi:application \
   -k uvicorn.workers.UvicornWorker \
+  --config gunicorn.conf.py \
   --bind 0.0.0.0:${PORT} \
   --workers=${WORKERS:-2} \
   --threads=${THREADS:-4} \
   --timeout=60 \
-  --access-logfile - \
   --forwarded-allow-ips='*' \
   --proxy-allow-from='*'"

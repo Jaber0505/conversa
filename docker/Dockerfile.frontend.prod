@@ -3,17 +3,22 @@ FROM node:20-alpine AS build
 WORKDIR /app
 
 COPY frontend/package*.json ./
-RUN npm ci --no-audit --no-fund
+# Cache npm si buildx -> accélère les rebuilds
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci --no-audit --no-fund
 
 COPY frontend/ ./
-RUN npm run build
+# Si package.json a "build": "ng build --configuration production"
+RUN npx ng build --configuration production
 
 # ---------- RUNTIME (NGINX) ----------
 FROM nginx:alpine
-
+# Nginx SPA + /healthz (ta conf)
 COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 
+# Publier seulement l'artefact
 RUN rm -rf /usr/share/nginx/html/*
+# Angular 17/18 : dist/<app>/browser/
 COPY --from=build /app/dist/*/browser/ /usr/share/nginx/html/
 
 EXPOSE 80
