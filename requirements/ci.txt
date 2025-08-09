@@ -4,6 +4,7 @@
 pytest==8.3.*
 pytest-django==4.9.*
 pytest-cov==6.0.*
+pytest-html
 
 # Lint uniquement si nécessaire
 ruff==0.6.*

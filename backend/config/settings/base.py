@@ -70,7 +70,7 @@ ASGI_APPLICATION = "config.asgi.application"
 # ─── Internationalisation ─────────────────────────────────────────────────────
 LANGUAGE_CODE = "fr"
 LANGUAGES = [("fr", _("Français")), ("nl", _("Nederlands")), ("en", _("English"))]
-TIME_ZONE = "UTC"  # mets "Europe/Brussels" si besoin métier
+TIME_ZONE = "Europe/Brussels"
 USE_I18N = True
 USE_TZ = True
 LOCALE_PATHS = [BASE_DIR / "locale"]

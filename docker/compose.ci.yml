@@ -41,5 +41,4 @@ services:
       DJANGO_SU_EMAIL: ${DJANGO_SU_EMAIL:-admin@example.com}
     volumes:
       - ../backend:/app/backend
-      - ../reports:/app/backend/tests_reports
 

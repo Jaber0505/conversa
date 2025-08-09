@@ -11,5 +11,8 @@ ruff==0.6.*
 black==24.10.0
 isort==5.13.*
 
-# Coverage
+# Test
 pytest-cov==6.0.*
+pytest-html
+pytest
+pytest-django

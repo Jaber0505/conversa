@@ -25,9 +25,11 @@ services:
     working_dir: /app/backend
     volumes:
       - ../backend:/app/backend
+      - ./entrypoints:/entrypoints 
     ports: ["8000:8000"]
     depends_on:
       db: { condition: service_healthy }
+    entrypoint: ["/bin/bash","-lc","/entrypoints/entrypoint.sh"]
     networks: [conversa]
 
   frontend:

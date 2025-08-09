@@ -45,11 +45,6 @@ LOGGING = {
     "root": {"handlers": ["null"], "level": "WARNING"},
 }
 
-# ── Statics (si besoin de collectstatic en CI)
-STORAGES = {
-    "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
-}
-
 # ── URLs / WSGI / ASGI (clarifiés)
 ROOT_URLCONF = "config.urls"
 WSGI_APPLICATION = "config.wsgi.application"

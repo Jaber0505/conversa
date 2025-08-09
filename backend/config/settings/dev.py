@@ -20,6 +20,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", "dev-insecure-key")
 ALLOWED_HOSTS = [h.strip() for h in os.getenv("DJANGO_ALLOWED_HOSTS", "*").split(",") if h.strip()]
 
 # ── CORS permissif en dev
+CSRF_TRUSTED_ORIGINS = ["http://localhost:5173", "http://127.0.0.1:5173"]
 CORS_ALLOW_ALL_ORIGINS = True
 
 # ── Base de données (service "db" du compose)
