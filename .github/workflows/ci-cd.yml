@@ -202,8 +202,9 @@ jobs:
         with:
           context: .
           file: docker/Dockerfile.frontend.prod
-          target: latest
           push: true
+          build-args: |
+            API_BASE_URL=${{ secrets.API_BASE_URL }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
       - name: Export frontend SHA tag
