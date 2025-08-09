@@ -1,35 +1,31 @@
-# Version minimale de Ruff
+# ruff.toml (racine du repo ou backend/ruff.toml)
+line-length = 120
 target-version = "py311"
 
-# Taille max d’une ligne
-line-length = 88
-
-# Inclure et exclure certains fichiers
-exclude = [
-    ".git",
-    "__pycache__",
-    "migrations",
-    "venv",
-    ".venv",
-    "node_modules",
-]
-
-# Active les règles importantes
+[lint]
+# Remplace par tes sélections actuelles si tu en avais
 select = [
-    "E",    # Erreurs pycodestyle
-    "F",    # Erreurs Pyflakes
-    "B",    # Erreurs flake8-bugbear
-    "I",    # Import order (isort)
-    "S",    # Sécurité
+  "E", "F", "I",      # pycodestyle/pyflakes/isort
+  "B", "BLE",         # flake8-bugbear
+  "UP",               # pyupgrade
+  "DJ",               # django
+  "RUF",              # règles ruff
+  "C90"               # complexité (C901)
 ]
-
-# Ignore certaines règles spécifiques si besoin
 ignore = [
-    "E501", # Ligne trop longue (on laisse Black gérer)
+  # ex: "E203", "E266"
 ]
+fixable = ["ALL"]
+unfixable = []
 
-# Formattage automatique compatible Black
-extend-select = ["I"]
+[lint.isort]
+known-first-party = ["config", "users"]
+combine-as-imports = true
 
-# Fix auto quand possible
-fix = true
+[lint.per-file-ignores]
+"**/migrations/*.py" = ["ALL"]   # si tu veux ignorer les migrations
+
+[format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = true
