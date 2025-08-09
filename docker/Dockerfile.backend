@@ -1,54 +1,21 @@
-# Dockerfile backend multi-stages (dev + prod)
-# Contexte de build attendu = racine du repo.
-# Utilise requirements/base|dev|prod.txt depuis /requirements (à la racine).
+# ---------- DEV ----------
+FROM python:3.11-slim
 
-# ---------- BASE ----------
-FROM python:3.11-slim AS base
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1
+
 WORKDIR /app
 
-# Dépendances système nécessaires (psycopg2)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential gcc libpq-dev curl && \
-    rm -rf /var/lib/apt/lists/*
+    build-essential gcc libpq-dev curl \
+ && rm -rf /var/lib/apt/lists/*
 
-# Copier les requirements (racine du repo)
 COPY requirements/ /req/
-RUN python -m pip install --upgrade pip
+RUN python -m pip install --upgrade pip \
+ && pip install -r /req/dev.txt
 
-# ---------- DEV ----------
-FROM base AS dev
-# Installer deps de dev
-RUN pip install -r /req/dev.txt
-# Le code backend est monté en volume par docker-compose (pas de COPY ici)
 EXPOSE 8000
 ENV DJANGO_SETTINGS_MODULE=config.settings.dev
-CMD bash -lc "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
 
-# ---------- PROD ----------
-FROM python:3.11-slim AS prod
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    PIP_NO_CACHE_DIR=1
-WORKDIR /app
-
-# Runtime libpq uniquement
-RUN apt-get update && apt-get install -y --no-install-recommends libpq5 && \
-    rm -rf /var/lib/apt/lists/*
-
-# Copier et installer uniquement les deps prod
-COPY requirements/prod.txt /req/prod.txt
-COPY requirements/base.txt /req/base.txt
-RUN python -m pip install --upgrade pip && \
-    pip install -r /req/prod.txt && \
-    pip install gunicorn uvicorn
-
-# Copier le code backend
-COPY backend/ /app/
-
-# ASGI en prod (Gunicorn + workers Uvicorn)
-EXPOSE 8000
-ENV DJANGO_SETTINGS_MODULE=config.settings.prod
-CMD ["bash", "-lc", "gunicorn config.asgi:application -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000 --workers=${WORKERS:-2} --threads=${THREADS:-4} --timeout=60"]
+CMD ["bash","-lc","python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]

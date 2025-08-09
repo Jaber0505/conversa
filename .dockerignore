@@ -22,6 +22,11 @@ frontend/dist/
 frontend/.angular/
 frontend/.vscode
 
+# Django
+backend/__pycache__
+backend/**/*.pyc
+backend/.pytest_cache
+
 # Logs / Cache
 *.log
 *.tmp
@@ -43,3 +48,4 @@ docker/tmp/
 
 # Autres fichiers inutiles au build
 README.md
+
