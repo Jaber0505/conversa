@@ -167,18 +167,26 @@ jobs:
         run: curl -fsSL -X POST "${{ secrets.RENDER_DEPLOY_HOOK_BACKEND_URL }}"
 
       - name: Wait & health check backend
+        env:
+          URL: ${{ vars.BACKEND_HEALTH_URL }}
         run: |
-          for i in {1..30}; do
-            code=$(curl -s -o /dev/null -w "%{http_code}" "${{ vars.BACKEND_HEALTH_URL }}")
-            if [ "$code" = "200" ]; then
-              echo "Backend healthy"
+          if [ -z "$URL" ]; then
+            echo "::error title=Missing variable::BACKEND_HEALTH_URL is not set (Settings → Actions → Variables)."
+            exit 1
+          fi
+          echo "Checking $URL ..."
+          for i in $(seq 1 60); do
+            code="$(curl -s -o /dev/null -w "%{http_code}" "$URL" || echo 000)"
+            if [ "$code" -ge 200 ] && [ "$code" -lt 400 ]; then
+              echo "Backend healthy (HTTP $code)"
               exit 0
             fi
-            echo "Waiting for backend... ($i)"
+            echo "Attempt $i/60: HTTP $code – waiting 10s..."
             sleep 10
           done
-          echo "Backend health check failed"
+          echo "::error title=Health check failed::Couldn't reach $URL with 2xx/3xx after 10 minutes."
           exit 1
+
 
 # -------------------------
 # FRONTEND CHAIN (indépendante)
@@ -241,15 +249,24 @@ jobs:
         run: curl -fsSL -X POST "${{ secrets.RENDER_DEPLOY_HOOK_FRONTEND_URL }}"
 
       - name: Wait & health check frontend
+        env:
+          URL: ${{ vars.FRONTEND_URL }}
         run: |
-          for i in {1..30}; do
-            code=$(curl -s -o /dev/null -w "%{http_code}" "${{ vars.FRONTEND_URL }}")
-            if [ "$code" = "200" ]; then
-              echo "Frontend reachable"
+          if [ -z "$URL" ]; then
+            echo "::error title=Missing variable::FRONTEND_URL is not set (Settings → Actions → Variables)."
+            exit 1
+          fi
+          echo "Checking $URL ..."
+          for i in $(seq 1 60); do
+            # Si curl échoue (DNS/SSL), on renvoie 000 pour continuer la boucle
+            code="$(curl -s -o /dev/null -w "%{http_code}" "$URL" || echo 000)"
+            # On accepte 2xx et 3xx
+            if [ "$code" -ge 200 ] && [ "$code" -lt 400 ]; then
+              echo "Frontend reachable (HTTP $code)"
               exit 0
             fi
-            echo "Waiting for frontend... ($i)"
+            echo "Attempt $i/60: HTTP $code – waiting 10s..."
             sleep 10
           done
-          echo "Frontend health check failed"
+          echo "::error title=Health check failed::Couldn't reach $URL with 2xx/3xx after 10 minutes."
           exit 1

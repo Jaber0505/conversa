@@ -1,31 +1,8 @@
-# ruff.toml (racine du repo ou backend/ruff.toml)
-line-length = 120
+line-length = 130
 target-version = "py311"
 
 [lint]
-# Remplace par tes sélections actuelles si tu en avais
-select = [
-  "E", "F", "I",      # pycodestyle/pyflakes/isort
-  "B", "BLE",         # flake8-bugbear
-  "UP",               # pyupgrade
-  "DJ",               # django
-  "RUF",              # règles ruff
-  "C90"               # complexité (C901)
-]
-ignore = [
-  # ex: "E203", "E266"
-]
-fixable = ["ALL"]
-unfixable = []
-
-[lint.isort]
-known-first-party = ["config", "users"]
-combine-as-imports = true
-
-[lint.per-file-ignores]
-"**/migrations/*.py" = ["ALL"]   # si tu veux ignorer les migrations
-
+select = ["F", "E"]
+ignore = ["F403", "F405"]
 [format]
 quote-style = "double"
-indent-style = "space"
-docstring-code-format = true
