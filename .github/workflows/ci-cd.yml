@@ -65,29 +65,52 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements/prod.txt
 
+      - name: Preflight env check
+        run: |
+          python - <<'PY'
+          import os, sys
+          required = [
+            'SECRET_KEY','DJANGO_ALLOWED_HOSTS',
+            'DJANGO_DB_NAME','DJANGO_DB_USER','DJANGO_DB_PASSWORD','DJANGO_DB_HOST','DJANGO_DB_PORT'
+          ]
+          missing = [k for k in required if not os.getenv(k)]
+          if missing:
+              print("Missing env:", ", ".join(missing))
+              sys.exit(2)
+          print("All required env present.")
+          PY
+        env:
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          DJANGO_ALLOWED_HOSTS: ${{ secrets.DJANGO_ALLOWED_HOSTS }}
+          DJANGO_DB_NAME: ${{ secrets.DJANGO_DB_NAME }}
+          DJANGO_DB_USER: ${{ secrets.DJANGO_DB_USER }}
+          DJANGO_DB_PASSWORD: ${{ secrets.DJANGO_DB_PASSWORD }}
+          DJANGO_DB_HOST: ${{ secrets.DJANGO_DB_HOST }}
+          DJANGO_DB_PORT: ${{ secrets.DJANGO_DB_PORT }}
+
       - name: Run Django migrations on Render Postgres
         working-directory: backend
         env:
           DJANGO_SETTINGS_MODULE: config.settings.prod
           DEBUG: "0"
-          SECRET_KEY: ${{ secrets.PROD_SECRET_KEY }}
-          DJANGO_ALLOWED_HOSTS: ${{ secrets.PROD_ALLOWED_HOSTS }}
-          DJANGO_DB_NAME: ${{ secrets.PROD_DB_NAME }}
-          DJANGO_DB_USER: ${{ secrets.PROD_DB_USER }}
-          DJANGO_DB_PASSWORD: ${{ secrets.PROD_DB_PASSWORD }}
-          DJANGO_DB_HOST: ${{ secrets.PROD_DB_HOST }}
-          DJANGO_DB_PORT: ${{ secrets.PROD_DB_PORT }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          DJANGO_ALLOWED_HOSTS: ${{ secrets.DJANGO_ALLOWED_HOSTS }}
+          DJANGO_DB_NAME: ${{ secrets.DJANGO_DB_NAME }}
+          DJANGO_DB_USER: ${{ secrets.DJANGO_DB_USER }}
+          DJANGO_DB_PASSWORD: ${{ secrets.DJANGO_DB_PASSWORD }}
+          DJANGO_DB_HOST: ${{ secrets.DJANGO_DB_HOST }}
+          DJANGO_DB_PORT: ${{ secrets.DJANGO_DB_PORT }}
         run: |
           python manage.py migrate --noinput
 
       - name: Trigger Render deploy (backend)
         if: ${{ success() }}
-        run: curl -X POST "$RENDER_BACKEND_DEPLOY_HOOK"
+        run: curl -X POST "$RENDER_DEPLOY_HOOK_BACKEND_URL"
         env:
-          RENDER_BACKEND_DEPLOY_HOOK: ${{ secrets.RENDER_BACKEND_DEPLOY_HOOK }}
+          RENDER_DEPLOY_HOOK_BACKEND_URL: ${{ secrets.RENDER_DEPLOY_HOOK_BACKEND_URL }}
 
       - name: Trigger Render deploy (frontend)
         if: ${{ success() }}
-        run: curl -X POST "$RENDER_FRONTEND_DEPLOY_HOOK"
+        run: curl -X POST "$RENDER_DEPLOY_HOOK_FRONTEND_URL"
         env:
-          RENDER_FRONTEND_DEPLOY_HOOK: ${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK }}
+          RENDER_DEPLOY_HOOK_FRONTEND_URL: ${{ secrets.RENDER_DEPLOY_HOOK_FRONTEND_URL }}
