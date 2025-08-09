@@ -1,4 +1,3 @@
-# backend/gunicorn.conf.py
 import logging
 
 # Évite de logguer les requêtes d'accès sur /healthz
