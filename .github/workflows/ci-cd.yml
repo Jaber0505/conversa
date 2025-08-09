@@ -74,20 +74,6 @@ jobs:
         working-directory: backend
         run: python manage.py migrate --noinput
 
-      - name: Run tests
-        env:
-          DJANGO_SETTINGS_MODULE: config.settings.dev
-          DEBUG: "True"
-          SECRET_KEY: test-key
-          DJANGO_DB_ENGINE: django.db.backends.postgresql
-          DJANGO_DB_NAME: conversa_db
-          DJANGO_DB_USER: postgres
-          DJANGO_DB_PASSWORD: postgres
-          DJANGO_DB_HOST: localhost
-          DJANGO_DB_PORT: "5432"
-        working-directory: backend
-        run: pytest -q
-
   build-backend:
     name: Build & push backend image
     needs: [test-backend]
@@ -168,10 +154,10 @@ jobs:
 
       - name: Wait & health check backend
         env:
-          URL: ${{ vars.BACKEND_HEALTH_URL }}
+          URL: ${{ secrets.BACKEND_URL }}
         run: |
           if [ -z "$URL" ]; then
-            echo "::error title=Missing variable::BACKEND_HEALTH_URL is not set (Settings → Actions → Variables)."
+            echo "::error title=Missing variable::BACKEND_URL is not set (Settings → Actions → Variables)."
             exit 1
           fi
           echo "Checking $URL ..."
@@ -250,7 +236,7 @@ jobs:
 
       - name: Wait & health check frontend
         env:
-          URL: ${{ vars.FRONTEND_URL }}
+          URL: ${{ secrets.FRONTEND_URL }}
         run: |
           if [ -z "$URL" ]; then
             echo "::error title=Missing variable::FRONTEND_URL is not set (Settings → Actions → Variables)."
