@@ -123,6 +123,8 @@ jobs:
     needs: [changes, test-backend]
     if: needs.changes.outputs.backend == 'true'
     runs-on: ubuntu-latest
+    outputs:
+      IMAGE_REF: ${{ steps.out.outputs.TAG_SHA }}
     steps:
       - uses: actions/checkout@v4
       - uses: docker/setup-buildx-action@v3
@@ -157,6 +159,8 @@ jobs:
     needs: [changes, test-frontend]
     if: needs.changes.outputs.frontend == 'true'
     runs-on: ubuntu-latest
+    outputs:
+      IMAGE_REF: ${{ steps.out.outputs.TAG_SHA }}
     steps:
       - uses: actions/checkout@v4
       - uses: docker/setup-buildx-action@v3
@@ -192,12 +196,14 @@ jobs:
     if: needs.changes.outputs.backend == 'true' || needs.changes.outputs.frontend == 'true'
     runs-on: ubuntu-latest
     steps:
+      - uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Migrate using backend image (prod DB)
         if: needs.changes.outputs.backend == 'true'
-        run: |
-          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_BACKEND }}:${{ needs.build-backend.outputs.TAG_SHA##*: }}
-          ID=$(docker create ${{ env.REGISTRY }}/${{ env.IMAGE_BACKEND }}:${{ needs.build-backend.outputs.TAG_SHA##*: }} bash -lc "python manage.py migrate --noinput")
-          docker start -a $ID
         env:
           DJANGO_SETTINGS_MODULE: config.settings.prod
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
@@ -209,10 +215,27 @@ jobs:
           DJANGO_DB_PORT: ${{ secrets.DJANGO_DB_PORT }}
           DJANGO_ALLOWED_HOSTS: ${{ secrets.DJANGO_ALLOWED_HOSTS }}
           DJANGO_TIME_ZONE: Europe/Brussels
+        run: |
+          REF="${{ needs.build-backend.outputs.IMAGE_REF }}"
+          echo "Pulling $REF"
+          docker pull "$REF"
+          docker run --rm \
+            -e DJANGO_SETTINGS_MODULE="$DJANGO_SETTINGS_MODULE" \
+            -e SECRET_KEY="$SECRET_KEY" \
+            -e DJANGO_DB_ENGINE="$DJANGO_DB_ENGINE" \
+            -e DJANGO_DB_NAME="$DJANGO_DB_NAME" \
+            -e DJANGO_DB_USER="$DJANGO_DB_USER" \
+            -e DJANGO_DB_PASSWORD="$DJANGO_DB_PASSWORD" \
+            -e DJANGO_DB_HOST="$DJANGO_DB_HOST" \
+            -e DJANGO_DB_PORT="$DJANGO_DB_PORT" \
+            -e DJANGO_ALLOWED_HOSTS="$DJANGO_ALLOWED_HOSTS" \
+            -e DJANGO_TIME_ZONE="$DJANGO_TIME_ZONE" \
+            "$REF" python manage.py migrate --noinput
 
       - name: Trigger Render deploy (backend)
         if: needs.changes.outputs.backend == 'true'
         run: curl -fsSL -X POST "${{ secrets.RENDER_DEPLOY_HOOK_BACKEND_URL }}"
+
       - name: Trigger Render deploy (frontend)
         if: needs.changes.outputs.frontend == 'true'
         run: curl -fsSL -X POST "${{ secrets.RENDER_DEPLOY_HOOK_FRONTEND_URL }}"
