@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { DOCUMENT } from '@angular/common';
 import { LangService } from './lang.service';
 import { DEFAULT_LANGUAGE, type Lang } from './languages.config';
 import { BehaviorSubject, distinctUntilChanged, switchMap, from, firstValueFrom } from 'rxjs';
@@ -10,13 +11,13 @@ type Dict = Record<string, any>;
 export class I18nService {
   private readonly http = inject(HttpClient);
   private readonly lang = inject(LangService);
+  private readonly document = inject(DOCUMENT);
 
   private cache = new Map<Lang, Dict>();
 
   private readySubject = new BehaviorSubject<boolean>(false);
   readonly ready$ = this.readySubject.asObservable();
-  // compat: utilisé par TPipe/TAttr
-  readonly changed$ = this.ready$;
+  readonly changed$ = this.ready$; // compat: utilisé par TPipe/TAttr
 
   constructor() {
     this.lang.lang$
@@ -54,14 +55,15 @@ export class I18nService {
   }
 
   private async loadLang(l: Lang): Promise<void> {
-    const url = `assets/i18n/${l}.json`;
+    const base = this.document.baseURI; // Récupère le <base href="..."> du index.html
+    // Ajout d’un timestamp pour éviter le cache navigateur après déploiement
+    const url = new URL(`assets/i18n/${l}.json?v=${Date.now()}`, base).toString();
     const data = await firstValueFrom(this.http.get<Dict>(url));
     this.cache.set(l, data ?? {});
   }
 }
 
 /* Helpers */
-
 function getByPath(obj: any, path: string): any {
   return path.split('.').reduce((acc, k) => (acc && k in acc ? acc[k] : undefined), obj);
 }
