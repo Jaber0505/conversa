@@ -14,6 +14,9 @@
     "@angular/forms": "^20.1.6",
     "@angular/platform-browser": "^20.1.6",
     "@angular/router": "^20.1.6",
+    "@ngx-translate/core": "^17.0.0",
+    "@ngx-translate/http-loader": "^17.0.0",
+    "ngx-translate-multi-http-loader": "^20.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"

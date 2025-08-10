@@ -1,0 +1,53 @@
+<nav style="display:flex; gap:8px; margin-bottom:12px;">
+  <a [routerLink]="['/', currentLang]">{{ 'common.nav.home' | t }}</a>
+  <a [routerLink]="['/', currentLang, 'about']">{{ 'common.nav.about' | t }}</a>
+  <a [routerLink]="['/', currentLang, 'settings']">{{ 'common.nav.settings' | t }}</a>
+</nav>
+
+<h1>{{ 'settings.title' | t }}</h1>
+
+<label for="langSel">{{ 'settings.language' | t }}</label>
+<select id="langSel" (change)="set($any($event.target).value)">
+  <option value="fr" [selected]="currentLang === 'fr'">Français</option>
+  <option value="en" [selected]="currentLang === 'en'">English</option>
+  <option value="nl" [selected]="currentLang === 'nl'">Nederlands</option>
+</select>
+
+<div style="margin-top:12px;">
+  <input [tAttr]="{ placeholder: 'settings.nick_placeholder', 'aria-label': 'settings.nick_placeholder' }" />
+</div>
+
+<hr style="margin:16px 0;" />
+
+<!-- Exemples Intl -->
+<section>
+  <h2>{{ 'settings.examples.title' | t }}</h2>
+  <ul>
+    <li>
+      <strong>{{ 'settings.examples.date' | t }}:</strong>
+      {{ today | tDate:{ dateStyle:'full' } }}
+    </li>
+    <li>
+      <strong>{{ 'settings.examples.number' | t }}:</strong>
+      {{ users | tNumber:{ maximumFractionDigits: 0 } }}
+    </li>
+    <li>
+      <strong>{{ 'settings.examples.currency' | t }}:</strong>
+      {{ price | tCurrency:'EUR' }}
+      <small>({{ 'settings.examples.as_usd' | t }}: {{ price | tCurrency:'USD':{}:'en' }})</small>
+    </li>
+  </ul>
+</section>
+
+<hr style="margin:16px 0;" />
+
+<!-- HTML riche avec tHtml -->
+<section>
+  <h2>{{ 'settings.rich.title' | t }}</h2>
+
+  <p [tHtml]="'settings.rich.info_html'"
+     [tHtmlParams]="{ app: 'Conversa', email: 'support@conversa.app' }">
+  </p>
+
+  <div [tHtml]="'settings.rich.tips_html'"></div>
+</section>

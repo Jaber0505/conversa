@@ -1,0 +1,35 @@
+{
+  "common": {
+    "title": "Conversa",
+    "hello": "Hello {{name}}!",
+    "help": "Need help?",
+    "nav": { "home": "Home", "about": "About", "settings": "Settings" }
+  },
+  "auth": {
+    "email": "Email address",
+    "email_help": "Enter the email used for Conversa",
+    "password": "Password",
+    "login": "Log in"
+  },
+  "errors": {
+    "required": "Required field"
+  },
+  "settings": {
+    "examples": {
+      "title": "Formatting examples",
+      "date": "Date (locale)",
+      "number": "Number",
+      "currency": "Currency",
+      "as_usd": "as USD"
+    },
+    "rich": {
+      "title": "Rich content",
+      "info_html": "Welcome to <b>{{app}}</b>. For questions, contact <a href=\"mailto:{{email}}\">{{email}}</a>.",
+      "tips_html": "<ul><li>Date format adapts to language.</li><li>Numbers and currencies are localized.</li><li>Links are secured (sanitized HTML).</li></ul>"
+    }
+  },
+  "about": {
+    "title": "About Conversa",
+    "intro": "Conversa is a sample app to demonstrate simple i18n."
+  }
+}

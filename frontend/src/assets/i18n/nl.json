@@ -1,0 +1,35 @@
+{
+  "common": {
+    "title": "Conversa",
+    "hello": "Hallo {{name}}!",
+    "help": "Hulp nodig?",
+    "nav": { "home": "Start", "about": "Over", "settings": "Instellingen" }
+  },
+  "auth": {
+    "email": "E-mailadres",
+    "email_help": "Voer het e-mailadres in dat je voor Conversa gebruikt",
+    "password": "Wachtwoord",
+    "login": "Inloggen"
+  },
+  "errors": {
+    "required": "Verplicht veld"
+  },
+  "settings": {
+    "examples": {
+      "title": "Opmaakvoorbeelden",
+      "date": "Datum (lokaal)",
+      "number": "Getal",
+      "currency": "Valuta",
+      "as_usd": "als USD"
+    },
+    "rich": {
+      "title": "Rijke inhoud",
+      "info_html": "Welkom bij <b>{{app}}</b>. Voor vragen: <a href=\"mailto:{{email}}\">{{email}}</a>.",
+      "tips_html": "<ul><li>Datumnotatie past zich aan de taal aan.</li><li>Getallen en valuta zijn gelokaliseerd.</li><li>Koppelingen zijn beveiligd (gesaneerde HTML).</li></ul>"
+    }
+  },
+  "about": {
+    "title": "Over Conversa",
+    "intro": "Conversa is een voorbeeldapp om eenvoudige i18n te tonen."
+  }
+}

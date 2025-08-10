@@ -1,0 +1,36 @@
+<!-- src/app/features/about/about.component.html -->
+<nav style="display:flex; gap:8px; margin-bottom:12px;">
+  <a [routerLink]="['/', currentLang]">{{ 'common.nav.home' | t }}</a>
+  <a [routerLink]="['/', currentLang, 'about']">{{ 'common.nav.about' | t }}</a>
+  <a [routerLink]="['/', currentLang, 'settings']">{{ 'common.nav.settings' | t }}</a>
+</nav>
+
+<h1>{{ 'about.title' | t }}</h1>
+<p>{{ 'about.intro' | t }}</p>
+
+<div style="margin-top:12px;">
+  <button (click)="set('fr')">FR</button>
+  <button (click)="set('en')">EN</button>
+  <button (click)="set('nl')">NL</button>
+</div>
+
+<br />
+<div>
+  <p>{{ today | tDate }}</p>
+  <p>{{ today | tDate:{ dateStyle:'full' }:currentLang }}</p>
+
+  <p>{{ 12345.6789 | tNumber }}</p>
+  <p>{{ 12345.6789 | tNumber:{ maximumFractionDigits: 0 } }}</p>
+
+  <p>{{ 1234.5 | tCurrency:'EUR' }}</p>
+  <p>{{ 1234.5 | tCurrency:'USD':{ currencyDisplay:'symbol' }:'en' }}</p>
+
+  <p>{{ todayShortLabel }}</p>
+  <p>{{ totalUsersLabel }}</p>
+  <p>{{ priceLabel }}</p>
+
+  <p>{{ today | tDate:{ dateStyle:'full' } }}  </p>               
+    <p>{{ 1234.5 | tCurrency:'EUR' }}</p>                      
+    <p>{{ 12345.6789 | tNumber:{ maximumFractionDigits: 0 } }}</p>
+
+</div>

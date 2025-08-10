@@ -1,38 +1,24 @@
-import { Component } from '@angular/core';
-import { ApiClientService } from '../../core/services/api-client.service';
+// src/app/features/home/home.component.ts
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
+import { TPipe } from '@app/core/i18n/t.pipe';
+import { RouterLink } from '@angular/router';
+import { TAttrDirective } from '@app/core/i18n/t-attr.directive';
+import { LangService } from '@app/core/i18n/lang.service';
+import { TDatePipe, TNumberPipe, TCurrencyPipe } from '@app/core/i18n/i18n.pipes';
+import type { Lang } from '@app/core/i18n/languages.config';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink, TPipe, TAttrDirective],
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent {
-  loading = false;
-  status = '';
-  message = '';
-  error: string | null = null;
+  private readonly lang = inject(LangService);
 
-  constructor(private api: ApiClientService) {}
-
-  tester() {
-    this.loading = true;
-    this.error = null;
-    this.status = '';
-    this.message = '';
-
-    this.api.ping().subscribe({
-      next: ({ status, message }) => {
-        this.status = status;
-        this.message = message;
-        this.loading = false;
-      },
-      error: () => {
-        this.error = 'Impossible de contacter le backend ❌';
-        this.loading = false;
-      }
-    });
-  }
+  get currentLang(): Lang { return this.lang.current; }
+    set(code: Lang) { this.lang.set(code); }
 }
