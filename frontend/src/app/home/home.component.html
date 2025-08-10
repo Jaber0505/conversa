@@ -1,0 +1,110 @@
+<!-- HERO -->
+<section class="section">
+  <div class="hero">
+    <div class="hero__copy">
+      <span class="badge">{{ 'home.hero.badge' | t }}</span>
+      <h1>{{ 'home.hero.title' | t }}</h1>
+      <p class="muted">{{ 'home.hero.subtitle' | t }}</p>
+
+      <form class="search" role="search" [tAttr]="{ 'aria-label':'home.search.aria' }">
+        <label class="visually-hidden" for="q">{{ 'home.search.query' | t }}</label>
+        <input id="q" class="input"
+               [tAttr]="{ placeholder:'home.search.placeholder', 'aria-label':'home.search.query' }" />
+
+        <div class="search__row" [tAttr]="{ 'aria-label':'home.search.filters' }">
+          <label class="visually-hidden" for="lang">{{ 'home.search.lang.label' | t }}</label>
+          <select id="lang" class="select" [tAttr]="{ 'aria-label':'home.search.lang.label' }">
+            <option>{{ 'home.search.lang.any' | t }}</option>
+            <option>{{ 'home.search.lang.en'  | t }}</option>
+            <option>{{ 'home.search.lang.nl'  | t }}</option>
+            <option>{{ 'home.search.lang.es'  | t }}</option>
+            <option>{{ 'home.search.lang.fr'  | t }}</option>
+          </select>
+
+          <label class="visually-hidden" for="area">{{ 'home.search.area.label' | t }}</label>
+          <select id="area" class="select" [tAttr]="{ 'aria-label':'home.search.area.label' }">
+            <option>{{ 'home.search.area.any'     | t }}</option>
+            <option>{{ 'home.search.area.center'  | t }}</option>
+            <option>{{ 'home.search.area.ixelles' | t }}</option>
+            <option>{{ 'home.search.area.stg'     | t }}</option>
+          </select>
+
+          <button class="btn btn-accent" type="button">{{ 'home.search.submit' | t }}</button>
+        </div>
+      </form>
+
+      <div class="quick" [tAttr]="{ 'aria-label':'home.quick.label' }">
+        <span class="chip"><span class="dot" aria-hidden="true"></span> {{ 'home.quick.beginner'     | t }}</span>
+        <span class="chip"><span class="dot" aria-hidden="true"></span> {{ 'home.quick.small_groups' | t }}</span>
+        <span class="chip"><span class="dot" aria-hidden="true"></span> {{ 'home.quick.partners'     | t }}</span>
+      </div>
+    </div>
+
+    <aside class="hero__media card" [tAttr]="{ 'aria-label':'home.how.aria' }">
+      <div class="card-media" role="img" [tAttr]="{ 'aria-label':'home.how.illustration' }"></div>
+      <div class="card-body">
+        <strong>{{ 'home.how.title' | t }}</strong>
+        <ol class="muted" style="margin: 8px 0 0 18px;">
+          <li>{{ 'home.how.steps.1' | t }}</li>
+          <li>{{ 'home.how.steps.2' | t }}</li>
+          <li>{{ 'home.how.steps.3' | t }}</li>
+        </ol>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="section" aria-labelledby="titre-categories">
+  <div class="container">
+    <h2 id="titre-categories">{{ 'home.categories.title' | t }}</h2>
+    <div class="grid grid-3" role="list">
+      <article class="card" role="listitem" [tAttr]="{ 'aria-label':'home.categories.en' }">
+        <div class="card-body">
+          <h3>{{ 'home.categories.en' | t }}</h3>
+          <p class="muted">{{ 'home.categories.en_sub' | t }}</p>
+        </div>
+      </article>
+      <article class="card" role="listitem" [tAttr]="{ 'aria-label':'home.categories.nl' }">
+        <div class="card-body">
+          <h3>{{ 'home.categories.nl' | t }}</h3>
+          <p class="muted">{{ 'home.categories.nl_sub' | t }}</p>
+        </div>
+      </article>
+      <article class="card" role="listitem" [tAttr]="{ 'aria-label':'home.categories.es' }">
+        <div class="card-body">
+          <h3>{{ 'home.categories.es' | t }}</h3>
+          <p class="muted">{{ 'home.categories.es_sub' | t }}</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- UPCOMING — dynamique via mock/service ; i18n pour les libellés/phrases -->
+<section class="section" aria-labelledby="titre-upcoming">
+  <div class="container">
+    <div class="head">
+      <h2 id="titre-upcoming">{{ 'home.upcoming.title' | t }}</h2>
+      <a routerLink="/events" class="link">{{ 'home.upcoming.view_all' | t }}</a>
+    </div>
+
+    <div class="grid grid-3" role="list">
+      <article class="card event" role="listitem" *ngFor="let ev of events">
+        <div class="card-body">
+          <div class="event__meta">
+            <span class="badge" [tAttr]="{ 'aria-label':'home.search.lang.label' }">{{ ev.badge }}</span>
+            <span class="muted">{{ ev.meta }}</span>
+          </div>
+          <h3>{{ ev.title }}</h3>
+          <p class="muted">{{ ev.desc }}</p>
+          <div class="event__cta">
+            <button class="btn btn-primary" routerLink="/auth/register" type="button">
+              {{ 'home.event.cta' | t }}
+            </button>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>

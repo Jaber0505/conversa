@@ -1,0 +1,100 @@
+<a class="skip-link" href="#main">{{ 'common.a11y.skip_to_content' | t }}</a>
+
+<header class="nav--simple" role="banner">
+  <div class="container bar">
+    <a class="brand" routerLink="/">{{ 'common.brand' | t }}</a>
+    <a class="link" routerLink="/auth/login">{{ 'auth.login' | t }}</a>
+  </div>
+</header>
+
+<main id="main" tabindex="-1" class="section">
+  <div class="container form-wrap card">
+    <h1 class="title">{{ 'auth.register.title' | t }}</h1>
+    <p class="muted info">{{ 'auth.register.subtitle' | t }}</p>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate aria-labelledby="form-title">
+      <div class="grid-2">
+        <!-- Email -->
+        <label class="row">
+          <span>{{ 'auth.register.email' | t }}</span>
+          <input class="input" type="email" formControlName="email"
+                 [tAttr]="{ placeholder:'auth.register.email_placeholder', 'aria-label':'auth.register.email' }" />
+          <small class="err" *ngIf="err.email">{{ err.email }}</small>
+        </label>
+
+        <!-- Password -->
+        <label class="row">
+          <span>{{ 'auth.register.password' | t }}</span>
+          <input class="input" type="password" formControlName="password"
+                 [tAttr]="{ placeholder:'auth.register.password_placeholder', 'aria-label':'auth.register.password' }" />
+          <small class="muted">{{ 'auth.register.password_hint' | t }}</small>
+          <small class="err" *ngIf="err.password">{{ err.password }}</small>
+        </label>
+      </div>
+
+      <div class="grid-2">
+        <!-- First/Last name -->
+        <label class="row">
+          <span>{{ 'auth.register.first_name' | t }}</span>
+          <input class="input" formControlName="first_name" />
+          <small class="err" *ngIf="err.first_name">{{ err.first_name }}</small>
+        </label>
+
+        <label class="row">
+          <span>{{ 'auth.register.last_name' | t }}</span>
+          <input class="input" formControlName="last_name" />
+          <small class="err" *ngIf="err.last_name">{{ err.last_name }}</small>
+        </label>
+      </div>
+
+      <div class="grid-2">
+        <!-- Birth date -->
+        <label class="row">
+          <span>{{ 'auth.register.birth_date' | t }}</span>
+          <input class="input" type="date" formControlName="birth_date" />
+          <small class="err" *ngIf="err.birth_date">{{ err.birth_date }}</small>
+        </label>
+
+        <!-- Language native -->
+        <label class="row">
+          <span>{{ 'auth.register.language_native' | t }}</span>
+          <input class="input" formControlName="language_native" />
+          <small class="err" *ngIf="err.language_native">{{ err.language_native }}</small>
+        </label>
+      </div>
+
+      <!-- Bio -->
+      <label class="row">
+        <span>{{ 'auth.register.bio' | t }}</span>
+        <input class="input" formControlName="bio" />
+      </label>
+
+      <div class="grid-2">
+        <!-- Spoken CSV -->
+        <label class="row">
+          <span>{{ 'auth.register.languages_spoken' | t }}</span>
+          <input class="input" formControlName="languages_spoken_csv"
+                 [tAttr]="{ placeholder:'auth.register.languages_spoken_placeholder' }" />
+        </label>
+
+        <!-- Consent -->
+        <div class="row checkbox">
+          <label>
+            <input type="checkbox" formControlName="consent_given" />
+            {{ 'auth.register.consent' | t }}
+          </label>
+          <small class="err" *ngIf="err.consent_given">{{ err.consent_given }}</small>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" type="submit" [disabled]="loading">
+        {{ loading ? ('common.loading' | t) : ('auth.register.cta' | t) }}
+      </button>
+
+      <p class="global err" role="alert" *ngIf="globalMsg && !successEmail">{{ globalMsg }}</p>
+      <p class="global ok" role="status" *ngIf="successEmail">
+        {{ 'auth.register.success_line' | t:{ email: successEmail } }}
+      </p>
+    </form>
+  </div>
+</main>

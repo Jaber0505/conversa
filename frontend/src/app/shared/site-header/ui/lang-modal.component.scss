@@ -1,0 +1,95 @@
+@use 'sass:meta';
+@use "sass:color";
+@use '../../../../styles/variables' as *;
+
+$bp-sm: if(meta.global-variable-exists('bp-sm'), $bp-sm, 576px);
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .42);
+  display: grid;
+  place-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: $surface;
+  color: $text;
+  border: 1px solid $border;
+  border-radius: 12px;
+  width: min(400px, 92vw);
+  max-height: 90vh;
+  overflow: auto;
+  padding: 20px;
+  display: grid;
+  gap: 16px;
+}
+
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  h3 { margin: 0; font-size: 1.2rem; }
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centre horizontalement */
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  border: 1px solid $border;
+  border-radius: 8px;
+  background-color: $surface;
+  cursor: pointer;
+  transition: border-color .2s, background-color .2s;
+
+  input[type="radio"] {
+    accent-color: var(--accent, #0077ff);
+    width: 18px;
+    height: 18px;
+  }
+
+  span {
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  &:hover {
+    border-color: var(--accent, #0077ff);
+    background-color: color.mix($accent, $surface, 8%);
+  }
+
+  &.selected {
+    border-color: var(--accent, #0077ff);
+    background-color: color.mix($accent, $surface, 12%);
+  }
+}
+
+.modal-foot {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  @media (min-width: $bp-sm) {
+    flex-direction: row;
+    justify-content: center; /* Centre horizontalement en desktop */
+    gap: 16px; /* Espace entre les boutons */
+  }
+}
+
+.btn--sm {
+  height: 36px;
+  font-size: .875rem;
+  line-height: 1;
+  padding-inline: 16px;
+  border-radius: 6px;
+}

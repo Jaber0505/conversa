@@ -1,35 +1,111 @@
 {
   "common": {
-    "title": "Conversa",
-    "hello": "Hallo {{name}}!",
-    "help": "Hulp nodig?",
-    "nav": { "home": "Start", "about": "Over", "settings": "Instellingen" }
-  },
-  "auth": {
-    "email": "E-mailadres",
-    "email_help": "Voer het e-mailadres in dat je voor Conversa gebruikt",
-    "password": "Wachtwoord",
-    "login": "Inloggen"
-  },
-  "errors": {
-    "required": "Verplicht veld"
-  },
-  "settings": {
-    "examples": {
-      "title": "Opmaakvoorbeelden",
-      "date": "Datum (lokaal)",
-      "number": "Getal",
-      "currency": "Valuta",
-      "as_usd": "als USD"
+    "brand": "Conversa",
+    "loading": "Laden…",
+    "save": "Opslaan",
+    "cancel": "Annuleren",
+    "close": "Sluiten",
+    "lang": "Taal",
+    "lang_change": "Taal wijzigen",
+    "a11y": {
+      "skip_to_content": "Ga naar hoofdinhoud"
     },
-    "rich": {
-      "title": "Rijke inhoud",
-      "info_html": "Welkom bij <b>{{app}}</b>. Voor vragen: <a href=\"mailto:{{email}}\">{{email}}</a>.",
-      "tips_html": "<ul><li>Datumnotatie past zich aan de taal aan.</li><li>Getallen en valuta zijn gelokaliseerd.</li><li>Koppelingen zijn beveiligd (gesaneerde HTML).</li></ul>"
+    "nav": {
+      "home": "Home",
+      "explore": "Verkennen",
+      "events": "Evenementen",
+      "about": "Over ons",
+      "faq": "FAQ",
+      "menu": "Menu",
+      "mobile": "Mobiele navigatie",
+      "footer": "Voettekstlinks",
+      "legal": "Wettelijke vermeldingen",
+      "privacy": "Privacybeleid",
+      "contact": "Contact"
     }
   },
-  "about": {
-    "title": "Over Conversa",
-    "intro": "Conversa is een voorbeeldapp om eenvoudige i18n te tonen."
+  "auth": {
+    "login": "Inloggen",
+    "register": "Registreren",
+    "logout": "Uitloggen"
+  },
+  "home": {
+    "hero": {
+      "badge": "🌍 Taal oefenen in cafés in Brussel",
+      "title": "Oefen een taal, ontmoet mensen",
+      "subtitle": "Doe mee aan gezellige sessies georganiseerd door de gemeenschap. Geen lessen, 100% conversatie."
+    },
+    "search": {
+      "aria": "Evenementen zoeken",
+      "query": "Zoeken",
+      "placeholder": "Zoek een evenement (Engels, Nederlands, Spaans…)",
+      "filters": "Zoekfilters",
+      "lang": {
+        "label": "Taal",
+        "any": "Taal",
+        "en": "Engels",
+        "nl": "Nederlands",
+        "es": "Spaans",
+        "fr": "Frans"
+      },
+      "area": {
+        "label": "Wijk",
+        "any": "Wijk",
+        "center": "Centrum",
+        "ixelles": "Elsene",
+        "stg": "Sint-Gillis"
+      },
+      "submit": "Zoeken"
+    },
+    "quick": {
+      "label": "Hoogtepunten",
+      "beginner": "Beginners welkom",
+      "small_groups": "Groepen van 3–6 personen",
+      "partners": "Partnerlocaties"
+    },
+    "how": {
+      "aria": "Hoe werkt het",
+      "illustration": "Illustratie van mensen die praten",
+      "title": "Hoe werkt het?",
+      "steps": {
+        "1": "Maak of sluit je aan bij een evenement.",
+        "2": "Bevestig je aanwezigheid ter plaatse.",
+        "3": "Start het conversatiespel."
+      }
+    },
+    "categories": {
+      "title": "Blader per taal",
+      "en": "Engels",
+      "en_sub": "Dagelijkse sessies · Alle niveaus",
+      "nl": "Nederlands",
+      "nl_sub": "Na het werk · Beginners welkom",
+      "es": "Spaans",
+      "es_sub": "Tapassfeer · Gemiddeld niveau"
+    },
+    "upcoming": {
+      "title": "Komende week",
+      "view_all": "Alles bekijken"
+    },
+    "event": {
+      "cta": "Inschrijven",
+      "card_title": "{{language}} @ {{venue}}",
+      "card_meta": "{{weekday}} {{time}} · {{area}}",
+      "card_desc": "Spel “{{game}}” · {{seats}} plaatsen"
+    }
+  },
+  "lang_modal": {
+    "title": "Taal wijzigen",
+    "save": "Opslaan",
+    "cancel": "Annuleren"
+  },
+  "errors": {
+    "VALIDATION_ERROR": "Sommige velden zijn ongeldig.",
+    "UNSPECIFIED_ERROR": "Er is een fout opgetreden.",
+    "invalid": "Ongeldige waarde.",
+    "unique": "Deze waarde is al in gebruik.",
+    "min_length": "Te kort (min. {{min}} tekens).",
+    "required": "Dit veld is verplicht.",
+    "AGE_MIN": "Je moet minstens 18 jaar oud zijn.",
+    "CONSENT_REQUIRED": "Toestemming is vereist."
   }
 }

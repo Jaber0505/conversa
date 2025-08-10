@@ -1,0 +1,46 @@
+/* Couleurs (contraste AA) */
+$clr-primary: #2563eb;  // Bleu
+$clr-accent:  #f97316;  // Orange
+$clr-ink:     #0f172a;  // Bleu nuit (texte)
+$clr-muted:   #475569;  // Gris texte
+$clr-surface: #f8fafc;  // Fond clair
+$clr-line:    #e2e8f0;  // Lignes/gris clair
+$clr-white:   #ffffff;  // Blanc
+
+/* Styles */
+$radius: 14px;
+$shadow-1: 0 2px 8px rgba(15,23,42,.06);
+$shadow-2: 0 10px 30px rgba(15,23,42,.12);
+
+/* Typo */
+$font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, Roboto, "Helvetica Neue", Arial, "Noto Sans";
+
+/* Tailles de texte fluides */
+$fs-1-min: 28px; $fs-1-max: 44px;
+$fs-2-min: 20px; $fs-2-max: 28px;
+$fs-3: 18px; 
+$fs-4: 14px;
+
+/* Breakpoints */
+$bp-md: 900px;
+$bp-sm: 720px;
+
+/* Accessibilité */
+$focus-ring: 0 0 0 3px rgba(37,99,235,.35);
+
+/* Spacing scale */
+$sp-1: 4px;  $sp-2: 8px;  $sp-3: 12px; $sp-4: 16px; $sp-5: 20px;
+$sp-6: 24px; $sp-8: 32px; $sp-10: 40px; $sp-12: 48px;
+
+// Espacements
+$space-1: 4px;
+$space-2: 8px;
+$space-3: 12px;
+$space-4: 16px;
+
+// Couleurs
+$text: #111;
+$surface: #fff;
+$border: rgba(0,0,0,.06);
+
+$accent: #0077ff;

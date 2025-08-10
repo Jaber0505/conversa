@@ -1,35 +1,113 @@
 {
+  "nav": {
+    "events": "Events",
+    "about": "About",
+    "faq": "FAQ"
+  },
   "common": {
-    "title": "Conversa",
-    "hello": "Hello {{name}}!",
-    "help": "Need help?",
-    "nav": { "home": "Home", "about": "About", "settings": "Settings" }
-  },
-  "auth": {
-    "email": "Email address",
-    "email_help": "Enter the email used for Conversa",
-    "password": "Password",
-    "login": "Log in"
-  },
-  "errors": {
-    "required": "Required field"
-  },
-  "settings": {
-    "examples": {
-      "title": "Formatting examples",
-      "date": "Date (locale)",
-      "number": "Number",
-      "currency": "Currency",
-      "as_usd": "as USD"
+    "brand": "Conversa",
+    "loading": "Loading…",
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "lang": "Language",
+    "lang_change": "Change language",
+    "a11y": {
+      "skip_to_content": "Skip to main content"
     },
-    "rich": {
-      "title": "Rich content",
-      "info_html": "Welcome to <b>{{app}}</b>. For questions, contact <a href=\"mailto:{{email}}\">{{email}}</a>.",
-      "tips_html": "<ul><li>Date format adapts to language.</li><li>Numbers and currencies are localized.</li><li>Links are secured (sanitized HTML).</li></ul>"
+    "nav": {
+      "home": "Home",
+      "explore": "Explore",
+      "menu": "Menu",
+      "mobile": "Mobile navigation",
+      "footer": "Footer links",
+      "legal": "Legal notice",
+      "privacy": "Privacy",
+      "contact": "Contact"
     }
   },
-  "about": {
-    "title": "About Conversa",
-    "intro": "Conversa is a sample app to demonstrate simple i18n."
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout"
+  },
+  "home": {
+    "hero": {
+      "badge": "🌍 Language practice in bars in Brussels",
+      "title": "Practice a language, meet people",
+      "subtitle": "Join friendly sessions led by the community. Zero lectures, 100% conversation."
+    },
+    "search": {
+      "aria": "Event search",
+      "query": "Search",
+      "placeholder": "Search for an event (English, Dutch, Spanish…)",
+      "filters": "Search filters",
+      "lang": {
+        "label": "Language",
+        "any": "Language",
+        "en": "English",
+        "nl": "Dutch",
+        "es": "Spanish",
+        "fr": "French"
+      },
+      "area": {
+        "label": "Neighborhood",
+        "any": "Neighborhood",
+        "center": "Center",
+        "ixelles": "Ixelles",
+        "stg": "Saint-Gilles"
+      },
+      "submit": "Search"
+    },
+    "quick": {
+      "label": "Benefits",
+      "beginner": "Beginner friendly",
+      "small_groups": "Groups of 3–6 people",
+      "partners": "Partner venues"
+    },
+    "how": {
+      "aria": "How it works",
+      "illustration": "Illustration of people talking",
+      "title": "How does it work?",
+      "steps": {
+        "1": "Create or join an event.",
+        "2": "Confirm your attendance on-site.",
+        "3": "Start the conversation game."
+      }
+    },
+    "categories": {
+      "title": "Explore by language",
+      "en": "English",
+      "en_sub": "Daily sessions · All levels",
+      "nl": "Dutch",
+      "nl_sub": "After-work · Beginners welcome",
+      "es": "Spanish",
+      "es_sub": "Tapas atmosphere · Intermediate"
+    },
+    "upcoming": {
+      "title": "Coming up this week",
+      "view_all": "View all"
+    },
+    "event": {
+      "cta": "Register",
+      "card_title": "{{language}} @ {{venue}}",
+      "card_meta": "{{weekday}} {{time}} · {{area}}",
+      "card_desc": "Game “{{game}}” · {{seats}} seats"
+    }
+  },
+  "lang_modal": {
+    "title": "Change language",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "errors": {
+    "VALIDATION_ERROR": "Some fields are invalid.",
+    "UNSPECIFIED_ERROR": "An error has occurred.",
+    "invalid": "Invalid value.",
+    "unique": "This value is already taken.",
+    "min_length": "Too short (min. {{min}} characters).",
+    "required": "Field required.",
+    "AGE_MIN": "You must be at least 18 years old.",
+    "CONSENT_REQUIRED": "Consent is required."
   }
 }

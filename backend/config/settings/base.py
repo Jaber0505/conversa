@@ -44,10 +44,10 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "corsheaders.middleware.CorsMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -75,7 +75,7 @@ TEMPLATES = [
 
 DATABASES = {}
 
-AUTH_USER_MODEL = os.getenv("DJANGO_AUTH_USER_MODEL", "auth.User")
+AUTH_USER_MODEL = os.getenv("DJANGO_AUTH_USER_MODEL", "users.User")
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
@@ -122,6 +122,7 @@ REST_FRAMEWORK = {
         "anon": os.getenv("DJANGO_THROTTLE_ANON", "60/min"),
         "user": os.getenv("DJANGO_THROTTLE_USER", "120/min"),
     },
+    "EXCEPTION_HANDLER": "config.api_errors.drf_exception_handler",
 }
 
 SIMPLE_JWT = {

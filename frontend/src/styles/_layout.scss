@@ -1,0 +1,23 @@
+@use './variables' as *;
+@use './mixins' as *;
+
+.section { @include container; padding-block: clamp($sp-6, 5vw, $sp-12); }
+
+.grid { display: grid; gap: $sp-4; }
+.grid-3 { grid-template-columns: repeat(3, minmax(0,1fr)); }
+.grid-2 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+
+@media (max-width: $bp-md){ .grid-3 { grid-template-columns: 1fr 1fr; } }
+@media (max-width: $bp-sm){ .grid-3, .grid-2 { grid-template-columns: 1fr; } }
+
+.hero {
+  @include container;
+  display: grid; align-items: center; gap: $sp-8;
+  grid-template-columns: 1.1fr .9fr;
+  @media (max-width: 980px){ grid-template-columns: 1fr; }
+
+  &__copy {
+    h1 { @include fluid-type($fs-1-min, $fs-1-max); margin: $sp-3 0 $sp-2; font-weight: 800; }
+    p  { font-size: $fs-3; color: $clr-muted; margin: 0 0 $sp-5; }
+  }
+}

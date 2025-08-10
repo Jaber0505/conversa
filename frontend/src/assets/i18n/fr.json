@@ -1,35 +1,113 @@
 {
+  "nav": {
+    "events": "Événements",
+    "about": "À propos",
+    "faq": "FAQ"
+  },
   "common": {
-    "title": "Conversa",
-    "hello": "Bonjour {{name}} !",
-    "help": "Besoin d’aide ?",
-    "nav": { "home": "Accueil", "about": "À propos", "settings": "Paramètres" }
-  },
-  "auth": {
-    "email": "Adresse e-mail",
-    "email_help": "Entrez l’e-mail utilisé pour Conversa",
-    "password": "Mot de passe",
-    "login": "Se connecter"
-  },
-  "errors": {
-    "required": "Champ requis"
-  },
-  "settings": {
-    "examples": {
-      "title": "Exemples de formatage",
-      "date": "Date (locale)",
-      "number": "Nombre",
-      "currency": "Devise",
-      "as_usd": "en USD"
+    "brand": "Conversa",
+    "loading": "Chargement…",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "close": "Fermer",
+    "lang": "Langue",
+    "lang_change": "Changer de langue",
+    "a11y": {
+      "skip_to_content": "Aller au contenu principal"
     },
-    "rich": {
-      "title": "Contenu riche",
-      "info_html": "Bienvenue sur <b>{{app}}</b>. Pour toute question, contactez <a href=\"mailto:{{email}}\">{{email}}</a>.",
-      "tips_html": "<ul><li>Le format de date s’adapte à la langue.</li><li>Les nombres et devises sont localisés.</li><li>Les liens sont sécurisés (HTML sanitizé).</li></ul>"
+    "nav": {
+      "home": "Accueil",
+      "explore": "Explorer",
+      "menu": "Menu",
+      "mobile": "Navigation mobile",
+      "footer": "Liens de pied de page",
+      "legal": "Mentions légales",
+      "privacy": "Confidentialité",
+      "contact": "Contact"
     }
   },
-  "about": {
-    "title": "À propos de Conversa",
-    "intro": "Conversa est un exemple d'application pour démontrer l'i18n simple."
+  "auth": {
+    "login": "Connexion",
+    "register": "Inscription",
+    "logout": "Déconnexion"
+  },
+  "home": {
+    "hero": {
+      "badge": "🌍 Pratique des langues dans des bars à Bruxelles",
+      "title": "Pratique une langue, rencontre des gens",
+      "subtitle": "Rejoins des sessions conviviales, animées par la communauté. Zéro cours magistral, 100% conversation."
+    },
+    "search": {
+      "aria": "Recherche d'événements",
+      "query": "Recherche",
+      "placeholder": "Rechercher un événement (anglais, néerlandais, espagnol…)",
+      "filters": "Filtres de recherche",
+      "lang": {
+        "label": "Langue",
+        "any": "Langue",
+        "en": "Anglais",
+        "nl": "Néerlandais",
+        "es": "Espagnol",
+        "fr": "Français"
+      },
+      "area": {
+        "label": "Quartier",
+        "any": "Quartier",
+        "center": "Centre",
+        "ixelles": "Ixelles",
+        "stg": "Saint-Gilles"
+      },
+      "submit": "Chercher"
+    },
+    "quick": {
+      "label": "Avantages",
+      "beginner": "Débutant bienvenu",
+      "small_groups": "Groupes 3–6 personnes",
+      "partners": "Lieux partenaires"
+    },
+    "how": {
+      "aria": "Comment ça marche",
+      "illustration": "Illustration de personnes discutant",
+      "title": "Comment ça marche ?",
+      "steps": {
+        "1": "Crée ou rejoins un événement.",
+        "2": "Confirme ta présence sur place.",
+        "3": "Lance le jeu de conversation."
+      }
+    },
+    "categories": {
+      "title": "Explorer par langue",
+      "en": "Anglais",
+      "en_sub": "Sessions quotidiennes · Tous niveaux",
+      "nl": "Néerlandais",
+      "nl_sub": "After-work · Débutants bienvenus",
+      "es": "Espagnol",
+      "es_sub": "Ambiance tapas · Intermédiaire"
+    },
+    "upcoming": {
+      "title": "À venir cette semaine",
+      "view_all": "Voir tout"
+    },
+    "event": {
+      "cta": "S’inscrire",
+      "card_title": "{{language}} @ {{venue}}",
+      "card_meta": "{{weekday}} {{time}} · {{area}}",
+      "card_desc": "Jeu “{{game}}” · {{seats}} places"
+    }
+  },
+  "lang_modal": {
+    "title": "Changer de langue",
+    "save": "Enregistrer",
+    "cancel": "Annuler"
+  },
+  "errors": {
+    "VALIDATION_ERROR": "Certains champs sont invalides.",
+    "UNSPECIFIED_ERROR": "Une erreur est survenue.",
+    "invalid": "Valeur invalide.",
+    "unique": "Cette valeur est déjà utilisée.",
+    "min_length": "Trop court (min. {{min}} caractères).",
+    "required": "Champ requis.",
+    "AGE_MIN": "Vous devez avoir au moins 18 ans.",
+    "CONSENT_REQUIRED": "Le consentement est requis."
   }
 }

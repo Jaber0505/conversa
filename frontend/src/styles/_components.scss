@@ -1,0 +1,50 @@
+@use './variables' as *;
+
+/* Boutons */
+.btn {
+  display:inline-flex; align-items:center; gap:$sp-3; padding:$sp-3 $sp-4;
+  min-height: 44px;
+  border-radius: $radius; border:0; cursor:pointer; font-weight:600;
+  box-shadow: $shadow-1; transition: transform .06s ease, box-shadow .2s ease, background .2s ease;
+  &:hover { box-shadow: $shadow-2; }
+  &:active { transform: translateY(1px); }
+}
+.btn-primary { background: $clr-primary; color:#fff; }
+.btn-accent  { background: $clr-accent; color:#111; }
+.btn-ghost   { background:#fff; color:$clr-ink; border:1px solid $clr-line; }
+
+/* Inputs */
+.input, .select {
+  width:100%; padding:$sp-3 $sp-4; border:1px solid $clr-line;
+  min-height: 44px;
+  border-radius: 10px; background:#fff; outline:none;
+}
+
+/* Cards / badges / chips */
+.card { background:#fff; border:1px solid $clr-line; border-radius:$radius; box-shadow:$shadow-1; overflow:hidden; }
+.card-body { padding: $sp-5; }
+.card-media { aspect-ratio: 16/9; background: #e2e8f0; }
+
+.badge {
+  display:inline-flex; align-items:center; gap:$sp-2; padding:$sp-2 $sp-3;
+  border-radius: 999px; font-size: $fs-4; border:1px solid $clr-line; background:#fff; box-shadow:$shadow-1;
+}
+.chip {
+  display:inline-flex; align-items:center; gap:$sp-2; padding:$sp-2 $sp-3;
+  border-radius:999px; background:#fff; border:1px solid $clr-line;
+  .dot { width:8px; height:8px; border-radius:999px; background: $clr-accent; }
+}
+
+.muted{ color: $clr-muted; }
+
+/* Grille cartes responsive */
+.card-grid { display:grid; gap: $sp-6; }
+@media (min-width: $bp-sm){ .card-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: $bp-md){ .card-grid { grid-template-columns: repeat(3, 1fr); } }
+
+/* Mobile */
+@media (max-width: $bp-sm){
+  .btn { width:100%; justify-content:center; }
+  .card-body { padding: $sp-4; }
+  .input, .select { padding: $sp-4; }
+}
