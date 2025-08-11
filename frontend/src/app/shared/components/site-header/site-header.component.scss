@@ -1,6 +1,6 @@
 // frontend/src/app/features/shared/site-header/site-header.component.scss
 @use 'sass:meta';
-@use '../../../styles/variables' as *;
+@use '../../../../styles/variables' as *;
 
 /* Fallback breakpoints si non présents côté variables.scss */
 $bp-sm: if(meta.global-variable-exists('bp-sm'), $bp-sm, 576px);

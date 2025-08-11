@@ -1,217 +1,114 @@
+<!-- frontend/src/app/home/home.component.html -->
+<!-- HERO -->
 <section class="section">
-  <div class="container">
-    <div class="card">
+    <div class="hero">
+        <div class="hero__copy">
+            <span class="badge">{{ 'home.hero.badge' | t }}</span>
+            <h1>{{ 'home.hero.title' | t }}</h1>
+            <p class="muted">{{ 'home.hero.subtitle' | t }}</p>
 
-      <!-- Header -->
-      <header class="head" [tAttr]="{ 'aria-label':'auth.register.header' }">
-        <div>
-          <h1>{{ 'auth.register.title' | t }}</h1>
-          <p class="muted">{{ 'auth.register.subtitle' | t }}</p>
+            <form class="search" role="search" [tAttr]="{ 'aria-label':'home.search.aria' }">
+                <label class="visually-hidden" for="q">{{ 'home.search.query' | t }}</label>
+                <input id="q" class="input"
+                       [tAttr]="{ placeholder:'home.search.placeholder', 'aria-label':'home.search.query' }" />
+
+                <div class="search__row" [tAttr]="{ 'aria-label':'home.search.filters' }">
+                    <label class="visually-hidden" for="lang">{{ 'home.search.lang.label' | t }}</label>
+                    <select id="lang" class="select" [tAttr]="{ 'aria-label':'home.search.lang.label' }">
+                        <option>{{ 'home.search.lang.any' | t }}</option>
+                        <option>{{ 'home.search.lang.en'  | t }}</option>
+                        <option>{{ 'home.search.lang.nl'  | t }}</option>
+                        <option>{{ 'home.search.lang.es'  | t }}</option>
+                        <option>{{ 'home.search.lang.fr'  | t }}</option>
+                    </select>
+
+                    <label class="visually-hidden" for="area">{{ 'home.search.area.label' | t }}</label>
+                    <select id="area" class="select" [tAttr]="{ 'aria-label':'home.search.area.label' }">
+                        <option>{{ 'home.search.area.any'     | t }}</option>
+                        <option>{{ 'home.search.area.center'  | t }}</option>
+                        <option>{{ 'home.search.area.ixelles' | t }}</option>
+                        <option>{{ 'home.search.area.stg'     | t }}</option>
+                    </select>
+
+                    <button class="btn btn-accent" type="button">{{ 'home.search.submit' | t }}</button>
+                </div>
+            </form>
+
+            <div class="quick" [tAttr]="{ 'aria-label':'home.quick.label' }">
+                <span class="chip"><span class="dot" aria-hidden="true"></span> {{ 'home.quick.beginner'     | t }}</span>
+                <span class="chip"><span class="dot" aria-hidden="true"></span> {{ 'home.quick.small_groups' | t }}</span>
+                <span class="chip"><span class="dot" aria-hidden="true"></span> {{ 'home.quick.partners'     | t }}</span>
+            </div>
         </div>
-        <div class="inline muted">
-          <span>{{ 'auth.register.step' | t }}</span>
-          <strong>{{ step() }}</strong>
-          <span>/</span>
-          <span>{{ totalSteps }}</span>
-        </div>
-      </header>
 
-      <!-- Progress -->
-      <div class="progress mt-8" [tAttr]="{ 'aria-label':'auth.register.progress' }">
-        <div class="progress__bar" [style.width.%]="(step() / totalSteps) * 100"></div>
-      </div>
-
-      <!-- Form -->
-      <form class="mt-16" [formGroup]="form" (ngSubmit)="submit()" novalidate>
-
-        <!-- ================= STEP 1: Identité ================= -->
-        <ng-container *ngIf="step() === 1">
-          <div formGroupName="identity">
-            <h2 class="h5">{{ 'auth.register.identity.title' | t }}</h2>
-            <p class="muted">{{ 'auth.register.identity.help' | t }}</p>
-
-            <div class="grid gap-12 mt-8">
-              <div class="form-field">
-                <label for="first_name" class="form-label">{{ 'auth.register.first_name' | t }}</label>
-                <input id="first_name" type="text" class="input" formControlName="first_name"
-                       [class.input--invalid]="fIdentity.get('first_name')?.invalid && (fIdentity.get('first_name')?.touched || submitted)"
-                       [tAttr]="{ placeholder:'auth.register.first_name.placeholder', 'aria-label':'auth.register.first_name' }"
-                       autocomplete="given-name" />
-                <div class="field-error" *ngIf="fIdentity.get('first_name')?.invalid && (fIdentity.get('first_name')?.touched || submitted)">
-                  {{ 'auth.register.errors.required' | t }}
-                </div>
-              </div>
-
-              <div class="form-field">
-                <label for="last_name" class="form-label">{{ 'auth.register.last_name' | t }}</label>
-                <input id="last_name" type="text" class="input" formControlName="last_name"
-                       [class.input--invalid]="fIdentity.get('last_name')?.invalid && (fIdentity.get('last_name')?.touched || submitted)"
-                       [tAttr]="{ placeholder:'auth.register.last_name.placeholder', 'aria-label':'auth.register.last_name' }"
-                       autocomplete="family-name" />
-                <div class="field-error" *ngIf="fIdentity.get('last_name')?.invalid && (fIdentity.get('last_name')?.touched || submitted)">
-                  {{ 'auth.register.errors.required' | t }}
-                </div>
-              </div>
-
-              <div class="form-field">
-                <label for="birth_date" class="form-label">{{ 'auth.register.birth_date' | t }}</label>
-                <input id="birth_date" type="date" class="input" formControlName="birth_date"
-                       [class.input--invalid]="fIdentity.get('birth_date')?.invalid && (fIdentity.get('birth_date')?.touched || submitted)"
-                       [tAttr]="{ 'aria-label':'auth.register.birth_date' }"
-                       autocomplete="bday" />
-                <small class="muted">{{ 'auth.register.birth_date.help' | t }}</small>
-                <div class="field-error" *ngIf="fIdentity.get('birth_date')?.invalid && (fIdentity.get('birth_date')?.touched || submitted)">
-                  <!-- on laisse une seule clé générique; tu peux brancher minAge/email/etc. si tu veux -->
-                  {{ 'auth.register.errors.birth_date' | t }}
-                </div>
-              </div>
+        <aside class="hero__media card" [tAttr]="{ 'aria-label':'home.how.aria' }">
+            <div class="card-media" role="img" [tAttr]="{ 'aria-label':'home.how.illustration' }"></div>
+            <div class="card-body">
+                <strong>{{ 'home.how.title' | t }}</strong>
+                <ol class="muted" style="margin: 8px 0 0 18px;">
+                    <li>{{ 'home.how.steps.1' | t }}</li>
+                    <li>{{ 'home.how.steps.2' | t }}</li>
+                    <li>{{ 'home.how.steps.3' | t }}</li>
+                </ol>
             </div>
-
-            <div class="mt-16 inline gap-12">
-              <button type="button" class="btn btn-primary" (click)="next()">
-                {{ 'common.next' | t }}
-              </button>
-            </div>
-          </div>
-        </ng-container>
-
-        <!-- ================= STEP 2: Bio ================= -->
-        <ng-container *ngIf="step() === 2">
-          <div formGroupName="bio">
-            <h2 class="h5">{{ 'auth.register.bio.title' | t }}</h2>
-            <p class="muted">{{ 'auth.register.bio.help' | t }}</p>
-
-            <div class="form-field mt-8">
-              <label for="bio" class="form-label">{{ 'auth.register.bio.label' | t }}</label>
-              <textarea id="bio" rows="5" class="input" formControlName="bio"
-                        [tAttr]="{ placeholder:'auth.register.bio.placeholder', 'aria-label':'auth.register.bio.label' }"></textarea>
-            </div>
-
-            <div class="mt-16 inline gap-12">
-              <button type="button" class="btn btn-ghost" (click)="back()">
-                {{ 'common.back' | t }}
-              </button>
-              <button type="button" class="btn btn-primary" (click)="next()">
-                {{ 'common.next' | t }}
-              </button>
-            </div>
-          </div>
-        </ng-container>
-
-        <!-- ================= STEP 3: Langues ================= -->
-        <ng-container *ngIf="step() === 3">
-          <div formGroupName="languages">
-            <h2 class="h5">{{ 'auth.register.languages.title' | t }}</h2>
-            <p class="muted">{{ 'auth.register.languages.help' | t }}</p>
-
-            <div class="grid gap-12 mt-8">
-              <div class="form-field">
-                <label for="language_native" class="form-label">{{ 'auth.register.native' | t }}</label>
-                <select id="language_native" class="select" formControlName="language_native"
-                        [class.select--invalid]="fLang.get('language_native')?.invalid && (fLang.get('language_native')?.touched || submitted)"
-                        [tAttr]="{ 'aria-label':'auth.register.native' }">
-                  <option value="">{{ 'auth.register.choose' | t }}</option>
-                  <option *ngFor="let lang of languages" [value]="lang.code">{{ lang.label }}</option>
-                </select>
-                <div class="field-error" *ngIf="fLang.get('language_native')?.invalid && (fLang.get('language_native')?.touched || submitted)">
-                  {{ 'auth.register.errors.required' | t }}
-                </div>
-              </div>
-
-              <div class="form-field">
-                <label class="form-label">{{ 'auth.register.spoken' | t }}</label>
-                <div class="chips">
-                  <label class="chip" *ngFor="let lang of languages">
-                    <input type="checkbox"
-                           [value]="lang.code"
-                           (change)="onToggleLang('languages_spoken', lang.code, $any($event.target).checked)"
-                           [checked]="fLang.value?.languages_spoken?.includes(lang.code) || false" />
-                    <span>{{ lang.label }}</span>
-                  </label>
-                </div>
-              </div>
-
-              <div class="form-field">
-                <label class="form-label">{{ 'auth.register.wanted' | t }}</label>
-                <div class="chips">
-                  <label class="chip" *ngFor="let lang of languages">
-                    <input type="checkbox"
-                           [value]="lang.code"
-                           (change)="onToggleLang('languages_wanted', lang.code, $any($event.target).checked)"
-                           [checked]="fLang.value?.languages_wanted?.includes(lang.code) || false" />
-                    <span>{{ lang.label }}</span>
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            <div class="mt-16 inline gap-12">
-              <button type="button" class="btn btn-ghost" (click)="back()">
-                {{ 'common.back' | t }}
-              </button>
-              <button type="button" class="btn btn-primary" (click)="next()">
-                {{ 'common.next' | t }}
-              </button>
-            </div>
-          </div>
-        </ng-container>
-
-        <!-- ================= STEP 4: Identifiants ================= -->
-        <ng-container *ngIf="step() === 4">
-          <div formGroupName="credentials">
-            <h2 class="h5">{{ 'auth.register.credentials.title' | t }}</h2>
-            <p class="muted">{{ 'auth.register.credentials.help' | t }}</p>
-
-            <div class="grid gap-12 mt-8">
-              <div class="form-field">
-                <label for="email" class="form-label">{{ 'auth.register.email' | t }}</label>
-                <input id="email" type="email" class="input" formControlName="email"
-                       [class.input--invalid]="fCred.get('email')?.invalid && (fCred.get('email')?.touched || submitted)"
-                       [tAttr]="{ placeholder:'auth.register.email.placeholder', 'aria-label':'auth.register.email' }"
-                       autocomplete="email" />
-                <div class="field-error" *ngIf="fCred.get('email')?.invalid && (fCred.get('email')?.touched || submitted)">
-                  {{ 'auth.register.errors.email' | t }}
-                </div>
-              </div>
-
-              <div class="form-field">
-                <label for="password" class="form-label">{{ 'auth.register.password' | t }}</label>
-                <input id="password" type="password" class="input" formControlName="password"
-                       [class.input--invalid]="fCred.get('password')?.invalid && (fCred.get('password')?.touched || submitted)"
-                       [tAttr]="{ placeholder:'auth.register.password.placeholder', 'aria-label':'auth.register.password' }"
-                       autocomplete="new-password" />
-                <div class="field-error" *ngIf="fCred.get('password')?.invalid && (fCred.get('password')?.touched || submitted)">
-                  {{ 'auth.register.errors.password' | t }}
-                </div>
-              </div>
-
-              <div class="form-field">
-                <label class="checkbox">
-                  <input type="checkbox" formControlName="consent_given" />
-                  <span>{{ 'auth.register.consent.label' | t }}</span>
-                </label>
-                <div class="field-error" *ngIf="fCred.get('consent_given')?.invalid && (fCred.get('consent_given')?.touched || submitted)">
-                  {{ 'auth.register.errors.required' | t }}
-                </div>
-              </div>
-            </div>
-
-            <div class="mt-16 inline gap-12">
-              <button type="button" class="btn btn-ghost" (click)="back()">
-                {{ 'common.back' | t }}
-              </button>
-              <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
-                {{ 'auth.register.submit' | t }}
-              </button>
-            </div>
-
-            <div class="alert alert--error mt-8" *ngIf="globalErrorKey">
-              {{ globalErrorKey | t }}
-            </div>
-          </div>
-        </ng-container>
-
-      </form>
+        </aside>
     </div>
-  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="section" aria-labelledby="titre-categories">
+    <div class="container">
+        <h2 id="titre-categories">{{ 'home.categories.title' | t }}</h2>
+        <div class="grid grid-3" role="list">
+            <article class="card" role="listitem" [tAttr]="{ 'aria-label':'home.categories.en' }">
+                <div class="card-body">
+                    <h3>{{ 'home.categories.en' | t }}</h3>
+                    <p class="muted">{{ 'home.categories.en_sub' | t }}</p>
+                </div>
+            </article>
+            <article class="card" role="listitem" [tAttr]="{ 'aria-label':'home.categories.nl' }">
+                <div class="card-body">
+                    <h3>{{ 'home.categories.nl' | t }}</h3>
+                    <p class="muted">{{ 'home.categories.nl_sub' | t }}</p>
+                </div>
+            </article>
+            <article class="card" role="listitem" [tAttr]="{ 'aria-label':'home.categories.es' }">
+                <div class="card-body">
+                    <h3>{{ 'home.categories.es' | t }}</h3>
+                    <p class="muted">{{ 'home.categories.es_sub' | t }}</p>
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
+
+<!-- UPCOMING -->
+<section class="section" aria-labelledby="titre-upcoming">
+    <div class="container">
+        <div class="head">
+            <h2 id="titre-upcoming">{{ 'home.upcoming.title' | t }}</h2>
+            <a [routerLink]="['/', current(), 'events']" class="link">
+                {{ 'home.upcoming.view_all' | t }}
+            </a>
+        </div>
+
+        <div class="grid grid-3" role="list">
+            <article class="card event" role="listitem" *ngFor="let ev of events">
+                <div class="card-body">
+                    <div class="event__meta">
+                        <span class="badge" [tAttr]="{ 'aria-label':'home.search.lang.label' }">{{ ev.badge }}</span>
+                        <span class="muted">{{ ev.meta }}</span>
+                    </div>
+                    <h3>{{ ev.title }}</h3>
+                    <p class="muted">{{ ev.desc }}</p>
+                    <div class="event__cta">
+                        <a class="btn btn-primary"
+                           [routerLink]="['/', current(), 'auth', 'register']">
+                            {{ 'home.event.cta' | t }}
+                        </a>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </div>
 </section>

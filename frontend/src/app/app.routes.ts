@@ -20,12 +20,7 @@ export const routes: Routes = [
             {
                 path: 'auth',
                 children: [
-                    {
-                        path: 'register',
-                        loadComponent: () =>
-                            import('./features/auth/register/register-page.component')
-                                .then(m => m.RegisterPageComponent)
-                    }
+                    
                 ]
             },
             // exemples à réactiver ensuite :
