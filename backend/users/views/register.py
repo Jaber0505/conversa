@@ -1,3 +1,4 @@
+# users/views/register.py
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
@@ -7,26 +8,28 @@ from drf_spectacular.utils import extend_schema, OpenApiResponse, inline_seriali
 from config.openapi import ProblemSchema
 
 from users.serializers.register import RegisterSerializer
+from users.views.auth import _issue_tokens_for_user
 
 
 @extend_schema(
+    auth=[],
     summary="Créer un nouveau compte utilisateur",
     description=(
-        "Valide les informations fournies (email, mot de passe, données personnelles) "
-        "et crée un compte si toutes les règles sont respectées. "
-        "Retourne l'ID et l'email du nouvel utilisateur en cas de succès. "
-        "En cas d'erreur, renvoie un format `problem+json` avec un code stable et, "
-        "le cas échéant, des détails par champ pour permettre une traduction côté client."
+        "Inscription par email/mot de passe, avec choix de la langue maternelle "
+        "et des langues connues / à apprendre (codes ISO). "
+        "En cas de succès, l’utilisateur est automatiquement connecté (JWT)."
     ),
     request=RegisterSerializer,
     responses={
         201: OpenApiResponse(
-            description="Inscription réussie.",
+            description="Inscription réussie",
             response=inline_serializer(
                 name="RegisterSuccess",
                 fields={
                     "id": serializers.IntegerField(),
                     "email": serializers.EmailField(),
+                    "access": serializers.CharField(),
+                    "refresh": serializers.CharField(),
                 }
             )
         ),
@@ -42,11 +45,12 @@ class RegisterView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        serializer = RegisterSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.save()
-        # Retour minimal "API-friendly"
+        s = RegisterSerializer(data=request.data)
+        s.is_valid(raise_exception=True)
+        user = s.save()
+
+        tokens = _issue_tokens_for_user(user)
         return Response(
-            {"id": user.id, "email": user.email},
+            {"id": user.id, "email": user.email, **tokens},
             status=status.HTTP_201_CREATED
         )

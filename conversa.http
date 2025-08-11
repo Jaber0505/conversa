@@ -1,0 +1,90 @@
+########################################################
+# SECTION: REGISTER (crée un user + renvoie access/refresh)
+########################################################
+@api_url = http://localhost:8000/api/v1
+@ts = {{$timestamp}}
+@email = test+{{ts}}@example.com
+@password = StrongPwd123!
+
+### 
+# @name register
+POST {{api_url}}/auth/register/
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}",
+  "first_name": "Test",
+  "last_name": "User",
+  "birth_date": "1995-01-01",
+  "bio": "",
+  "language_native": "fr",
+  "languages_spoken": ["en","nl"],
+  "languages_wanted": ["es"],
+  "consent_given": true
+}
+
+
+########################################################
+# SECTION: LOGIN (user déjà existant)
+# - Modifie @email / @password pour un compte qui existe.
+########################################################
+@api_url = http://localhost:8000/api/v1
+@email = test@example.com
+@password = StrongPwd123!
+
+###
+# @name login
+POST {{api_url}}/auth/token/
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+
+########################################################
+# SECTION: PING (fait un login local, puis GET /auth/ping)
+########################################################
+@api_url = http://localhost:8000/api/v1
+@email = test@example.com
+@password = StrongPwd123!
+
+### (1) Login local pour obtenir un access
+# @name ping_login
+POST {{api_url}}/auth/token/
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+### (2) Ping avec l’access obtenu ci-dessus
+# @name ping
+GET {{api_url}}/auth/ping
+Authorization: Bearer {{ping_login.response.body.access}}
+
+
+########################################################
+# SECTION: TOKEN REFRESH (fait un login local, puis refresh)
+########################################################
+@api_url = http://localhost:8000/api/v1
+@email = test@example.com
+@password = StrongPwd123!
+
+### (1) Login local pour obtenir un refresh
+# @name refresh_login
+POST {{api_url}}/auth/token/
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+### (2) Refresh avec le refresh obtenu
+# @name refresh
+POST {{api_url}}/auth/token/refresh/
+Content-Type: application/j

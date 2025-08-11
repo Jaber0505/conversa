@@ -1,0 +1,57 @@
+<!-- frontend/src/app/features/shared/site-header/site-header.component.html -->
+<header class="site-header" role="banner">
+    <div class="container">
+        <!-- Bloc gauche : logo + bouton langue -->
+        <div class="brand-wrap">
+            <a class="brand"
+               [routerLink]="['/', current()]"
+               [tAttr]="{ 'aria-label': 'common.brand' }">
+                Conversa
+            </a>
+
+            <!-- Bouton langue (icône globe) -->
+            <button class="icon-btn"
+                    type="button"
+                    [tAttr]="{ 'aria-label': 'common.lang' }"
+                    (click)="openLangModal()">
+                <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 2c1.9 0 3.63.66 5 1.76-1.03.32-2.12.51-3.25.57A17.7 17.7 0 0 0 12 4Zm-2.39.4A15.9 15.9 0 0 1 11 6.3c-1.65.04-3.23-.13-4.67-.5A7.97 7.97 0 0 1 9.61 4.4ZM4.07 7.2c1.76.53 3.72.82 5.8.78.1.58.16 1.2.17 1.86H6.5c-.5 0-.9.4-.9.9s.4.9.9.9h3.57c-.03.68-.1 1.3-.2 1.88-2.08-.04-4.03.25-5.8.78A7.98 7.98 0 0 1 4.07 7.2Zm4.54 10.4A15.9 15.9 0 0 0 11 17.7c.7.02 1.37.09 2 .2-.73 1.2-1.7 2.08-2.93 2.7a7.98 7.98 0 0 1-1.46-3Zm6.38 2.1c.61-.76 1.11-1.66 1.5-2.68 1.13.06 2.22.25 3.25.57A7.97 7.97 0 0 1 15 19.7ZM14.2 15.5c.12-.6.2-1.23.23-1.9h3.07c.5 0 .9-.4.9-.9s-.4-.9-.9-.9h-3.07c-.02-.66-.1-1.28-.22-1.86 2.08.03 4.04-.25 5.8-.78a8 8 0 0 1 0 7.16c-1.76-.53-3.72-.82-5.8-.78Z"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Nav (cachée mobile) -->
+        <nav class="nav" aria-label="Navigation principale">
+            <a [routerLink]="['/', current(), 'events']" class="link">
+                {{ 'nav.events' | t }}
+            </a>
+            <a [routerLink]="['/', current(), 'about']" class="link">
+                {{ 'nav.about' | t }}
+            </a>
+            <a [routerLink]="['/', current(), 'faq']" class="link">
+                {{ 'nav.faq' | t }}
+            </a>
+        </nav>
+
+        <!-- Actions droites : connexion / inscription -->
+        <div class="actions">
+            <a class="btn btn--sm btn-outline"
+               [routerLink]="['/', current(), 'auth', 'login']">
+                {{ 'auth.login' | t }}
+            </a>
+            <a class="btn btn--sm btn-accent"
+               [routerLink]="['/', current(), 'auth', 'register']">
+                {{ 'auth.register' | t }}
+            </a>
+        </div>
+    </div>
+
+    <!-- Modal langues -->
+    <app-lang-modal
+        *ngIf="showLangModal()"
+        [current]="current()"
+        [langs]="langs"
+        (save)="onLangSaved($event)"
+        (close)="closeLangModal()">
+    </app-lang-modal>
+</header>

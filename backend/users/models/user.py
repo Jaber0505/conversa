@@ -1,20 +1,23 @@
+# users/models/user.py
 import uuid
-
 from datetime import date
+
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, Group, Permission
 from django.db import models
 from django.utils import timezone
 
+from languages.models import Language
 from ..managers import UserManager
 
 
 class User(AbstractBaseUser, PermissionsMixin):
+    # Identité
     username = models.CharField(
         max_length=150,
         unique=True,
         null=True,
         blank=True,
-        help_text="Identifiant public"
+        help_text="Identifiant public."
     )
     email = models.EmailField(
         unique=True,
@@ -35,18 +38,30 @@ class User(AbstractBaseUser, PermissionsMixin):
         blank=True,
         help_text="Texte libre pour décrire son parcours ou ses centres d’intérêt."
     )
-    language_native = models.CharField(
-        max_length=100,
-        help_text="Langue maternelle principale déclarée par l’utilisateur."
+
+    # Langues (modèle propre, sans legacy JSON/Char)
+    native_language = models.ForeignKey(
+        Language,
+        on_delete=models.PROTECT,
+        related_name="native_users",
+        null=True,            # requis côté serializer/API, toléré nul en DB pour compat admin/superuser
+        blank=True,
+        help_text="Langue maternelle (référence Language)."
     )
-    languages_spoken = models.JSONField(
-        default=list,
-        help_text="Liste de langues parlées par l’utilisateur (au moins niveau conversationnel)."
+    spoken_languages = models.ManyToManyField(
+        Language,
+        related_name="spoken_users",
+        blank=True,
+        help_text="Langues parlées (référence Language)."
     )
-    languages_wanted = models.JSONField(
-        default=list,
-        help_text="Liste de langues que l'utilisateur souhaite parler."
+    wanted_languages = models.ManyToManyField(
+        Language,
+        related_name="wanted_users",
+        blank=True,
+        help_text="Langues que l’utilisateur souhaite apprendre (référence Language)."
     )
+
+    # Métadonnées
     date_joined = models.DateTimeField(
         default=timezone.now,
         help_text="Date d’inscription sur la plateforme."
@@ -80,6 +95,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         editable=False,
         help_text="Clé de révocation utilisée pour invalider les tokens JWT."
     )
+
+    # ACL
     groups = models.ManyToManyField(
         Group,
         related_name="custom_user_groups",
@@ -94,19 +111,20 @@ class User(AbstractBaseUser, PermissionsMixin):
         help_text="Les permissions spécifiques de cet utilisateur.",
         verbose_name="permissions d’utilisateur",
     )
-    
+
+    # Propriétés utilitaires
     @property
-    def age(self):
+    def age(self) -> int:
         today = date.today()
         return (
             today.year - self.birth_date.year
             - ((today.month, today.day) < (self.birth_date.month, self.birth_date.day))
         )
 
+    # Manager & auth
     objects = UserManager()
-
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["first_name", "last_name", "birth_date", "language_native"]
+    REQUIRED_FIELDS = ["first_name", "last_name", "birth_date"]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.email

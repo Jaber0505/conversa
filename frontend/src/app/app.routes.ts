@@ -1,5 +1,6 @@
+// frontend/src/app/app.routes.ts
 import { Routes } from '@angular/router';
-import { HomeComponent } from './home/home.component';
+import { HomeComponent } from './features/home/home.component';
 import { languageUrlGuard } from './core/i18n/language-url.guard';
 
 export const routes: Routes = [
@@ -22,7 +23,7 @@ export const routes: Routes = [
                     {
                         path: 'register',
                         loadComponent: () =>
-                            import('./features/auth/register-page.component')
+                            import('./features/auth/register/register-page.component')
                                 .then(m => m.RegisterPageComponent)
                     }
                 ]

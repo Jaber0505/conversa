@@ -36,6 +36,7 @@ THIRD_PARTY_APPS = [
 ]
 
 PROJECT_APPS = [
+    "languages",
     "users",
 ]
 
@@ -124,6 +125,9 @@ REST_FRAMEWORK = {
     },
     "EXCEPTION_HANDLER": "config.api_errors.drf_exception_handler",
 }
+REST_FRAMEWORK["DEFAULT_THROTTLE_CLASSES"] += ["rest_framework.throttling.ScopedRateThrottle"]
+REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"]["register"] = "5/min"
+
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=int(os.getenv("DJANGO_JWT_ACCESS_MIN", "15"))),

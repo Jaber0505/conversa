@@ -1,9 +1,10 @@
+// frontend/src/app/app.ts
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { I18nService } from '@app/core/i18n/i18n.service';
 import { TPipe } from '@app/core/i18n/t.pipe';
-import { SiteHeaderComponent } from '@app/shared/site-header/site-header.component';
+import { SiteHeaderComponent } from '@/app/shared/components/site-header/site-header.component';
 
 @Component({
   selector: 'app-root',
