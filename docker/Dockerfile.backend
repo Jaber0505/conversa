@@ -1,5 +1,5 @@
 # ---------- DEV ----------
-FROM python:3.11-slim
+FROM python:3.11-slim AS dev
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \

@@ -12,7 +12,13 @@ export class RootRedirectComponent implements OnInit {
   private readonly lang = inject(LangService);
 
   ngOnInit(): void {
-    const target = this.lang.current;
-    this.router.navigate(['/', target], { replaceUrl: true });
+    const targetLang = this.lang.current;
+    const routeExtra = this.router.getCurrentNavigation()?.extras.state as { to?: string };
+    const pathSuffix = routeExtra?.to ?? '';
+
+    const segments = ['/', targetLang];
+    if (pathSuffix) segments.push(...pathSuffix.split('/'));
+
+    this.router.navigate(segments, { replaceUrl: true });
   }
 }

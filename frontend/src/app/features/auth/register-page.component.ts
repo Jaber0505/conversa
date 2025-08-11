@@ -1,97 +1,144 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
-import { RegisterApiService, RegisterPayload } from './register-api.service';
-
-// i18n
+import {
+    FormBuilder,
+    FormGroup,
+    Validators,
+    ReactiveFormsModule,
+    FormArray,
+    AbstractControl
+} from '@angular/forms';
 import { TPipe } from '@app/core/i18n/t.pipe';
-import { TAttrDirective } from '@app/core/i18n/t-attr.directive';
-import { I18nService } from '@app/core/i18n/i18n.service';
-
-type RegisterErrKey =
-  | 'email' | 'password' | 'first_name' | 'last_name'
-  | 'birth_date' | 'bio' | 'language_native'
-  | 'languages_spoken' | 'consent_given';
+import { Router } from '@angular/router';
 
 @Component({
-  standalone: true,
-  selector: 'app-register-page',
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, TPipe, TAttrDirective],
-  templateUrl: './register-page.component.html',
-  styleUrls: ['./register-page.component.scss'],
+    selector: 'app-register-page',
+    standalone: true,
+    imports: [CommonModule, ReactiveFormsModule, TPipe],
+    templateUrl: './register-page.component.html',
+    styleUrls: ['./register-page.component.scss']
 })
 export class RegisterPageComponent {
-  private fb = inject(FormBuilder);
-  private api = inject(RegisterApiService);
-  private i18n = inject(I18nService);
+    step = 1;
+    maxSteps = 4;
 
-  loading = false;
-  globalMsg = '';
-  successEmail = '';
+    form: FormGroup;
 
-  // Typage strict → autorise la dot-notation dans le template
-  err: Partial<Record<RegisterErrKey, string>> = {};
+    constructor(
+        private fb: FormBuilder,
+        private router: Router
+    ) {
+        this.form = this.fb.group({
+            first_name: ['', Validators.required],
+            last_name: ['', Validators.required],
+            birth_date: ['', Validators.required],
+            bio: ['', [Validators.required, Validators.minLength(20)]],
+            language_native: ['', Validators.required],
+            languages_spoken: this.fb.array([], Validators.required),
+            languages_learning: this.fb.array([], Validators.required),
+            email: ['', [Validators.required, Validators.email]],
+            password: ['', [Validators.required, Validators.minLength(8)]],
+            consent_given: [false, Validators.requiredTrue]
+        });
+    }
 
-  // Laisse Angular inférer les types via nonNullable.control(...)
-  form = this.fb.nonNullable.group({
-    email:                this.fb.nonNullable.control('', { validators: [Validators.required, Validators.email] }),
-    password:             this.fb.nonNullable.control('', { validators: [Validators.required, Validators.minLength(8)] }),
-    first_name:           this.fb.nonNullable.control('', { validators: [Validators.required] }),
-    last_name:            this.fb.nonNullable.control('', { validators: [Validators.required] }),
-    birth_date:           this.fb.nonNullable.control('', { validators: [Validators.required] }), // yyyy-mm-dd
-    bio:                  this.fb.nonNullable.control(''),
-    language_native:      this.fb.nonNullable.control('fr', { validators: [Validators.required] }),
-    languages_spoken_csv: this.fb.nonNullable.control('en,nl'),
-    consent_given:        this.fb.nonNullable.control(false, { validators: [Validators.requiredTrue] }),
-  });
+    get languagesSpoken(): FormArray {
+        return this.form.get('languages_spoken') as FormArray;
+    }
 
-  submit() {
-    if (this.loading || this.form.invalid) return;
+    get languagesLearning(): FormArray {
+        return this.form.get('languages_learning') as FormArray;
+    }
 
-    this.loading = true;
-    this.err = {};
-    this.globalMsg = '';
-    this.successEmail = '';
+    addSpokenFromInput(ev: Event) {
+        const input = ev.target as HTMLInputElement | null;
+        const v = (input?.value ?? '').trim();
+        if (!v) return;
+        this.languagesSpoken.push(this.fb.control(v));
+        if (input) input.value = '';
+        this.languagesSpoken.markAsTouched();
+    }
 
-    const v = this.form.getRawValue(); // types non-nulls inférés
+    removeSpokenAt(i: number) {
+        this.languagesSpoken.removeAt(i);
+        this.languagesSpoken.markAsTouched();
+    }
 
-    const payload: RegisterPayload = {
-      email: v.email,
-      password: v.password,
-      first_name: v.first_name,
-      last_name: v.last_name,
-      birth_date: v.birth_date,
-      bio: v.bio ?? '',
-      language_native: v.language_native,
-      languages_spoken: (v.languages_spoken_csv ?? '')
-        .split(',').map(s => s.trim()).filter(Boolean),
-      consent_given: v.consent_given,
-    };
+    addLearningFromInput(ev: Event) {
+        const input = ev.target as HTMLInputElement | null;
+        const v = (input?.value ?? '').trim();
+        if (!v) return;
+        this.languagesLearning.push(this.fb.control(v));
+        if (input) input.value = '';
+        this.languagesLearning.markAsTouched();
+    }
 
-    this.api.register(payload).subscribe({
-      next: (res) => {
-        this.loading = false;
-        this.successEmail = res.email;
-        this.globalMsg = this.i18n.t('auth.register.success');
-      },
-      error: (err) => {
-        this.loading = false;
-        const p = (err && err.error) ? err.error as {
-          code?: string;
-          params?: Record<string, any>;
-          fields?: Array<{ field: RegisterErrKey; code: string; params?: Record<string, any> }>;
-        } : {};
+    removeLearningAt(i: number) {
+        this.languagesLearning.removeAt(i);
+        this.languagesLearning.markAsTouched();
+    }
 
-        this.globalMsg = this.i18n.t(`errors.${p.code ?? 'UNSPECIFIED_ERROR'}`, p.params);
-
-        if (Array.isArray(p.fields)) {
-          for (const f of p.fields) {
-            if (!f?.field) continue;
-            this.err[f.field] = this.i18n.t(`errors.${f.code}`, f.params);
-          }
+    nextStep() {
+        if (this.isStepValid()) {
+            this.step++;
+        } else {
+            this.form.markAllAsTouched();
         }
-      }
-    });
-  }
+    }
+
+    prevStep() {
+        if (this.step > 1) this.step--;
+    }
+
+    isStepValid(): boolean {
+        const stepControls = this.getStepControls();
+        return stepControls.every(ctrl => ctrl?.valid);
+    }
+
+    private getStepControls(): AbstractControl[] {
+        switch (this.step) {
+            case 1:
+                return [
+                    this.form.get('first_name')!,
+                    this.form.get('last_name')!,
+                    this.form.get('birth_date')!
+                ];
+            case 2:
+                return [this.form.get('bio')!];
+            case 3:
+                return [
+                    this.form.get('language_native')!,
+                    this.form.get('languages_spoken')!,
+                    this.form.get('languages_learning')!
+                ];
+            case 4:
+                return [
+                    this.form.get('email')!,
+                    this.form.get('password')!,
+                    this.form.get('consent_given')!
+                ];
+            default:
+                return [];
+        }
+    }
+
+    getErrorKey(ctrlName: string): string {
+        const ctrl = this.form.get(ctrlName);
+        if (!ctrl || !ctrl.touched || !ctrl.errors) return '';
+        if (ctrl.hasError('required')) return `errors.${ctrlName}_required`;
+        if (ctrl.hasError('email')) return 'errors.email_invalid';
+        if (ctrl.hasError('minlength')) return `errors.${ctrlName}_min_length`;
+        if (ctrl.hasError('requiredTrue')) return 'errors.consent_required';
+        return '';
+    }
+
+    submit() {
+        if (this.form.valid) {
+            console.log('Form data ready:', this.form.value);
+            // Appel API d'inscription...
+            this.router.navigate(['/fr']); // Redirection après inscription
+        } else {
+            this.form.markAllAsTouched();
+        }
+    }
 }

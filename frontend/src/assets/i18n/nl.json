@@ -1,4 +1,23 @@
 {
+  "register": {
+    "first_name": "Voornaam",
+    "last_name": "Achternaam",
+    "birth_date": "Geboortedatum",
+    "bio_intro": "Welkom {{name}}, beschrijf jezelf zodat we je beter kunnen leren kennen.",
+    "bio": "Biografie",
+    "language_native": "Moedertaal",
+    "languages_spoken": "Gesproken talen",
+    "languages_learning": "Talen om te leren",
+    "add_language": "Voeg een taal toe",
+    "email": "E-mailadres",
+    "password": "Wachtwoord",
+    "consent": "Ik ga akkoord met de verwerking van mijn persoonsgegevens."
+  },
+  "nav": {
+    "events": "Evenementen",
+    "about": "Over ons",
+    "faq": "FAQ"
+  },
   "common": {
     "brand": "Conversa",
     "loading": "Laden…",
@@ -13,16 +32,16 @@
     "nav": {
       "home": "Home",
       "explore": "Verkennen",
-      "events": "Evenementen",
-      "about": "Over ons",
-      "faq": "FAQ",
       "menu": "Menu",
       "mobile": "Mobiele navigatie",
       "footer": "Voettekstlinks",
-      "legal": "Wettelijke vermeldingen",
-      "privacy": "Privacybeleid",
+      "legal": "Wettelijke info",
+      "privacy": "Privacy",
       "contact": "Contact"
-    }
+    },
+    "prev": "Vorige",
+    "next": "Volgende",
+    "submit": "Bevestigen"
   },
   "auth": {
     "login": "Inloggen",
@@ -31,9 +50,9 @@
   },
   "home": {
     "hero": {
-      "badge": "🌍 Taal oefenen in cafés in Brussel",
+      "badge": "🌍 Taalpraatjes in Brusselse cafés",
       "title": "Oefen een taal, ontmoet mensen",
-      "subtitle": "Doe mee aan gezellige sessies georganiseerd door de gemeenschap. Geen lessen, 100% conversatie."
+      "subtitle": "Sluit je aan bij gezellige sessies, geleid door de community. Geen lessen, wél gesprekken."
     },
     "search": {
       "aria": "Evenementen zoeken",
@@ -58,23 +77,23 @@
       "submit": "Zoeken"
     },
     "quick": {
-      "label": "Hoogtepunten",
+      "label": "Voordelen",
       "beginner": "Beginners welkom",
       "small_groups": "Groepen van 3–6 personen",
       "partners": "Partnerlocaties"
     },
     "how": {
-      "aria": "Hoe werkt het",
-      "illustration": "Illustratie van mensen die praten",
+      "aria": "Hoe het werkt",
+      "illustration": "Illustratie van mensen in gesprek",
       "title": "Hoe werkt het?",
       "steps": {
-        "1": "Maak of sluit je aan bij een evenement.",
+        "1": "Maak of sluit aan bij een evenement.",
         "2": "Bevestig je aanwezigheid ter plaatse.",
         "3": "Start het conversatiespel."
       }
     },
     "categories": {
-      "title": "Blader per taal",
+      "title": "Verken op taal",
       "en": "Engels",
       "en_sub": "Dagelijkse sessies · Alle niveaus",
       "nl": "Nederlands",
@@ -99,13 +118,15 @@
     "cancel": "Annuleren"
   },
   "errors": {
-    "VALIDATION_ERROR": "Sommige velden zijn ongeldig.",
-    "UNSPECIFIED_ERROR": "Er is een fout opgetreden.",
-    "invalid": "Ongeldige waarde.",
-    "unique": "Deze waarde is al in gebruik.",
-    "min_length": "Te kort (min. {{min}} tekens).",
-    "required": "Dit veld is verplicht.",
-    "AGE_MIN": "Je moet minstens 18 jaar oud zijn.",
-    "CONSENT_REQUIRED": "Toestemming is vereist."
+    "first_name_required": "Voornaam is verplicht.",
+    "last_name_required": "Achternaam is verplicht.",
+    "birth_date_required": "Geboortedatum is verplicht.",
+    "bio_min_length": "Biografie moet minstens {{min}} tekens bevatten.",
+    "language_native_required": "Moedertaal is verplicht.",
+    "languages_spoken_required": "Voeg minstens één gesproken taal toe.",
+    "languages_learning_required": "Voeg minstens één taal toe om te leren.",
+    "email_invalid": "Ongeldig e-mailadres.",
+    "password_min_length": "Wachtwoord moet minstens {{min}} tekens bevatten.",
+    "consent_required": "U moet akkoord gaan met de verwerking van uw gegevens."
   }
 }

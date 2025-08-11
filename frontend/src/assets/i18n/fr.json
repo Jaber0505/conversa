@@ -1,4 +1,18 @@
 {
+  "register": {
+    "first_name": "Prénom",
+    "last_name": "Nom",
+    "birth_date": "Date de naissance",
+    "bio_intro": "Bienvenue {{name}}, décrivez-vous pour que nous puissions apprendre à vous connaître.",
+    "bio": "Biographie",
+    "language_native": "Langue maternelle",
+    "languages_spoken": "Langues parlées",
+    "languages_learning": "Langues à apprendre",
+    "add_language": "Ajouter une langue",
+    "email": "Adresse e-mail",
+    "password": "Mot de passe",
+    "consent": "J'accepte le traitement de mes données personnelles."
+  },
   "nav": {
     "events": "Événements",
     "about": "À propos",
@@ -24,7 +38,10 @@
       "legal": "Mentions légales",
       "privacy": "Confidentialité",
       "contact": "Contact"
-    }
+    },
+    "prev": "Précédent",
+    "next": "Suivant",
+    "submit": "Valider"
   },
   "auth": {
     "login": "Connexion",
@@ -101,13 +118,15 @@
     "cancel": "Annuler"
   },
   "errors": {
-    "VALIDATION_ERROR": "Certains champs sont invalides.",
-    "UNSPECIFIED_ERROR": "Une erreur est survenue.",
-    "invalid": "Valeur invalide.",
-    "unique": "Cette valeur est déjà utilisée.",
-    "min_length": "Trop court (min. {{min}} caractères).",
-    "required": "Champ requis.",
-    "AGE_MIN": "Vous devez avoir au moins 18 ans.",
-    "CONSENT_REQUIRED": "Le consentement est requis."
+    "first_name_required": "Le prénom est obligatoire.",
+    "last_name_required": "Le nom est obligatoire.",
+    "birth_date_required": "La date de naissance est obligatoire.",
+    "bio_min_length": "La biographie doit contenir au moins {{min}} caractères.",
+    "language_native_required": "La langue maternelle est obligatoire.",
+    "languages_spoken_required": "Veuillez ajouter au moins une langue parlée.",
+    "languages_learning_required": "Veuillez ajouter au moins une langue à apprendre.",
+    "email_invalid": "L'adresse e-mail est invalide.",
+    "password_min_length": "Le mot de passe doit contenir au moins {{min}} caractères.",
+    "consent_required": "Vous devez accepter le traitement de vos données."
   }
 }

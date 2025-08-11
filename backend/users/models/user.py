@@ -43,6 +43,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         default=list,
         help_text="Liste de langues parlées par l’utilisateur (au moins niveau conversationnel)."
     )
+    languages_wanted = models.JSONField(
+        default=list,
+        help_text="Liste de langues que l'utilisateur souhaite parler."
+    )
     date_joined = models.DateTimeField(
         default=timezone.now,
         help_text="Date d’inscription sur la plateforme."
