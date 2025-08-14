@@ -1,8 +1,8 @@
+# backend/config/settings/prod.py
 """
 Configuration de production (Render).
 Sécurité renforcée (HTTPS via proxy, cookies sécurisés, HSTS), CORS/CSRF stricts,
 hôtes autorisés limités, base PostgreSQL définie par variables d’environnement.
-Aucune option de développement n’est activée ici.
 """
 
 from .base import *  # noqa
@@ -24,9 +24,11 @@ DATABASES = {
         "ATOMIC_REQUESTS": True,
     }
 }
+DATABASES["default"]["CONN_MAX_AGE"] = 60
 
 CORS_ALLOWED_ORIGINS = os.getenv("DJANGO_CORS_ALLOWED_ORIGINS", "").split(",") if os.getenv("DJANGO_CORS_ALLOWED_ORIGINS") else []
 CSRF_TRUSTED_ORIGINS = os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",") if os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS") else []
+REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] = ["rest_framework.renderers.JSONRenderer"]
 
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True

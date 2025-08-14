@@ -1,8 +1,26 @@
-Django>=5.2,<6.0
-djangorestframework>=3.15.0,<3.16.0
-drf-spectacular>=0.27.0,<0.28.0
-djangorestframework-simplejwt>=5.3.0,<5.4.0
-django-cors-headers>=4.3.0,<4.4.0
-psycopg2-binary>=2.9.0,<3.0.0
+# Django & ORM
+Django>=5.0,<6.0
+psycopg[binary]>=3.1  # driver PostgreSQL
 
-drf-spectacular-sidecar
+# API REST
+djangorestframework>=3.15
+drf-spectacular>=0.27
+drf-spectacular-sidecar>=2024.3.1
+django-filter>=24.2
+
+# Authentification & sécurité
+djangorestframework-simplejwt>=5.3
+django-cors-headers>=4.3
+argon2-cffi>=23.1  # hashage sécurisé
+django-environ>=0.11  # gestion config via env vars
+
+# Paiements
+stripe>=8.10
+
+# Internationalisation / localisation
+Babel>=2.14
+django-modeltranslation>=0.18
+
+# Outils divers
+Pillow>=10.2  # gestion images
+requests>=2.32

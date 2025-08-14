@@ -1,7 +1,8 @@
+# backend/config/settings/dev.py
 """
 Configuration de développement.
 PostgreSQL local (Docker), DEBUG activé, CORS/CSRF ouverts pour Angular (localhost:4200),
-journalisation verbeuse. Aucune contrainte de sécurité de production ici.
+journalisation verbeuse.
 """
 
 from .base import *  # noqa

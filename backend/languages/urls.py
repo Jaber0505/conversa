@@ -1,11 +1,7 @@
-# languages/urls.py
-from django.urls import path, include
+# backend/languages/urls.py
 from rest_framework.routers import DefaultRouter
-from languages.views.language import LanguageViewSet
-
-app_name = "languages"
+from .views import LanguageViewSet
 
 router = DefaultRouter()
-router.register(r"languages", LanguageViewSet, basename="language")
-
-urlpatterns = [path("", include(router.urls))]
+router.register("", LanguageViewSet, basename="language")
+urlpatterns = router.urls

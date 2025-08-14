@@ -1,8 +1,15 @@
 -r base.txt
-django-debug-toolbar>=4.2,<4.3
-ipython>=8.0
-black>=24.0
-ruff>=0.4.0
-pytest>=8.2.0
-pytest-django>=4.8.0
-pytest-cov>=5.0.0
+
+# Outils dev
+django-debug-toolbar>=4.3
+django-extensions>=3.2
+Werkzeug>=3.0  # serveur debug performant
+ipython>=8.24
+
+# Tests & lint
+pytest>=8.1
+pytest-django>=4.8
+pytest-cov>=5.0
+flake8>=7.0
+black>=24.3
+isort>=5.13

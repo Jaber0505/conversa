@@ -1,3 +1,9 @@
 -r base.txt
-gunicorn>=22.0.0,<22.1.0
-whitenoise>=6.6.0,<6.7.0
+
+# Serveur WSGI / ASGI
+gunicorn>=21.2
+uvicorn[standard]>=0.29  # si déploiement ASGI
+
+# Sécurité
+whitenoise>=6.6  # static files en prod
+django-secure>=1.0
