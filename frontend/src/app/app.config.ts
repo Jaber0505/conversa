@@ -2,15 +2,19 @@
 import { ApplicationConfig, provideEnvironmentInitializer, inject } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
+
 import { routes } from './app.routes';
-import { acceptLanguageInterceptor } from './core/i18n/accept-language.interceptor';
-import { I18nService } from '@app/core/i18n/i18n.service';
-import { LangService } from '@app/core/i18n/lang.service';
+
+// i18n via barrel
+import { acceptLanguageInterceptor, I18nService, LangService } from '@i18n';
+
+// autres interceptors/fournisseurs app
 import { authInterceptor } from './core/http/interceptors/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
+
     provideHttpClient(
       withInterceptors([acceptLanguageInterceptor, authInterceptor]),
       withInterceptorsFromDi()
@@ -23,4 +27,3 @@ export const appConfig: ApplicationConfig = {
     }),
   ],
 };
-

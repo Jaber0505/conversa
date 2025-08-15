@@ -3,13 +3,9 @@ import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
-import { TPipe } from '@app/core/i18n/t.pipe';
-import { TAttrDirective } from '@app/core/i18n/t-attr.directive';
-import { TDatePipe, TNumberPipe, TCurrencyPipe } from '@app/core/i18n/i18n.pipes';
-import { THtmlDirective } from '@app/core/i18n/t-html.directive';
-
-import { LangService } from '@app/core/i18n/lang.service';
-import type { Lang } from '@app/core/i18n/languages.config';
+// ⬇️ i18n via barrel
+import { TPipe, TAttrDirective, TDatePipe, TNumberPipe, TCurrencyPipe, THtmlDirective, LangService } from '@i18n';
+import type { Lang } from '@i18n';
 
 @Component({
   selector: 'app-settings',

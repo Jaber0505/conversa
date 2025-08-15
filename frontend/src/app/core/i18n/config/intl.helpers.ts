@@ -1,4 +1,4 @@
-import type { Lang } from './languages.config';
+import type { Lang } from '../index';
 
 // Mapping locales régionales
 const LOCALE_MAP: Record<Lang, string> = {

@@ -1,8 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { DOCUMENT } from '@angular/common';
-import { LangService } from './lang.service';
-import { DEFAULT_LANGUAGE, type Lang } from './languages.config';
+import { DEFAULT_LANGUAGE, type Lang, LangService } from '../index';
 import { BehaviorSubject, distinctUntilChanged, switchMap, from, firstValueFrom } from 'rxjs';
 
 type Dict = Record<string, any>;

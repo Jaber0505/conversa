@@ -1,7 +1,9 @@
 // frontend/src/app/features/shared/site-header/ui/lang-modal.component.ts
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { I18nService } from '@app/core/i18n/i18n.service';
+
+// ⬇️ i18n via barrel
+import { I18nService } from '@i18n';
 
 export type Lang = 'fr' | 'en' | 'nl';
 

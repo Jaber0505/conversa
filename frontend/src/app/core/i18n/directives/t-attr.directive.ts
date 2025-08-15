@@ -1,5 +1,5 @@
 import { Directive, Input, ElementRef, Renderer2, DestroyRef, OnChanges, SimpleChanges, inject } from '@angular/core';
-import { I18nService } from './i18n.service';
+import { I18nService } from '../index';
 
 type TParams = Record<string, any>;
 type TValue = string | [string, TParams];

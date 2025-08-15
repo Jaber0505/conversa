@@ -1,6 +1,6 @@
 /* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
 /* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
-{
+{      
   "compileOnSave": false,
   "compilerOptions": {
     "strict": true,
@@ -14,10 +14,12 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "preserve",
-    "baseUrl": ".",
+    "baseUrl": "src",
     "paths": {
       "@/*": ["src/*"],
-      "@app/*": ["src/app/*"]
+      "@app/*": ["app/*"],
+      "@i18n": ["app/core/i18n/index.ts"],
+      "@i18n/*": ["app/core/i18n/*"]
     }
   },
   "angularCompilerOptions": {

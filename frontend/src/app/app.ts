@@ -1,10 +1,10 @@
-// frontend/src/app/app.ts
+// src/app/app.ts
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-import { I18nService } from '@app/core/i18n/i18n.service';
-import { TPipe } from '@app/core/i18n/t.pipe';
-import { SiteHeaderComponent } from '@/app/shared/components/site-header/site-header.component';
+
+import { I18nService, TPipe } from '@i18n';
+import { SiteHeaderComponent } from '@app/shared/components/site-header/site-header.component';
 
 @Component({
   selector: 'app-root',
@@ -13,7 +13,7 @@ import { SiteHeaderComponent } from '@/app/shared/components/site-header/site-he
   template: `
     <ng-container *ngIf="ready$ | async; else splash">
       <app-site-header></app-site-header>
-      <router-outlet />
+      <router-outlet></router-outlet>
     </ng-container>
 
     <ng-template #splash>

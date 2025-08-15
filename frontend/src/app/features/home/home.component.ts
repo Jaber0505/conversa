@@ -2,38 +2,27 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
-import { TPipe } from '@app/core/i18n/t.pipe';
-import { TAttrDirective } from '@app/core/i18n/t-attr.directive';
-import { I18nService } from '@app/core/i18n/i18n.service';
-import { LangService } from '@app/core/i18n/lang.service';
-import { formatDateIntl } from '@app/core/i18n/intl.helpers';
+// ⬇️ i18n via barrel
+import { TPipe, TAttrDirective, I18nService, LangService, formatDateIntl, Lang } from '@i18n';
 
-import { EventsApiService, EventDto } from '@/app/features/events/events-api.service';
-import { Lang } from '@app/core/i18n/languages.config';
+import { EventsApiService, EventDto } from '@app/features/events/events-api.service';
 
-type EventCardVM = {
-    id: number;
-    badge: string;
-    title: string;
-    meta: string;
-    desc: string;
-};
+type EventCardVM = { id:number; badge:string; title:string; meta:string; desc:string; };
 
 @Component({
-    standalone: true,
-    selector: 'app-home',
-    templateUrl: './home.component.html',
-    styleUrls: ['./home.component.scss'],
-    imports: [CommonModule, RouterLink, TPipe, TAttrDirective]
+  standalone: true,
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.scss'],
+  imports: [CommonModule, RouterLink, TPipe, TAttrDirective]
 })
 export class HomeComponent implements OnInit {
-    private readonly api = inject(EventsApiService);
-    private readonly i18n = inject(I18nService);
-    private readonly langSvc = inject(LangService);
+  private readonly api = inject(EventsApiService);
+  private readonly i18n = inject(I18nService);
+  private readonly langSvc = inject(LangService);
 
-    readonly current = signal<Lang>(this.langSvc.current as Lang);
-
-    events: EventCardVM[] = [];
+  readonly current = signal<Lang>(this.langSvc.current as Lang);
+  events: EventCardVM[] = [];
 
     ngOnInit(): void {
         this.api.list().subscribe((items) => {

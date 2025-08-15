@@ -3,23 +3,22 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
-import { TPipe } from '@app/core/i18n/t.pipe';
-import { TAttrDirective } from '@app/core/i18n/t-attr.directive';
-import { LangService } from '@app/core/i18n/lang.service';
-import { I18nService } from '@app/core/i18n/i18n.service';
+// ⬇️ i18n via barrel
+import { TPipe, TAttrDirective, LangService, I18nService } from '@i18n';
+
 import { LangModalComponent, Lang } from '../lang-modal/lang-modal.component';
 
 @Component({
-    selector: 'app-site-header',
-    standalone: true,
-    imports: [CommonModule, RouterLink, TPipe, TAttrDirective, LangModalComponent],
-    templateUrl: './site-header.component.html',
-    styleUrls: ['./site-header.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'app-site-header',
+  standalone: true,
+  imports: [CommonModule, RouterLink, TPipe, TAttrDirective, LangModalComponent],
+  templateUrl: './site-header.component.html',
+  styleUrls: ['./site-header.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SiteHeaderComponent {
-    private readonly langSvc = inject(LangService);
-    private readonly i18n = inject(I18nService);
+  private readonly langSvc = inject(LangService);
+  private readonly i18n = inject(I18nService);
 
     readonly langs: Lang[] = ['fr', 'en', 'nl'];
     readonly current = signal<Lang>(this.langSvc.current as Lang);

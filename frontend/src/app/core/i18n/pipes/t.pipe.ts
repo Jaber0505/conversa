@@ -1,6 +1,5 @@
 import { ChangeDetectorRef, DestroyRef, Pipe, PipeTransform, inject } from '@angular/core';
-import { I18nService } from './i18n.service';
-import { LangService } from './lang.service';
+import { LangService, I18nService } from '../index';
 
 @Pipe({ name: 't', standalone: true, pure: false })
 export class TPipe implements PipeTransform {
