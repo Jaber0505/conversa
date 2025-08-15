@@ -1,6 +1,6 @@
 import { Directive, Input, ElementRef, Renderer2, DestroyRef, OnChanges, SimpleChanges, inject, SecurityContext } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { LangService, I18nService } from '../index';
+import { LangService, I18nService } from '@core/i18n';
 
 type Params = Record<string, any>;
 

@@ -9,7 +9,7 @@ import {
 import { inject } from '@angular/core';
 import { Observable, throwError, of } from 'rxjs';
 import { catchError, map, switchMap, finalize, shareReplay } from 'rxjs/operators';
-import { AuthTokenService } from '../auth-token.service';
+import { AuthTokenService } from '@core/http';
 
 type RefreshResponse = { access: string; refresh?: string };
 

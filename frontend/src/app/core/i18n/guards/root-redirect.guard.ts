@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { LangService } from '../index';
+import { LangService } from '@core/i18n';
 
 @Component({
   selector: 'app-root-redirect',

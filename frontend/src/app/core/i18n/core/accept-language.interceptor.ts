@@ -1,6 +1,6 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { LangService } from '../index';
+import { LangService } from '@core/i18n';
 
 export const acceptLanguageInterceptor: HttpInterceptorFn = (req, next) => {
   const lang = inject(LangService).current;

@@ -2,7 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Router } from '@angular/router';
-import { DEFAULT_LANGUAGE, STORAGE_KEY, SUPPORTED_LANGS, type Lang } from '../index';
+import { DEFAULT_LANGUAGE, STORAGE_KEY, SUPPORTED_LANGS, type Lang } from '@core/i18n';
 
 @Injectable({ providedIn: 'root' })
 export class LangService {

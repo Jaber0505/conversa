@@ -3,7 +3,7 @@ import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 // ⬇️ i18n via barrel
-import { TPipe, TAttrDirective, I18nService, LangService, formatDateIntl, Lang } from '@i18n';
+import { TPipe, TAttrDirective, I18nService, LangService, formatDateIntl, Lang } from '@core/i18n';
 
 import { EventsApiService, EventDto } from '@app/features/events/events-api.service';
 

@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
 // ⬇️ i18n via barrel
-import { TPipe, TAttrDirective, LangService, I18nService } from '@i18n';
+import { TPipe, TAttrDirective, LangService, I18nService } from '@core/i18n';
 
 import { LangModalComponent, Lang } from '../lang-modal/lang-modal.component';
 

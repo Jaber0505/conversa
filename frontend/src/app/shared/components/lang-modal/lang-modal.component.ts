@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, inject
 import { CommonModule } from '@angular/common';
 
 // ⬇️ i18n via barrel
-import { I18nService } from '@i18n';
+import { I18nService } from '@core/i18n';
 
 export type Lang = 'fr' | 'en' | 'nl';
 

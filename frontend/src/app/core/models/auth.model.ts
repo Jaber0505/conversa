@@ -1,20 +1,8 @@
-// core/models/auth.model.ts
-export type RegisterRequest = {
-  email: string;
-  password: string;
-  first_name: string;
-  last_name: string;
-  birth_date: string;
-  bio?: string;
-  language_native: string;
-  languages_spoken?: string[];
-  languages_wanted?: string[];
-  consent_given: boolean;
-};
+export type LoginRequest = { username: string; password: string };
+export type LoginResponse = { access: string; refresh: string };
 
-export type AuthResponse = {
-  id: number;
-  email: string;
-  access: string;
-  refresh: string;
+export type RegisterRequest = {
+  username: string;
+  email?: string | null;          
+  password: string;               
 };

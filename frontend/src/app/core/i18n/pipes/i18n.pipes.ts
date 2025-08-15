@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform, inject } from '@angular/core';
-import { formatDateIntl, formatNumberIntl, formatCurrencyIntl, Lang, LangService } from '../index';
+import { formatDateIntl, formatNumberIntl, formatCurrencyIntl, Lang, LangService } from '@core/i18n';
 
 /** Date localisée : {{ value | tDate:options[:langOverride] }} */
 @Pipe({ name: 'tDate', standalone: true, pure: false })

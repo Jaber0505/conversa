@@ -3,7 +3,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 
-import { I18nService, TPipe } from '@i18n';
+import { I18nService, TPipe } from '@core/i18n';
 import { SiteHeaderComponent } from '@app/shared/components/site-header/site-header.component';
 
 @Component({

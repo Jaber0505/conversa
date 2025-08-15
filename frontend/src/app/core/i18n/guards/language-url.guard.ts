@@ -1,6 +1,6 @@
 import { CanMatchFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
-import { SUPPORTED_LANGS, DEFAULT_LANGUAGE, type Lang, LangService } from '../index';
+import { SUPPORTED_LANGS, DEFAULT_LANGUAGE, type Lang, LangService } from '@core/i18n';
 
 export const languageUrlGuard: CanMatchFn = (_route, segments) => {
   const router = inject(Router);

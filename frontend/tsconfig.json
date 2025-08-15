@@ -18,8 +18,10 @@
     "paths": {
       "@/*": ["src/*"],
       "@app/*": ["app/*"],
-      "@i18n": ["app/core/i18n/index.ts"],
-      "@i18n/*": ["app/core/i18n/*"]
+      "@core/i18n": ["app/core/i18n/index.ts"],
+      "@core/models": ["app/core/models/index.ts"],
+      "@core/http": ["app/core/http/index.ts"],
+      "@environments": ["environments/index.ts"],
     }
   },
   "angularCompilerOptions": {

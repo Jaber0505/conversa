@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './features/home/home.component';
-import { guestGuard } from './core/http/guards/guest.guard';
+import { guestGuard } from '@core/http';
 
 // ⬇️ i18n guard via barrel
-import { languageUrlGuard } from '@i18n';
+import { languageUrlGuard } from '@core/i18n';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/fr', pathMatch: 'full' },
