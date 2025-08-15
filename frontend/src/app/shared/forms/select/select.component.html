@@ -1,0 +1,52 @@
+<!-- Contrôle -->
+<div class="sel-control" (click)="toggleOpen($event)" [class.is-disabled]="disabled" role="button" tabindex="0">
+  <div class="sel-value">
+    <ng-container *ngIf="selectedOption(); else ph">
+      {{ selectedOption()?.label }}
+    </ng-container>
+    <ng-template #ph>
+      <span class="sel-placeholder">{{ placeholder }}</span>
+    </ng-template>
+  </div>
+
+  <div class="sel-actions">
+    <button
+      *ngIf="selectedOption()"
+      type="button"
+      class="sel-clear"
+      aria-label="Effacer"
+      (click)="clear($event)"
+    >×</button>
+    <span class="sel-caret" aria-hidden="true">▾</span>
+  </div>
+</div>
+
+<!-- Panneau -->
+<div class="sel-panel" *ngIf="isOpen" (click)="$event.stopPropagation()">
+  <div class="sel-search" *ngIf="searchable">
+    <input
+      type="text"
+      class="sel-input"
+      placeholder="Rechercher…"
+      (input)="onSearch($event)"
+      (keydown.escape)="close()"
+    />
+  </div>
+
+  <div class="sel-list" role="listbox">
+    <button
+      *ngFor="let o of searchable ? filtered() : options"
+      type="button"
+      class="sel-option"
+      [class.is-active]="o.value === value"
+      (click)="pick(o.value)"
+    >
+      <span class="sel-dot" aria-hidden="true"></span>
+      <span class="sel-label">{{ o.label }}</span>
+    </button>
+
+    <div class="sel-empty" *ngIf="(searchable ? filtered() : options).length === 0">
+      Aucun résultat
+    </div>
+  </div>
+</div>

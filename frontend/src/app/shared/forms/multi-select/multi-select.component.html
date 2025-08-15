@@ -1,0 +1,50 @@
+<!-- Contrôle -->
+<div class="ms-control" [class.ms--disabled]="disabled" (click)="toggleOpen($event)" role="button" tabindex="0">
+  <div class="ms-control__chips" *ngIf="selected.length; else placeholderTpl">
+    <shared-badge
+      *ngFor="let s of selected"
+      variant="secondary"
+      size="sm"
+      tone="soft"
+      class="chip"
+    >
+      <span class="chip__text">{{ s.label }}</span>
+      <button type="button" class="chip__close" aria-label="Retirer" (click)="removeOne(s.value, $event)">×</button>
+    </shared-badge>
+    <!-- Bouton Effacer retiré comme demandé -->
+  </div>
+
+  <ng-template #placeholderTpl>
+    <span class="ms-control__placeholder">{{ placeholder }}</span>
+  </ng-template>
+
+  <div class="ms-control__caret" aria-hidden="true">▾</div>
+</div>
+
+<!-- Panneau -->
+<div class="ms-panel" *ngIf="isOpen" (click)="$event.stopPropagation()">
+  <div class="ms-panel__search">
+    <input
+      type="text"
+      class="ms-input"
+      placeholder="Rechercher…"
+      (input)="onSearch($event)"
+      (keydown.escape)="close()"
+    />
+  </div>
+
+  <div class="ms-panel__list" role="listbox" aria-multiselectable="true">
+    <label class="ms-option" *ngFor="let o of filtered()">
+      <input
+        type="checkbox"
+        class="ms-checkbox"
+        [checked]="isChecked(o.value)"
+        (change)="onToggle(o.value)"
+      />
+      <span class="ms-checkmark" aria-hidden="true"></span>
+      <span class="ms-option__label">{{ o.label }}</span>
+    </label>
+
+    <div class="ms-panel__empty" *ngIf="!filtered().length">Aucun résultat</div>
+  </div>
+</div>

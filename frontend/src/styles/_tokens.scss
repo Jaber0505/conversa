@@ -1,0 +1,48 @@
+:root {
+  /* Rôles réassignés (social/chaleur) */
+  --color-primary:   #F25F5C; /* CORAIL = CTA principal */
+  --color-secondary: #5B5F97; /* VIOLET = actions secondaires / liens */
+  --color-tertiary:  #70C1B3; /* MENTHE = success/badges */
+
+  /* Neutres / fond / texte */
+  --color-bg:    #F7F7F7;
+  --color-text:  #333333;
+  --color-muted: #E5E5E5;
+
+  /* États */
+  --color-danger: #FF6B6B; /* Erreurs/alertes */
+
+  /* Derivés pour :hover / :active */
+  --color-primary-600:   color-mix(in oklab, var(--color-primary), black 10%);
+  --color_secondary-600: color-mix(in oklab, var(--color-secondary), black 10%);
+  --color_tertiary-600:  color-mix(in oklab, var(--color-tertiary),  black 10%);
+
+  /* Surfaces */
+  --surface-0: #ffffff;
+  --surface-1: color-mix(in oklab, #fff, var(--color-text) 3%);
+  --surface-2: color-mix(in oklab, #fff, var(--color-text) 6%);
+
+  /* Typo / radius / shadow / spacing */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  --radius-sm: .5rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.25rem;
+  --shadow-1: 0 2px 12px rgba(0,0,0,.06);
+  --shadow-2: 0 6px 24px rgba(0,0,0,.10);
+
+  --space-1: .25rem;
+  --space-2: .5rem;
+  --space-3: .75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+
+  --duration-fast: 120ms;
+  --duration-med:  200ms;
+  --duration-slow: 300ms;
+}
+
+/* Breakpoints Sass (inchangés) */
+$bp-sm:  640px;
+$bp-md:  960px;
+$bp-lg:  1280px;

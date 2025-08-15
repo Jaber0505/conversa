@@ -1,65 +1,54 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { SHARED_IMPORTS } from '@shared';
 
-// ⬇️ i18n via barrel
-import { TPipe, TAttrDirective, I18nService, LangService, formatDateIntl, Lang } from '@core/i18n';
-
-import { EventsApiService, EventDto } from '@app/features/events/events-api.service';
-
-type EventCardVM = { id:number; badge:string; title:string; meta:string; desc:string; };
+type SelectOption = { value: string; label: string };
+type EventVM = {
+  badge?: { text: string; variant?: 'primary'|'secondary'|'tertiary'|'success'|'danger'|'muted' };
+  meta?: string; title: string; desc?: string; cta?: string;
+};
 
 @Component({
-  standalone: true,
   selector: 'app-home',
+  standalone: true,
+  imports: [CommonModule, ...SHARED_IMPORTS],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
-  imports: [CommonModule, RouterLink, TPipe, TAttrDirective]
 })
-export class HomeComponent implements OnInit {
-  private readonly api = inject(EventsApiService);
-  private readonly i18n = inject(I18nService);
-  private readonly langSvc = inject(LangService);
+export class HomeComponent {
+  // Données de la recherche
+  langs: SelectOption[] = [
+    { value: 'fr', label: 'Français' },
+    { value: 'en', label: 'English' },
+    { value: 'es', label: 'Español' },
+    { value: 'de', label: 'Deutsch' },
+    { value: 'nl', label: 'Nederlands' },
+  ];
+  areas: SelectOption[] = [
+    { value: 'bru', label: 'Bruxelles' },
+    { value: 'ix',  label: 'Ixelles' },
+    { value: 'stg', label: 'Saint-Gilles' },
+    { value: 'ctr', label: 'Centre' },
+  ];
 
-  readonly current = signal<Lang>(this.langSvc.current as Lang);
-  events: EventCardVM[] = [];
+  // Catégories (cartes)
+  categories = [
+    { title: 'Conversa Café',  subtitle: 'Rencontres informelles' },
+    { title: 'Conversa Pro',   subtitle: 'Échanges professionnels' },
+    { title: 'Conversa Events', subtitle: 'Événements publics' },
+  ];
 
-    ngOnInit(): void {
-        this.api.list().subscribe((items) => {
-            const L = this.langSvc.current;
+  // Événements
+  events: EventVM[] = [
+    { badge:{text:'FR', variant:'secondary'}, meta:'Mar 10 • 18:00 • Bruxelles', title:'Café linguistique', desc:'Pratique conviviale autour d’un café', cta:'Détails' },
+    { badge:{text:'EN', variant:'tertiary'},  meta:'Mer 12 • 19:00 • Paris',     title:'Afterwork',        desc:'Rencontres pro et échanges',          cta:'Détails' },
+    { badge:{text:'ES', variant:'secondary'}, meta:'Jeu 20 • 17:30 • Liège',     title:'Tertulia',         desc:'Discussion en espagnol',              cta:'Détails' },
+  ];
 
-            this.events = items.map((e: EventDto) => {
-                const languageLabel = this.i18n.t(`home.search.lang.${e.language}`);
-                const areaLabel     = this.i18n.t(`home.search.area.${e.area}`);
-
-                const weekday = formatDateIntl(e.start_at, L, { weekday: 'short' });
-                const time    = formatDateIntl(e.start_at, L, { hour: '2-digit', minute: '2-digit' });
-
-                const gameLabel = ({
-                    speed_phrases: 'Speed Phrases',
-                    topics_mix: 'Topics Mix',
-                    role_cards: 'Role Cards'
-                } as const)[e.game];
-
-                return {
-                    id: e.id,
-                    badge: this.badgeFromLang(languageLabel),
-                    title: this.i18n.t('home.event.card_title', { language: languageLabel, venue: e.venue_name }),
-                    meta:  this.i18n.t('home.event.card_meta',  { weekday, time, area: areaLabel }),
-                    desc:  this.i18n.t('home.event.card_desc',  { game: gameLabel, seats: e.seats_left })
-                };
-            });
-        });
-    }
-
-    private badgeFromLang(languageLabel: string): string {
-        if (!languageLabel) return '—';
-        const map: Record<string, string> = {
-            Anglais: 'En', English: 'En',
-            Néerlandais: 'Nl', Dutch: 'Nl',
-            Espagnol: 'Es', Spanish: 'Es',
-            Français: 'Fr', French: 'Fr'
-        };
-        return map[languageLabel] ?? languageLabel.slice(0, 2);
-    }
+  // Actions
+  onSearch(payload: { q?: string; lang?: string; area?: string }) {
+    console.log('search', payload);
+  }
+  onHeadlineAction() { console.log('headline action'); }
+  onEvent(e: EventVM) { console.log('open event', e); }
 }

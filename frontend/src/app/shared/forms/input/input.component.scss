@@ -1,0 +1,6 @@
+:host { display:block; }
+input {
+  width:100%; padding:.65rem .75rem; border-radius:var(--radius-md);
+  border:1px solid var(--color-muted); background:var(--surface-0); color:var(--color-text);
+}
+input:focus-visible { outline:2px solid color-mix(in oklab, var(--color-primary), white 15%); outline-offset:1px; }

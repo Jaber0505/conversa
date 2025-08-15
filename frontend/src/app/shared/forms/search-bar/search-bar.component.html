@@ -1,0 +1,87 @@
+<form class="sb" role="search" (ngSubmit)="onSubmit($event)">
+  <!-- Ligne principale : champ + actions -->
+  <div class="row-main">
+    <shared-form-field [forId]="'sb-q'" [label]="placeholder">
+      <shared-input
+        id="sb-q"
+        type="text"
+        [placeholder]="placeholder"
+        [value]="q"
+        (valueChange)="q = $event">
+      </shared-input>
+    </shared-form-field>
+
+    <div class="actions">
+      <shared-button
+        type="button"
+        variant="outline"
+        size="sm"
+        class="linky"
+        (click)="toggleAdvanced()">
+        {{ advancedOpen ? 'Masquer filtres' : 'Plus de filtres' }}
+      </shared-button>
+
+      <shared-button
+        type="button"
+        variant="outline"
+        size="sm"
+        class="linky"
+        (click)="clearAll()"
+        [disabled]="!hasAnyFilter">
+        Réinitialiser
+      </shared-button>
+
+      <!-- Enter suffit, mais on laisse un CTA clair -->
+      <shared-button type="submit" size="sm">Rechercher</shared-button>
+    </div>
+  </div>
+
+  <!-- Tags récap des filtres actifs -->
+  <div class="tags" *ngIf="hasAnyFilter">
+    <button type="button" class="chip" (click)="clearOne('q')" *ngIf="q">
+      <shared-badge class="chip-badge" tone="soft" variant="muted">
+        {{ q }} <span class="chip-x" aria-hidden="true">×</span>
+        <span class="sr-only">Retirer le terme</span>
+      </shared-badge>
+    </button>
+
+    <button type="button" class="chip" (click)="clearOne('lang')" *ngIf="lang">
+      <shared-badge class="chip-badge" tone="soft" variant="secondary">
+        Langue: {{ displayLabel(langs, lang) }} <span class="chip-x" aria-hidden="true">×</span>
+        <span class="sr-only">Retirer la langue</span>
+      </shared-badge>
+    </button>
+
+    <button type="button" class="chip" (click)="clearOne('area')" *ngIf="area">
+      <shared-badge class="chip-badge" tone="soft" variant="tertiary">
+        Zone: {{ displayLabel(areas, area) }} <span class="chip-x" aria-hidden="true">×</span>
+        <span class="sr-only">Retirer la zone</span>
+      </shared-badge>
+    </button>
+  </div>
+
+  <!-- Filtres avancés (repliables) -->
+  <div class="row-filters" *ngIf="advancedOpen">
+    <shared-form-field [forId]="'sb-lang'" label="Langue">
+      <shared-select
+        id="sb-lang"
+        [options]="langs"
+        [value]="lang"
+        (valueChange)="lang = $event"
+        [searchable]="true"
+        placeholder="Choisir une langue…">
+      </shared-select>
+    </shared-form-field>
+
+    <shared-form-field [forId]="'sb-area'" label="Zone">
+      <shared-select
+        id="sb-area"
+        [options]="areas"
+        [value]="area"
+        (valueChange)="area = $event"
+        [searchable]="false"
+        placeholder="Choisir une zone…">
+      </shared-select>
+    </shared-form-field>
+  </div>
+</form>

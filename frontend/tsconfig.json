@@ -18,10 +18,12 @@
     "paths": {
       "@/*": ["src/*"],
       "@app/*": ["app/*"],
+      "@shared/*": ["app/shared/*"],
       "@core/i18n": ["app/core/i18n/index.ts"],
       "@core/models": ["app/core/models/index.ts"],
       "@core/http": ["app/core/http/index.ts"],
       "@environments": ["environments/index.ts"],
+      "@shared": ["app/shared/index.ts"],
     }
   },
   "angularCompilerOptions": {

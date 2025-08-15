@@ -1,0 +1,28 @@
+@use "./tokens" as t;
+@use "./mixins" as m;
+
+/* Layout générique */
+.container { width: min(1100px, 100% - 2rem); margin-inline: auto; }
+.section   { padding: var(--space-8) 0; }
+.grid      { display: grid; gap: var(--space-6); }
+
+.grid-2 {
+  grid-template-columns: 1fr;
+  @media (min-width: t.$bp-sm) { grid-template-columns: repeat(2, 1fr); }
+}
+.grid-3 {
+  grid-template-columns: 1fr;
+  @media (min-width: t.$bp-md) { grid-template-columns: repeat(3, 1fr); }
+}
+.center { display: grid; place-items: center; }
+
+/* Helpers neutres */
+.shadow-1 { box-shadow: var(--shadow-1); }
+.shadow-2 { box-shadow: var(--shadow-2); }
+.radius-lg { border-radius: var(--radius-lg); }
+
+.link {
+  color: var(--color-secondary);
+  font-weight: 700;
+  &:hover { color: var(--color_secondary-600); }
+}

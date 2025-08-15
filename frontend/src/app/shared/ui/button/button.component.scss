@@ -1,0 +1,60 @@
+/* L’hôte EST le bouton visuel */
+:host {
+  --btn-bg: var(--color-primary);      /* CTA = corail */
+  --btn-fg: #fff;
+  --btn-bg-hover: var(--color-primary-600);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+
+  padding: .65rem 1rem;
+  border-radius: var(--radius-md);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-weight: 700;
+  line-height: 1;
+  transition: background var(--duration-fast), transform var(--duration-fast), box-shadow var(--duration-fast);
+
+  &:hover { background: var(--btn-bg-hover); transform: translateY(-1px); }
+  &:focus-visible {
+    outline: 2px solid color-mix(in oklab, var(--color-primary), white 15%);
+    outline-offset: 2px;
+  }
+  &[aria-disabled="true"] { opacity: .6; pointer-events: none; }
+}
+
+/* Variantes (via classes posées sur l’hôte) */
+:host(.btn--outline) {
+  --btn-bg: transparent;
+  --btn-fg: var(--color-primary);
+  --btn-bg-hover: color-mix(in oklab, var(--color-primary), white 85%);
+  border: 2px solid color-mix(in oklab, var(--color-primary), white 10%);
+}
+
+:host(.btn--accent) {
+  --btn-bg: var(--color-secondary);          /* VIOLET */
+  --btn-bg-hover: var(--color_secondary-600);
+  --btn-fg: #fff;
+}
+
+:host(.btn--danger) {
+  --btn-bg: var(--color-danger);             /* ROUGE DOUX */
+  --btn-bg-hover: color-mix(in oklab, var(--color-danger), black 10%);
+  --btn-fg: #fff;
+}
+
+/* Tailles & block */
+:host(.btn--sm) { padding: .5rem .75rem; font-size: var(--fs-sm); border-radius: var(--radius-sm); }
+:host(.btn--md) { padding: .65rem 1rem; font-size: var(--fs-md); }
+:host(.btn--block) { width: 100%; }
+
+/* Le <button> interne est neutre (hérite du style de l’hôte) */
+button {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  width: 100%;
+}

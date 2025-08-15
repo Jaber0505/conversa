@@ -1,0 +1,4 @@
+.hb { display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:1rem; }
+.hb__title { font-size: var(--fs-2xl); font-weight: 800; }
+.hb__link { font-weight:700; color: var(--color-secondary); }
+.hb__link:hover { color: var(--color_secondary-600); }

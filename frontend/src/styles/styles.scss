@@ -1,6 +1,5 @@
-//frontend/src/styles
-@use './variables' as *;
+@use './tokens';
 @use './mixins';
 @use './reset';
-@use './layout';
-@use './components';
+@use './typography';
+@use './utils';

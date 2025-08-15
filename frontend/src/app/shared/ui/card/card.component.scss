@@ -1,0 +1,36 @@
+:host {
+  display: block;
+  border-radius: var(--radius-lg);
+  background: var(--surface-0);
+  transition: transform var(--duration-med), box-shadow var(--duration-med), border-color var(--duration-med);
+  border: 1px solid color-mix(in oklab, var(--color-text), white 90%);
+}
+
+/* Tones */
+:host(.card--tone-soft)    { box-shadow: var(--shadow-1); }
+:host(.card--tone-elevated){ box-shadow: var(--shadow-2); }
+:host(.card--tone-ghost)   { background: transparent; border-color: transparent; box-shadow: none; }
+
+/* Cliquable */
+:host(.card--clickable) { cursor: pointer; }
+:host(.card--clickable):hover { transform: translateY(-2px); box-shadow: var(--shadow-2); }
+
+/* Sections (masquer si vides) */
+.card__media:empty, .card__header:empty, .card__footer:empty { display: none; }
+
+.card__media {
+  overflow: hidden;
+  border-top-left-radius: var(--radius-lg);
+  border-top-right-radius: var(--radius-lg);
+}
+.card__media ::ng-deep img, 
+.card__media ::ng-deep picture, 
+.card__media ::ng-deep video { display:block; width:100%; height:auto; }
+
+/* Padding contrôlé par .card--padded */
+:host(.card--padded) .card__header,
+:host(.card--padded) .card__body,
+:host(.card--padded) .card__footer { padding: var(--space-6); }
+
+.card__header { font-weight: 800; font-size: var(--fs-lg); line-height: var(--lh-tight); }
+.card__footer { border-top: 1px solid color-mix(in oklab, var(--color-text), white 90%); }

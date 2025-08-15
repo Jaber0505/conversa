@@ -13,6 +13,15 @@ export const routes: Routes = [
     children: [
       { path: '', component: HomeComponent },
 
+      // --- Maquette design, accessible seulement via URL ---
+      {
+        path: 'mock/searchbar',
+        loadComponent: () =>
+          import('./features/mock/searchbar-demo.component')
+            .then(m => m.SearchbarDemoComponent),
+        data: { hidden: true }
+      },
+
       {
         path: 'auth',
         // Ici, on protège les pages invitées (login/register)

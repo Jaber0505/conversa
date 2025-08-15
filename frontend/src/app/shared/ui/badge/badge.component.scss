@@ -1,0 +1,62 @@
+/* Base sur l’HÔTE */
+:host {
+  /* Couleur source (écrasée par variant) */
+  --badge-color: var(--color-primary);
+
+  /* Tons dérivés */
+  --badge-bg-soft:   color-mix(in oklab, var(--badge-color), white 85%);
+  --badge-fg-soft:   color-mix(in oklab, var(--badge-color), black 20%);
+  --badge-brd-soft:  color-mix(in oklab, var(--badge-color), white 65%);
+
+  --badge-bg-solid:  var(--badge-color);
+  --badge-fg-solid:  #fff;
+  --badge-brd-solid: color-mix(in oklab, var(--badge-color), black 10%);
+
+  --badge-bg-outline: transparent;
+  --badge-fg-outline: color-mix(in oklab, var(--badge-color), black 10%);
+  --badge-brd-outline: color-mix(in oklab, var(--badge-color), white 15%);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  border-radius: 999px;
+  white-space: nowrap;
+
+  /* Soft (par défaut) */
+  padding: .25rem .6rem;
+  font-size: var(--fs-sm);
+  line-height: 1;
+  border: 1px solid var(--badge-brd-soft);
+  background: var(--badge-bg-soft);
+  color: var(--badge-fg-soft);
+}
+
+/* Tones */
+:host(.badge--tone-solid) {
+  background: var(--badge-bg-solid);
+  color: var(--badge-fg-solid);
+  border-color: var(--badge-brd-solid);
+}
+:host(.badge--tone-outline) {
+  background: var(--badge-bg-outline);
+  color: var(--badge-fg-outline);
+  border-color: var(--badge-brd-outline);
+}
+
+/* Variants -> définissent la couleur source */
+:host(.badge--primary)   { --badge-color: var(--color-primary); }   /* corail */
+:host(.badge--secondary) { --badge-color: var(--color-secondary); } /* violet */
+:host(.badge--tertiary)  { --badge-color: var(--color-tertiary); }  /* menthe */
+:host(.badge--success)   { --badge-color: var(--color-tertiary); }  /* menthe */
+:host(.badge--danger)    { --badge-color: var(--color-danger); }    /* rouge */
+:host(.badge--muted)     {
+  --badge-color: var(--color-muted);
+  --badge-fg-soft:  var(--color-text);
+  --badge-fg-solid: var(--color-text);
+  --badge-fg-outline: var(--color-text);
+}
+
+/* Tailles */
+:host(.badge--sm) { font-size: var(--fs-xs); padding: .15rem .45rem; }
+:host(.badge--md) { font-size: var(--fs-sm); padding: .25rem .6rem; }

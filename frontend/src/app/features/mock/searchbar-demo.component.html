@@ -1,0 +1,346 @@
+<div class="demo">
+
+  <!-- ==================== BADGE ==================== -->
+  <section class="demo-group" id="badge">
+    <h2 class="demo-title">Badge — variations</h2>
+    <div class="demo-grid">
+      <!-- soft -->
+      <shared-badge variant="primary">Primary (soft)</shared-badge>
+      <shared-badge variant="secondary">Secondary (soft)</shared-badge>
+      <shared-badge variant="tertiary">Tertiary (soft)</shared-badge>
+      <shared-badge variant="danger">Danger (soft)</shared-badge>
+      <shared-badge variant="muted">Muted (soft)</shared-badge>
+
+      <!-- solid -->
+      <shared-badge variant="primary" tone="solid">Primary (solid)</shared-badge>
+      <shared-badge variant="secondary" tone="solid">Secondary (solid)</shared-badge>
+      <shared-badge variant="tertiary"  tone="solid">Tertiary (solid)</shared-badge>
+      <shared-badge variant="danger"    tone="solid">Danger (solid)</shared-badge>
+      <shared-badge variant="muted"     tone="solid">Muted (solid)</shared-badge>
+
+      <!-- outline -->
+      <shared-badge variant="primary"   tone="outline">Primary (outline)</shared-badge>
+      <shared-badge variant="secondary" tone="outline">Secondary (outline)</shared-badge>
+      <shared-badge variant="tertiary"  tone="outline">Tertiary (outline)</shared-badge>
+      <shared-badge variant="danger"    tone="outline">Danger (outline)</shared-badge>
+
+      <!-- tailles -->
+      <shared-badge variant="primary" size="sm">Primary (sm)</shared-badge>
+      <shared-badge variant="primary" size="md">Primary (md)</shared-badge>
+    </div>
+  </section>
+
+  <!-- ==================== BUTTON ==================== -->
+  <section class="demo-group" id="button">
+    <h2 class="demo-title">Button — variations</h2>
+    <div class="demo-grid">
+      <!-- primary -->
+      <shared-button (click)="onClick('Primary md')">Primary md</shared-button>
+      <shared-button size="sm" (click)="onClick('Primary sm')">Primary sm</shared-button>
+      <shared-button [block]="true" (click)="onClick('Primary block')">Primary block</shared-button>
+
+      <!-- accent -->
+      <shared-button variant="accent" (click)="onClick('Accent md')">Accent md</shared-button>
+      <shared-button variant="accent" size="sm" (click)="onClick('Accent sm')">Accent sm</shared-button>
+
+      <!-- outline -->
+      <shared-button variant="outline" (click)="onClick('Outline md')">Outline md</shared-button>
+      <shared-button variant="outline" size="sm" (click)="onClick('Outline sm')">Outline sm</shared-button>
+      <shared-button variant="outline" [block]="true" (click)="onClick('Outline block')">Outline block</shared-button>
+
+      <!-- danger -->
+      <shared-button variant="danger" (click)="onClick('Danger md')">Danger md</shared-button>
+      <shared-button variant="danger" size="sm" (click)="onClick('Danger sm')">Danger sm</shared-button>
+
+      <!-- disabled -->
+      <shared-button [disabled]="true">Disabled</shared-button>
+      <shared-button variant="outline" [disabled]="true">Disabled outline</shared-button>
+    </div>
+  </section>
+
+  <!-- ==================== SECTION + CONTAINER ==================== -->
+  <section class="demo-group" id="section-container">
+    <h2 class="demo-title">Section / Container — variations</h2>
+
+    <shared-section spacing="sm">
+      <shared-container>
+        <div class="demo-row">
+          <shared-badge variant="primary">spacing="sm"</shared-badge>
+          <shared-button size="sm">Bouton sm</shared-button>
+        </div>
+      </shared-container>
+    </shared-section>
+
+    <shared-section spacing="md">
+      <shared-container>
+        <div class="demo-row">
+          <shared-badge variant="tertiary" tone="solid">spacing="md"</shared-badge>
+          <shared-button>Bouton md</shared-button>
+        </div>
+      </shared-container>
+    </shared-section>
+
+    <shared-section spacing="lg">
+      <shared-container>
+        <div class="demo-row">
+          <shared-badge variant="muted" tone="outline">spacing="lg"</shared-badge>
+          <shared-button [block]="true">Bouton block</shared-button>
+        </div>
+      </shared-container>
+    </shared-section>
+
+    <shared-section tone="subtle">
+      <shared-container>
+        <div class="demo-row">
+          <shared-badge variant="secondary">tone="subtle"</shared-badge>
+          <shared-button variant="outline" size="sm">Outline sm</shared-button>
+        </div>
+      </shared-container>
+    </shared-section>
+  </section>
+
+  <!-- ==================== CARD ==================== -->
+  <section class="demo-group" id="card">
+    <h2 class="demo-title">Card — variations</h2>
+    <div class="demo-row">
+      <shared-card>
+        <div header>Carte soft</div>
+        <div>Contenu court. Body par défaut.</div>
+        <div footer><shared-button size="sm">Action</shared-button></div>
+      </shared-card>
+
+      <shared-card tone="elevated" [clickable]="true">
+        <div header>Carte élevée</div>
+        <div>Hover + clickable.</div>
+        <div footer><shared-badge variant="secondary">Violet</shared-badge></div>
+      </shared-card>
+
+      <shared-card tone="ghost" [padded]="false">
+        <div header>Carte ghost</div>
+        <div>
+          <shared-badge variant="tertiary" tone="solid">Menthe</shared-badge>
+          <shared-button variant="outline" size="sm">Outline</shared-button>
+        </div>
+      </shared-card>
+    </div>
+  </section>
+
+  <!-- ==================== GRID ==================== -->
+  <section class="demo-group" id="grid">
+    <h2 class="demo-title">Grid — variations</h2>
+    <shared-section spacing="md">
+      <shared-container>
+        <shared-grid [cols]="1" [colsSm]="2" [colsMd]="3" [colsLg]="4">
+          <shared-card *ngFor="let i of items">
+            <div header>Item {{ i }}</div>
+            <div>Grille responsive.</div>
+          </shared-card>
+        </shared-grid>
+
+        <div style="height:1.25rem"></div>
+
+        <shared-grid [cols]="2" [colsMd]="4" gap="var(--space-8)">
+          <shared-card tone="elevated"><div header>A</div><div>gap=space-8</div></shared-card>
+          <shared-card tone="elevated"><div header>B</div></shared-card>
+          <shared-card tone="elevated"><div header>C</div></shared-card>
+          <shared-card tone="elevated"><div header>D</div></shared-card>
+        </shared-grid>
+      </shared-container>
+    </shared-section>
+  </section>
+
+  <!-- ==================== FORMS: INPUT ==================== -->
+  <section class="demo-group" id="input">
+    <h2 class="demo-title">Forms — Input</h2>
+    <shared-section spacing="md">
+      <shared-container>
+        <div class="demo-forms">
+          <shared-form-field label="Texte" forId="demo-text" hint="Input simple">
+            <shared-input id="demo-text" placeholder="Tape quelque chose…"></shared-input>
+          </shared-form-field>
+
+          <shared-form-field label="Email" forId="demo-email">
+            <shared-input id="demo-email" type="email" placeholder="ex: you@mail.com"></shared-input>
+          </shared-form-field>
+
+          <shared-form-field label="Mot de passe" forId="demo-pwd">
+            <shared-input id="demo-pwd" type="password" placeholder="•••••••"></shared-input>
+          </shared-form-field>
+
+          <shared-form-field label="Désactivé" forId="demo-disabled">
+            <shared-input id="demo-disabled" placeholder="Disabled" [disabled]="true"></shared-input>
+          </shared-form-field>
+
+          <shared-form-field label="Long placeholder" forId="demo-long">
+            <shared-input id="demo-long" placeholder="Texte assez long pour tester le truncation et l’overflow de l’input"></shared-input>
+          </shared-form-field>
+        </div>
+      </shared-container>
+    </shared-section>
+  </section>
+
+  <!-- ==================== FORMS: SELECT (custom) ==================== -->
+  <section class="demo-group" id="select">
+    <h2 class="demo-title">Forms — Select (custom)</h2>
+    <shared-section spacing="md">
+      <shared-container>
+        <div class="demo-forms">
+          <!-- Select avec recherche -->
+          <shared-form-field label="Langue (searchable)" forId="sel-lang">
+            <shared-select
+              id="sel-lang"
+              [options]="langs"
+              [(value)]="lang"
+              [searchable]="true"
+              placeholder="Choisir une langue…">
+            </shared-select>
+          </shared-form-field>
+
+          <!-- Select sans recherche -->
+          <shared-form-field label="Zone (non-searchable)" forId="sel-area">
+            <shared-select
+              id="sel-area"
+              [options]="areas"
+              [(value)]="area"
+              [searchable]="false"
+              placeholder="Choisir une zone…">
+            </shared-select>
+          </shared-form-field>
+
+          <!-- Select avec liste massive -->
+          <shared-form-field label="Liste massive (100)" forId="sel-many">
+            <shared-select
+              id="sel-many"
+              [options]="manyOptions"
+              placeholder="100 options…">
+            </shared-select>
+          </shared-form-field>
+
+          <!-- Select vide -->
+          <shared-form-field label="Liste vide" forId="sel-empty" hint="Doit afficher 'Aucun résultat' si recherche">
+            <shared-select
+              id="sel-empty"
+              [options]="emptyOptions"
+              placeholder="Rien à sélectionner…">
+            </shared-select>
+          </shared-form-field>
+
+          <!-- Désactivé -->
+          <shared-form-field label="Désactivé" forId="sel-disabled">
+            <shared-select
+              id="sel-disabled"
+              [options]="areas"
+              [disabled]="true"
+              placeholder="Désactivé">
+            </shared-select>
+          </shared-form-field>
+        </div>
+      </shared-container>
+    </shared-section>
+  </section>
+
+  <!-- ==================== FORMS: SEARCH BAR ==================== -->
+  <section class="demo-group" id="searchbar">
+    <h2 class="demo-title">Forms — SearchBar</h2>
+    <shared-section spacing="md">
+      <shared-container>
+        <shared-search-bar
+          [placeholder]="'Rechercher…'"
+          [langs]="langs"
+          [areas]="areas"
+          (search)="onSearch($event)">
+        </shared-search-bar>
+      </shared-container>
+    </shared-section>
+  </section>
+
+  <!-- ==================== FORMS: MULTISELECT ==================== -->
+  <section class="demo-group" id="multiselect">
+    <h2 class="demo-title">Forms — MultiSelect (custom)</h2>
+    <shared-section spacing="md">
+      <shared-container>
+        <div class="demo-forms">
+          <!-- API selected (objet) -->
+          <shared-form-field label="Langues (selected: Option[])" forId="ms-langs" hint="Plusieurs choix + chips">
+            <shared-multi-select
+              [options]="langs"
+              [(selected)]="selectedLangs"
+              placeholder="Choisir des langues…">
+            </shared-multi-select>
+          </shared-form-field>
+
+          <!-- API value (string[]) -->
+          <shared-form-field label="Langues (value: string[])" forId="ms-values" hint="API alternative par value[]">
+            <shared-multi-select
+              [options]="langs"
+              [(value)]="selectedValues"
+              placeholder="Choisir via value[]…">
+            </shared-multi-select>
+          </shared-form-field>
+
+          <!-- Villes -->
+          <shared-form-field label="Villes" forId="ms-areas">
+            <shared-multi-select
+              [options]="areas"
+              [(selected)]="selectedAreas"
+              placeholder="Bruxelles, Paris…">
+            </shared-multi-select>
+          </shared-form-field>
+
+          <!-- Massive -->
+          <shared-form-field label="Massif (100)" forId="ms-many">
+            <shared-multi-select
+              [options]="manyOptions"
+              placeholder="Beaucoup d’options…">
+            </shared-multi-select>
+          </shared-form-field>
+
+          <!-- Vide -->
+          <shared-form-field label="Vide" forId="ms-empty" hint="Aucun résultat">
+            <shared-multi-select
+              [options]="emptyOptions"
+              placeholder="Aucune option dispo…">
+            </shared-multi-select>
+          </shared-form-field>
+
+          <!-- Disabled -->
+          <shared-form-field label="Désactivé" forId="ms-disabled">
+            <shared-multi-select
+              [options]="areas"
+              [disabled]="true"
+              placeholder="Désactivé…">
+            </shared-multi-select>
+          </shared-form-field>
+        </div>
+      </shared-container>
+    </shared-section>
+  </section>
+
+  <!-- ==================== CONTENT (Event / Category) ==================== -->
+  <section class="demo-group" id="content">
+    <h2 class="demo-title">Content — EventCard / CategoryCard</h2>
+    <shared-section spacing="md">
+      <shared-container>
+        <shared-headline-bar [title]="'Événements à venir'" [actionLabel]="'Voir tout'" (action)="onHeadlineAction()"></shared-headline-bar>
+
+        <shared-grid [cols]="1" [colsSm]="2" [colsMd]="3">
+          <shared-event-card
+            *ngFor="let e of events"
+            [event]="e"
+            (cta)="onEvent(e)">
+          </shared-event-card>
+        </shared-grid>
+
+        <div style="height:1.25rem"></div>
+
+        <shared-headline-bar [title]="'Catégories'"></shared-headline-bar>
+        <shared-grid [cols]="1" [colsSm]="2" [colsMd]="3">
+          <shared-category-card title="Conversa Café"  subtitle="Rencontres informelles"></shared-category-card>
+          <shared-category-card title="Conversa Pro"   subtitle="Échanges professionnels"></shared-category-card>
+          <shared-category-card title="Conversa Events" subtitle="Événements publics"></shared-category-card>
+        </shared-grid>
+      </shared-container>
+    </shared-section>
+  </section>
+
+</div>

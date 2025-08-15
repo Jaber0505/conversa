@@ -1,0 +1,18 @@
+@use "tokens" as t;
+
+
+:host {
+  display: grid;
+  gap: var(--gap, var(--space-6));
+  grid-template-columns: repeat(var(--cols, 1), minmax(0, 1fr));
+}
+
+@media (min-width: t.$bp-sm) {
+  :host { grid-template-columns: repeat(var(--cols-sm, var(--cols, 1)), minmax(0, 1fr)); }
+}
+@media (min-width: t.$bp-md) {
+  :host { grid-template-columns: repeat(var(--cols-md, var(--cols-sm, var(--cols, 1))), minmax(0, 1fr)); }
+}
+@media (min-width: t.$bp-lg) {
+  :host { grid-template-columns: repeat(var(--cols-lg, var(--cols-md, var(--cols-sm, var(--cols, 1)))), minmax(0, 1fr)); }
+}

@@ -1,0 +1,124 @@
+@use "tokens" as t;
+
+:host { display:block; position:relative; }
+
+/* -------- Contrôle (le champ visible) -------- */
+.ms-control {
+  --border: 1px solid var(--color-muted);
+
+  display:grid;
+  grid-template-columns: 1fr auto;
+  align-items:center;
+  gap:.5rem;
+
+  min-height: 44px;
+  padding: .5rem .75rem;
+  border-radius: var(--radius-md);
+  border: var(--border);
+  background: var(--surface-0);
+  cursor: pointer;
+
+  transition: border-color var(--duration-fast), box-shadow var(--duration-fast);
+}
+.ms-control:hover { border-color: color-mix(in oklab, var(--color-primary), white 40%); }
+.ms-control:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--color-primary), white 15%);
+  outline-offset: 2px;
+}
+.ms--disabled { opacity:.6; cursor:not-allowed; }
+
+.ms-control__placeholder {
+  color: color-mix(in oklab, var(--color-text), white 40%);
+}
+.ms-control__chips {
+  display:flex; flex-wrap:wrap; gap:.375rem .5rem;
+}
+.ms-control__clear {
+  margin-left:.25rem; border:0; background:transparent; cursor:pointer;
+  color: color-mix(in oklab, var(--color-text), white 30%);
+}
+.ms-control__clear:hover { color: var(--color-text); text-decoration: underline; }
+.ms-control__caret { font-size:.875rem; color: color-mix(in oklab, var(--color-text), white 35%); }
+
+/* Chip */
+.chip { display:inline-flex; align-items:center; gap:.375rem; }
+.chip__text { line-height:1; }
+.chip__close {
+  border:0; background:transparent; cursor:pointer; font-size:1rem; line-height:1;
+  color: color-mix(in oklab, var(--color-text), white 40%);
+}
+.chip__close:hover { color: var(--color-text); }
+
+/* -------- Panneau -------- */
+.ms-panel {
+  position:absolute; left:0; right:0; z-index:40; margin-top:.25rem;
+  background: var(--surface-0);
+  border: 1px solid color-mix(in oklab, var(--color-text), white 90%);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-2);
+  overflow:hidden;
+  animation: ms-pop .12s ease-out;
+}
+@keyframes ms-pop { from { transform:scale(.985); opacity:.9; } to { transform:scale(1); opacity:1; } }
+
+.ms-panel__search { padding:.5rem; border-bottom:1px solid color-mix(in oklab, var(--color-text), white 90%); }
+.ms-input {
+  width:100%; padding:.5rem .6rem; border-radius:var(--radius-sm);
+  border:1px solid var(--color-muted); background: var(--surface-0); color: var(--color-text);
+}
+.ms-input:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--color-primary), white 15%);
+  outline-offset: 2px;
+}
+
+.ms-panel__list { max-height: 280px; overflow:auto; padding:.25rem; display:grid; gap:.125rem; }
+
+/* Option en ligne (verticale) */
+.ms-option {
+  display:grid;
+  grid-template-columns: auto 1fr;
+  align-items:center;
+  gap:.625rem;
+  padding:.5rem .5rem;
+  border-radius: var(--radius-sm);
+  cursor:pointer;
+  user-select:none;
+  transition: background var(--duration-fast);
+}
+.ms-option:hover { background: color-mix(in oklab, var(--color-primary), white 92%); }
+
+.ms-option__label { font-size: var(--fs-sm); }
+
+/* Checkbox custom */
+.ms-checkbox {
+  /* on cache l'input natif (mais accessible) */
+  appearance:none; -webkit-appearance:none; -moz-appearance:none;
+  width:0; height:0; position:absolute; opacity:0; pointer-events:none;
+}
+.ms-checkmark {
+  --size: 18px;
+  width:var(--size); height:var(--size);
+  border-radius: .35rem;
+  border: 2px solid color-mix(in oklab, var(--color-text), white 70%);
+  display:inline-grid; place-items:center;
+  transition: background var(--duration-fast), border-color var(--duration-fast), box-shadow var(--duration-fast);
+}
+.ms-option:hover .ms-checkmark {
+  border-color: color-mix(in oklab, var(--color-primary), white 35%);
+}
+.ms-checkbox:focus-visible + .ms-checkmark {
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-primary), white 80%);
+}
+.ms-checkbox:checked + .ms-checkmark {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+.ms-checkbox:checked + .ms-checkmark::after {
+  content: "✓";
+  color: #fff; font-size:.8rem; line-height:1;
+}
+
+/* Etat vide */
+.ms-panel__empty {
+  padding:.75rem; color: color-mix(in oklab, var(--color-text), white 40%);
+}

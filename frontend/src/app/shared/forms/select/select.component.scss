@@ -1,0 +1,77 @@
+@use "tokens" as t;
+
+:host { display:block; position:relative; }
+
+/* ---- Contrôle ---- */
+.sel-control{
+  display:grid; grid-template-columns: 1fr auto; align-items:center; gap:.5rem;
+  min-height:44px; padding:.5rem .75rem;
+  border-radius: var(--radius-md);
+  border:1px solid var(--color-muted);
+  background: var(--surface-0);
+  cursor:pointer;
+  /* pas d’outline flashy */
+  outline: none;
+  transition: border-color var(--duration-fast), box-shadow var(--duration-fast);
+}
+.sel-control:hover { border-color: color-mix(in oklab, var(--color-primary), white 40%); }
+.sel-control:focus-visible {
+  /* focus discret */
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-primary), white 85%);
+}
+.sel-control.is-disabled { opacity:.6; cursor:not-allowed; }
+
+.sel-value { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.sel-placeholder { color: color-mix(in oklab, var(--color-text), white 40%); }
+.sel-actions { display:flex; align-items:center; gap:.25rem; }
+.sel-clear {
+  border:0; background:transparent; cursor:pointer;
+  color: color-mix(in oklab, var(--color-text), white 35%);
+  font-size:1rem; line-height:1;
+}
+.sel-clear:hover { color: var(--color-text); }
+.sel-caret { font-size:.875rem; color: color-mix(in oklab, var(--color-text), white 35%); }
+
+/* ---- Panneau ---- */
+.sel-panel{
+  position:absolute; left:0; right:0;
+  z-index: 1000;
+  margin-top:.25rem;
+  border:1px solid color-mix(in oklab, var(--color-text), white 90%);
+  background: var(--surface-0);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-2);
+  overflow:hidden;
+  animation: sel-pop .12s ease-out;
+}
+@keyframes sel-pop { from{ transform:scale(.985); opacity:.9; } to{ transform:scale(1); opacity:1; } }
+
+.sel-search{ padding:.5rem; border-bottom:1px solid color-mix(in oklab, var(--color-text), white 90%); }
+.sel-input{
+  width:100%; padding:.5rem .6rem; border-radius: var(--radius-sm);
+  border:1px solid var(--color-muted); background: var(--surface-0); color: var(--color-text);
+}
+.sel-input:focus-visible{
+  outline:2px solid color-mix(in oklab, var(--color-primary), white 15%);
+  outline-offset:2px;
+}
+
+.sel-list{ max-height:280px; overflow:auto; padding:.25rem; display:grid; gap:.125rem; }
+.sel-option{
+  display:grid; grid-template-columns:auto 1fr; align-items:center; gap:.625rem;
+  padding:.5rem .5rem; border-radius: var(--radius-sm);
+  cursor:pointer; background:transparent; border:0; text-align:left;
+  transition: background var(--duration-fast), color var(--duration-fast);
+}
+.sel-option:hover{ background: color-mix(in oklab, var(--color-primary), white 92%); }
+.sel-option.is-active{
+  background: color-mix(in oklab, var(--color-primary), white 90%);
+}
+.sel-dot{
+  width:8px; height:8px; border-radius:999px;
+  background: color-mix(in oklab, var(--color-text), white 65%);
+}
+.sel-option.is-active .sel-dot{ background: var(--color-primary); }
+.sel-label{ font-size: var(--fs-sm); }
+
+.sel-empty{ padding:.75rem; color: color-mix(in oklab, var(--color-text), white 40%); }

@@ -1,0 +1,11 @@
+:host { display:block; }
+.section__inner { width: min(1100px, 100% - 2rem); margin-inline: auto; }
+
+/* Espacements (mobile-first) */
+:host(.section--sm) { padding: var(--space-4) 0; }
+:host(.section--md) { padding: var(--space-8) 0; }
+:host(.section--lg) { padding: calc(var(--space-8) * 1.5) 0; }
+
+/* Tons visuels */
+:host(.section--tone-default) { background: transparent; }
+:host(.section--tone-subtle)  { background: var(--surface-1); border-top: 1px solid var(--color-muted); border-bottom: 1px solid var(--color-muted); }

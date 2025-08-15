@@ -1,0 +1,17 @@
+<shared-card [clickable]="true">
+  <div header>
+    <ng-container *ngIf="event.badge">
+      <shared-badge [variant]="event.badge.variant || 'secondary'" size="sm">
+        {{ event.badge.text }}
+      </shared-badge>
+    </ng-container>
+    <div class="ev-title">{{ event.title }}</div>
+  </div>
+
+  <div class="ev-meta" *ngIf="event.meta">{{ event.meta }}</div>
+  <div class="ev-desc" *ngIf="event.desc">{{ event.desc }}</div>
+
+  <div footer *ngIf="event.cta">
+    <shared-button size="sm" (click)="cta.emit()">{{ event.cta }}</shared-button>
+  </div>
+</shared-card>

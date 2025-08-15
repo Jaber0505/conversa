@@ -1,0 +1,11 @@
+<div class="hb">
+  <h2 class="hb__title">{{ title }}</h2>
+  <ng-container *ngIf="actionLink; else asButton">
+    <a class="hb__link" [href]="actionLink">{{ actionLabel }}</a>
+  </ng-container>
+  <ng-template #asButton>
+    <shared-button size="sm" variant="outline" (click)="action.emit()">
+      {{ actionLabel }}
+    </shared-button>
+  </ng-template>
+</div>

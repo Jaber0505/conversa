@@ -1,0 +1,19 @@
+<!-- media (optionnel) -->
+<div class="card__media">
+  <ng-content select="[media]"></ng-content>
+</div>
+
+<!-- header (optionnel) -->
+<header class="card__header">
+  <ng-content select="[header]"></ng-content>
+</header>
+
+<!-- body (par défaut) -->
+<div class="card__body">
+  <ng-content></ng-content>
+</div>
+
+<!-- footer (optionnel) -->
+<footer class="card__footer">
+  <ng-content select="[footer]"></ng-content>
+</footer>

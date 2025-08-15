@@ -23,7 +23,10 @@
               { "glob": "**/*", "input": "public" },
               "src/assets"
             ],
-            "styles": ["src/styles/styles.scss"]
+            "styles": ["src/styles/styles.scss"],
+            "stylePreprocessorOptions": {
+              "includePaths": ["src/styles"]
+            }
           },
           "configurations": {
             "production": {
