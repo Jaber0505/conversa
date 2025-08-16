@@ -26,15 +26,26 @@
         class="btn-auth"
         variant="outline"
         size="sm"
-        [routerLink]="['/', langCode(), 'auth', 'login']">
+        [routerLink]="['/', langCode(),  'login']">
         {{ 'auth.login' | t }}
       </shared-button>
+      <div class="auth">
+        <shared-button
+          class="btn-auth"
+          variant="outline"
+          size="sm"
+          type="button"
+          (click)="onLogout()"
+          [disabled]="loading">
+          {{ loading ? ('common.loading' | t) : ('auth.logout' | t) }}
+        </shared-button>
+      </div>
 
       <shared-button
         class="btn-auth"
         variant="accent"
         size="sm"
-        [routerLink]="['/', langCode(), 'auth', 'register']">
+        [routerLink]="['/', langCode(), 'register']">
         {{ 'auth.register' | t }}
       </shared-button>
     </div>

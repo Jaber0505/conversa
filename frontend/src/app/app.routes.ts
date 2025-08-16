@@ -26,12 +26,12 @@ export const routes: Routes = [
         canActivate: [guestGuard],
         children: [
           { path: '', pathMatch: 'full', redirectTo: 'register' },
-          { path: 'register', component: RegisterPageComponent },
-          { path: 'login', component: LoginPageComponent },
+
           { path: '**', redirectTo: 'register' },
         ],
       },
-
+      { path: 'register', component: RegisterPageComponent },
+      { path: 'login', component: LoginPageComponent },
       { path: 'faq', component: FaqComponent },
       { path: 'about', component: About },
       { path: '**', redirectTo: '' },

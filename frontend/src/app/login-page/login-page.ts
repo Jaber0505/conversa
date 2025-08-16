@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { TPipe } from '@core/i18n';
 import { InputComponent, ButtonComponent } from '@shared';
 import { NavigationButtonsComponent } from '@shared/forms/navigation-button/navigation-buttons';
-import {AuthApiService} from "@core/http";
+import {AuthApiService, AuthTokenService} from "@core/http";
 import {finalize, take} from "rxjs/operators";
 
 @Component({
@@ -33,6 +33,10 @@ export class LoginPageComponent {
   private _disabled = false;
   @Input() set disabled(v: boolean | null) { this._disabled = !!v; }
   get disabled() { return this._disabled; }
+  constructor(
+    private readonly authApi: AuthApiService,
+    private readonly userCache: AuthTokenService
+  ) {}
   onSubmit() {
     // this.login.emit({
     //   email: (this.email || '').trim(),
@@ -47,6 +51,9 @@ export class LoginPageComponent {
           // À toi de décider : stocker les tokens ici, ou remonter au parent
           // localStorage.setItem('access', res.access);
           // localStorage.setItem('refresh', res.refresh);
+          this.userCache.save(res.access, res.refresh);
+          this.userCache.access;
+          debugger;
           this.loginSuccess.emit(res);
         },
         error: (err) => {
@@ -60,6 +67,5 @@ export class LoginPageComponent {
         },
       });
   }
-  constructor(private readonly authApi: AuthApiService) {}
   onPrevious() { this.previous.emit(); }
 }
