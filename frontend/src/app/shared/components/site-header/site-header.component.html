@@ -1,18 +1,15 @@
 <header class="site-header tone-tokens" role="banner">
   <shared-container class="header-grid">
-    <!-- Logo (toujours à gauche) -->
     <div class="logo">
-      <a class="brand" [routerLink]="['/']">Conversa</a>
+      <a class="brand" [routerLink]="['/', langCode(), '']">Conversa</a>
     </div>
 
-    <!-- Nav (centre – desktop seulement) -->
     <nav class="nav desktop-only" aria-label="Navigation principale">
-      <a class="link" [routerLink]="['/faq']">FAQ</a>
-      <a class="link" [routerLink]="['/about']">À propos</a>
-      <a class="link" [routerLink]="['/events']">Événements</a>
+      <a class="link" [routerLink]="['/', langCode(), 'faq']" routerLinkActive="active">FAQ</a>
+      <a class="link" [routerLink]="['/', langCode(), 'about']" routerLinkActive="active">À propos</a>
+      <a class="link" [routerLink]="['/', langCode(), 'events']" routerLinkActive="active">Événements</a>
     </nav>
 
-    <!-- Langue -->
     <div class="lang-wrap">
       <button class="lang-chip" type="button" aria-label="Changer de langue" (click)="openLang()">
         <span class="globe" aria-hidden="true">🌐</span>
@@ -20,19 +17,18 @@
       </button>
     </div>
 
-    <!-- Auth (connexion / inscription) -->
     <div class="auth">
-      <shared-button class="btn-auth" variant="outline" size="sm" [routerLink]="['/auth/login']">
+      <shared-button class="btn-auth" variant="outline" size="sm" [routerLink]="['/', langCode(), 'auth', 'login']">
         Connexion
       </shared-button>
-      <shared-button class="btn-auth" variant="accent" size="sm" [routerLink]="['/auth/register']">
+
+      <shared-button class="btn-auth" variant="accent" size="sm" [routerLink]="['/', langCode(), 'auth', 'register']">
         Inscription
       </shared-button>
     </div>
   </shared-container>
 </header>
 
-<!-- Popup langue -->
 <app-language-popover
   *ngIf="showLang()"
   [langs]="langs"
