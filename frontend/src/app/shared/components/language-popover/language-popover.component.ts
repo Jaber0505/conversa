@@ -1,40 +1,52 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, OnChanges, SimpleChanges, signal } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SHARED_IMPORTS } from '@shared';
+import { TPipe } from '@core/i18n'; // <- pipe de traduction
 
-export type Lang = 'FR' | 'EN' | 'NL';
+export type Lang = 'fr' | 'en' | 'nl';
 
 @Component({
-  selector: 'app-language-popover',
   standalone: true,
-  imports: [CommonModule, ...SHARED_IMPORTS],
+  selector: 'app-language-popover',
+  imports: [CommonModule, TPipe], // <- important pour | t
   templateUrl: './language-popover.component.html',
-  styleUrls: ['./language-popover.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  styleUrls: ['./language-popover.component.scss']
 })
 export class LanguagePopoverComponent implements OnChanges {
-  @Input() langs: Lang[] = ['FR','EN','NL'];
-  @Input() current: Lang = 'FR';
+  @Input() langs: ReadonlyArray<Lang> = ['fr', 'en', 'nl'] as const;
+  @Input() current: Lang = 'fr';
 
-  @Output() save  = new EventEmitter<Lang>();
+  @Output() save = new EventEmitter<Lang>();
   @Output() close = new EventEmitter<void>();
 
-  selected = signal<Lang>(this.current);
+  private _selected: Lang = this.current;
 
-  langLabel: Record<Lang, string> = {
-    FR: 'Français',
-    EN: 'English',
-    NL: 'Nederlands',
-  };
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['current']?.currentValue) this.selected.set(changes['current'].currentValue as Lang);
+  ngOnChanges(_: SimpleChanges): void {
+    this._selected = this.current;
   }
 
-  onToggle(lang: Lang) { this.selected.set(lang); }           // sélection unique (type checkbox)
-  onConfirm()          { this.save.emit(this.selected()); }
-  onCancel()           { this.close.emit(); }
-  onOverlayClick(ev: MouseEvent) {
-    if ((ev.target as HTMLElement).classList.contains('lang-overlay')) this.onCancel();
+  selected(): Lang {
+    return this._selected;
+  }
+
+  onToggle(next: Lang) {
+    this._selected = next;
+  }
+
+  onConfirm() {
+    this.save.emit(this._selected);
+  }
+
+  onCancel() {
+    this.close.emit();
+  }
+
+  // Retourne la clé i18n du nom de langue
+  labelKeyOf(l: Lang): string {
+    return `languages.${l}`;
+  }
+
+  // Optionnel: clé du titre
+  titleKey(): string {
+    return 'common.lang_change';
   }
 }

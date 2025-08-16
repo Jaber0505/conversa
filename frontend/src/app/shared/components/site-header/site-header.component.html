@@ -1,29 +1,41 @@
 <header class="site-header tone-tokens" role="banner">
   <shared-container class="header-grid">
     <div class="logo">
-      <a class="brand" [routerLink]="['/', langCode(), '']">Conversa</a>
+      <a class="brand" [routerLink]="['/', langCode(), '']">{{ 'common.brand' | t }}</a>
     </div>
 
-    <nav class="nav desktop-only" aria-label="Navigation principale">
-      <a class="link" [routerLink]="['/', langCode(), 'faq']" routerLinkActive="active">FAQ</a>
-      <a class="link" [routerLink]="['/', langCode(), 'about']" routerLinkActive="active">À propos</a>
-      <a class="link" [routerLink]="['/', langCode(), 'events']" routerLinkActive="active">Événements</a>
+    <nav class="nav desktop-only" [attr.aria-label]="'common.nav.menu' | t">
+      <a class="link" [routerLink]="['/', langCode(), 'faq']" routerLinkActive="active">{{ 'nav.faq' | t }}</a>
+      <a class="link" [routerLink]="['/', langCode(), 'about']" routerLinkActive="active">{{ 'nav.about' | t }}</a>
+      <a class="link" [routerLink]="['/', langCode(), 'events']" routerLinkActive="active">{{ 'nav.events' | t }}</a>
     </nav>
 
     <div class="lang-wrap">
-      <button class="lang-chip" type="button" aria-label="Changer de langue" (click)="openLang()">
+      <button
+        class="lang-chip"
+        type="button"
+        [attr.aria-label]="'common.lang_change' | t"
+        (click)="openLang()">
         <span class="globe" aria-hidden="true">🌐</span>
-        <span class="lang-text">{{ langText() }}</span>
+        <span class="lang-text">{{ langLabelKey() | t }}</span>
       </button>
     </div>
 
     <div class="auth">
-      <shared-button class="btn-auth" variant="outline" size="sm" [routerLink]="['/', langCode(), 'auth', 'login']">
-        Connexion
+      <shared-button
+        class="btn-auth"
+        variant="outline"
+        size="sm"
+        [routerLink]="['/', langCode(), 'auth', 'login']">
+        {{ 'auth.login' | t }}
       </shared-button>
 
-      <shared-button class="btn-auth" variant="accent" size="sm" [routerLink]="['/', langCode(), 'auth', 'register']">
-        Inscription
+      <shared-button
+        class="btn-auth"
+        variant="accent"
+        size="sm"
+        [routerLink]="['/', langCode(), 'auth', 'register']">
+        {{ 'auth.register' | t }}
       </shared-button>
     </div>
   </shared-container>

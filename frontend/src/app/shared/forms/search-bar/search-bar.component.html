@@ -1,34 +1,37 @@
 <form class="sb" role="search" (ngSubmit)="submit()" autocomplete="off" [attr.aria-expanded]="advancedOpen">
-
-  <!-- Ligne 1 : input + bouton Rechercher -->
   <div class="sb__inline">
-    <shared-form-field [forId]="'sb-q'" [label]="'Recherche'">
-      <shared-input id="sb-q" [placeholder]="placeholder" [(value)]="query"></shared-input>
+    <shared-form-field [forId]="'sb-q'" [label]="'shared.search.query' | t">
+      <shared-input
+        id="sb-q"
+        [placeholder]="(placeholderKey || 'shared.search.placeholder_event') | t"
+        [(value)]="query">
+      </shared-input>
     </shared-form-field>
 
-    <shared-button type="submit" size="md" class="sb__submit">Rechercher</shared-button>
+    <shared-button type="submit" size="md" class="sb__submit">
+      {{ 'shared.search.submit' | t }}
+    </shared-button>
   </div>
 
-  <!-- Ligne 2 : actions secondaires -->
   <div class="sb__tools">
     <shared-button *ngIf="showAdvanced" variant="outline" type="button" (click)="toggleAdvanced()">
-      {{ advancedOpen ? 'Masquer les filtres' : 'Plus de filtres' }}
+      {{ (advancedOpen ? 'shared.search.hide_filters' : 'shared.search.more_filters') | t }}
     </shared-button>
 
     <shared-button *ngIf="advancedOpen || hasAnyFilter" variant="outline" type="button" (click)="reset()">
-      Réinitialiser
+      {{ 'shared.search.reset' | t }}
     </shared-button>
   </div>
 
-  <!-- Ligne 3 : filtres (wrap 2 par ligne) -->
   <div class="sb__filters" *ngIf="advancedOpen">
     <ng-container *ngFor="let f of filters; index as i; trackBy: trackByKey">
+      <!-- Si le parent fournit des CLÉS plutôt que des libellés, remplace f.label par (f.label | t) -->
       <shared-form-field [forId]="'sb-f' + i" [label]="f.label">
         <shared-select
           [id]="'sb-f' + i"
           [options]="f.type === 'boolean' ? booleanOptions() : (f.options || [])"
           [searchable]="f.type === 'select' ? (f['searchable'] ?? true) : false"
-          [placeholder]="f['placeholder'] || (f.type === 'boolean' ? 'Oui / Non' : 'Sélectionner…')"
+          [placeholder]="f['placeholder'] || (f.type === 'boolean' ? ('shared.common.yes_no' | t) : ('shared.search.select_placeholder' | t))"
           [value]="getSelectValue(f)"
           (valueChange)="onFilterChange(f.key, f.type, $event)">
         </shared-select>

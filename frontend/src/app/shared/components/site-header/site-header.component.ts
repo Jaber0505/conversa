@@ -1,60 +1,57 @@
-import { ChangeDetectionStrategy, Component, inject, signal, computed } from '@angular/core';
+import { Component } from '@angular/core';
+import { Router, RouterLink, UrlSegmentGroup } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink, UrlSegment, UrlSegmentGroup } from '@angular/router';
+import { LanguagePopoverComponent, type Lang } from '../language-popover/language-popover.component';
 import { SHARED_IMPORTS } from '@shared';
-import { LanguagePopoverComponent, Lang } from '../language-popover/language-popover.component';
+import { TPipe } from '@core/i18n';
 
 @Component({
-  selector: 'app-site-header',
   standalone: true,
-  imports: [CommonModule, RouterLink, ...SHARED_IMPORTS, LanguagePopoverComponent],
+  selector: 'app-site-header',
   templateUrl: './site-header.component.html',
   styleUrls: ['./site-header.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    RouterLink,
+    LanguagePopoverComponent,
+    TPipe,         
+    ...SHARED_IMPORTS,
+  ],
 })
 export class SiteHeaderComponent {
-  private router = inject(Router);
+  langs: ReadonlyArray<Lang> = ['fr', 'en', 'nl'] as const;
+  private _showLang = false;
 
-  showLang = signal(false);
-  currentLang = signal<Lang>('FR');
-  langs: Lang[] = ['FR', 'EN', 'NL'];
+  constructor(private router: Router) {}
 
-  private readonly labels: Record<Lang, string> = { FR: 'Français', EN: 'English', NL: 'Nederlands' };
-  private readonly CODE: Record<Lang, 'fr' | 'en' | 'nl'> = { FR: 'fr', EN: 'en', NL: 'nl' };
-  private readonly CODES = new Set(['fr', 'en', 'nl'] as const);
+  showLang() { return this._showLang; }
+  openLang() { this._showLang = true; }
+  closeLang() { this._showLang = false; }
 
-  // Langue déduite de l’URL (source de vérité pour routerLink)
-  langCode = computed<'fr'|'en'|'nl'>(() => {
+  langCode(): Lang {
     const tree = this.router.parseUrl(this.router.url);
-    const primary = tree.root.children['primary'];
-    const seg0 = primary?.segments?.[0]?.path ?? '';
-    return (this.CODES.has(seg0 as any) ? (seg0 as 'fr'|'en'|'nl') : 'fr');
-  });
-
-  langText() { return this.labels[this.currentLang()]; }
-
-  openLang()  { this.showLang.set(true); }
-  closeLang() { this.showLang.set(false); }
-
-  confirmLang(lang: Lang) {
-    this.currentLang.set(lang);
-    this.showLang.set(false);
-    this.switchUrlLang(this.CODE[lang]);
+    const primary: UrlSegmentGroup | undefined = tree.root.children['primary'];
+    const segs = primary?.segments ?? [];
+    const code = segs[0]?.path as Lang | undefined;
+    return (code && (['fr', 'en', 'nl'] as const).includes(code)) ? code : 'fr';
   }
+  currentLang(): Lang { return this.langCode(); }
 
-  /** Remplace (ou préfixe) /:lang dans l’URL courante (conserve path + query + hash) */
-  private switchUrlLang(code: 'fr'|'en'|'nl') {
+  // clé i18n pour le libellé de langue complet
+  langLabelKey(): string { return `languages.${this.langCode()}`; }
+
+  confirmLang(next: Lang) {
     const tree = this.router.parseUrl(this.router.url);
-    const primary = tree.root.children['primary'];
-    const segments = primary?.segments ?? [];
+    const primary: UrlSegmentGroup | undefined = tree.root.children['primary'];
+    const segs = primary?.segments.map(s => s.path) ?? [];
+    const newSegs = segs.length ? [next, ...segs.slice(1)] : [next];
 
-    if (segments.length && this.CODES.has(segments[0].path as any)) {
-      segments[0] = new UrlSegment(code, {});
-    } else {
-      segments.unshift(new UrlSegment(code, {}));
-    }
+    this.router.navigate(['/', ...newSegs], {
+      queryParams: tree.queryParams,
+      fragment: tree.fragment ?? undefined,
+      replaceUrl: true,
+    });
 
-    tree.root.children['primary'] = new UrlSegmentGroup(segments, {});
-    this.router.navigateByUrl(tree, { replaceUrl: true });
+    this._showLang = false;
   }
 }

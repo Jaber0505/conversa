@@ -1,23 +1,25 @@
-<div class="lang-overlay" role="presentation" (click)="onOverlayClick($event)">
-  <div class="lang-dialog" role="dialog" aria-modal="true" aria-labelledby="lang-title">
-    <div class="dialog-header">
-      <h2 id="lang-title">Choisir la langue</h2>
-      <button class="icon-close" type="button" aria-label="Fermer" (click)="onCancel()">✕</button>
-    </div>
+<div class="lang-overlay" (click)="onCancel()">
+  <div class="lang-popover" (click)="$event.stopPropagation()">
+    <header class="lp-header">
+      <h3>{{ titleKey() | t }}</h3>
+    </header>
 
-    <ul class="lang-list" role="listbox" aria-label="Langues disponibles">
-      <li class="lang-item" *ngFor="let l of langs" [attr.aria-selected]="l === selected()">
-        <label class="option">
-          <input type="checkbox" [checked]="l===selected()" (change)="onToggle(l)" />
-          <span class="check" aria-hidden="true"></span>
-          <span class="label">{{ langLabel[l] }}</span>
-        </label>
+    <ul class="lp-list" role="listbox" [attr.aria-activedescendant]="'opt-' + selected()">
+      <li *ngFor="let l of langs"
+          class="lp-item"
+          [class.active]="l === selected()"
+          role="option"
+          [attr.id]="'opt-' + l"
+          (click)="onToggle(l)">
+        <span class="code">{{ l.toUpperCase() }}</span>
+        <span class="label">{{ labelKeyOf(l) | t }}</span>
+        <span class="check" *ngIf="l === selected()">✓</span>
       </li>
     </ul>
 
-    <div class="dialog-actions">
-      <shared-button variant="outline" size="md" (click)="onCancel()">Annuler</shared-button>
-      <shared-button variant="accent"  size="md" (click)="onConfirm()">Enregistrer</shared-button>
-    </div>
+    <footer class="lp-actions">
+      <button type="button" class="btn ghost" (click)="onCancel()">{{ 'common.cancel' | t }}</button>
+      <button type="button" class="btn primary" (click)="onConfirm()">{{ 'common.save' | t }}</button>
+    </footer>
   </div>
 </div>

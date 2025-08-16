@@ -4,6 +4,7 @@ import { InputComponent } from '@shared/forms/input/input.component';
 import { SelectComponent } from '@shared/forms/select/select.component';
 import { ButtonComponent } from '@shared/ui/button/button.component';
 import { FormFieldComponent } from '@shared/forms/form-field/form-field.component';
+import { TPipe } from '@core/i18n';
 
 export type SelectOption = { value: string; label: string };
 
@@ -16,13 +17,20 @@ export type GenericSearch = { q: string; filters: Record<string, string | boolea
 @Component({
   selector: 'shared-search-bar',
   standalone: true,
-  imports: [CommonModule, FormFieldComponent, InputComponent, SelectComponent, ButtonComponent],
+  imports: [CommonModule, FormFieldComponent, InputComponent, SelectComponent, ButtonComponent, TPipe],
   templateUrl: './search-bar.component.html',
   styleUrls: ['./search-bar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SearchBarComponent {
+  // i18n via template: si tu veux forcer un placeholder spécifique
+  @Input() placeholderKey?: string;
+
+  // Fallbacks si le parent n'envoie rien
   @Input() placeholder = 'Rechercher…';
+  @Input() yesLabel = 'Oui';
+  @Input() noLabel  = 'Non';
+
   @Input() filters: FilterConfig[] = [];
   @Input() showAdvanced = true;
 
@@ -41,10 +49,11 @@ export class SearchBarComponent {
     });
   }
 
+  // Labels booléens sans service : injectés par @Input (le parent peut passer | t)
   booleanOptions(): SelectOption[] {
     return [
-      { value: 'true',  label: 'Oui' },
-      { value: 'false', label: 'Non' },
+      { value: 'true',  label: this.yesLabel },
+      { value: 'false', label: this.noLabel  },
     ];
   }
 

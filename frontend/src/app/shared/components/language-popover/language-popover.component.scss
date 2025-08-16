@@ -1,100 +1,22 @@
-/* 100% tokens */
-
-:root {
-  --radius-md: var(--radius-md, .6rem);
-  --radius-lg: var(--radius-lg, 1rem);
-}
-
-/* Overlay */
 .lang-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  display: grid;
-  place-items: center;
-  padding: 1rem;
-  background: color-mix(in oklab, var(--color-text), transparent 70%);
+  position: fixed; inset: 0; background: rgba(0,0,0,.35);
+  display: grid; place-items: center; z-index: 1000;
 }
-
-/* Boîte */
-.lang-dialog {
-  width: min(520px, 92vw);
-  background: var(--surface-1);
-  color: var(--color-text);
-  border: 1px solid color-mix(in oklab, var(--color-muted), transparent 30%);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 20px 60px color-mix(in oklab, var(--color-text), transparent 85%);
-  display: grid;
-  gap: 1rem;
-  padding: 1.2rem 1.2rem 1rem;
+.lang-popover {
+  width: 320px; background: #fff; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,.15);
+  overflow: hidden; display: flex; flex-direction: column;
 }
-
-/* En-tête */
-.dialog-header {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
+.lp-header { padding: 12px 16px; border-bottom: 1px solid #eee; }
+.lp-list { margin: 0; padding: 8px; list-style: none; max-height: 50vh; overflow: auto; }
+.lp-item {
+  display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; cursor: pointer;
 }
-#lang-title { margin: 0; font-size: 1.1rem; font-weight: 800; letter-spacing: .2px; }
-.icon-close {
-  inline-size: 36px; block-size: 36px;
-  display: inline-grid; place-items: center;
-  border-radius: var(--radius-md);
-  border: 1px solid color-mix(in oklab, var(--color-muted), transparent 25%);
-  background: var(--surface-0);
-  color: var(--color-text);
-}
-.icon-close:focus-visible {
-  outline: 2px solid color-mix(in oklab, var(--color-primary), white 18%);
-  outline-offset: 2px;
-}
-
-/* Liste */
-.lang-list { list-style: none; margin: .2rem 0 0; padding: 0; display: grid; gap: .6rem; }
-.lang-item { margin: 0; }
-
-/* Option (checkbox custom) — alignée sur une ligne */
-.option {
-  display: flex; align-items: center; gap: .7rem;
-  padding: .65rem .9rem;
-  border: 1px solid color-mix(in oklab, var(--color-muted), transparent 25%);
-  background: var(--surface-0);
-  border-radius: var(--radius-md);
-  cursor: pointer; user-select: none;
-  transition: border-color .15s ease, background .15s ease;
-}
-.option:hover {
-  background: color-mix(in oklab, var(--color-primary), transparent 95%);
-  border-color: color-mix(in oklab, var(--color-muted), transparent 15%);
-}
-.option:focus-within {
-  outline: 2px solid color-mix(in oklab, var(--color-primary), white 18%);
-  outline-offset: 2px;
-}
-
-/* Checkbox masquée, check custom */
-.option input[type="checkbox"] { appearance: none; inline-size: 0; block-size: 0; margin: 0; }
-
-.check {
-  inline-size: 18px; block-size: 18px;
-  border-radius: .35rem;
-  border: 2px solid color-mix(in oklab, var(--color-muted), transparent 10%);
-  display: grid; place-items: center; flex: 0 0 18px;
-}
-[aria-selected="true"] .check { border-color: var(--color-primary); background: var(--color-primary); }
-[aria-selected="true"] .check::after { content: '✓'; font-size: .8rem; line-height: 1; color: var(--surface-0); }
-
-/* Libellé */
-.label { line-height: 1; font-weight: 600; color: color-mix(in oklab, var(--color-text), transparent 10%); }
-
-/* Actions */
-.dialog-actions {
-  display: grid; grid-auto-flow: column; justify-content: end;
-  gap: .6rem; margin-top: .2rem;
-}
-
-/* Mobile */
-@media (max-width: 480px) {
-  .lang-dialog { padding: 1rem; gap: .8rem; }
-  .option { padding: .55rem .7rem; }
-}
+.lp-item:hover { background: #f7f7f8; }
+.lp-item.active { background: #eef5ff; }
+.code { font-weight: 700; width: 40px; text-align: center; }
+.label { flex: 1; }
+.check { color: #2563eb; font-weight: 700; }
+.lp-actions { padding: 10px 12px; display: flex; justify-content: flex-end; gap: 8px; border-top: 1px solid #eee; }
+.btn { padding: 8px 12px; border-radius: 8px; border: 1px solid #ddd; background: #fff; cursor: pointer; }
+.btn.primary { background: #2563eb; border-color: #2563eb; color: #fff; }
+.btn.ghost { background: #fff; }

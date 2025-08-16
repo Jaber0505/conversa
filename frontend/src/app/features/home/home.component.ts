@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SHARED_IMPORTS } from '@shared';
 import { SearchBarComponent, type FilterConfig, type GenericSearch } from '@shared/forms/search-bar/search-bar.component';
-import { I18nService } from '@core/i18n'; // ⬅️ i18n
+import { I18nService, TPipe } from '@core/i18n';
 
 type EventItem = {
   id: number;
@@ -19,7 +19,7 @@ type EventItem = {
 @Component({
   standalone: true,
   selector: 'app-home',
-  imports: [CommonModule, ...SHARED_IMPORTS, SearchBarComponent],
+  imports: [CommonModule, ...SHARED_IMPORTS, SearchBarComponent, TPipe],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
