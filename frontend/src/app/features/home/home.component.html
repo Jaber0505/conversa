@@ -4,55 +4,70 @@
     <div class="home-grid">
       <!-- Colonne gauche -->
       <div class="left-col">
-        <h1>Parle une langue,<br class="hide-sm"> Vis une rencontre</h1>
-        <p class="subtitle">
-          Rejoinez Conversa, une communauté active grâce aux meetups linguistiques.
-          Des jeux immersifs dans des bars à Bruxelles.
-        </p>
+        <h1>{{ 'pages.home.hero.title' | t }}</h1>
+        <p class="subtitle">{{ 'pages.home.hero.subtitle' | t }}</p>
 
         <!-- Carte recherche -->
         <shared-card tone="soft" class="search-card">
           <div header>
-            <h2 class="h3">Trouve tes partenaires de langue en 2 minutes</h2>
+            <h2 class="h3">{{ 'pages.home.search.title' | t }}</h2>
             <p class="muted" style="margin:.25rem 0 0">
-              Entre un mot-clé, choisis ta langue et ta zone, puis lance la recherche. On te propose des sessions près de toi.
+              {{ 'pages.home.search.desc' | t }}
             </p>
           </div>
 
           <shared-search-bar
-            [placeholder]="'Rechercher un événement…'"
+            [placeholder]="'shared.search.placeholder_event' | t"
             [filters]="filters"
             (search)="onSearch($event)">
           </shared-search-bar>
 
           <div footer class="muted">
-            Astuce : “café”, “débutant”, “afterwork”… essaie des mots-clés.
+            {{ 'shared.search.tip_keywords' | t }}
           </div>
         </shared-card>
 
         <!-- Badges de confiance -->
         <div class="trust">
-          <shared-badge variant="accent" tone="solid">+1000 membres</shared-badge>
-          <shared-badge variant="accent" tone="solid">20 bars partenaires</shared-badge>
-          <shared-badge variant="accent" tone="solid">Sessions 100% fun</shared-badge>
+          <shared-badge variant="accent" tone="solid">{{ 'shared.badges.members_1000_plus' | t }}</shared-badge>
+          <shared-badge variant="accent" tone="solid">{{ 'shared.badges.partners_20' | t }}</shared-badge>
+          <shared-badge variant="accent" tone="solid">{{ 'shared.badges.fun_100' | t }}</shared-badge>
         </div>
       </div>
 
-      <!-- Colonne droite : image + tuto (carte unique) -->
+      <!-- Colonne droite : image + tuto -->
       <div class="right-col">
         <shared-card tone="elevated" class="howto-card">
-          <img class="howto-img" src="/assets/images/home/conversation-illustration.jpg" alt="Rencontres linguistiques conviviales">
-          <div header><h2 class="howto-title">Comment ça marche ?</h2></div>
+          <img class="howto-img" src="/assets/images/home/conversation-illustration.jpg" alt="{{ 'pages.home.howto.img_alt' | t }}">
+          <div header><h2 class="howto-title">{{ 'pages.home.howto.title' | t }}</h2></div>
 
           <ul class="howto-list">
-            <li><span class="howto-step">1</span><div><div class="step-title">Choisis ta langue et ta zone</div><div class="step-desc muted">Filtre avec la barre de recherche à gauche.</div></div></li>
-            <li><span class="howto-step">2</span><div><div class="step-title">Rejoins un groupe</div><div class="step-desc muted">3+ participants, validation sur place.</div></div></li>
-            <li><span class="howto-step">3</span><div><div class="step-title">Joue & pratique</div><div class="step-desc muted">Lance le jeu, débloque des badges, partage un avis.</div></div></li>
+            <li>
+              <span class="howto-step">1</span>
+              <div>
+                <div class="step-title">{{ 'pages.home.howto.steps.1.title' | t }}</div>
+                <div class="step-desc muted">{{ 'pages.home.howto.steps.1.desc' | t }}</div>
+              </div>
+            </li>
+            <li>
+              <span class="howto-step">2</span>
+              <div>
+                <div class="step-title">{{ 'pages.home.howto.steps.2.title' | t }}</div>
+                <div class="step-desc muted">{{ 'pages.home.howto.steps.2.desc' | t }}</div>
+              </div>
+            </li>
+            <li>
+              <span class="howto-step">3</span>
+              <div>
+                <div class="step-title">{{ 'pages.home.howto.steps.3.title' | t }}</div>
+                <div class="step-desc muted">{{ 'pages.home.howto.steps.3.desc' | t }}</div>
+              </div>
+            </li>
           </ul>
 
           <div class="howto-actions" footer>
-            <shared-button variant="accent" (click)="goToEvents()">Parcourir les événements</shared-button>
-            <shared-button variant="outline" (click)="goToSignUp()">Créer un compte</shared-button>
+            <shared-button variant="accent" (click)="goToEvents()">{{ 'shared.actions.browse_events' | t }}</shared-button>
+            <shared-button variant="outline" (click)="goToSignUp()">{{ 'shared.actions.create_account' | t }}</shared-button>
           </div>
         </shared-card>
       </div>
@@ -63,7 +78,11 @@
 <!-- ÉVÉNEMENTS À VENIR -->
 <shared-section spacing="lg">
   <shared-container>
-    <shared-headline-bar [title]="'Événements à venir'" [actionLabel]="'Voir tout'" (action)="goToEvents()"></shared-headline-bar>
+    <shared-headline-bar 
+      [title]="'pages.home.upcoming.title' | t"
+      [actionLabel]="'shared.actions.see_all' | t"
+      (action)="goToEvents()">
+    </shared-headline-bar>
     <shared-grid [cols]="1" [colsSm]="2" [colsMd]="3">
       <shared-event-card
         *ngFor="let e of events"
@@ -78,15 +97,24 @@
 <shared-section spacing="lg" tone="subtle">
   <shared-container>
     <shared-headline-bar
-      [title]="'Explore par catégorie'"
-      [actionLabel]="'Voir tout'"
+      [title]="'pages.home.categories.title' | t"
+      [actionLabel]="'shared.actions.see_all' | t"
       (action)="goToCategories()">
     </shared-headline-bar>
 
     <shared-grid [cols]="1" [colsSm]="2" [colsMd]="3">
-      <shared-category-card title="Conversa Café"  subtitle="Rencontres informelles"></shared-category-card>
-      <shared-category-card title="Conversa Pro"   subtitle="Échanges professionnels"></shared-category-card>
-      <shared-category-card title="Conversa Events" subtitle="Événements publics"></shared-category-card>
+      <shared-category-card 
+        [title]="'pages.home.categories.items.cafe.title' | t"
+        [subtitle]="'pages.home.categories.items.cafe.subtitle' | t">
+      </shared-category-card>
+      <shared-category-card 
+        [title]="'pages.home.categories.items.pro.title' | t"
+        [subtitle]="'pages.home.categories.items.pro.subtitle' | t">
+      </shared-category-card>
+      <shared-category-card 
+        [title]="'pages.home.categories.items.events.title' | t"
+        [subtitle]="'pages.home.categories.items.events.subtitle' | t">
+      </shared-category-card>
     </shared-grid>
   </shared-container>
 </shared-section>
@@ -97,18 +125,27 @@
     <shared-card class="cta-panel" tone="elevated">
       <div class="cta-content">
         <div class="cta-copy">
-          <h2 class="cta-title">Prêt·e à en parler pour de vrai ?</h2>
-          <p class="cta-subtitle">Rejoins des sessions conviviales près de chez toi et progresse dès cette semaine.</p>
+          <h2 class="cta-title">{{ 'pages.home.cta.title' | t }}</h2>
+          <p class="cta-subtitle">{{ 'pages.home.cta.subtitle' | t }}</p>
           <ul class="cta-benefits">
-            <li><shared-badge variant="secondary" tone="solid">Rapide</shared-badge><span>Inscription en 1&nbsp;minute, aucun paiement requis</span></li>
-            <li><shared-badge variant="tertiary"  tone="solid">Local</shared-badge><span>Groupes à taille humaine dans des bars partenaires</span></li>
-            <li><shared-badge variant="primary"   tone="solid">Efficace</shared-badge><span>Jeux de conversation guidés, feedback des pairs</span></li>
+            <li>
+              <shared-badge variant="secondary" tone="solid">{{ 'shared.badges.rapid' | t }}</shared-badge>
+              <span>{{ 'pages.home.cta.benefits.rapid.desc' | t }}</span>
+            </li>
+            <li>
+              <shared-badge variant="tertiary" tone="solid">{{ 'shared.badges.local' | t }}</shared-badge>
+              <span>{{ 'pages.home.cta.benefits.local.desc' | t }}</span>
+            </li>
+            <li>
+              <shared-badge variant="primary" tone="solid">{{ 'shared.badges.effective' | t }}</shared-badge>
+              <span>{{ 'pages.home.cta.benefits.effective.desc' | t }}</span>
+            </li>
           </ul>
         </div>
         <div class="cta-actions">
-          <shared-button size="lg" variant="accent" (click)="goToSignUp()">Créer un compte gratuit</shared-button>
-          <shared-button size="lg" variant="outline" (click)="goToEvents()">Voir les événements</shared-button>
-          <div class="cta-hint muted">Tu peux explorer sans inscription. Rejoins quand tu veux.</div>
+          <shared-button size="lg" variant="accent" (click)="goToSignUp()">{{ 'shared.actions.create_free_account' | t }}</shared-button>
+          <shared-button size="lg" variant="outline" (click)="goToEvents()">{{ 'shared.actions.browse_events' | t }}</shared-button>
+          <div class="cta-hint muted">{{ 'pages.home.cta.hint' | t }}</div>
         </div>
       </div>
     </shared-card>
