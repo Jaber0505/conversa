@@ -1,29 +1,33 @@
 <form (ngSubmit)="onNext(f)" #f="ngForm" class="form">
   <div class="form__row">
-    <label for="bio">Bio</label>
+    <label for="bio">{{ 'register.secondTab.bio' | t }}</label>
 
     <textarea
       id="bio"
       name="bio"
       class="textarea"
-      [(ngModel)]="bio"
+      [(ngModel)]="currentBio"
       required
       minlength="10"
       maxlength="500"
       rows="6"
-      placeholder="Présente-toi brièvement (objectif, langues, niveau, etc.)"
+      placeholder="{{ 'register.secondTab.bioPlaceHolder' | t }}"
       aria-describedby="bio-help bio-count"
     ></textarea>
 
-    <div id="bio-help" class="muted small">Entre 10 et 500 caractères.</div>
+    <div id="bio-help" class="muted small">{{ 'register.secondTab.limit' | t }}</div>
     <div id="bio-count" class="muted small">{{ bio.length || 0 }}/500</div>
   </div>
 
-  <div class="actions">
-    <button type="submit" class="btn btn--primary" [disabled]="f.invalid">
-      Suivant
-    </button>
-  </div>
 
   <pre class="muted" *ngIf="f?.dirty">{{ bio }}</pre>
 </form>
+<navigation-buttons
+  [showPrev]="true"
+  [showNext]="true"
+  [prevLabel]="'common.back'"
+  [nextLabel]="'common.next'"
+  align="between"
+  (nextClick)="onNext()"
+  (prevClick)="onPrevious()">
+</navigation-buttons>

@@ -1,0 +1,23 @@
+.nav.fixed {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* extrémités */
+  gap: .75rem;
+}
+
+/* Les “slots” existent toujours, même vides, pour garder la géométrie */
+.slot {
+  display: flex;           /* pour centrer le bouton si besoin */
+  align-items: center;
+}
+
+/* Étendre en full-width si block=true (ex: 50/50) */
+.nav--block .slot { flex: 1 1 0; }
+.nav--block .slot--prev { justify-content: flex-start; }
+.nav--block .slot--next { justify-content: flex-end; }
+
+/* Optionnel: largeur mini pour éviter les sauts si labels varient */
+.slot--prev :where(shared-button),
+.slot--next :where(shared-button) {
+  white-space: nowrap;
+}

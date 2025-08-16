@@ -1,11 +1,13 @@
-import {Component, EventEmitter, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {FormsModule, NgForm} from "@angular/forms";
 import {CommonModule} from "@angular/common";
+import {TPipe} from "@core/i18n";
+import {NavigationButtonsComponent} from "@shared/forms/navigation-button/navigation-buttons";
 
 @Component({
   selector: 'app-register-page-second-tab',
   imports: [
-    FormsModule, CommonModule
+    FormsModule, CommonModule, TPipe, NavigationButtonsComponent
   ],
   templateUrl: './register-page-second-tab.html',
   standalone: true,
@@ -13,13 +15,18 @@ import {CommonModule} from "@angular/common";
 })
 export class RegisterPageSecondTab {
   @Output() bioReturn = new EventEmitter<string>();
+  @Input({ required: true }) currentBio!: string;
+  @Output() previous = new EventEmitter();
 
   bio: string = '';
 
   onNext(form?: NgForm) {
-    const value = (this.bio ?? '').trim();
-    if (form?.valid && value.length >= 10) {
+    debugger;
+    const value = (this.currentBio ?? '').trim();
       this.bioReturn.emit(value);
-    }
   }
+  onPrevious() {
+      this.previous.emit();
+  }
+
 }

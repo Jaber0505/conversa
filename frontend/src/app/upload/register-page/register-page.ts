@@ -23,28 +23,42 @@ import {TPipe} from "@core/i18n";
 })
 export class RegisterPageComponent {
   cuurenTab = 0;
-  firstTabData?: FirstTabInfoModel;
+  currentBio = "";
+  firstTabData: FirstTabInfoModel = { prenom: '', nom: '', age: 0 };
   toNextTab(){
     this.cuurenTab = this.cuurenTab + 1
   }
 
   toPreviousTab(){
+    // debugger;
     this.cuurenTab = this.cuurenTab - 1
   }
   onFirstTabSuivant(data: FirstTabInfoModel) {
     this.firstTabData = data;
-    console.log('Données du premier onglet :', this.firstTabData);
-
-    // Ici, tu peux passer à l'onglet suivant, ou sauvegarder, etc.
+    this.cuurenTab++;
   }
 
   onSecondTabSuivant( bio :  string ) {
+    this.currentBio= bio;
+    // debugger;
+    this.cuurenTab++;
+  }
+  onSecondTabPrevious( bio :  string ) {
     // ex: stocker, puis passer à l’onglet suivant
     // this.secondTabData = { bio };
     // this.currentTab = 2;
+    this.cuurenTab--;
+  }
+
+  onthirdTabPrevious( ) {
+    // ex: stocker, puis passer à l’onglet suivant
+    // this.secondTabData = { bio };
+    // this.currentTab = 2;
+    this.cuurenTab--;
   }
 
   onThirdTabSuivant({ email, password }: { email: string; password: string }) {
+    debugger;
     // ex: stocker puis passer à l’étape suivante
     // this.thirdTabData = { email, password };
     // this.currentTab = 3;
