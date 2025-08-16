@@ -5,6 +5,7 @@
 :host(.section--sm) { padding: var(--space-4) 0; }
 :host(.section--md) { padding: var(--space-8) 0; }
 :host(.section--lg) { padding: calc(var(--space-8) * 1.5) 0; }
+:host(.section--space-xl) { padding-block: var(--space-14); }
 
 /* Tons visuels */
 :host(.section--tone-default) { background: transparent; }

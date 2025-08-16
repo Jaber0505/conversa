@@ -1,0 +1,157 @@
+/* Harmonisation via TES tokens */
+.site-header.tone-tokens {
+  position: static;
+  width: 100%;
+  background: var(--surface-0);
+  border-bottom: 1px solid color-mix(in oklab, var(--color-muted), transparent 45%);
+  box-shadow: 0 1px 0 color-mix(in oklab, var(--color-muted), transparent 65%);
+}
+
+/* ===== Grille header =====
+   Desktop: [logo] [nav] [lang] [auth]
+   Mobile : [logo] [lang] [auth] (nav masquée)
+*/
+.header-grid {
+  display: grid;
+  align-items: center;
+  column-gap: 1rem;
+  min-height: 64px;
+  grid-template-columns: auto 1fr auto auto;
+  grid-template-areas: "logo nav lang auth";
+}
+
+.logo {
+  grid-area: logo;
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  min-width: 0;
+}
+.nav {
+  grid-area: nav;
+  display: inline-flex;
+  align-items: center;
+  gap: 1.2rem;
+  justify-self: center;
+}
+.lang-wrap {
+  grid-area: lang;
+  justify-self: end;
+}
+.auth {
+  grid-area: auth;
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  white-space: nowrap;
+}
+
+/* Branding */
+.brand {
+  font-weight: 800;
+  letter-spacing: .2px;
+  font-size: clamp(1rem, 2vw, 1.1rem);
+  color: var(--color-text);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/* Liens nav */
+.link {
+  color: var(--color-text);
+  text-decoration: none;
+  font-weight: 600;
+  opacity: .92;
+  padding: .4rem .6rem;
+  border-radius: var(--radius-md, .6rem);
+  line-height: 1;
+}
+.link:hover,
+.link:focus-visible {
+  background: color-mix(in oklab, var(--color-primary), transparent 90%);
+  outline: 2px solid transparent;
+}
+
+/* Langue chip */
+.lang-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  height: 36px;
+  padding: 0 .6rem;
+  border-radius: var(--radius-md, .6rem);
+  border: 1px solid color-mix(in oklab, var(--color-muted), transparent 25%);
+  background: var(--surface-1);
+  color: var(--color-text);
+}
+.lang-chip:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--color-primary), white 18%);
+  outline-offset: 2px;
+}
+
+.globe {
+  line-height: 1;
+}
+
+/* Langue affichée par défaut sur desktop */
+.lang-text {
+  display: inline;
+}
+
+/* Auth boutons */
+.auth .btn-auth {
+  --button-height: 36px;
+}
+
+/* ===== Responsive ===== */
+.desktop-only {
+  display: inline-flex;
+}
+
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none;
+  }
+
+  .header-grid {
+    min-height: 60px;
+    column-gap: .6rem;
+    grid-template-columns: auto auto 1fr; /* logo | lang | auth */
+    grid-template-areas: "logo lang auth";
+  }
+
+  .logo {
+    gap: .4rem;
+  }
+  .brand {
+    font-size: 1rem;
+  }
+
+  .lang-chip {
+    height: 32px;
+    padding: 0 .5rem;
+    border-radius: var(--radius-sm, .5rem);
+  }
+
+  /* En mobile → masquer le nom de la langue */
+  .lang-text {
+    display: none;
+  }
+
+  .auth {
+    gap: .4rem;
+  }
+  .auth .btn-auth {
+    --button-height: 32px;
+  }
+  :where(.auth .btn-auth) {
+    font-size: .9rem;
+  }
+}
+
+/* Mode sombre (si géré par tokens) */
+@media (prefers-color-scheme: dark) {
+  .site-header.tone-tokens {
+    box-shadow: 0 1px 0 color-mix(in oklab, var(--color-muted), transparent 55%);
+  }
+}

@@ -9,7 +9,7 @@ import { Component, Input, HostBinding, ChangeDetectionStrategy } from '@angular
 })
 export class SectionComponent {
   /** sm | md | lg : padding vertical */
-  @Input() spacing: 'sm' | 'md' | 'lg' = 'md';
+  @Input() spacing: 'sm' | 'md' | 'lg' | 'xl' = 'md';
   /** rôle visuel: default | subtle (fond clair) */
   @Input() tone: 'default' | 'subtle' = 'default';
   /** id de titre (ARIA) si la section est labellisée par un heading externe */

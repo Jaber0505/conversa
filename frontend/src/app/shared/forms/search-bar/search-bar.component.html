@@ -1,87 +1,38 @@
-<form class="sb" role="search" (ngSubmit)="onSubmit($event)">
-  <!-- Ligne principale : champ + actions -->
-  <div class="row-main">
-    <shared-form-field [forId]="'sb-q'" [label]="placeholder">
-      <shared-input
-        id="sb-q"
-        type="text"
-        [placeholder]="placeholder"
-        [value]="q"
-        (valueChange)="q = $event">
-      </shared-input>
+<form class="sb" role="search" (ngSubmit)="submit()" autocomplete="off" [attr.aria-expanded]="advancedOpen">
+
+  <!-- Ligne 1 : input + bouton Rechercher -->
+  <div class="sb__inline">
+    <shared-form-field [forId]="'sb-q'" [label]="'Recherche'">
+      <shared-input id="sb-q" [placeholder]="placeholder" [(value)]="query"></shared-input>
     </shared-form-field>
 
-    <div class="actions">
-      <shared-button
-        type="button"
-        variant="outline"
-        size="sm"
-        class="linky"
-        (click)="toggleAdvanced()">
-        {{ advancedOpen ? 'Masquer filtres' : 'Plus de filtres' }}
-      </shared-button>
-
-      <shared-button
-        type="button"
-        variant="outline"
-        size="sm"
-        class="linky"
-        (click)="clearAll()"
-        [disabled]="!hasAnyFilter">
-        Réinitialiser
-      </shared-button>
-
-      <!-- Enter suffit, mais on laisse un CTA clair -->
-      <shared-button type="submit" size="sm">Rechercher</shared-button>
-    </div>
+    <shared-button type="submit" size="md" class="sb__submit">Rechercher</shared-button>
   </div>
 
-  <!-- Tags récap des filtres actifs -->
-  <div class="tags" *ngIf="hasAnyFilter">
-    <button type="button" class="chip" (click)="clearOne('q')" *ngIf="q">
-      <shared-badge class="chip-badge" tone="soft" variant="muted">
-        {{ q }} <span class="chip-x" aria-hidden="true">×</span>
-        <span class="sr-only">Retirer le terme</span>
-      </shared-badge>
-    </button>
+  <!-- Ligne 2 : actions secondaires -->
+  <div class="sb__tools">
+    <shared-button *ngIf="showAdvanced" variant="outline" type="button" (click)="toggleAdvanced()">
+      {{ advancedOpen ? 'Masquer les filtres' : 'Plus de filtres' }}
+    </shared-button>
 
-    <button type="button" class="chip" (click)="clearOne('lang')" *ngIf="lang">
-      <shared-badge class="chip-badge" tone="soft" variant="secondary">
-        Langue: {{ displayLabel(langs, lang) }} <span class="chip-x" aria-hidden="true">×</span>
-        <span class="sr-only">Retirer la langue</span>
-      </shared-badge>
-    </button>
-
-    <button type="button" class="chip" (click)="clearOne('area')" *ngIf="area">
-      <shared-badge class="chip-badge" tone="soft" variant="tertiary">
-        Zone: {{ displayLabel(areas, area) }} <span class="chip-x" aria-hidden="true">×</span>
-        <span class="sr-only">Retirer la zone</span>
-      </shared-badge>
-    </button>
+    <shared-button *ngIf="advancedOpen || hasAnyFilter" variant="outline" type="button" (click)="reset()">
+      Réinitialiser
+    </shared-button>
   </div>
 
-  <!-- Filtres avancés (repliables) -->
-  <div class="row-filters" *ngIf="advancedOpen">
-    <shared-form-field [forId]="'sb-lang'" label="Langue">
-      <shared-select
-        id="sb-lang"
-        [options]="langs"
-        [value]="lang"
-        (valueChange)="lang = $event"
-        [searchable]="true"
-        placeholder="Choisir une langue…">
-      </shared-select>
-    </shared-form-field>
-
-    <shared-form-field [forId]="'sb-area'" label="Zone">
-      <shared-select
-        id="sb-area"
-        [options]="areas"
-        [value]="area"
-        (valueChange)="area = $event"
-        [searchable]="false"
-        placeholder="Choisir une zone…">
-      </shared-select>
-    </shared-form-field>
+  <!-- Ligne 3 : filtres (wrap 2 par ligne) -->
+  <div class="sb__filters" *ngIf="advancedOpen">
+    <ng-container *ngFor="let f of filters; index as i; trackBy: trackByKey">
+      <shared-form-field [forId]="'sb-f' + i" [label]="f.label">
+        <shared-select
+          [id]="'sb-f' + i"
+          [options]="f.type === 'boolean' ? booleanOptions() : (f.options || [])"
+          [searchable]="f.type === 'select' ? (f['searchable'] ?? true) : false"
+          [placeholder]="f['placeholder'] || (f.type === 'boolean' ? 'Oui / Non' : 'Sélectionner…')"
+          [value]="getSelectValue(f)"
+          (valueChange)="onFilterChange(f.key, f.type, $event)">
+        </shared-select>
+      </shared-form-field>
+    </ng-container>
   </div>
 </form>

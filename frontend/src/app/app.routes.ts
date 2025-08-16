@@ -15,10 +15,10 @@ export const routes: Routes = [
 
       // --- Maquette design, accessible seulement via URL ---
       {
-        path: 'mock/searchbar',
+        path: 'mock/mockshared',
         loadComponent: () =>
-          import('./features/mock/searchbar-demo.component')
-            .then(m => m.SearchbarDemoComponent),
+          import('./features/mock/mock-shared')
+            .then(m => m.MockSharedDemo),
         data: { hidden: true }
       },
 

@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BadgeComponent {
-  @Input() variant: 'primary' | 'secondary' | 'tertiary' | 'success' | 'danger' | 'muted' = 'primary';
+  @Input() variant: 'primary' | 'secondary' | 'tertiary' | 'success' | 'danger' | 'muted' | 'accent' = 'primary';
   @Input() size: 'sm' | 'md' = 'md';
   @Input() tone: 'soft' | 'solid' | 'outline' = 'soft';
 

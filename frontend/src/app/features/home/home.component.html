@@ -1,77 +1,116 @@
-<!-- HERO -->
-<shared-section spacing="lg">
+<!-- VITRINE / HERO -->
+<shared-section spacing="lg" tone="subtle">
   <shared-container>
-    <shared-grid [cols]="1" [colsMd]="2" gap="var(--space-8)">
-      <!-- Texte + recherche -->
-      <shared-card tone="ghost">
-        <div>
-          <shared-badge variant="secondary" tone="soft" size="sm">Apprends & Rencontre</shared-badge>
-          <h1 class="hero-title">Pratique les langues, rencontre des gens</h1>
-          <p class="muted hero-sub">
-            Des rencontres conviviales, des groupes à taille humaine, des événements réguliers.
-          </p>
+    <div class="home-grid">
+      <!-- Colonne gauche -->
+      <div class="left-col">
+        <h1>Parle une langue,<br class="hide-sm"> Vis une rencontre</h1>
+        <p class="subtitle">
+          Rejoinez Conversa, une communauté active grâce aux meetups linguistiques.
+          Des jeux immersifs dans des bars à Bruxelles.
+        </p>
 
-          <!-- Search bar = input + 2 selects (lang searchable / area non-searchable) -->
+        <!-- Carte recherche -->
+        <shared-card tone="soft" class="search-card">
+          <div header>
+            <h2 class="h3">Trouve tes partenaires de langue en 2 minutes</h2>
+            <p class="muted" style="margin:.25rem 0 0">
+              Entre un mot-clé, choisis ta langue et ta zone, puis lance la recherche. On te propose des sessions près de toi.
+            </p>
+          </div>
+
           <shared-search-bar
-            [placeholder]="'Rechercher…'"
-            [langs]="langs"
-            [areas]="areas"
+            [placeholder]="'Rechercher un événement…'"
+            [filters]="filters"
             (search)="onSearch($event)">
           </shared-search-bar>
 
-          <!-- Quick tags -->
-          <div class="hero-tags">
-            <shared-badge variant="tertiary" tone="soft" size="sm">Débutants bienvenus</shared-badge>
-            <shared-badge variant="primary" tone="soft" size="sm">Petits groupes</shared-badge>
-            <shared-badge variant="muted" tone="outline" size="sm">Partenaires d’échange</shared-badge>
+          <div footer class="muted">
+            Astuce : “café”, “débutant”, “afterwork”… essaie des mots-clés.
           </div>
-        </div>
-      </shared-card>
+        </shared-card>
 
-      <!-- Illustration / How it works -->
-      <shared-card tone="elevated">
-        <div header>Comment ça marche</div>
-        <div>
-          <ol class="muted how-list">
-            <li>Choisis ta langue et ta zone</li>
-            <li>Rejoins un événement près de chez toi</li>
-            <li>Pratique en vrai, régulièrement</li>
-          </ol>
+        <!-- Badges de confiance -->
+        <div class="trust">
+          <shared-badge variant="accent" tone="solid">+1000 membres</shared-badge>
+          <shared-badge variant="accent" tone="solid">20 bars partenaires</shared-badge>
+          <shared-badge variant="accent" tone="solid">Sessions 100% fun</shared-badge>
         </div>
-      </shared-card>
-    </shared-grid>
+      </div>
+
+      <!-- Colonne droite : image + tuto (carte unique) -->
+      <div class="right-col">
+        <shared-card tone="elevated" class="howto-card">
+          <img class="howto-img" src="/assets/images/home/conversation-illustration.jpg" alt="Rencontres linguistiques conviviales">
+          <div header><h2 class="howto-title">Comment ça marche ?</h2></div>
+
+          <ul class="howto-list">
+            <li><span class="howto-step">1</span><div><div class="step-title">Choisis ta langue et ta zone</div><div class="step-desc muted">Filtre avec la barre de recherche à gauche.</div></div></li>
+            <li><span class="howto-step">2</span><div><div class="step-title">Rejoins un groupe</div><div class="step-desc muted">3+ participants, validation sur place.</div></div></li>
+            <li><span class="howto-step">3</span><div><div class="step-title">Joue & pratique</div><div class="step-desc muted">Lance le jeu, débloque des badges, partage un avis.</div></div></li>
+          </ul>
+
+          <div class="howto-actions" footer>
+            <shared-button variant="accent" (click)="goToEvents()">Parcourir les événements</shared-button>
+            <shared-button variant="outline" (click)="goToSignUp()">Créer un compte</shared-button>
+          </div>
+        </shared-card>
+      </div>
+    </div>
   </shared-container>
 </shared-section>
 
-<!-- CATEGORIES -->
-<shared-section spacing="md" tone="subtle">
+<!-- ÉVÉNEMENTS À VENIR -->
+<shared-section spacing="lg">
   <shared-container>
-    <shared-headline-bar [title]="'Catégories'"></shared-headline-bar>
-    <shared-grid [cols]="1" [colsSm]="2" [colsMd]="3">
-      <shared-category-card
-        *ngFor="let c of categories"
-        [title]="c.title"
-        [subtitle]="c.subtitle">
-      </shared-category-card>
-    </shared-grid>
-  </shared-container>
-</shared-section>
-
-<!-- UPCOMING EVENTS -->
-<shared-section spacing="md">
-  <shared-container>
-    <shared-headline-bar
-      [title]="'Événements à venir'"
-      [actionLabel]="'Voir tout'"
-      (action)="onHeadlineAction()">
-    </shared-headline-bar>
-
+    <shared-headline-bar [title]="'Événements à venir'" [actionLabel]="'Voir tout'" (action)="goToEvents()"></shared-headline-bar>
     <shared-grid [cols]="1" [colsSm]="2" [colsMd]="3">
       <shared-event-card
         *ngFor="let e of events"
         [event]="e"
-        (cta)="onEvent(e)">
+        (cta)="onEventClick(e)">
       </shared-event-card>
     </shared-grid>
+  </shared-container>
+</shared-section>
+
+<!-- CATÉGORIES -->
+<shared-section spacing="lg" tone="subtle">
+  <shared-container>
+    <shared-headline-bar
+      [title]="'Explore par catégorie'"
+      [actionLabel]="'Voir tout'"
+      (action)="goToCategories()">
+    </shared-headline-bar>
+
+    <shared-grid [cols]="1" [colsSm]="2" [colsMd]="3">
+      <shared-category-card title="Conversa Café"  subtitle="Rencontres informelles"></shared-category-card>
+      <shared-category-card title="Conversa Pro"   subtitle="Échanges professionnels"></shared-category-card>
+      <shared-category-card title="Conversa Events" subtitle="Événements publics"></shared-category-card>
+    </shared-grid>
+  </shared-container>
+</shared-section>
+
+<!-- CTA FINAL -->
+<shared-section spacing="xl" tone="subtle">
+  <shared-container>
+    <shared-card class="cta-panel" tone="elevated">
+      <div class="cta-content">
+        <div class="cta-copy">
+          <h2 class="cta-title">Prêt·e à en parler pour de vrai ?</h2>
+          <p class="cta-subtitle">Rejoins des sessions conviviales près de chez toi et progresse dès cette semaine.</p>
+          <ul class="cta-benefits">
+            <li><shared-badge variant="secondary" tone="solid">Rapide</shared-badge><span>Inscription en 1&nbsp;minute, aucun paiement requis</span></li>
+            <li><shared-badge variant="tertiary"  tone="solid">Local</shared-badge><span>Groupes à taille humaine dans des bars partenaires</span></li>
+            <li><shared-badge variant="primary"   tone="solid">Efficace</shared-badge><span>Jeux de conversation guidés, feedback des pairs</span></li>
+          </ul>
+        </div>
+        <div class="cta-actions">
+          <shared-button size="lg" variant="accent" (click)="goToSignUp()">Créer un compte gratuit</shared-button>
+          <shared-button size="lg" variant="outline" (click)="goToEvents()">Voir les événements</shared-button>
+          <div class="cta-hint muted">Tu peux explorer sans inscription. Rejoins quand tu veux.</div>
+        </div>
+      </div>
+    </shared-card>
   </shared-container>
 </shared-section>

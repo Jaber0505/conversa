@@ -1,8 +1,134 @@
-/* Espace global sous le header */
-:host ::ng-deep {
-  .hero-title { font-size: clamp(1.8rem, 1.2rem + 2vw, 2.6rem); line-height: 1.1; margin: .5rem 0 0.5rem; }
-  .hero-sub   { margin-bottom: 1rem; }
-  .hero-tags  { display:flex; flex-wrap:wrap; gap:.5rem .75rem; margin-top:.75rem; }
+/* ===== Layout principal ===== */
+.home-grid {
+  display: grid;
+  gap: var(--space-8, 2.5rem);
 
-  .how-list { margin: .25rem 0 0 1rem; }
+  @media (min-width: 1024px) {
+    grid-template-columns: 1.45fr 0.9fr; /* colonne gauche élargie */
+    gap: var(--space-8, 2.5rem);
+    align-items: start;
+  }
 }
+
+/* ===== Titre principal ===== */
+h1 {
+  font-size: clamp(2rem, 2.8vw + 1rem, 3rem);
+  line-height: 1.15;
+  font-weight: 800;
+  margin: 0;
+}
+
+/* ===== Sous-titre (description) ===== */
+.subtitle {
+  margin-top: .75rem; /* espace avec le titre */
+  font-size: 1.05rem;
+  color: var(--color-text-muted, #555);
+  line-height: 1.5;
+  max-width: 560px;
+}
+
+/* ===== Carte recherche ===== */
+.search-card {
+  margin-top: var(--space-6, 1.5rem);
+  padding: var(--space-6, 1.5rem);
+  border-radius: var(--radius-4, 20px);
+  background: var(--surface-0, #fff);
+  box-shadow: var(--shadow-lg, 0 4px 16px rgba(0, 0, 0, 0.06));
+}
+
+/* ===== Badges de confiance ===== */
+.trust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin-top: var(--space-6, 1.5rem);
+}
+
+/* ===== Carte tuto (comment ça marche) ===== */
+.howto-card {
+  margin-top: var(--space-5, 1.25rem);
+  padding: var(--space-5, 1.25rem);
+  border-radius: var(--radius-4, 20px);
+  background: var(--surface-0, #fff);
+  box-shadow: var(--shadow-lg, 0 4px 16px rgba(0, 0, 0, 0.06));
+}
+
+.howto-title {
+  margin: 0 0 .75rem;
+  font-size: clamp(1.15rem, 1.2vw + 1rem, 1.4rem);
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+/* Image dans le tuto */
+.howto-img {
+  width: 100%;
+  border-radius: var(--radius-3, 12px);
+  margin-bottom: var(--space-5, 1.25rem);
+  display: block;
+}
+
+/* Étapes */
+.howto-list { list-style: none; padding: 0; margin: 0; }
+.howto-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: .75rem;
+  margin-bottom: .85rem;
+}
+.howto-list li:last-child { margin-bottom: 0; }
+.howto-step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary, #4b3ff2);
+  color: #fff;
+  font-weight: 600;
+  font-size: .9rem;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.howto-actions {
+  margin-top: var(--space-5, 1.25rem);
+  display: flex; flex-wrap: wrap; gap: .75rem;
+}
+
+/* ===== CTA final amélioré ===== */
+.cta-panel {
+  border-radius: var(--radius-4, 20px);
+  padding: clamp(1rem, 1.5vw + 1rem, 2rem);
+  box-shadow: var(--shadow-lg, 0 4px 16px rgba(0,0,0,.06));
+}
+.cta-content {
+  display: grid;
+  gap: var(--space-6, 1.5rem);
+  align-items: center;
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: left;
+
+  @media (min-width: 900px) {
+    grid-template-columns: 1.2fr 1fr;
+    gap: var(--space-8, 2rem);
+  }
+}
+.cta-title {
+  margin: 0 0 .5rem;
+  line-height: 1.15;
+  font-size: clamp(1.5rem, 1.2vw + 1.2rem, 2rem);
+  font-weight: 800;
+}
+.cta-subtitle {
+  margin: 0 0 1rem;
+  color: color-mix(in oklab, var(--color-text, #111), transparent 15%);
+  font-size: 1.05rem;
+  line-height: 1.5;
+  max-width: 56ch;
+}
+.cta-benefits { list-style: none; padding: 0; margin: 0; display: grid; gap: .6rem; }
+.cta-benefits li { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: .6rem; }
+.cta-actions { display: grid; gap: .75rem; justify-items: start; }
+@media (min-width: 900px) { .cta-actions { justify-items: stretch; } }
+.cta-hint { font-size: .95rem; }

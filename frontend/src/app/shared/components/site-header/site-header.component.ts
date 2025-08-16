@@ -1,54 +1,52 @@
-// frontend/src/app/features/shared/site-header/site-header.component.ts
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
-
-// ⬇️ i18n via barrel
-import { TPipe, TAttrDirective, LangService, I18nService } from '@core/i18n';
-
-import { LangModalComponent, Lang } from '../lang-modal/lang-modal.component';
+import { Router, RouterLink, UrlSegment, UrlSegmentGroup } from '@angular/router';
+import { SHARED_IMPORTS } from '@shared';
+import { LanguagePopoverComponent, Lang } from '../language-popover/language-popover.component';
 
 @Component({
   selector: 'app-site-header',
   standalone: true,
-  imports: [CommonModule, RouterLink, TPipe, TAttrDirective, LangModalComponent],
+  imports: [CommonModule, RouterLink, ...SHARED_IMPORTS, LanguagePopoverComponent],
   templateUrl: './site-header.component.html',
   styleUrls: ['./site-header.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SiteHeaderComponent {
-  private readonly langSvc = inject(LangService);
-  private readonly i18n = inject(I18nService);
+  private router = inject(Router);
 
-    readonly langs: Lang[] = ['fr', 'en', 'nl'];
-    readonly current = signal<Lang>(this.langSvc.current as Lang);
-    readonly showLangModal = signal(false);
+  showLang = signal(false);
+  currentLang = signal<Lang>('FR');
+  langs: Lang[] = ['FR','EN','NL'];
 
-    labelFor(l: Lang) {
-        return this.i18n.t(`home.search.lang.${l}`);
+  private readonly labels: Record<Lang, string> = { FR: 'Français', EN: 'English', NL: 'Nederlands' };
+  private readonly CODE: Record<Lang, 'fr'|'en'|'nl'> = { FR: 'fr', EN: 'en', NL: 'nl' };
+  private readonly CODES = new Set(['fr','en','nl']);
+
+  langText() { return this.labels[this.currentLang()]; }
+
+  openLang()  { this.showLang.set(true); }
+  closeLang() { this.showLang.set(false); }
+
+  confirmLang(lang: Lang) {
+    this.currentLang.set(lang);
+    this.showLang.set(false);
+    this.switchUrlLang(this.CODE[lang]);
+  }
+
+  /** Remplace (ou préfixe) /:lang dans l’URL courante (conserve path + query + hash) */
+  private switchUrlLang(code: 'fr'|'en'|'nl') {
+    const tree = this.router.parseUrl(this.router.url);
+    const primary = tree.root.children['primary'];
+    const segments = primary?.segments ?? [];
+
+    if (segments.length && this.CODES.has(segments[0].path)) {
+      segments[0] = new UrlSegment(code, {});
+    } else {
+      segments.unshift(new UrlSegment(code, {}));
     }
 
-    openLangModal() {
-        this.showLangModal.set(true);
-    }
-
-    closeLangModal() {
-        this.showLangModal.set(false);
-    }
-
-    applyLang(l: Lang) {
-        if (l === this.current()) {
-            this.closeLangModal();
-            return;
-        }
-        this.langSvc.set(l);
-        this.current.set(l);
-        this.closeLangModal();
-    }
-
-    onLangSaved(l: Lang) {
-        this.langSvc.set(l);
-        this.current.set(l);
-        this.closeLangModal();
-    }
+    tree.root.children['primary'] = new UrlSegmentGroup(segments, {});
+    this.router.navigateByUrl(tree, { replaceUrl: true });
+  }
 }

@@ -48,6 +48,7 @@
 /* Tailles & block */
 :host(.btn--sm) { padding: .5rem .75rem; font-size: var(--fs-sm); border-radius: var(--radius-sm); }
 :host(.btn--md) { padding: .65rem 1rem; font-size: var(--fs-md); }
+:host(.btn--lg) { padding: .85rem 1.15rem; font-size: var(--fs-lg); border-radius: var(--radius-lg); }
 :host(.btn--block) { width: 100%; }
 
 /* Le <button> interne est neutre (hérite du style de l’hôte) */

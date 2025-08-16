@@ -47,6 +47,7 @@
 /* Variants -> définissent la couleur source */
 :host(.badge--primary)   { --badge-color: var(--color-primary); }   /* corail */
 :host(.badge--secondary) { --badge-color: var(--color-secondary); } /* violet */
+:host(.badge--accent)    { --badge-color: var(--color-secondary); }
 :host(.badge--tertiary)  { --badge-color: var(--color-tertiary); }  /* menthe */
 :host(.badge--success)   { --badge-color: var(--color-tertiary); }  /* menthe */
 :host(.badge--danger)    { --badge-color: var(--color-danger); }    /* rouge */
