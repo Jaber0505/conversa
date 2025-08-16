@@ -1,0 +1,14 @@
+[
+  {"model":"languages.language","pk":1,"fields":{"code":"fr","label_fr":"Français","label_en":"French","label_nl":"Frans","is_active":true,"sort_order":1,"created_at":"2025-01-01T00:00:00Z"}},
+  {"model":"languages.language","pk":2,"fields":{"code":"en","label_fr":"Anglais","label_en":"English","label_nl":"Engels","is_active":true,"sort_order":2,"created_at":"2025-01-01T00:00:00Z"}},
+  {"model":"languages.language","pk":3,"fields":{"code":"es","label_fr":"Espagnol","label_en":"Spanish","label_nl":"Spaans","is_active":true,"sort_order":3,"created_at":"2025-01-01T00:00:00Z"}},
+  {"model":"languages.language","pk":4,"fields":{"code":"nl","label_fr":"Néerlandais","label_en":"Dutch","label_nl":"Nederlands","is_active":true,"sort_order":4,"created_at":"2025-01-01T00:00:00Z"}},
+  {"model":"languages.language","pk":5,"fields":{"code":"de","label_fr":"Allemand","label_en":"German","label_nl":"Duits","is_active":true,"sort_order":5,"created_at":"2025-01-01T00:00:00Z"}},
+  {"model":"languages.language","pk":6,"fields":{"code":"it","label_fr":"Italien","label_en":"Italian","label_nl":"Italiaans","is_active":true,"sort_order":6,"created_at":"2025-01-01T00:00:00Z"}},
+  {"model":"languages.language","pk":7,"fields":{"code":"pt","label_fr":"Portugais","label_en":"Portuguese","label_nl":"Portugees","is_active":true,"sort_order":7,"created_at":"2025-01-01T00:00:00Z"}},
+  {"model":"languages.language","pk":8,"fields":{"code":"ar","label_fr":"Arabe","label_en":"Arabic","label_nl":"Arabisch","is_active":true,"sort_order":8,"created_at":"2025-01-01T00:00:00Z"}},
+  {"model":"languages.language","pk":9,"fields":{"code":"tr","label_fr":"Turc","label_en":"Turkish","label_nl":"Turks","is_active":true,"sort_order":9,"created_at":"2025-01-01T00:00:00Z"}},
+  {"model":"languages.language","pk":10,"fields":{"code":"ru","label_fr":"Russe","label_en":"Russian","label_nl":"Russisch","is_active":true,"sort_order":10,"created_at":"2025-01-01T00:00:00Z"}},
+  {"model":"languages.language","pk":11,"fields":{"code":"zh","label_fr":"Chinois","label_en":"Chinese","label_nl":"Chinees","is_active":true,"sort_order":11,"created_at":"2025-01-01T00:00:00Z"}},
+  {"model":"languages.language","pk":12,"fields":{"code":"ja","label_fr":"Japonais","label_en":"Japanese","label_nl":"Japans","is_active":true,"sort_order":12,"created_at":"2025-01-01T00:00:00Z"}}
+]

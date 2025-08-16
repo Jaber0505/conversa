@@ -1,0 +1,78 @@
+@base = http://localhost:8000/api/v1/auth
+@pwd = Test1234!
+
+@ts = {{$timestamp}}
+@email = bob{{ts}}@example.com
+
+### 1) Register — 201
+# @name register
+POST {{base}}/register/
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{pwd}}",
+  "first_name": "Bob",
+  "last_name": "Dupont",
+  "age": 28,
+  "native_langs": ["fr"],
+  "target_langs": ["en"]
+}
+
+###
+@access_register  = {{register.response.body.$.access}}
+@refresh_register = {{register.response.body.$.refresh}}
+
+### 2) Me (access du register) — 200
+GET {{base}}/me/
+Authorization: Bearer {{access_register}}
+Accept: application/json
+
+### 3) Refresh — 200
+# @name refresh
+POST {{base}}/refresh/
+Content-Type: application/json
+Accept: application/json
+
+{
+  "refresh": "{{refresh_register}}"
+}
+
+###
+@refresh_after_refresh = {{refresh.response.body.$.refresh}}
+
+### 4) Logout — 204
+POST {{base}}/logout/
+Authorization: Bearer {{access_register}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "refresh": "{{refresh_after_refresh}}"
+}
+
+### 5) Me après logout — 401 attendu (mode strict)
+GET {{base}}/me/
+Authorization: Bearer {{access_register}}
+Accept: application/json
+
+### 6) Login — 200 (même email, même mdp)
+# @name login
+POST {{base}}/login/
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{pwd}}"
+}
+
+###
+@access_login  = {{login.response.body.$.access}}
+@refresh_login = {{login.response.body.$.refresh}}
+
+### 7) Me après login — 200
+GET {{base}}/me/
+Authorization: Bearer {{access_login}}
+Accept: application/json
