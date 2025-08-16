@@ -1,0 +1,25 @@
+<div class="nav fixed" role="group" [attr.aria-label]="ariaLabel" [class.nav--block]="block">
+  <div class="slot slot--prev">
+    <shared-button
+      *ngIf="showPrev"
+      type="button"
+      [variant]="prevVariant"
+      [size]="size"
+      [disabled]="prevDisabled"
+      (click)="onPrev()">
+      {{ prevLabel | t }}
+    </shared-button>
+  </div>
+
+  <div class="slot slot--next">
+    <shared-button
+      *ngIf="showNext"
+      type="button"
+      [variant]="nextVariant"
+      [size]="size"
+      [disabled]="nextDisabled"
+      (click)="onNext()">
+      {{ nextLabel | t }}
+    </shared-button>
+  </div>
+</div>

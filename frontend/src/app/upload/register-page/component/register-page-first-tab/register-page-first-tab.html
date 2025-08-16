@@ -1,37 +1,48 @@
 <form (ngSubmit)="onNext()" #f="ngForm" class="form">
   <div class="form__row">
-    <label for="prenom">Prénom</label>
-    <input id="prenom"
-           name="prenom"
-           class="input"
-           [(ngModel)]="firstTabInfo.prenom"
-           required />
+    <shared-input
+      id="prenom"
+      name="prenom"
+      label="{{ 'register.firstTab.firstName' | t }}"
+      [(ngModel)]="firstTabInfo.prenom"
+      required>
+    </shared-input>
   </div>
 
   <div class="form__row">
-    <label for="nom">Nom</label>
-    <input id="nom"
-           name="nom"
-           class="input"
-           [(ngModel)]="firstTabInfo.nom"
-           required />
+    <shared-input
+      id="nom"
+      name="nom"
+      label="{{ 'register.firstTab.lastName' | t }}"
+      [(ngModel)]="firstTabInfo.nom"
+      required>
+    </shared-input>
   </div>
 
   <div class="form__row">
-    <label for="age">Âge</label>
-    <input id="age"
-           name="age"
-           type="number"
-           class="input"
-           [(ngModel)]="firstTabInfo.age"
-           min="0" />
+    <shared-input
+      id="age"
+      name="age"
+      type="number"
+      label="{{ 'register.firstTab.age' | t }}"
+      [(ngModel)]="firstTabInfo.age">
+    </shared-input>
   </div>
 
   <div class="actions">
     <button type="submit" class="btn btn--primary" [disabled]="f.invalid">
-      Suivant
+      {{ 'common.next' | t }}
     </button>
   </div>
-
-  <pre class="muted" *ngIf="f.dirty">{{ firstTabInfo | json }}</pre>
 </form>
+<navigation-buttons
+  [showPrev]="false"
+  [showNext]="true"
+  [prevLabel]="'common.back'"
+  [nextLabel]="'common.next'"
+  [prevDisabled]="true"
+  [nextDisabled]="false"
+  align="between"
+  [block]="false"
+  (nextClick)="onNext()">
+</navigation-buttons>
