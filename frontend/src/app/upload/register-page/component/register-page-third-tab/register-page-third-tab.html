@@ -1,36 +1,53 @@
 <form (ngSubmit)="onNext()" #f="ngForm" class="form">
   <div class="form__row">
-    <label for="email">Email</label>
-    <input
+    <shared-input
       id="email"
       name="email"
       type="email"
-      class="input"
+      label="{{ 'register.thirdTab.email' | t }}"
+      placeholder="{{ 'auth.email_placeholder' | t }}"
       [(ngModel)]="email"
       required
-      email
-      placeholder="you@example.com" />
+      email>
+    </shared-input>
   </div>
 
-
   <div class="form__row">
-    <label for="password">Password</label>
-    <input
+    <shared-input
       id="password"
       name="password"
       type="password"
-      class="input"
+      label="{{ 'register.thirdTab.email' | t }}"
+      placeholder="{{ 'auth.password_placeholder' | t }}"
       [(ngModel)]="password"
       required
-      minlength="8"
-      placeholder="Minimum 8 caractères" />
+      minlength="8">
+    </shared-input>
   </div>
 
   <div class="actions">
     <button type="submit" class="btn btn--primary" [disabled]="f.invalid">
-      Suivant
+      {{ 'common.next' | t }}
     </button>
   </div>
 
-  <pre class="muted" *ngIf="f.dirty">{{ { email: email, password: '••••••••' } | json }}</pre>
+  <pre class="muted" *ngIf="f.dirty">
+    {{ { email: email, password: '••••••••' } | json }}
+  </pre>
 </form>
+
+<navigation-buttons
+  [showPrev]="true"
+  [showNext]="false"
+  [prevLabel]="'common.back'"
+  align="between"
+  (prevClick)="onPrevious()">
+</navigation-buttons>
+
+<div class="slot slot--next">
+  <shared-button
+    type="button"
+    (click)="onNext()">
+    {{ 'common.register' | t }}
+  </shared-button>
+</div>
