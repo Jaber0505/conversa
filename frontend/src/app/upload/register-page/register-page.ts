@@ -63,6 +63,7 @@ export class RegisterPageComponent {
     // ex: stocker, puis passer à l’onglet suivant
     // this.secondTabData = { bio };
     // this.currentTab = 2;
+
     this.cuurenTab--;
   }
 
