@@ -4,6 +4,18 @@ import { API_URL } from '@core/http';
 
 type LoginReq = { email: string; password: string };
 type LoginRes = { access: string; refresh: string };
+export type MeRes = {
+  id: number;
+  email: string;
+  first_name: string;
+  last_name: string;   // ← présent
+  username?: string;
+  age?: number;
+  bio?: string;
+  native_langs?: string[];
+  target_langs?: string[];
+  avatar?: string;
+};
 export type RegisterFormModel = {
   email: string;
   password: string;
@@ -16,7 +28,6 @@ export type RegisterFormModel = {
   target_langs?: string[];
   consentGiven?: boolean;
 };
-type MeRes = { id: number; username: string; email: string };
 type RefreshRes = { access: string; refresh?: string };
 
 @Injectable({ providedIn: 'root' })
@@ -26,7 +37,6 @@ export class AuthApiService {
 
   register(data: {
     password: string;
-    birth_date: string;
     last_name: string;
     bio: string;
     consent_given: boolean;
@@ -39,6 +49,6 @@ export class AuthApiService {
   }) { return this.http.post(`${this.base}/auth/register/`, data); }
   login(data: LoginReq)       { return this.http.post<LoginRes>(`${this.base}/auth/login/`, data); }
   refresh(refresh: string)    { return this.http.post<RefreshRes>(`${this.base}/auth/refresh/`, { refresh }); }
-  me()                        { return this.http.get<MeRes>(`${this.base}/users/me/`); }
+  me()                        { return this.http.get<MeRes>(`${this.base}/auth/me/`); }
   logout(refresh: string)     { return this.http.post(`${this.base}/auth/logout/`, { refresh }); }
 }

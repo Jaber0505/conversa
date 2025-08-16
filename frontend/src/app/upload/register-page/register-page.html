@@ -20,7 +20,7 @@
         <h2 class="h5">{{ 'auth.register' | t }}</h2>
         <app-register-page-second-tab
           [currentBio]="currentBio"
-          (previous)="toPreviousTab()"
+          (previous)="onSecondTabPrevious()"
           (bioReturn)="onSecondTabSuivant($event)">
         </app-register-page-second-tab>
       </div>

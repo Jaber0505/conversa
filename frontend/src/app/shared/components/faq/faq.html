@@ -4,9 +4,7 @@
       <h1>{{ 'faq.hero.title' | t }}</h1>
       <p class="muted">{{ 'faq.hero.subtitle' | t }}</p>
       <p class="intro">
-        Bienvenue dans notre centre de questions fréquentes.
-        Ici, tu trouveras des réponses claires aux interrogations les plus courantes sur l’utilisation de Conversa.
-        Si tu ne trouves pas ta réponse, n’hésite pas à nous contacter.
+        {{'faq.intro' | t}}
       </p>
     </header>
 
@@ -16,7 +14,6 @@
         [question]="'faq.qna.what_is_conversa_q' | t"
         [answer]="'faq.qna.what_is_conversa_a' | t">
       </app-faq-item>
-
       <app-faq-item
         [number]="2"
         [question]="'faq.qna.how_join_event_q' | t"

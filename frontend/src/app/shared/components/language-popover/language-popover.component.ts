@@ -7,7 +7,7 @@ export type Lang = 'fr' | 'en' | 'nl';
 @Component({
   standalone: true,
   selector: 'app-language-popover',
-  imports: [CommonModule, TPipe], // <- important pour | t
+  imports: [CommonModule, TPipe],
   templateUrl: './language-popover.component.html',
   styleUrls: ['./language-popover.component.scss']
 })
@@ -40,12 +40,10 @@ export class LanguagePopoverComponent implements OnChanges {
     this.close.emit();
   }
 
-  // Retourne la clé i18n du nom de langue
   labelKeyOf(l: Lang): string {
     return `languages.${l}`;
   }
 
-  // Optionnel: clé du titre
   titleKey(): string {
     return 'common.lang_change';
   }

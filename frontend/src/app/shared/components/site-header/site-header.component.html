@@ -9,7 +9,6 @@
       <a class="link" [routerLink]="['/', langCode(), 'about']" routerLinkActive="active">{{ 'nav.about' | t }}</a>
       <a class="link" [routerLink]="['/', langCode(), 'events']" routerLinkActive="active">{{ 'nav.events' | t }}</a>
     </nav>
-
     <div class="lang-wrap">
       <button
         class="lang-chip"
@@ -22,14 +21,17 @@
     </div>
 
     <div class="auth">
-      <shared-button
+      <shared-button *ngIf="!tokens?.access"
         class="btn-auth"
         variant="outline"
         size="sm"
         [routerLink]="['/', langCode(),  'login']">
         {{ 'auth.login' | t }}
       </shared-button>
-      <div class="auth">
+      <div class="auth"*ngIf="tokens?.access">
+        <ng-container *ngIf="me$ | async as me;">
+          <h1 class="h6">{{ me.first_name }} {{ me.last_name }}</h1>
+        </ng-container>
         <shared-button
           class="btn-auth"
           variant="outline"
@@ -41,7 +43,7 @@
         </shared-button>
       </div>
 
-      <shared-button
+      <shared-button *ngIf="!tokens?.access"
         class="btn-auth"
         variant="accent"
         size="sm"
