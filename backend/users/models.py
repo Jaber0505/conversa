@@ -1,4 +1,3 @@
-# backend/users/models.py
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.core.validators import MinValueValidator
 from django.db import models
@@ -14,7 +13,7 @@ class UserManager(BaseUserManager):
             raise ValueError("Mot de passe obligatoire.")
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
-        user.set_password(password)  # hash + sel (PBKDF2 par défaut)
+        user.set_password(password)  # hash
         user.save(using=self._db)
         return user
 
@@ -28,7 +27,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=150)
     last_name  = models.CharField(max_length=150)
-    age = models.PositiveIntegerField(validators=[MinValueValidator(18)])  # garde-fou côté Django
+    age = models.PositiveIntegerField(validators=[MinValueValidator(18)])
 
     # Profil (optionnels)
     bio = models.TextField(max_length=500, blank=True)
@@ -42,13 +41,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
 
     # Langues
-    native_langs = models.ManyToManyField(Language, related_name="native_users")  # ≥1 (contrôle serializer)
+    native_langs = models.ManyToManyField(Language, related_name="native_users")
     target_langs = models.ManyToManyField(
         Language, through="UserTargetLanguage", related_name="target_users"
-    )  # ≥1 (contrôle serializer)
+    )
 
     # Django
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True)   # actif immédiatement
     is_staff  = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
 
@@ -59,7 +58,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     class Meta:
         constraints = [
-            # garde-fou côté base: âge >= 18
             CheckConstraint(check=Q(age__gte=18), name="users_user_age_gte_18"),
         ]
 

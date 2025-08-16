@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from languages.models import Language
 
 User = get_user_model()
@@ -19,7 +18,7 @@ class UserSerializer(serializers.ModelSerializer):
             "native_langs", "target_langs", "date_joined",
         ]
 
-MeSerializer = UserSerializer  # alias si utilisé ailleurs
+MeSerializer = UserSerializer
 
 class RegisterSerializer(serializers.ModelSerializer):
     # Obligatoires
@@ -62,11 +61,13 @@ class RegisterSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
+        # email propre + compte actif directement
+        validated_data["email"] = (validated_data.get("email") or "").strip()
         native = validated_data.pop("native_langs", [])
         target = validated_data.pop("target_langs", [])
         password = validated_data.pop("password")
 
-        user = User.objects.create(**validated_data)
+        user = User.objects.create(is_active=True, **validated_data)
         user.set_password(password)
         user.save()
 
@@ -76,12 +77,3 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         return UserSerializer(instance).data
-
-class LoginSerializer(TokenObtainPairSerializer):
-    username_field = User.USERNAME_FIELD
-
-    def validate(self, attrs):
-        # autorise "username" comme alias
-        if "email" not in attrs and "username" in attrs:
-            attrs["email"] = attrs["username"]
-        return super().validate(attrs)

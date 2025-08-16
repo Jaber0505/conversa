@@ -4,7 +4,6 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from .models import User, UserTargetLanguage, RevokedAccessToken
 
-# --- Forms admin (pas de username) ---
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = User
@@ -19,11 +18,9 @@ class CustomUserChangeForm(UserChangeForm):
             "address", "city", "country", "latitude", "longitude",
             "is_active", "is_staff", "is_superuser",
             "groups", "user_permissions",
-            "native_langs",  # OK: M2M sans through
-            # NE PAS mettre target_langs ici (through)
+            "native_langs",
         )
 
-# --- Inline pour la relation through ---
 class UserTargetLanguageInline(admin.TabularInline):
     model = UserTargetLanguage
     extra = 1
@@ -44,7 +41,7 @@ class UserAdmin(BaseUserAdmin):
         (_("Identifiants"), {"fields": ("email", "password")}),
         (_("Infos personnelles"), {"fields": ("first_name", "last_name", "age", "bio", "avatar")}),
         (_("Adresse (optionnelle)"), {"fields": ("address", "city", "country", "latitude", "longitude")}),
-        (_("Langues"), {"fields": ("native_langs",)}),  # ← target_langs via inline
+        (_("Langues"), {"fields": ("native_langs",)}),
         (_("Permissions"), {"fields": ("is_active", "is_staff", "is_superuser", "groups", "user_permissions")}),
         (_("Dates"), {"fields": ("last_login", "date_joined")}),
     )
@@ -56,8 +53,8 @@ class UserAdmin(BaseUserAdmin):
         }),
     )
 
-    filter_horizontal = ("groups", "user_permissions", "native_langs")  # ← retirer target_langs
-    inlines = [UserTargetLanguageInline]  # ← gère target_langs (through)
+    filter_horizontal = ("groups", "user_permissions", "native_langs")
+    inlines = [UserTargetLanguageInline]
 
 admin.site.register(User, UserAdmin)
 admin.site.register(UserTargetLanguage)
