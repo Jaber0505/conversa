@@ -1,0 +1,36 @@
+<form (ngSubmit)="onNext()" #f="ngForm" class="form">
+  <div class="form__row">
+    <label for="email">Email</label>
+    <input
+      id="email"
+      name="email"
+      type="email"
+      class="input"
+      [(ngModel)]="email"
+      required
+      email
+      placeholder="you@example.com" />
+  </div>
+
+
+  <div class="form__row">
+    <label for="password">Password</label>
+    <input
+      id="password"
+      name="password"
+      type="password"
+      class="input"
+      [(ngModel)]="password"
+      required
+      minlength="8"
+      placeholder="Minimum 8 caractères" />
+  </div>
+
+  <div class="actions">
+    <button type="submit" class="btn btn--primary" [disabled]="f.invalid">
+      Suivant
+    </button>
+  </div>
+
+  <pre class="muted" *ngIf="f.dirty">{{ { email: email, password: '••••••••' } | json }}</pre>
+</form>

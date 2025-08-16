@@ -128,5 +128,134 @@
     "email_invalid": "Ongeldig e-mailadres.",
     "password_min_length": "Wachtwoord moet minstens {{min}} tekens bevatten.",
     "consent_required": "U moet akkoord gaan met de verwerking van uw gegevens."
+  },
+  "faq": {
+    "hero": {
+      "badge": "FAQ",
+      "title": "Veelgestelde vragen",
+      "subtitle": "Alles wat je moet weten om met Conversa te beginnen."
+    },
+    "search": {
+      "placeholder": "Zoek een vraag…",
+      "aria": "Zoeken in de FAQ"
+    },
+    "groups": {
+      "getting_started": "Aan de slag",
+      "events": "Evenementen en inschrijvingen",
+      "account": "Account en privacy",
+      "payments": "Betalingen en facturatie"
+    },
+    "qna": {
+      "what_is_conversa_q": "Wat is Conversa?",
+      "what_is_conversa_a": "Conversa is een platform waar je op een speelse manier talen kunt oefenen, in kleine groepjes, in partnerbars en cafés in Brussel. Geen saaie lessen: je praat, speelt en wisselt uit alsof je met vrienden bent, terwijl je nieuwe mensen ontmoet.",
+
+      "how_join_event_q": "Hoe neem ik deel aan een evenement?",
+      "how_join_event_a": "Kies op de startpagina een taal die je interesseert, bekijk de beschikbare sessies en klik op “Ik doe mee”. Bevestig ter plaatse je aanwezigheid via de app en sluit je aan bij de groep om het spel te starten.",
+
+      "cancel_policy_q": "Kan ik mijn deelname annuleren?",
+      "cancel_policy_a": "Ja, zolang het evenement nog niet is begonnen. Je kunt eenvoudig annuleren via de app. Zo komt je plaats vrij voor iemand anders en blijft de groep levendig.",
+
+      "account_data_q": "Wat doen jullie met mijn gegevens?",
+      "account_data_a": "We verzamelen alleen de informatie die nodig is om sessies te organiseren en de veiligheid van deelnemers te waarborgen. Je gegevens worden nooit doorverkocht, en je kunt ze op elk moment wijzigen of laten verwijderen.",
+
+      "payment_price_q": "Hoeveel kost het?",
+      "payment_price_a": "Een standaardticket kost €7 per sessie. Dit omvat toegang tot het gespreksspel en de ontmoeting met andere deelnemers. Speciale evenementen of workshops kunnen een ander tarief hebben, dat altijd vooraf wordt vermeld."
+    },
+    "no_results": "Geen vragen komen overeen met je zoekopdracht ? conversa@hotmail.com"
+  },
+  "about": {
+    "hero": {
+      "badge": "Over ons",
+      "title": "Talen leren, mensen ontmoeten",
+      "subtitle": "Conversa maakt taal oefenen eenvoudig en gezellig: kleine groepen, conversatiespellen, warme locaties. Geen school, alleen echte uitwisselingen."
+    },
+    "mission": {
+      "title": "Onze missie",
+      "p1": "Natuurlijke gelegenheden creëren om een taal te spreken zonder academische druk. Elke sessie is ontworpen om je te helpen durven, vooruit te gaan en je open te stellen voor anderen.",
+      "bullets": [
+        "Echte praktijk, geen hoorcollege",
+        "Groepen van 3–6 personen zodat iedereen ruimte krijgt",
+        "Spellen en gesprekskaarten om het ijs te breken",
+        "Partnerlocaties gekozen voor hun sfeer"
+      ]
+    },
+    "difference": {
+      "title": "Wat ons onderscheidt",
+      "items": [
+        { "title": "Speels", "desc": "Conversatiespellen die het gesprek gaande houden en spontane expressie aanmoedigen." },
+        { "title": "Sociaal", "desc": "Je leert door nieuwsgierige mensen zoals jij te ontmoeten, niet door naar een bord te kijken." },
+        { "title": "Flexibel", "desc": "Korte sessies, na het werk of in het weekend, zonder langdurige verplichting." },
+        { "title": "Lokaal", "desc": "Brusselse bars en cafés die van talen houden — we steunen het lokale ecosysteem." }
+      ]
+    },
+    "values": {
+      "title": "Onze waarden",
+      "list": [
+        { "title": "Welwillendheid", "desc": "Een veilige omgeving om te proberen, fouten te maken en opnieuw te proberen." },
+        { "title": "Openheid", "desc": "Alle talen, alle niveaus, alle achtergronden." },
+        { "title": "Eenvoud", "desc": "Inschrijven in enkele klikken, duidelijke regels, geen jargon." },
+        { "title": "Kwaliteit", "desc": "Gestructureerde begeleiding, regelmatige feedback, voortdurende verbetering." }
+      ]
+    },
+    "stats": {
+      "title": "In cijfers",
+      "sessions": { "label": "Georganiseerde sessies", "value": "250+" },
+      "learners": { "label": "Deelnemers", "value": "3.000+" },
+      "languages": { "label": "Talen geoefend", "value": "10+" },
+      "partners": { "label": "Partnerlocaties", "value": "20+" }
+    },
+    "how": {
+      "title": "Hoe het werkt",
+      "steps": [
+        { "n": "1", "title": "Kies een taal", "desc": "Filter op Engels, Nederlands, Spaans… en jouw buurt." },
+        { "n": "2", "title": "Reserveer je plaats", "desc": "Beperkte groepen voor echte gesprekken." },
+        { "n": "3", "title": "Sluit je aan bij de tafel", "desc": "Een begeleider start het spel en bepaalt het tempo." }
+      ],
+      "a11y_illustration_alt": "Illustratie van mensen die rond een tafel praten"
+    },
+    "team": {
+      "title": "Het team",
+      "members": [
+        { "name": "Ana", "role": "Begeleiding & Pedagogie", "bio": "Ontwerpt de spellen en zorgt voor de ervaring ter plaatse." },
+        { "name": "Bram", "role": "Partnerschappen", "bio": "Zoekt gastvrije locaties en coördineert de gastheren/vrouwen." },
+        { "name": "Bo", "role": "Product & Tech", "bio": "Zorgt ervoor dat alles soepel verloopt in de app." }
+      ]
+    },
+    "partners": {
+      "title": "Onze partners",
+      "desc": "Brusselse cafés en bars die van uitwisseling houden. Heb je een locatie en wil je een conversatietafel hosten?"
+    },
+    "timeline": {
+      "title": "Ons verhaal",
+      "items": [
+        { "date": "2023", "text": "Eerste pilottafels met polyglotte vrienden." },
+        { "date": "2024", "text": "Publieke lancering, eerste partners en eigen spellen." },
+        { "date": "2025", "text": "Dagelijkse sessies, nieuwe talen en buurten." }
+      ]
+    },
+    "testimonials": {
+      "title": "Ze zeggen het",
+      "quotes": [
+        { "author": "Lucía", "text": "Ik durfde te spreken vanaf de eerste sessie. De spellen helpen enorm." },
+        { "author": "Thomas", "text": "Je gaat vooruit zonder het te beseffen, en je ontmoet mensen." }
+      ]
+    },
+    "cta": {
+      "primary_label": "Neem deel aan een sessie",
+      "secondary_label": "Word partner",
+      "aria_primary": "Open de reserveringspagina",
+      "aria_secondary": "Neem contact op met het partnerteam"
+    },
+    "contact": {
+      "title": "Contacteer ons",
+      "email_label": "Stuur een e-mail",
+      "email_value": "conversa@hotmail.com",
+      "social_label": "Volg ons"
+    },
+    "meta": {
+      "title": "Over ons — Conversa",
+      "description": "Conversa — taalpraktijk in Brussel in kleine groepen, met spellen en gezellige uitwisselingen."
+    }
   }
+
 }

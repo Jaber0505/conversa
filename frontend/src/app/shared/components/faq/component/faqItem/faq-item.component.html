@@ -1,0 +1,13 @@
+<div class="faq-item">
+  <div class="faq-header" (click)="toggle()">
+    <span class="faq-number">{{ number() | number:'2.0' }}</span>
+    <span class="faq-question">{{ question() }}</span>
+    <span class="faq-toggle">
+      {{ open() ? '−' : '+' }}
+    </span>
+  </div>
+
+  <div class="faq-answer" *ngIf="open()">
+    {{ answer() }}
+  </div>
+</div>

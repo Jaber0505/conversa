@@ -1,0 +1,29 @@
+<form (ngSubmit)="onNext(f)" #f="ngForm" class="form">
+  <div class="form__row">
+    <label for="bio">Bio</label>
+
+    <textarea
+      id="bio"
+      name="bio"
+      class="textarea"
+      [(ngModel)]="bio"
+      required
+      minlength="10"
+      maxlength="500"
+      rows="6"
+      placeholder="Présente-toi brièvement (objectif, langues, niveau, etc.)"
+      aria-describedby="bio-help bio-count"
+    ></textarea>
+
+    <div id="bio-help" class="muted small">Entre 10 et 500 caractères.</div>
+    <div id="bio-count" class="muted small">{{ bio.length || 0 }}/500</div>
+  </div>
+
+  <div class="actions">
+    <button type="submit" class="btn btn--primary" [disabled]="f.invalid">
+      Suivant
+    </button>
+  </div>
+
+  <pre class="muted" *ngIf="f?.dirty">{{ bio }}</pre>
+</form>

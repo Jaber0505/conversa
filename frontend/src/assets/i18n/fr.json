@@ -128,5 +128,134 @@
     "email_invalid": "L'adresse e-mail est invalide.",
     "password_min_length": "Le mot de passe doit contenir au moins {{min}} caractères.",
     "consent_required": "Vous devez accepter le traitement de vos données."
+  },
+  "faq": {
+    "hero": {
+      "badge": "FAQ",
+      "title": "Questions fréquentes",
+      "subtitle": "Tout ce qu’il faut savoir pour démarrer sur Conversa."
+    },
+    "search": {
+      "placeholder": "Rechercher une question…",
+      "aria": "Recherche dans la FAQ"
+    },
+    "groups": {
+      "getting_started": "Pour commencer",
+      "events": "Événements et inscriptions",
+      "account": "Compte et confidentialité",
+      "payments": "Paiements et facturation"
+    },
+    "qna": {
+      "what_is_conversa_q": "Qu’est-ce que Conversa ?",
+      "what_is_conversa_a": "Conversa est une plateforme qui permet de pratiquer des langues de manière ludique, en petits groupes, dans des bars et cafés partenaires à Bruxelles. Ici, pas de cours magistral : on discute, on joue et on échange, comme avec des amis, tout en rencontrant de nouvelles personnes.",
+
+      "how_join_event_q": "Comment rejoindre un événement ?",
+      "how_join_event_a": "Depuis la page d’accueil, choisis une langue qui t’intéresse, explore les sessions disponibles et clique sur “Je participe”. Une fois sur place, confirme ta présence via l’application et rejoins le groupe pour commencer la partie.",
+
+      "cancel_policy_q": "Puis-je annuler ma participation ?",
+      "cancel_policy_a": "Oui, tant que l’événement n’a pas commencé. Tu peux annuler directement depuis l’application. Cela permet de libérer ta place pour une autre personne et de garder des groupes dynamiques.",
+
+      "account_data_q": "Que faites-vous de mes données ?",
+      "account_data_a": "Nous ne collectons que les informations nécessaires pour organiser les sessions et garantir la sécurité des participants. Tes données ne sont jamais revendues, et tu peux à tout moment les modifier ou demander leur suppression.",
+
+      "payment_price_q": "Combien ça coûte ?",
+      "payment_price_a": "Le billet standard est à 7 € par session, ce qui inclut l’accès au jeu de conversation et la mise en relation avec d’autres participants. Certains événements spéciaux ou ateliers peuvent avoir un tarif différent, toujours indiqué à l’avance."
+    },
+    "no_results": "Aucune question ne correspond à ta recherche ? conversa@hotmail.com"
+  },
+  "about": {
+    "hero": {
+      "badge": "À propos",
+      "title": "Apprendre des langues, rencontrer des gens",
+      "subtitle": "Conversa rend la pratique des langues simple et conviviale : petits groupes, jeux de conversation, lieux chaleureux. Pas d’école, juste des échanges vrais."
+    },
+    "mission": {
+      "title": "Notre mission",
+      "p1": "Créer des occasions naturelles de parler une langue sans pression académique. Chaque session est pensée pour t’aider à oser, progresser et t’ouvrir aux autres.",
+      "bullets": [
+        "Pratique réelle, pas de cours magistral",
+        "Groupes 3–6 personnes pour laisser de la place à chacun",
+        "Jeux et cartes de discussion pour briser la glace",
+        "Lieux partenaires sélectionnés pour l’ambiance"
+      ]
+    },
+    "difference": {
+      "title": "Ce qui nous différencie",
+      "items": [
+        { "title": "Ludique", "desc": "Des jeux de conversation qui relancent l’échange et encouragent l’expression spontanée." },
+        { "title": "Social", "desc": "Tu apprends en rencontrant des personnes curieuses comme toi, pas face à un tableau." },
+        { "title": "Flexible", "desc": "Des sessions courtes, après le travail ou le week-end, sans engagement long terme." },
+        { "title": "Local", "desc": "Des bars et cafés bruxellois qui aiment les langues — on soutient l’écosystème local." }
+      ]
+    },
+    "values": {
+      "title": "Nos valeurs",
+      "list": [
+        { "title": "Bienveillance", "desc": "Un cadre sûr pour essayer, se tromper, réessayer." },
+        { "title": "Ouverture", "desc": "Toutes les langues, tous les niveaux, toutes les origines." },
+        { "title": "Simplicité", "desc": "Inscription en quelques clics, règles claires, zéro jargon." },
+        { "title": "Qualité", "desc": "Animation structurée, retours réguliers, amélioration continue." }
+      ]
+    },
+    "stats": {
+      "title": "En chiffres",
+      "sessions": { "label": "Sessions réalisées", "value": "250+" },
+      "learners": { "label": "Participants", "value": "3 000+" },
+      "languages": { "label": "Langues pratiquées", "value": "10+" },
+      "partners": { "label": "Lieux partenaires", "value": "20+" }
+    },
+    "how": {
+      "title": "Comment ça marche",
+      "steps": [
+        { "n": "1", "title": "Choisis une langue", "desc": "Filtre par anglais, néerlandais, espagnol… et ton quartier." },
+        { "n": "2", "title": "Réserve ta place", "desc": "Groupes limités pour de vrais échanges." },
+        { "n": "3", "title": "Rejoins la table", "desc": "Un animateur lance le jeu et guide le rythme." }
+      ],
+      "a11y_illustration_alt": "Illustration de personnes discutant autour d’une table"
+    },
+    "team": {
+      "title": "L’équipe",
+      "members": [
+        { "name": "Ana", "role": "Animation & Pédagogie", "bio": "Conçoit les jeux et veille à l’expérience sur place." },
+        { "name": "Bram", "role": "Partenariats", "bio": "Trouve des lieux chaleureux et coordonne les hôtes." },
+        { "name": "Bo", "role": "Produit & Tech", "bio": "Fait en sorte que tout soit fluide côté app." }
+      ]
+    },
+    "partners": {
+      "title": "Nos partenaires",
+      "desc": "Des cafés et bars bruxellois qui aiment l’échange. Tu as un lieu et veux accueillir une table de conversation ?"
+    },
+    "timeline": {
+      "title": "Notre histoire",
+      "items": [
+        { "date": "2023", "text": "Premières tables pilotes avec des amis polyglottes." },
+        { "date": "2024", "text": "Lancement public, premiers partenaires et jeux maison." },
+        { "date": "2025", "text": "Sessions quotidiennes, nouvelles langues et quartiers." }
+      ]
+    },
+    "testimonials": {
+      "title": "Ils en parlent",
+      "quotes": [
+        { "author": "Lucía", "text": "J’ai osé parler dès la première session. Les jeux aident beaucoup." },
+        { "author": "Thomas", "text": "On progresse sans s’en rendre compte, et on rencontre du monde." }
+      ]
+    },
+    "cta": {
+      "primary_label": "Rejoindre une session",
+      "secondary_label": "Devenir partenaire",
+      "aria_primary": "Ouvrir la page de réservation",
+      "aria_secondary": "Contacter l’équipe partenaires"
+    },
+    "contact": {
+      "title": "Nous contacter",
+      "email_label": "Écrire un email",
+      "email_value": "conversa@hotmail.com",
+      "social_label": "Nous suivre"
+    },
+    "meta": {
+      "title": "À propos — Conversa",
+      "description": "Conversa — pratique des langues à Bruxelles en petits groupes, avec jeux et échanges conviviaux."
+    }
   }
+
 }
