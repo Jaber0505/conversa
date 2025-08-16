@@ -4,6 +4,9 @@ import { guestGuard } from '@core/http';
 
 // ⬇️ i18n guard via barrel
 import { languageUrlGuard } from '@core/i18n';
+import {FaqComponent} from "@shared/components/faq/faq";
+import {About} from "@shared/components/about/about";
+import {RegisterPageComponent} from "@app/upload/register-page/register-page";
 
 export const routes: Routes = [
   { path: '', redirectTo: '/fr', pathMatch: 'full' },
@@ -45,6 +48,9 @@ export const routes: Routes = [
       //   loadComponent: () => import('./features/profile/profile.component')
       //     .then(m => m.ProfileComponent),
       // },
+      { path: 'faq', component: FaqComponent },
+      { path: 'about', component: About },
+      { path: 'register', component: RegisterPageComponent },
 
       { path: '**', redirectTo: '' },
     ],

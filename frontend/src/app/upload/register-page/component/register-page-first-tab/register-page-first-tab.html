@@ -1,0 +1,37 @@
+<form (ngSubmit)="onNext()" #f="ngForm" class="form">
+  <div class="form__row">
+    <label for="prenom">Prénom</label>
+    <input id="prenom"
+           name="prenom"
+           class="input"
+           [(ngModel)]="firstTabInfo.prenom"
+           required />
+  </div>
+
+  <div class="form__row">
+    <label for="nom">Nom</label>
+    <input id="nom"
+           name="nom"
+           class="input"
+           [(ngModel)]="firstTabInfo.nom"
+           required />
+  </div>
+
+  <div class="form__row">
+    <label for="age">Âge</label>
+    <input id="age"
+           name="age"
+           type="number"
+           class="input"
+           [(ngModel)]="firstTabInfo.age"
+           min="0" />
+  </div>
+
+  <div class="actions">
+    <button type="submit" class="btn btn--primary" [disabled]="f.invalid">
+      Suivant
+    </button>
+  </div>
+
+  <pre class="muted" *ngIf="f.dirty">{{ firstTabInfo | json }}</pre>
+</form>

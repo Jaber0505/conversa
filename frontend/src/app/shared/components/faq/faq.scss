@@ -1,0 +1,64 @@
+@use '../../../../styles/tokens' as *;
+
+.hero__copy .search {
+  margin-top: var(--space-4);
+  display: grid;
+  gap: var(--space-3);
+}
+
+.quick {
+  margin-top: 12px; /* volontairement laissé en px car valeur spécifique */
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.faq {
+  margin-top: var(--space-8);
+
+  &__group { margin-bottom: var(--space-6); }
+
+  &__list { display: grid; gap: var(--space-3); }
+
+  &__item {
+    border: 1px solid var(--color-muted);
+    border-radius: var(--radius-lg);
+    background: var(--surface-0);
+    overflow: hidden;
+  }
+
+  &__q {
+    width: 100%;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    font-weight: 600;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+
+    svg { transition: transform var(--duration-med) ease; }
+    svg.open { transform: rotate(180deg); }
+  }
+
+  &__a {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height var(--duration-slow) ease;
+    padding: 0 var(--space-4);
+
+    &.open {
+      max-height: 400px;
+      padding-bottom: var(--space-4);
+    }
+
+    p { margin: 0; }
+  }
+}
+
+@media (max-width: $bp-sm) {
+  .hero__copy .search { gap: var(--space-2); }
+}

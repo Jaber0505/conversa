@@ -1,0 +1,51 @@
+<section class="section faq-page">
+  <div class="container">
+    <header class="faq-header">
+      <h1>{{ 'faq.hero.title' | t }}</h1>
+      <p class="muted">{{ 'faq.hero.subtitle' | t }}</p>
+      <p class="intro">
+        Bienvenue dans notre centre de questions fréquentes.
+        Ici, tu trouveras des réponses claires aux interrogations les plus courantes sur l’utilisation de Conversa.
+        Si tu ne trouves pas ta réponse, n’hésite pas à nous contacter.
+      </p>
+    </header>
+
+    <div class="faq-list">
+      <app-faq-item
+        [number]="1"
+        [question]="'faq.qna.what_is_conversa_q' | t"
+        [answer]="'faq.qna.what_is_conversa_a' | t">
+      </app-faq-item>
+
+      <app-faq-item
+        [number]="2"
+        [question]="'faq.qna.how_join_event_q' | t"
+        [answer]="'faq.qna.how_join_event_a' | t">
+      </app-faq-item>
+
+      <app-faq-item
+        [number]="3"
+        [question]="'faq.qna.cancel_policy_q' | t"
+        [answer]="'faq.qna.cancel_policy_a' | t">
+      </app-faq-item>
+
+      <app-faq-item
+        [number]="4"
+        [question]="'faq.qna.account_data_q' | t"
+        [answer]="'faq.qna.account_data_a' | t">
+      </app-faq-item>
+
+      <app-faq-item
+        [number]="5"
+        [question]="'faq.qna.payment_price_q' | t"
+        [answer]="'faq.qna.payment_price_a' | t">
+      </app-faq-item>
+    </div>
+
+    <footer class="faq-footer">
+      <p>
+        {{"faq.no_results" | t}}
+      </p>
+    </footer>
+  </div>
+</section>

@@ -128,5 +128,134 @@
     "email_invalid": "Invalid email address.",
     "password_min_length": "Password must be at least {{min}} characters long.",
     "consent_required": "You must consent to the processing of your data."
+  },
+  "faq": {
+    "hero": {
+      "badge": "FAQ",
+      "title": "Frequently Asked Questions",
+      "subtitle": "Everything you need to know to get started with Conversa."
+    },
+    "search": {
+      "placeholder": "Search for a question…",
+      "aria": "Search in the FAQ"
+    },
+    "groups": {
+      "getting_started": "Getting Started",
+      "events": "Events and Registrations",
+      "account": "Account and Privacy",
+      "payments": "Payments and Billing"
+    },
+    "qna": {
+      "what_is_conversa_q": "What is Conversa?",
+      "what_is_conversa_a": "Conversa is a platform where you can practice languages in a fun way, in small groups, in partner bars and cafés around Brussels. No boring lectures: you talk, play, and exchange like with friends, while meeting new people.",
+
+      "how_join_event_q": "How can I join an event?",
+      "how_join_event_a": "From the homepage, choose a language that interests you, browse the available sessions, and click “Join”. Once on-site, confirm your attendance via the app and join the group to start the game.",
+
+      "cancel_policy_q": "Can I cancel my participation?",
+      "cancel_policy_a": "Yes, as long as the event hasn’t started yet. You can cancel directly from the app. This frees up your spot for someone else and keeps the groups dynamic.",
+
+      "account_data_q": "What do you do with my data?",
+      "account_data_a": "We only collect the information necessary to organize the sessions and ensure participants’ safety. Your data is never sold, and you can update or request its deletion at any time.",
+
+      "payment_price_q": "How much does it cost?",
+      "payment_price_a": "A standard ticket costs €7 per session, which includes access to the conversation game and meeting other participants. Special events or workshops may have a different price, always indicated in advance."
+    },
+    "no_results": "No questions match your search ? conversa@hotmail.com"
+  },
+  "about": {
+    "hero": {
+      "badge": "About",
+      "title": "Learn languages, meet people",
+      "subtitle": "Conversa makes language practice simple and friendly: small groups, conversation games, warm venues. No school, just real exchanges."
+    },
+    "mission": {
+      "title": "Our mission",
+      "p1": "Create natural opportunities to speak a language without academic pressure. Each session is designed to help you dare, improve, and open up to others.",
+      "bullets": [
+        "Real practice, no lectures",
+        "Groups of 3–6 people so everyone has space",
+        "Games and conversation cards to break the ice",
+        "Partner venues chosen for their atmosphere"
+      ]
+    },
+    "difference": {
+      "title": "What makes us different",
+      "items": [
+        { "title": "Playful", "desc": "Conversation games that keep the exchange going and encourage spontaneous expression." },
+        { "title": "Social", "desc": "You learn by meeting curious people like you, not facing a blackboard." },
+        { "title": "Flexible", "desc": "Short sessions, after work or on weekends, with no long-term commitment." },
+        { "title": "Local", "desc": "Brussels bars and cafés that love languages — we support the local ecosystem." }
+      ]
+    },
+    "values": {
+      "title": "Our values",
+      "list": [
+        { "title": "Kindness", "desc": "A safe space to try, make mistakes, and try again." },
+        { "title": "Openness", "desc": "All languages, all levels, all backgrounds." },
+        { "title": "Simplicity", "desc": "Sign up in a few clicks, clear rules, zero jargon." },
+        { "title": "Quality", "desc": "Structured facilitation, regular feedback, continuous improvement." }
+      ]
+    },
+    "stats": {
+      "title": "In numbers",
+      "sessions": { "label": "Sessions held", "value": "250+" },
+      "learners": { "label": "Participants", "value": "3,000+" },
+      "languages": { "label": "Languages practiced", "value": "10+" },
+      "partners": { "label": "Partner venues", "value": "20+" }
+    },
+    "how": {
+      "title": "How it works",
+      "steps": [
+        { "n": "1", "title": "Choose a language", "desc": "Filter by English, Dutch, Spanish… and your neighborhood." },
+        { "n": "2", "title": "Book your spot", "desc": "Limited groups for real exchanges." },
+        { "n": "3", "title": "Join the table", "desc": "A host starts the game and guides the pace." }
+      ],
+      "a11y_illustration_alt": "Illustration of people chatting around a table"
+    },
+    "team": {
+      "title": "The team",
+      "members": [
+        { "name": "Ana", "role": "Facilitation & Pedagogy", "bio": "Designs the games and ensures the on-site experience." },
+        { "name": "Bram", "role": "Partnerships", "bio": "Finds welcoming venues and coordinates the hosts." },
+        { "name": "Bo", "role": "Product & Tech", "bio": "Makes sure everything runs smoothly in the app." }
+      ]
+    },
+    "partners": {
+      "title": "Our partners",
+      "desc": "Brussels cafés and bars that love exchange. Do you have a venue and want to host a conversation table?"
+    },
+    "timeline": {
+      "title": "Our story",
+      "items": [
+        { "date": "2023", "text": "First pilot tables with polyglot friends." },
+        { "date": "2024", "text": "Public launch, first partners, and in-house games." },
+        { "date": "2025", "text": "Daily sessions, new languages and neighborhoods." }
+      ]
+    },
+    "testimonials": {
+      "title": "They say it",
+      "quotes": [
+        { "author": "Lucía", "text": "I dared to speak from the very first session. The games really help." },
+        { "author": "Thomas", "text": "You improve without realizing it, and you meet people." }
+      ]
+    },
+    "cta": {
+      "primary_label": "Join a session",
+      "secondary_label": "Become a partner",
+      "aria_primary": "Open the booking page",
+      "aria_secondary": "Contact the partnerships team"
+    },
+    "contact": {
+      "title": "Contact us",
+      "email_label": "Send an email",
+      "email_value": "conversa@hotmail.com",
+      "social_label": "Follow us"
+    },
+    "meta": {
+      "title": "About — Conversa",
+      "description": "Conversa — language practice in Brussels in small groups, with games and friendly exchanges."
+    }
   }
+
 }

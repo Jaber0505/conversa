@@ -1,0 +1,63 @@
+<section class="section register">
+  <div class="hero">
+    <div class="hero__copy">
+      <h1>{{ 'home.hero.title' | t }}</h1>
+      <p class="muted">{{ 'home.hero.subtitle' | t }}</p>
+    </div>
+
+  </div>
+
+  <div class="container grid">
+    <div class="col col--main register-tabs">
+      <div class="card" *ngIf="cuurenTab===0">
+        <h2 class="h5">{{ 'auth.register' | t }}</h2>
+        <app-register-page-first-tab (suivant)="onFirstTabSuivant($event)">></app-register-page-first-tab>
+      </div>
+
+      <div class="card" *ngIf="cuurenTab===1">
+        <h2 class="h5">{{ 'auth.register' | t }}</h2>
+        <app-register-page-second-tab (bioReturn)="onSecondTabSuivant($event)">></app-register-page-second-tab>
+      </div>
+
+      <div class="card" *ngIf="cuurenTab===2">
+        <h2 class="h5">{{ 'auth.register' | t }}</h2>
+        <app-register-page-third-tab (suivant)="onThirdTabSuivant($event)">></app-register-page-third-tab>
+      </div>
+
+      <div class="tab-buttons">
+        <ng-container *ngIf="cuurenTab > 0; else prevPlaceholder">
+          <button (click)="toPreviousTab()" class="btn btn--secondary">
+            {{ 'common.prev' | t }}
+          </button>
+        </ng-container>
+        <ng-template #prevPlaceholder>
+          <span class="btn-placeholder" aria-hidden="true"></span>
+        </ng-template>
+
+        <!-- Next -->
+        <ng-container *ngIf="cuurenTab < 2; else nextPlaceholder">
+          <button (click)="toNextTab()" class="btn btn--primary">
+            {{ 'common.next' | t }}
+          </button>
+
+        </ng-container>
+        <ng-template #nextPlaceholder>
+          <button (click)="toNextTab()" class="btn btn--primary">
+            {{ 'common.save' | t }}
+          </button>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+
+  <!--    <aside class="col col&#45;&#45;side">-->
+<!--      <div class="card card&#45;&#45;muted">-->
+<!--        <h3 class="h6">{{ 'home.quick.label' | t }}</h3>-->
+<!--        <ul class="bullets">-->
+<!--          <li>{{ 'home.quick.beginner' | t }}</li>-->
+<!--          <li>{{ 'home.quick.small_groups' | t }}</li>-->
+<!--          <li>{{ 'home.quick.partners' | t }}</li>-->
+<!--        </ul>-->
+<!--      </div>-->
+<!--    </aside>-->
+</section>
