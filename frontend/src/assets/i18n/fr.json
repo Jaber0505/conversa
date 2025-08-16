@@ -256,6 +256,22 @@
       "title": "À propos — Conversa",
       "description": "Conversa — pratique des langues à Bruxelles en petits groupes, avec jeux et échanges conviviaux."
     }
-  }
+  },
+  "register": {
+    "firstTab": {
+      "age": "age",
+      "lastName": "nom",
+      "firstName": "prenom"
 
+    },
+    "secondTab": {
+      "bio": "biographie",
+      "bioPlaceHolder": "Présente-toi brièvement (objectif, langues, niveau, etc.)",
+      "limit": "Entre 10 et 500 caractères."
+    },
+    "thirdTab": {
+      "email": "email",
+      "password": "password"
+    }
+  }
 }
