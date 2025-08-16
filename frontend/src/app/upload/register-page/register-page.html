@@ -4,36 +4,34 @@
       <h1>{{ 'home.hero.title' | t }}</h1>
       <p class="muted">{{ 'home.hero.subtitle' | t }}</p>
     </div>
-
   </div>
 
   <div class="container grid">
     <div class="col col--main register-tabs">
-      <div class="card" *ngIf="cuurenTab===0">
+      <div class="card" *ngIf="cuurenTab === 0">
         <h2 class="h5">{{ 'auth.register' | t }}</h2>
-        <app-register-page-first-tab [firstTabInfo]="firstTabData" (suivant)="onFirstTabSuivant($event)">></app-register-page-first-tab>
+        <app-register-page-first-tab
+          [firstTabInfo]="firstTabData"
+          (suivant)="onFirstTabSuivant($event)">
+        </app-register-page-first-tab>
       </div>
 
-      <div class="card" *ngIf="cuurenTab===1">
+      <div class="card" *ngIf="cuurenTab === 1">
         <h2 class="h5">{{ 'auth.register' | t }}</h2>
-        <app-register-page-second-tab [currentBio]="this.currentBio" (previous)="toPreviousTab()" (bioReturn)="onSecondTabSuivant($event)">></app-register-page-second-tab>
+        <app-register-page-second-tab
+          [currentBio]="currentBio"
+          (previous)="toPreviousTab()"
+          (bioReturn)="onSecondTabSuivant($event)">
+        </app-register-page-second-tab>
       </div>
 
-      <div class="card" *ngIf="cuurenTab===2">
+      <div class="card" *ngIf="cuurenTab === 2">
         <h2 class="h5">{{ 'auth.register' | t }}</h2>
-        <app-register-page-third-tab (previous)="onthirdTabPrevious()" (suivant)="onThirdTabSuivant($event)">></app-register-page-third-tab>
+        <app-register-page-third-tab
+          (previous)="onthirdTabPrevious()"
+          (suivant)="onThirdTabSuivant($event)">
+        </app-register-page-third-tab>
       </div>
     </div>
   </div>
-
-  <!--    <aside class="col col&#45;&#45;side">-->
-<!--      <div class="card card&#45;&#45;muted">-->
-<!--        <h3 class="h6">{{ 'home.quick.label' | t }}</h3>-->
-<!--        <ul class="bullets">-->
-<!--          <li>{{ 'home.quick.beginner' | t }}</li>-->
-<!--          <li>{{ 'home.quick.small_groups' | t }}</li>-->
-<!--          <li>{{ 'home.quick.partners' | t }}</li>-->
-<!--        </ul>-->
-<!--      </div>-->
-<!--    </aside>-->
 </section>

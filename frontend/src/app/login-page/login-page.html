@@ -1,0 +1,38 @@
+<form (ngSubmit)="onSubmit()" #f="ngForm" class="form">
+  <div class="card">
+    <h2 class="h5">{{ 'auth.login' | t }}</h2>
+
+    <div class="form__row">
+      <shared-input
+        id="email"
+        name="email"
+        type="email"
+        label="{{ 'auth.email' | t }}"
+        placeholder="{{ 'auth.email_placeholder' | t }}"
+        [(ngModel)]="email"
+        required
+        email>
+      </shared-input>
+    </div>
+
+    <div class="form__row">
+      <shared-input
+        id="password"
+        name="password"
+        type="password"
+        label="{{ 'auth.password' | t }}"
+        placeholder="{{ 'auth.password_placeholder' | t }}"
+        [(ngModel)]="password"
+        required
+        minlength="8">
+      </shared-input>
+    </div>
+
+    <div class="login-actions">
+      <shared-button
+        type="submit">
+        {{ 'auth.login' | t }}
+      </shared-button>
+    </div>
+  </div>
+</form>

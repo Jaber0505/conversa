@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SHARED_IMPORTS } from '@shared';
 import { SearchBarComponent, type FilterConfig, type GenericSearch } from '@shared/forms/search-bar/search-bar.component';
-import { I18nService, TPipe } from '@core/i18n';
+import {I18nService, TPipe} from '@core/i18n'; // ⬅️ i18n
 
 type EventItem = {
   id: number;

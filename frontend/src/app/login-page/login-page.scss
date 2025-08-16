@@ -1,0 +1,43 @@
+/* Contrainte de largeur + centrage */
+.form {
+  max-width: 520px;
+  margin-inline: auto;
+}
+
+/* Le textarea occupe toute la largeur */
+.textarea { width: 100%; }
+
+/* Mobile */
+@media (max-width: 640px) {
+  .card {
+    padding: var(--space-6);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-1);
+  }
+
+  .form__row { margin-block: var(--space-3); }
+
+  .login-actions {
+    flex-direction: column;          /* empile les boutons */
+    align-items: stretch;            /* étire en largeur */
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+  }
+
+  /* Étire le bouton de soumission en pleine largeur */
+  .login-actions :where(shared-button, button) {
+    width: 100%;
+  }
+
+  /* Titre légèrement adaptatif */
+  .h5 {
+    font-size: clamp(1.1rem, 3.5vw, 1.25rem);
+    line-height: 1.2;
+  }
+}
+
+/* Desktop (≥ 960px) : un peu plus d’air */
+@media (min-width: 960px) {
+  .card { padding: var(--space-8); }
+  .form__row { margin-block: var(--space-4); }
+}

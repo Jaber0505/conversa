@@ -29,12 +29,87 @@
     </shared-input>
   </div>
 
+  <!-- Langues natives (écrit dans firstTabInfo.native_langs) -->
+  <div class="form__row">
+    <label for="native-select">{{ 'register.firstTab.nativeLangs' | t }}</label>
+    <shared-select
+      id="native-select"
+      [options]="langs"
+      [value]="pendingNative"
+      (valueChange)="pendingNative = $event"
+      [searchable]="true"
+      [placeholder]="'register.firstTab.selectLang' | t">
+    </shared-select>
+
+    <div class="chips" *ngIf="firstTabInfo.native_langs?.length">
+      <button
+        type="button"
+        class="chip"
+        *ngFor="let code of firstTabInfo.native_langs"
+        (click)="removeNative(code)">
+        <shared-badge variant="accent" tone="soft">
+          {{ displayLabel(langs, code) }}
+          <span class="chip-x" aria-hidden="true">×</span>
+          <span class="sr-only">{{ 'common.remove' | t }}</span>
+        </shared-badge>
+      </button>
+    </div>
+
+    <div class="row-actions">
+      <shared-button
+        type="button"
+        variant="outline"
+        size="sm"
+        (click)="addNative()">
+        {{ 'common.add' | t }}
+      </shared-button>
+    </div>
+  </div>
+
+  <!-- Langues cibles (écrit dans firstTabInfo.target_langs) -->
+  <div class="form__row">
+    <label for="target-select">{{ 'register.firstTab.targetLangs' | t }}</label>
+    <shared-select
+      id="target-select"
+      [options]="langs"
+      [value]="pendingTarget"
+      (valueChange)="pendingTarget = $event"
+      [searchable]="true"
+      [placeholder]="'register.firstTab.selectLang' | t">
+    </shared-select>
+
+    <div class="chips" *ngIf="firstTabInfo.target_langs?.length">
+      <button
+        type="button"
+        class="chip"
+        *ngFor="let code of firstTabInfo.target_langs"
+        (click)="removeTarget(code)">
+        <shared-badge variant="tertiary" tone="soft">
+          {{ displayLabel(langs, code) }}
+          <span class="chip-x" aria-hidden="true">×</span>
+          <span class="sr-only">{{ 'common.remove' | t }}</span>
+        </shared-badge>
+      </button>
+    </div>
+
+    <div class="row-actions">
+      <shared-button
+        type="button"
+        variant="outline"
+        size="sm"
+        (click)="addTarget()">
+        {{ 'common.add' | t }}
+      </shared-button>
+    </div>
+  </div>
+
   <div class="actions">
     <button type="submit" class="btn btn--primary" [disabled]="f.invalid">
       {{ 'common.next' | t }}
     </button>
   </div>
 </form>
+
 <navigation-buttons
   [showPrev]="false"
   [showNext]="true"

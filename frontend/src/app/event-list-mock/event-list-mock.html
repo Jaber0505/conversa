@@ -1,0 +1,65 @@
+<shared-container>
+  <shared-headline-bar
+    [title]="'events.list.title' | t"
+    [actionLabel]="'events.create' | t"
+    [actionLink]="'/events/new'">
+  </shared-headline-bar>
+
+  <div class="state empty" *ngIf="events.length === 0">
+    <shared-badge variant="muted"  tone="soft">{{ 'events.empty' | t }}</shared-badge>
+  </div>
+
+  <shared-grid class="events-grid" *ngIf="events.length">
+    <shared-card *ngFor="let ev of events; trackBy: trackById">
+      <!-- media -->
+      <div media class="thumb" aria-hidden="true"></div>
+
+      <!-- header -->
+      <div header class="ev-head">
+        <h3 class="h6">{{ ev.title }}</h3>
+        <div class="badges">
+          <shared-badge variant="accent" tone="soft">{{ ev.language.name }}</shared-badge>
+          <shared-badge variant="muted"  tone="soft">{{ ev.city }}</shared-badge>
+          <shared-badge variant="danger" tone="soft" *ngIf="ev.is_cancelled">
+            {{ 'events.cancelled' | t }}
+          </shared-badge>
+        </div>
+      </div>
+
+      <!-- body -->
+      <div class="ev-body">
+        <div class="row">
+          <span class="label">{{ 'events.venue' | t }}</span>
+          <span class="value">{{ ev.venue_name }}</span>
+        </div>
+        <div class="row">
+          <span class="label">{{ 'events.address' | t }}</span>
+          <span class="value">{{ ev.address }}</span>
+        </div>
+        <div class="row">
+          <span class="label">{{ 'events.when' | t }}</span>
+          <span class="value">
+           {{ ev.datetime_start | date:'EEEE d MMM, HH:mm' }}
+          </span>
+        </div>
+        <div class="row">
+          <span class="label">{{ 'events.seats' | t }}</span>
+          <span class="value">{{ ev.max_seats }}</span>
+        </div>
+      </div>
+u
+      <!-- footer -->
+      <div footer class="ev-foot">
+        <div class="price">
+          {{ ev.price_cents === 0 ? ('events.free' | t) : price(ev) }}
+        </div>
+        <shared-button
+          type="button"
+          (click)="goTo(ev.id)" [disabled]="ev.is_cancelled">
+          {{ ev.is_cancelled ? ('events.cancelled' | t) : ('events.view' | t) }}
+        </shared-button>
+      </div>
+    </shared-card>
+  </shared-grid>
+</shared-container>
+

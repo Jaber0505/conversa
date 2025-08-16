@@ -1,0 +1,66 @@
+<shared-container>
+  <shared-headline-bar
+    [title]="event?.title || ('events.detail.title' | t)"
+    [actionLabel]="'common.back' | t"
+    [actionLink]="actionHref">
+  </shared-headline-bar>
+
+  <!-- Not found -->
+  <div class="state error" *ngIf="!event">
+    <shared-badge variant="danger" tone="soft">{{ 'events.detail.not_found' | t }}</shared-badge>
+    <a [routerLink]="backLink()" class="linky">{{ 'common.back' | t }}</a>
+  </div>
+
+  <!-- Détail -->
+  <shared-card *ngIf="event as ev" class="event-card">
+    <!-- media (placeholder visuel) -->
+    <div media class="thumb" aria-hidden="true"></div>
+
+    <!-- header -->
+    <div header class="ev-head">
+      <h3 class="h5">{{ ev.title }}</h3>
+      <div class="badges">
+        <shared-badge variant="accent" tone="soft">{{ ev.language.name }}</shared-badge>
+        <shared-badge variant="muted" tone="soft">{{ ev.city }}</shared-badge>
+        <shared-badge variant="danger" tone="soft" *ngIf="ev.is_cancelled">
+          {{ 'events.cancelled' | t }}
+        </shared-badge>
+      </div>
+    </div>
+
+    <!-- body -->
+    <div class="ev-body">
+      <div class="row">
+        <span class="label">{{ 'events.venue' | t }}</span>
+        <span class="value">{{ ev.venue_name }}</span>
+      </div>
+      <div class="row">
+        <span class="label">{{ 'events.address' | t }}</span>
+        <span class="value">{{ ev.address }}</span>
+      </div>
+      <div class="row">
+        <span class="label">{{ 'events.when' | t }}</span>
+        <span class="value">{{ ev.datetime_start | date:'EEEE d MMM, HH:mm' }}</span>
+      </div>
+      <div class="row">
+        <span class="label">{{ 'events.seats' | t }}</span>
+        <span class="value">{{ ev.max_seats }}</span>
+      </div>
+      <div class="row">
+        <span class="label">{{ 'events.price' | t }}</span>
+        <span class="value">
+          {{ ev.price_cents === 0 ? ('events.free' | t) : price(ev.price_cents) }}
+        </span>
+      </div>
+    </div>
+
+    <!-- footer (CTA) -->
+    <div footer class="ev-foot">
+      <a [routerLink]="backLink()" class="linky">{{ 'common.back' | t }}</a>
+
+      <shared-button type="button" [disabled]="ev.is_cancelled">
+        {{ ev.is_cancelled ? ('events.cancelled' | t) : ('events.book' | t) }}
+      </shared-button>
+    </div>
+  </shared-card>
+</shared-container>

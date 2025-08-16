@@ -1,0 +1,51 @@
+/* Carte responsive et lisible */
+.event-card { margin-top: var(--space-4); }
+
+.thumb {
+  height: 180px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, rgba(0,0,0,.04), rgba(0,0,0,.02));
+}
+
+.ev-head {
+  display: grid;
+  gap: var(--space-2);
+  h3 { margin: 0; }
+  .badges { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+}
+
+.ev-body {
+  display: grid;
+  gap: var(--space-3);
+
+  .row {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: var(--space-2);
+  }
+  .label { color: var(--color-text); opacity: .7; }
+  .value { color: var(--color-text); }
+}
+
+.ev-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--space-3);
+
+  .linky {
+    background: transparent;
+    border: 0;
+    color: var(--color-secondary);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .thumb { height: 140px; }
+  .ev-body .row { grid-template-columns: 1fr; }
+  .ev-foot { flex-direction: column; gap: var(--space-3); align-items: stretch; }
+  .ev-foot shared-button, .ev-foot .linky { width: 100%; text-align: center; }
+}
