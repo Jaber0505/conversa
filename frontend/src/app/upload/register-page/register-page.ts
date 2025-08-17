@@ -61,7 +61,7 @@ export class RegisterPageComponent {
     this.cuurenTab--;
   }
 
-  onThirdTabSuivant({ email, password }: { email: string; password: string }) {
+  onThirdTabSuivant({ email, password, consent_given }: { email: string; password: string; consent_given: boolean }) {
     const registerData = {
       email,
       password,
@@ -70,7 +70,7 @@ export class RegisterPageComponent {
       bio: this.currentBio,
       native_langs: this.firstTabData.native_langs,
       target_langs: this.firstTabData.target_langs,
-      consent_given: true,
+      consent_given: consent_given,
       age : this.firstTabData.age
     } ;
     this.authApi.register(registerData)

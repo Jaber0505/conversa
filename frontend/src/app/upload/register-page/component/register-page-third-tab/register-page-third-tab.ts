@@ -18,14 +18,13 @@ import {NavigationButtonsComponent} from "@shared/forms/navigation-button/naviga
 export class RegisterPageThirdTab {
   email = '';
   password = '';
+  consent_given = false;
 
-  @Output() suivant = new EventEmitter<{ email: string; password: string }>();
+  @Output() suivant = new EventEmitter<{ email: string; password: string,  consent_given: boolean}>();
   @Output() previous = new EventEmitter();
   onNext(): void {
-    this.suivant.emit({
-      email: (this.email || '').trim(),
-      password: this.password
-    });
+    if (!this.consent_given) return;
+    this.suivant.emit({ email: (this.email || '').trim(), password: this.password, consent_given: this.consent_given });
   }
   onPrevious() {
     this.previous.emit();

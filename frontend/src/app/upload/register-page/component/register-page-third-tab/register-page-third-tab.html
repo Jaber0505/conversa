@@ -25,6 +25,24 @@
     </shared-input>
   </div>
 
+  <div class="form__row">
+    <label class="checkbox" for="consent_given">
+      <input
+        id="consent_given"
+        name="consent_given"
+        type="checkbox"
+        [(ngModel)]="consent_given"
+        #consent="ngModel"
+        required />
+      <span>{{ 'register.thirdTab.consent' | t }}</span>
+    </label>
+
+    <div class="error small"
+         *ngIf="consent.invalid && (consent.touched || f.submitted)">
+      {{ 'register.thirdTab.consent_required' | t }}
+    </div>
+  </div>
+
   <div class="actions">
     <button type="submit" class="btn btn--primary" [disabled]="f.invalid">
       {{ 'common.next' | t }}
@@ -47,7 +65,8 @@
 <div class="slot slot--next">
   <shared-button
     type="button"
-    (click)="onNext()">
+    (click)="onNext()"
+    [disabled]="(f?.invalid ?? true)">
     {{ 'common.register' | t }}
   </shared-button>
 </div>

@@ -1,0 +1,45 @@
+<div class="modal" *ngIf="asModal">
+  <div class="overlay" aria-hidden="true"></div>
+
+  <div class="dialog" role="dialog" aria-modal="true"
+       [attr.aria-labelledby]="'booking-title'"
+       [attr.aria-describedby]="'booking-desc'">
+
+    <shared-card class="booking-card">
+      <div header class="head">
+        <h2 id="booking-title" class="h5">{{ titleKey | t }}</h2>
+        <shared-badge tone="soft" [variant]="statusVariant(booking)">
+          {{ ('bookings.status.' + booking.status) | t }}
+        </shared-badge>
+      </div>
+
+      <div class="body" id="booking-desc">
+        <div class="row">
+          <span class="label">#</span>
+          <span class="value">{{ booking.id }}</span>
+        </div>
+        <div class="row">
+          <span class="label">{{ 'bookings.when' | t }}</span>
+          <span class="value">{{ dateLabel(booking.event_start) }}</span>
+        </div>
+        <div class="row">
+          <span class="label">{{ 'events.title' | t }}</span>
+          <span class="value">#{{ booking.event }}</span>
+        </div>
+
+
+
+        <div class="row">
+          <span class="label">{{ 'common.created_at' | t }}</span>
+          <span class="value">{{ dateLabel(booking.created_at) }}</span>
+        </div>
+      </div>
+
+      <div footer class="actions">
+        <shared-button type="button" variant="outline" (click)="onClose()">
+          {{ closeKey | t }}
+        </shared-button>
+      </div>
+    </shared-card>
+  </div>
+</div>

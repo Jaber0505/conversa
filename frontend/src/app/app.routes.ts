@@ -8,6 +8,7 @@ import {Routes} from "@angular/router";
 import {HomeComponent} from "@app/features/home/home.component";
 import {EventListMockComponent} from "@app/event-list-mock/event-list-mock";
 import {EventDetailMockComponent} from "@app/event-detail-mock/event-detail-mock";
+import {BookingsPageComponent} from "@app/booking-page/booking-page";
 
 export const routes: Routes = [
   { path: '', redirectTo: '/fr', pathMatch: 'full' },
@@ -39,6 +40,7 @@ export const routes: Routes = [
       },
       { path: 'register', component: RegisterPageComponent },
       { path: 'login', component: LoginPageComponent },
+      { path: 'bookings', component: BookingsPageComponent },
       { path: 'faq', component: FaqComponent },
       { path: 'about', component: About },
       { path: '**', redirectTo: '' },
