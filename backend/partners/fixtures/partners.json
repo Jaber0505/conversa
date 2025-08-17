@@ -1,0 +1,767 @@
+[
+  {
+    "model": "partners.partner",
+    "pk": 1,
+    "fields": {
+      "name": "Uccle Garden",
+      "address": "Chaussée d'Ixelles 126, 1000 Bruxelles",
+      "city": "Ixelles",
+      "reputation": 5.0,
+      "capacity": 21,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 2,
+    "fields": {
+      "name": "Brasserie Royale",
+      "address": "Place Flagey 190, 1000 Bruxelles",
+      "city": "Woluwe",
+      "reputation": 3.9,
+      "capacity": 24,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 3,
+    "fields": {
+      "name": "Café du Canal",
+      "address": "Rue Royale 160, 1000 Bruxelles",
+      "city": "Saint-Josse",
+      "reputation": 3.7,
+      "capacity": 28,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 4,
+    "fields": {
+      "name": "Brasserie Royale",
+      "address": "Chaussée de Waterloo 64, 1000 Bruxelles",
+      "city": "Saint-Josse",
+      "reputation": 4.9,
+      "capacity": 30,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 5,
+    "fields": {
+      "name": "La Gare du Midi",
+      "address": "Rue Dansaert 148, 1000 Bruxelles",
+      "city": "Uccle",
+      "reputation": 4.3,
+      "capacity": 30,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 6,
+    "fields": {
+      "name": "Bruxelles By Night",
+      "address": "Chaussée de Charleroi 5, 1000 Bruxelles",
+      "city": "Uccle",
+      "reputation": 5.0,
+      "capacity": 25,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 7,
+    "fields": {
+      "name": "Woluwe Pub",
+      "address": "Boulevard Botanique 117, 1000 Bruxelles",
+      "city": "Molenbeek",
+      "reputation": 3.9,
+      "capacity": 13,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 8,
+    "fields": {
+      "name": "Ixelles Spot",
+      "address": "Place Sainte-Catherine 77, 1000 Bruxelles",
+      "city": "Molenbeek",
+      "reputation": 3.1,
+      "capacity": 20,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 9,
+    "fields": {
+      "name": "La Grand Place",
+      "address": "Place Sainte-Catherine 160, 1000 Bruxelles",
+      "city": "Ixelles",
+      "reputation": 3.8,
+      "capacity": 25,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 10,
+    "fields": {
+      "name": "Le Parlement Bar",
+      "address": "Rue Dansaert 130, 1000 Bruxelles",
+      "city": "Schaerbeek",
+      "reputation": 4.3,
+      "capacity": 27,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 11,
+    "fields": {
+      "name": "Saint-Josse Café",
+      "address": "Chaussée d'Ixelles 37, 1000 Bruxelles",
+      "city": "Etterbeek",
+      "reputation": 3.6,
+      "capacity": 18,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 12,
+    "fields": {
+      "name": "Le Delta",
+      "address": "Place Jourdan 85, 1000 Bruxelles",
+      "city": "Saint-Josse",
+      "reputation": 3.4,
+      "capacity": 18,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 13,
+    "fields": {
+      "name": "Le Tram Bar",
+      "address": "Parc du Cinquantenaire 61, 1000 Bruxelles",
+      "city": "Ixelles",
+      "reputation": 3.0,
+      "capacity": 26,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 14,
+    "fields": {
+      "name": "Woluwe House",
+      "address": "Parc du Cinquantenaire 45, 1000 Bruxelles",
+      "city": "Schaerbeek",
+      "reputation": 3.8,
+      "capacity": 21,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 15,
+    "fields": {
+      "name": "Bourse Corner",
+      "address": "Boulevard du Jardin Botanique 185, 1000 Bruxelles",
+      "city": "Schaerbeek",
+      "reputation": 4.0,
+      "capacity": 14,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 16,
+    "fields": {
+      "name": "Le Tram Bar",
+      "address": "Rue Haute 234, 1000 Bruxelles",
+      "city": "Molenbeek",
+      "reputation": 3.6,
+      "capacity": 12,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 17,
+    "fields": {
+      "name": "Café de la Bourse",
+      "address": "Avenue Louise 143, 1000 Bruxelles",
+      "city": "Laeken",
+      "reputation": 3.3,
+      "capacity": 25,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 18,
+    "fields": {
+      "name": "Tour & Taxis Pub",
+      "address": "Rue de la Loi 202, 1000 Bruxelles",
+      "city": "Schaerbeek",
+      "reputation": 4.7,
+      "capacity": 20,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 19,
+    "fields": {
+      "name": "Bar Louise",
+      "address": "Rue de la Loi 133, 1000 Bruxelles",
+      "city": "Woluwe",
+      "reputation": 4.7,
+      "capacity": 24,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 20,
+    "fields": {
+      "name": "Café des Halles",
+      "address": "Rue de la Loi 45, 1000 Bruxelles",
+      "city": "Bruxelles",
+      "reputation": 3.8,
+      "capacity": 30,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 21,
+    "fields": {
+      "name": "Ixelles Café",
+      "address": "Chaussée de Charleroi 36, 1000 Bruxelles",
+      "city": "Anderlecht",
+      "reputation": 5.0,
+      "capacity": 19,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 22,
+    "fields": {
+      "name": "Brasserie Royale",
+      "address": "Rue Haute 76, 1000 Bruxelles",
+      "city": "Schaerbeek",
+      "reputation": 3.6,
+      "capacity": 28,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 23,
+    "fields": {
+      "name": "Quartier Latin Café",
+      "address": "Boulevard du Jardin Botanique 112, 1000 Bruxelles",
+      "city": "Schaerbeek",
+      "reputation": 4.7,
+      "capacity": 10,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 24,
+    "fields": {
+      "name": "Le Cinquantenaire",
+      "address": "Boulevard du Jardin Botanique 58, 1000 Bruxelles",
+      "city": "Laeken",
+      "reputation": 4.6,
+      "capacity": 22,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 25,
+    "fields": {
+      "name": "La Gare du Midi",
+      "address": "Boulevard du Jardin Botanique 220, 1000 Bruxelles",
+      "city": "Saint-Josse",
+      "reputation": 4.7,
+      "capacity": 20,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 26,
+    "fields": {
+      "name": "Café du Canal",
+      "address": "Place Flagey 44, 1000 Bruxelles",
+      "city": "Schaerbeek",
+      "reputation": 4.2,
+      "capacity": 24,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 27,
+    "fields": {
+      "name": "Le Botanique Bar",
+      "address": "Rue du Bailli 64, 1000 Bruxelles",
+      "city": "Saint-Josse",
+      "reputation": 3.9,
+      "capacity": 25,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 28,
+    "fields": {
+      "name": "La Porte de Namur",
+      "address": "Rue Royale 39, 1000 Bruxelles",
+      "city": "Laeken",
+      "reputation": 3.5,
+      "capacity": 27,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 29,
+    "fields": {
+      "name": "Tour & Taxis Pub",
+      "address": "Rue de la Loi 21, 1000 Bruxelles",
+      "city": "Saint-Gilles",
+      "reputation": 3.7,
+      "capacity": 10,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 30,
+    "fields": {
+      "name": "Le Cinéma Café",
+      "address": "Boulevard Anspach 73, 1000 Bruxelles",
+      "city": "Molenbeek",
+      "reputation": 3.6,
+      "capacity": 19,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 31,
+    "fields": {
+      "name": "Ixelles Café",
+      "address": "Rue Haute 124, 1000 Bruxelles",
+      "city": "Woluwe",
+      "reputation": 4.6,
+      "capacity": 21,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 32,
+    "fields": {
+      "name": "Ixelles Spot",
+      "address": "Boulevard Général Jacques 106, 1000 Bruxelles",
+      "city": "Bruxelles",
+      "reputation": 3.0,
+      "capacity": 27,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 33,
+    "fields": {
+      "name": "Café de l'Europe",
+      "address": "Parc du Cinquantenaire 177, 1000 Bruxelles",
+      "city": "Laeken",
+      "reputation": 3.1,
+      "capacity": 25,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 34,
+    "fields": {
+      "name": "Ixelles Café",
+      "address": "Boulevard Anspach 12, 1000 Bruxelles",
+      "city": "Saint-Gilles",
+      "reputation": 3.1,
+      "capacity": 12,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 35,
+    "fields": {
+      "name": "Uccle Garden",
+      "address": "Boulevard Botanique 47, 1000 Bruxelles",
+      "city": "Bruxelles",
+      "reputation": 3.9,
+      "capacity": 13,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 36,
+    "fields": {
+      "name": "Ixelles Rooftop",
+      "address": "Boulevard Anspach 109, 1000 Bruxelles",
+      "city": "Uccle",
+      "reputation": 4.1,
+      "capacity": 23,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 37,
+    "fields": {
+      "name": "Anderlecht Lounge",
+      "address": "Boulevard du Jardin Botanique 178, 1000 Bruxelles",
+      "city": "Schaerbeek",
+      "reputation": 4.1,
+      "capacity": 22,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 38,
+    "fields": {
+      "name": "Uccle Lounge",
+      "address": "Boulevard Botanique 180, 1000 Bruxelles",
+      "city": "Saint-Gilles",
+      "reputation": 3.1,
+      "capacity": 25,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 39,
+    "fields": {
+      "name": "Le Studio Café",
+      "address": "Rue de la Loi 55, 1000 Bruxelles",
+      "city": "Saint-Gilles",
+      "reputation": 3.4,
+      "capacity": 30,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 40,
+    "fields": {
+      "name": "Uccle Garden",
+      "address": "Place de Brouckère 16, 1000 Bruxelles",
+      "city": "Ixelles",
+      "reputation": 4.4,
+      "capacity": 19,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 41,
+    "fields": {
+      "name": "Le Tram Bar",
+      "address": "Rue Dansaert 29, 1000 Bruxelles",
+      "city": "Schaerbeek",
+      "reputation": 3.4,
+      "capacity": 12,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 42,
+    "fields": {
+      "name": "Uccle Garden",
+      "address": "Boulevard du Jardin Botanique 200, 1000 Bruxelles",
+      "city": "Saint-Josse",
+      "reputation": 3.2,
+      "capacity": 30,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 43,
+    "fields": {
+      "name": "Anderlecht Lounge",
+      "address": "Boulevard Anspach 29, 1000 Bruxelles",
+      "city": "Bruxelles",
+      "reputation": 4.9,
+      "capacity": 20,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 44,
+    "fields": {
+      "name": "Bruxelles By Night",
+      "address": "Boulevard Botanique 67, 1000 Bruxelles",
+      "city": "Bruxelles",
+      "reputation": 3.3,
+      "capacity": 23,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 45,
+    "fields": {
+      "name": "La Porte de Namur",
+      "address": "Chaussée de Wavre 17, 1000 Bruxelles",
+      "city": "Saint-Gilles",
+      "reputation": 4.1,
+      "capacity": 28,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 46,
+    "fields": {
+      "name": "Bar Central",
+      "address": "Rue Dansaert 67, 1000 Bruxelles",
+      "city": "Saint-Josse",
+      "reputation": 3.4,
+      "capacity": 25,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 47,
+    "fields": {
+      "name": "Uccle Garden",
+      "address": "Rue Haute 160, 1000 Bruxelles",
+      "city": "Molenbeek",
+      "reputation": 4.8,
+      "capacity": 16,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 48,
+    "fields": {
+      "name": "Saint-Gilles Bar",
+      "address": "Boulevard Général Jacques 189, 1000 Bruxelles",
+      "city": "Woluwe",
+      "reputation": 3.4,
+      "capacity": 20,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 49,
+    "fields": {
+      "name": "Woluwe Pub",
+      "address": "Place de Brouckère 188, 1000 Bruxelles",
+      "city": "Woluwe",
+      "reputation": 3.9,
+      "capacity": 10,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 50,
+    "fields": {
+      "name": "Bruxelles By Night",
+      "address": "Rue de la Loi 61, 1000 Bruxelles",
+      "city": "Schaerbeek",
+      "reputation": 4.5,
+      "capacity": 13,
+      "is_active": true,
+      "created_at": "2025-08-16T20:52:58.310348Z",
+      "updated_at": "2025-08-16T20:52:58.310348Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 51,
+    "fields": {
+      "name": "Café du Sablon",
+      "address": "Rue de la Régence 45, 1000 Bruxelles",
+      "reputation": 4.2,
+      "capacity": 20,
+      "is_active": false,
+      "created_at": "2025-08-16T12:00:00Z",
+      "updated_at": "2025-08-16T12:00:00Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 52,
+    "fields": {
+      "name": "Bar Botanique",
+      "address": "Boulevard du Jardin Botanique 13, 1210 Bruxelles",
+      "reputation": 3.9,
+      "capacity": 18,
+      "is_active": false,
+      "created_at": "2025-08-16T12:00:00Z",
+      "updated_at": "2025-08-16T12:00:00Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 53,
+    "fields": {
+      "name": "La Grand Place Pub",
+      "address": "Grand Place 1, 1000 Bruxelles",
+      "reputation": 4.5,
+      "capacity": 25,
+      "is_active": false,
+      "created_at": "2025-08-16T12:00:00Z",
+      "updated_at": "2025-08-16T12:00:00Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 54,
+    "fields": {
+      "name": "Ixelles Lounge",
+      "address": "Chaussée d'Ixelles 210, 1050 Bruxelles",
+      "reputation": 4.0,
+      "capacity": 15,
+      "is_active": false,
+      "created_at": "2025-08-16T12:00:00Z",
+      "updated_at": "2025-08-16T12:00:00Z"
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 55,
+    "fields": {
+      "name": "Anderlecht Corner",
+      "address": "Rue Wayez 99, 1070 Bruxelles",
+      "reputation": 3.8,
+      "capacity": 30,
+      "is_active": false,
+      "created_at": "2025-08-16T12:00:00Z",
+      "updated_at": "2025-08-16T12:00:00Z"
+    }
+  }
+]

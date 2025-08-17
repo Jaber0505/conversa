@@ -35,13 +35,14 @@ class UserAdmin(BaseUserAdmin):
     list_display = ("id", "email", "first_name", "last_name", "age", "is_staff", "is_active", "date_joined")
     list_filter = ("is_active", "is_staff", "is_superuser")
     search_fields = ("email", "first_name", "last_name")
-    readonly_fields = ("last_login", "date_joined")
+    readonly_fields = ("last_login", "date_joined", "consent_given_at")
 
     fieldsets = (
         (_("Identifiants"), {"fields": ("email", "password")}),
         (_("Infos personnelles"), {"fields": ("first_name", "last_name", "age", "bio", "avatar")}),
         (_("Adresse (optionnelle)"), {"fields": ("address", "city", "country", "latitude", "longitude")}),
         (_("Langues"), {"fields": ("native_langs",)}),
+        (_("RGPD"), {"fields": ("consent_given", "consent_given_at")}),
         (_("Permissions"), {"fields": ("is_active", "is_staff", "is_superuser", "groups", "user_permissions")}),
         (_("Dates"), {"fields": ("last_login", "date_joined")}),
     )

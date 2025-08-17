@@ -25,3 +25,13 @@ class IsOrganizerOrReadOnly(BasePermission):
         if request.method in SAFE_METHODS:
             return True
         return getattr(obj, "organizer_id", None) == getattr(request.user, "id", None)
+    
+class IsOrganizerOrAdmin(BasePermission):
+    """
+    - Lecture → tout utilisateur authentifié & actif.
+    - Modification / Annulation → organisateur ou admin.
+    """
+    def has_object_permission(self, request, view, obj):
+        if request.method in SAFE_METHODS:
+            return True
+        return request.user.is_staff or obj.organizer == request.user

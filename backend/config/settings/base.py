@@ -22,6 +22,7 @@ DJANGO_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_filters",
 ]
 
 THIRD_PARTY_APPS = [
@@ -39,9 +40,8 @@ PROJECT_APPS = [
     "events",
     "bookings",
     "payments",
+    "partners",
 ]
-
-AUTH_USER_MODEL = "users.User"
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
 
@@ -109,11 +109,11 @@ MEDIA_ROOT = BASE_DIR / "media"
 # --- DRF ---
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "users.auth.JWTAuthenticationWithDenylist",  # <-- au lieu de JWTAuthentication standard
+        "users.auth.JWTAuthenticationWithDenylist",
     ),
-    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_PERMISSION_CLASSES": ("common.permissions.IsAuthenticatedAndActive",),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "DEFAULT_PAGINATION_CLASS": "common.pagination.DefaultPagination",
     "PAGE_SIZE": 20,
 }
 REST_FRAMEWORK.update({

@@ -3,7 +3,7 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models import Q, CheckConstraint
 from django.utils import timezone
-from languages.models import Language  # app languages existante
+from languages.models import Language
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -13,7 +13,7 @@ class UserManager(BaseUserManager):
             raise ValueError("Mot de passe obligatoire.")
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
-        user.set_password(password)  # hash
+        user.set_password(password) 
         user.save(using=self._db)
         return user
 
@@ -23,31 +23,34 @@ class UserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 class User(AbstractBaseUser, PermissionsMixin):
-    # Identité / auth
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=150)
     last_name  = models.CharField(max_length=150)
     age = models.PositiveIntegerField(validators=[MinValueValidator(18)])
 
-    # Profil (optionnels)
     bio = models.TextField(max_length=500, blank=True)
     avatar = models.URLField(blank=True)
 
-    # Adresse (optionnelle)
     address = models.CharField(max_length=255, blank=True)
     city = models.CharField(max_length=100, blank=True)
     country = models.CharField(max_length=100, blank=True)
     latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
 
-    # Langues
-    native_langs = models.ManyToManyField(Language, related_name="native_users")
+    native_langs = models.ManyToManyField(
+        Language, 
+        related_name="native_users"
+    )
     target_langs = models.ManyToManyField(
-        Language, through="UserTargetLanguage", related_name="target_users"
+        Language, 
+        through="UserTargetLanguage", 
+        related_name="target_users"
     )
 
-    # Django
-    is_active = models.BooleanField(default=True)   # actif immédiatement
+    consent_given = models.BooleanField(default=False)
+    consent_given_at = models.DateTimeField(null=True, blank=True)
+
+    is_active = models.BooleanField(default=True)
     is_staff  = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
 
@@ -73,7 +76,6 @@ class UserTargetLanguage(models.Model):
         verbose_name = "Langue cible d'utilisateur"
         verbose_name_plural = "Langues cibles d'utilisateur"
 
-# Denylist des access tokens (révocation immédiate)
 class RevokedAccessToken(models.Model):
     jti = models.CharField(max_length=64, unique=True, db_index=True)
     revoked_at = models.DateTimeField(auto_now_add=True)

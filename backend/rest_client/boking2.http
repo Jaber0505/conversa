@@ -1,0 +1,163 @@
+@base_auth = http://localhost:8000/api/v1/auth
+@base_api  = http://localhost:8000/api/v1
+@pwd = Test1234!
+@ts = {{$timestamp}}
+@email = bob{{ts}}@example.com
+@start_future = 2025-09-20T18:00:00+00:00
+@start_soon   = 2025-08-17T22:30:00+02:00
+
+### Register — 201
+# @name register
+POST {{base_auth}}/register/
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{pwd}}",
+  "first_name": "Bob",
+  "last_name": "Dupont",
+  "age": 28,
+  "native_langs": ["fr"],
+  "target_langs": ["en"],
+  "consent_given": true
+}
+
+### Login — 200
+# @name login
+POST {{base_auth}}/login/
+Content-Type: application/json
+Authorization:
+
+{
+  "email": "{{register.response.body.$.email}}",
+  "password": "{{pwd}}"
+}
+
+### Me — 200
+GET {{base_auth}}/me/
+Authorization: Bearer {{login.response.body.$.access}}
+
+############################################################
+#                    Pré-requis (ids)
+############################################################
+
+### Languages — 200 (paginé)
+# @name languages
+GET {{base_api}}/languages/
+Authorization: Bearer {{login.response.body.$.access}}
+
+### Partners — 200 (paginé)
+# @name partners
+GET {{base_api}}/partners/
+Authorization: Bearer {{login.response.body.$.access}}
+
+############################################################
+#                    Event A  (> 3h)
+############################################################
+
+### Create Event A — 201
+# @name create_event_A
+POST {{base_api}}/events/
+Authorization: Bearer {{login.response.body.$.access}}
+Content-Type: application/json
+
+{
+  "partner": {{partners.response.body.$.results[0].id}},
+  "language": "fr",
+  "theme": "Afterwork A (test filtres)",
+  "difficulty": "easy",
+  "datetime_start": "{{start_future}}",
+  "price_cents": 700
+}
+
+### Event A detail — 200
+GET {{base_api}}/events/{{create_event_A.response.body.$.id}}/
+Authorization: Bearer {{login.response.body.$.access}}
+
+### Create Booking A — 201
+# @name create_booking_A
+POST {{base_api}}/bookings/
+Authorization: Bearer {{login.response.body.$.access}}
+Content-Type: application/json
+
+{
+  "event": {{create_event_A.response.body.$.id}}
+}
+
+### My Bookings — 200 (doit contenir Booking A)
+GET {{base_api}}/bookings/
+Authorization: Bearer {{login.response.body.$.access}}
+
+### List Bookings for Event A (organisateur) — 200
+GET {{base_api}}/bookings/?event={{create_event_A.response.body.$.id}}
+Authorization: Bearer {{login.response.body.$.access}}
+
+### Cancel Booking A (autorisé > T−3h) — 200
+POST {{base_api}}/bookings/{{create_booking_A.response.body.$.id}}/cancel/
+Authorization: Bearer {{login.response.body.$.access}}
+
+### Cancel Event A (DELETE, autorisé > T−3h) — 204
+DELETE {{base_api}}/events/{{create_event_A.response.body.$.id}}/
+Authorization: Bearer {{login.response.body.$.access}}
+
+### Event A detail après cancel (status=cancelled attendu) — 200
+GET {{base_api}}/events/{{create_event_A.response.body.$.id}}/
+Authorization: Bearer {{login.response.body.$.access}}
+
+############################################################
+#                    Event B  (< 3h) — Refus attendus
+############################################################
+
+### Create Event B (démarre bientôt) — 201
+# @name create_event_B
+POST {{base_api}}/events/
+Authorization: Bearer {{login.response.body.$.access}}
+Content-Type: application/json
+
+{
+  "partner": {{partners.response.body.$.results[1].id}},
+  "language": "fr",
+  "theme": "Afterwork B (test T-3h)",
+  "difficulty": "easy",
+  "datetime_start": "{{start_soon}}",
+  "price_cents": 700
+}
+
+### Create Booking B — 201
+# @name create_booking_B
+POST {{base_api}}/bookings/
+Authorization: Bearer {{login.response.body.$.access}}
+Content-Type: application/json
+
+{
+  "event": {{create_event_B.response.body.$.id}}
+}
+
+### Cancel Booking B (refusé < T−3h) — 400 attendu
+POST {{base_api}}/bookings/{{create_booking_B.response.body.$.id}}/cancel/
+Authorization: Bearer {{login.response.body.$.access}}
+
+### Cancel Event B (refusé < T−3h) — 400 attendu
+DELETE {{base_api}}/events/{{create_event_B.response.body.$.id}}/
+Authorization: Bearer {{login.response.body.$.access}}
+
+############################################################
+#                    Filtres Events
+############################################################
+
+### Filter par langue (code) — 200
+GET {{base_api}}/events/?language__code=fr
+Authorization: Bearer {{login.response.body.$.access}}
+
+### Filter par ville (city via partner) — 200
+# Ajuste la valeur selon tes données (ex: Bruxelles, Ixelles, ...)
+GET {{base_api}}/events/?partner__city=Bruxelles
+Authorization: Bearer {{login.response.body.$.access}}
+
+### Filter par prix & réputation — 200
+GET {{base_api}}/events/?price_cents__lte=700&partner__reputation__gte=4
+Authorization: Bearer {{login.response.body.$.access}}
+
+### Recherche thème & tri — 200
+GET {{base_api}}/events/?search=afterwork&ordering=-datetime_start
+Authorization: Bearer {{login.response.body.$.access}}

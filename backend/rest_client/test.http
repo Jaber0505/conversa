@@ -1,0 +1,19 @@
+@base = http://localhost:8000/api/v1/auth
+@ts = {{$timestamp}}
+@email = bob{{ts}}@example.com
+@pwd = Test1234!
+
+### Register — 201
+POST {{base}}/register/
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{pwd}}",
+  "first_name": "Bob",
+  "last_name": "Dupont",
+  "age": 28,
+  "consent_given": true,
+  "native_langs": ["fr"],
+  "target_langs": ["en"]
+}

@@ -18,6 +18,13 @@ export const routes: Routes = [
     children: [
       { path: '', component: HomeComponent },
 
+      {
+        path: 'mock/mockshared',
+          loadComponent: () =>
+            import('./features/mock/mock-shared').then(m => m.MockSharedDemo),
+          data: { hidden: true },
+      },
+
       { path: 'events', component: EventListMockComponent },
       { path: 'events/:id', component: EventDetailMockComponent }, // ← corrigé
 

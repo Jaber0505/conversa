@@ -3,11 +3,10 @@
 @ts = {{$timestamp}}
 @email = bob{{ts}}@example.com
 
-### 1) Register — 201 → access + refresh init
+### Register — 201
 # @name register
 POST {{base}}/register/
 Content-Type: application/json
-Accept: application/json
 
 {
   "email": "{{email}}",
@@ -16,88 +15,47 @@ Accept: application/json
   "last_name": "Dupont",
   "age": 28,
   "native_langs": ["fr"],
-  "target_langs": ["en"]
+  "target_langs": ["en"],
+  "consent_given": true
 }
 
-###
-@access_register   = {{register.response.body.$.access}}
-@refresh_current   = {{register.response.body.$.refresh}}
-@email_reg         = {{register.response.body.$.email}}
-
-### 2) Me (access du register) — 200
+### Me direct — 200
 GET {{base}}/me/
-Authorization: Bearer {{access_register}}
-Accept: application/json
+Authorization: Bearer {{register.response.body.$.access}}
 
-### 3) Refresh #1 — 200 → met à jour refresh_current
-# @name refresh1
+### Refresh — 200
+# @name refresh
 POST {{base}}/refresh/
 Content-Type: application/json
-Accept: application/json
 
 {
-  "refresh": "{{refresh_current}}"
+  "refresh": "{{register.response.body.$.refresh}}"
 }
 
-###
-@access_r1        = {{refresh1.response.body.$.access}}
-@refresh_current  = {{refresh1.response.body.$.refresh}}   // IMPORTANT : on bascule
-
-### 4) Refresh #2 — 200 (chaîné) → met encore à jour refresh_current
-# @name refresh2
-POST {{base}}/refresh/
-Content-Type: application/json
-Accept: application/json
-
-{
-  "refresh": "{{refresh_current}}"
-}
-
-###
-@access_r2        = {{refresh2.response.body.$.access}}
-@refresh_current  = {{refresh2.response.body.$.refresh}}   // IMPORTANT : on bascule
-
-### 5) (preuve) Rejouer un refresh déjà consommé → 401 attendu
-POST {{base}}/refresh/
-Content-Type: application/json
-Accept: application/json
-
-{
-  "refresh": "{{refresh1.response.body.$.refresh}}"
-}
-
-### 6) Logout — 204 (utilise le DERNIER refresh)
+### Logout — 204 (utilise le dernier refresh)
 POST {{base}}/logout/
-Authorization: Bearer {{access_r2}}
+Authorization: Bearer {{register.response.body.$.access}}
 Content-Type: application/json
-Accept: application/json
 
 {
-  "refresh": "{{refresh_current}}"
+  "refresh": "{{refresh.response.body.$.refresh}}"
 }
 
-### 7) Me après logout — 401 (mode strict)
+### Me après logout — 401 (strict)
 GET {{base}}/me/
-Authorization: Bearer {{access_r2}}
-Accept: application/json
+Authorization: Bearer {{register.response.body.$.access}}
 
-### 8) Login — 200 (aucun Authorization ici)
+### Login — 200 (aucun Authorization ici)
 # @name login
 POST {{base}}/login/
 Content-Type: application/json
-Accept: application/json
 Authorization:
 
 {
-  "email": "{{email_reg}}",
+  "email": "{{register.response.body.$.email}}",
   "password": "{{pwd}}"
 }
 
-###
-@access_login  = {{login.response.body.$.access}}
-@refresh_login = {{login.response.body.$.refresh}}
-
-### 9) Me après login — 200
+### Me après login — 200
 GET {{base}}/me/
-Authorization: Bearer {{access_login}}
-Accept: application/json
+Authorization: Bearer {{login.response.body.$.access}}

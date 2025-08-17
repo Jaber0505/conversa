@@ -24,3 +24,6 @@ django-modeltranslation>=0.18
 # Outils divers
 Pillow>=10.2  # gestion images
 requests>=2.32
+
+# img
+poetry
