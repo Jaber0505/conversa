@@ -1,58 +1,81 @@
-from django.db import models
+import uuid
+from datetime import timedelta
 from django.conf import settings
+from django.db import models
 from django.utils import timezone
-from django.core.exceptions import ValidationError
+from django.db.models import Q, CheckConstraint, UniqueConstraint
+
+
+class BookingStatus(models.TextChoices):
+    PENDING = "PENDING", "Pending"
+    CONFIRMED = "CONFIRMED", "Confirmed"
+    CANCELLED = "CANCELLED", "Cancelled"
+
+def default_expiry():
+    minutes = int(getattr(settings, "BOOKING_TTL_MINUTES", 15))
+    return timezone.now() + timedelta(minutes=minutes)
 
 class Booking(models.Model):
-    STATUS_CHOICES = [
-        ("confirmed", "Confirmé"),
-        # ("pending", "En attente"),          # activer plus tard si paiement
-        ("cancelled_user", "Annulé par l'utilisateur"),
-        # ("cancelled_admin", "Annulé admin"), # optionnel
-    ]
-
-    event = models.ForeignKey("events.Event", on_delete=models.CASCADE, related_name="bookings")
+    public_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, db_index=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="bookings")
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="confirmed")
+    event = models.ForeignKey("events.Event", on_delete=models.PROTECT, related_name="bookings")
+    status = models.CharField(max_length=16, choices=BookingStatus.choices, default=BookingStatus.PENDING)
+    quantity = models.PositiveSmallIntegerField()
+    amount_cents = models.PositiveIntegerField()
+    currency = models.CharField(max_length=3, default="EUR")
+    expires_at = models.DateTimeField(default=default_expiry)
+    payment_intent_id = models.CharField(max_length=128, blank=True, null=True)
+    confirmed_after_expiry = models.BooleanField(default=False)
+    confirmed_at = models.DateTimeField(blank=True, null=True)
+    cancelled_at = models.DateTimeField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
+        ordering = ("-created_at",)
+        indexes = [
+            models.Index(fields=["public_id"]),
+            models.Index(fields=["status"]),
+            models.Index(fields=["user", "event"]),
+        ]
         constraints = [
-            models.UniqueConstraint(
-                fields=["event", "user"],
-                name="unique_booking_per_user_event",
+            CheckConstraint(condition=Q(quantity__gte=1), name="booking_quantity_gte_1"),
+            CheckConstraint(condition=Q(amount_cents__gte=0), name="booking_amount_cents_gte_0"),
+
+            UniqueConstraint(
+                fields=["user", "event"],
+                condition=Q(status="PENDING"),
+                name="unique_pending_booking_per_user_event",
             ),
         ]
-        indexes = [
-            models.Index(fields=["event", "status"]),
-            models.Index(fields=["user", "status"]),
-        ]
 
+    @property
+    def is_expired(self) -> bool:
+        return self.status == BookingStatus.PENDING and timezone.now() >= self.expires_at
 
-    def __str__(self):
-        return f"{self.user_id} -> {self.event_id} [{self.status}]"
+    def soft_cancel_if_expired(self) -> bool:
+        if self.is_expired:
+            self.status = BookingStatus.CANCELLED
+            self.cancelled_at = timezone.now()
+            self.save(update_fields=["status", "cancelled_at", "updated_at"])
+            return True
+        return False
 
-    def clean(self):
-        """
-        Garde-fous côté modèle (complétés côté serializer).
-        """
-        # 1) Event annulé ?
-        is_cancelled = getattr(self.event, "is_cancelled", False)
-        if not is_cancelled and hasattr(self.event, "status"):
-            is_cancelled = (self.event.status == "cancelled")
-        if is_cancelled:
-            raise ValidationError("Événement annulé.")
+    def mark_cancelled(self) -> bool:
+        if self.status == BookingStatus.CONFIRMED:
+            return False
+        self.status = BookingStatus.CANCELLED
+        self.cancelled_at = timezone.now()
+        self.save(update_fields=["status", "cancelled_at", "updated_at"])
+        return True
 
-        # 2) Event passé ?
-        if timezone.now() >= self.event.datetime_start:
-            raise ValidationError("Événement déjà commencé ou passé.")
-
-        # 3) Partner actif ?
-        if not self.event.partner.is_active:
-            raise ValidationError("Partenaire inactif.")
-
-        # 4) Capacité atteinte ?
-        confirmed = self.event.bookings.filter(status="confirmed").count()
-        if confirmed >= self.event.max_seats:
-            raise ValidationError("Événement complet.")
+    def mark_confirmed(self, payment_intent_id: str | None = None, late: bool = False):
+        self.status = BookingStatus.CONFIRMED
+        self.confirmed_at = timezone.now()
+        if late:
+            self.confirmed_after_expiry = True
+        if payment_intent_id and not self.payment_intent_id:
+            self.payment_intent_id = payment_intent_id
+        self.save(update_fields=[
+            "status", "confirmed_at", "confirmed_after_expiry", "payment_intent_id", "updated_at"
+        ])

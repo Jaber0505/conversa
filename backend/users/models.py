@@ -61,7 +61,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     class Meta:
         constraints = [
-            CheckConstraint(check=Q(age__gte=18), name="users_user_age_gte_18"),
+            CheckConstraint(condition=Q(age__gte=18), name="users_user_age_gte_18"),
         ]
 
     def __str__(self):

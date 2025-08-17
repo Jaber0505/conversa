@@ -1,68 +1,98 @@
-from datetime import timedelta
 from django.utils import timezone
-from rest_framework import viewsets, permissions, status
+from rest_framework import viewsets, mixins, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiResponse
+from rest_framework.generics import get_object_or_404
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse
+from .models import Booking, BookingStatus
+from .serializers import BookingSerializer, BookingCreateSerializer
+from common.permissions import IsAuthenticatedAndActive
 
-from .models import Booking
-from .serializers import BookingSerializer
-from events.models import Event 
-
-
-@extend_schema_view(
-    list=extend_schema(summary="Lister mes réservations ou celles d'un event si autorisé"),
-    retrieve=extend_schema(summary="Détail d'une réservation"),
-    create=extend_schema(summary="Créer une réservation"),
-)
-class BookingViewSet(viewsets.ModelViewSet):
+class BookingViewSet(mixins.CreateModelMixin,
+                     mixins.RetrieveModelMixin,
+                     mixins.DestroyModelMixin,
+                     mixins.ListModelMixin,
+                     viewsets.GenericViewSet):
     serializer_class = BookingSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticatedAndActive]
+    lookup_field = "public_id"
+    lookup_value_regex = r"[0-9a-fA-F-]{36}"
 
     def get_queryset(self):
-        """
-        - Par défaut : l'utilisateur voit SEULEMENT ses bookings.
-        - Si ?event=<id> ET user est organisateur de cet event (ou admin) :
-          retourne les bookings de cet event.
-        """
-        qs = Booking.objects.select_related("event", "user", "event__partner")
-        event_id = self.request.query_params.get("event")
-        if event_id:
-            try:
-                ev = Event.objects.select_related("organizer").get(pk=event_id)
-            except Event.DoesNotExist:
-                return Booking.objects.none()
-            if self.request.user.is_staff or ev.organizer_id == self.request.user.id:
-                return qs.filter(event_id=event_id)
-            return Booking.objects.none()
-        return qs.filter(user=self.request.user)
+        qs = Booking.objects.select_related("event").filter(user=self.request.user)
+        now = timezone.now()
+        expired = qs.filter(status=BookingStatus.PENDING, expires_at__lte=now)
+        if expired.exists():
+            expired.update(status=BookingStatus.CANCELLED, cancelled_at=now, updated_at=now)
+        return Booking.objects.select_related("event").filter(user=self.request.user)
 
-    def perform_create(self, serializer):
-        serializer.save()  # user injecté dans le serializer
+    def get_object(self):
+        return get_object_or_404(
+            Booking.objects.select_related("event").filter(user=self.request.user),
+            public_id=self.kwargs.get(self.lookup_field),
+        )
 
     @extend_schema(
-        summary="Annuler ma réservation (jusqu'à T-3h)",
-        responses={
-            200: OpenApiResponse(response=BookingSerializer, description="Réservation annulée"),
-            400: OpenApiResponse(description="Trop tard pour annuler (< 3h) ou statut invalide"),
-            403: OpenApiResponse(description="Interdit"),
-        },
+        request=BookingCreateSerializer,
+        responses={201: BookingSerializer},
+        summary="Créer une réservation (PENDING)",
+        tags=["Bookings"],
     )
-    @action(detail=True, methods=["post"], url_path="cancel")
-    def cancel(self, request, pk=None):
+    def create(self, request, *args, **kwargs):
+        ser = BookingCreateSerializer(data=request.data, context={"request": request})
+        ser.is_valid(raise_exception=True)
+        booking = ser.save()
+        out = BookingSerializer(booking, context={"request": request})
+        return Response(out.data, status=status.HTTP_201_CREATED)
+
+    @extend_schema(
+        parameters=[OpenApiParameter(name="status", description="Filtrer par statut", required=False, type=str)],
+        responses={200: BookingSerializer(many=True)},
+        summary="Lister mes réservations",
+        tags=["Bookings"],
+    )
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        status_param = request.query_params.get("status")
+        if status_param in {c.value for c in BookingStatus}:
+            queryset = queryset.filter(status=status_param)
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            ser = BookingSerializer(page, many=True, context={"request": request})
+            return self.get_paginated_response(ser.data)
+        ser = BookingSerializer(queryset, many=True, context={"request": request})
+        return Response(ser.data)
+
+    @extend_schema(
+        responses={200: BookingSerializer},
+        summary="Détail de ma réservation (par public_id)",
+        tags=["Bookings"],
+    )
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    @extend_schema(
+        responses={204: OpenApiResponse(description="Annulée"), 409: OpenApiResponse(description="Déjà confirmée")},
+        summary="Annuler (DELETE) si PENDING",
+        tags=["Bookings"],
+    )
+    def destroy(self, request, *args, **kwargs):
         booking = self.get_object()
-        if booking.user != request.user:
-            return Response({"detail": "Vous ne pouvez annuler que votre propre réservation."},
-                            status=status.HTTP_403_FORBIDDEN)
+        if booking.status == BookingStatus.CONFIRMED:
+            return Response({"detail": "Impossible d’annuler une réservation confirmée."}, status=409)
+        booking.mark_cancelled()
+        return Response(status=204)
 
-        if timezone.now() > booking.event.datetime_start - timedelta(hours=3):
-            return Response({"detail": "Annulation impossible < 3h avant l'événement."},
-                            status=status.HTTP_400_BAD_REQUEST)
-
-        if booking.status != "confirmed":
-            return Response({"detail": "La réservation n'est pas confirmée."},
-                            status=status.HTTP_400_BAD_REQUEST)
-
-        booking.status = "cancelled_user"
-        booking.save(update_fields=["status", "updated_at"])
-        return Response(self.get_serializer(booking).data, status=status.HTTP_200_OK)
+    @extend_schema(
+        responses={200: BookingSerializer, 409: OpenApiResponse(description="Déjà confirmée")},
+        summary="Annuler explicitement",
+        tags=["Bookings"],
+    )
+    @action(detail=True, methods=["POST"])
+    def cancel(self, request, public_id=None):
+        booking = self.get_object()
+        if booking.status == BookingStatus.CONFIRMED:
+            return Response({"detail": "Réservation déjà confirmée."}, status=409)
+        booking.mark_cancelled()
+        ser = BookingSerializer(booking, context={"request": request})
+        return Response(ser.data, status=200)

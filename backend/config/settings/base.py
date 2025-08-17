@@ -38,8 +38,8 @@ PROJECT_APPS = [
     "languages",
     "users",
     "events",
-    #"bookings",
-    #"payments",
+    "bookings",
+    "payments",
     "partners",
 ]
 
@@ -153,6 +153,9 @@ SPECTACULAR_SETTINGS = {
     "SECURITY_SCHEMES": {"bearerAuth": {"type": "http", "scheme": "bearer", "bearerFormat": "JWT"}},
 }
 
+# --- BOOKING ---
+BOOKING_TTL_MINUTES = int(os.getenv("DJANGO_BOOKING_TTL_MINUTES", "15"))
+
 # --- LOG ---
 LOGGING = {
     "version": 1,
@@ -176,6 +179,7 @@ CORS_ALLOWED_ORIGINS = os.getenv("DJANGO_CORS_ALLOWED_ORIGINS", "").split(",") i
 CSRF_TRUSTED_ORIGINS = os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",") if os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS") else []
 
 # --- Sécurité ---
+FORMS_URLFIELD_ASSUME_HTTPS = True
 SESSION_COOKIE_HTTPONLY = True
 CSRF_COOKIE_HTTPONLY = True
 X_FRAME_OPTIONS = "DENY"
