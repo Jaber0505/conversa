@@ -1,98 +1,73 @@
-# backend/events/serializers.py
 from rest_framework import serializers
-from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
-from languages.models import Language
+from rest_framework.reverse import reverse
 from .models import Event
 
-@extend_schema_serializer(
-    examples=[
-        OpenApiExample(
-            name="EventCreateExample",
-            value={
-                "partner": 1,
-                "language": "fr",  # code accepté via SlugRelatedField
-                "theme": "Conversation autour du café",
-                "difficulty": "easy",
-                "datetime_start": "2025-09-01T18:00:00Z",
-                "price_cents": 700
-            },
-            request_only=True,   # exemple pour la requête
-            response_only=False,
-        ),
-        OpenApiExample(
-            name="EventResponseExample",
-            value={
-                "id": 123,
-                "partner": 1,
-                "partner_name": "Café du Sablon",
-                "language": "fr",
-                "language_code": "fr",
-                "theme": "Conversation autour du café",
-                "difficulty": "easy",
-                "datetime_start": "2025-09-01T18:00:00Z",
-                "max_seats": 6,
-                "price_cents": 700,
-                "status": "pending",
-                "photo": None,
-                "organizer_id": 2,
-                "created_at": "2025-08-10T12:00:00Z",
-                "updated_at": "2025-08-10T12:00:00Z"
-            },
-            request_only=False,
-            response_only=True,  # exemple pour la réponse
-        ),
-    ]
-)
-class EventSerializer(serializers.ModelSerializer):
-    # Écrire/lire via le code langue (fr, en…)
-    language = serializers.SlugRelatedField(
-        slug_field="code",
-        queryset=Language.objects.all(),
-        help_text="Code langue (ex: fr, en)"
-    )
 
-    partner_name = serializers.CharField(
-        source="partner.name", read_only=True, help_text="Nom du partenaire"
-    )
-    language_code = serializers.CharField(
-        source="language.code", read_only=True, help_text="Code langue (ex: fr, en)"
-    )
-    organizer_id = serializers.IntegerField(
-        source="organizer.id", read_only=True, help_text="ID de l’organisateur"
-    )
+class EventSerializer(serializers.ModelSerializer):
+    # Lectures pratiques
+    partner_name = serializers.CharField(source="partner.name", read_only=True)
+    language_code = serializers.CharField(source="language.code", read_only=True)
+    organizer_id = serializers.IntegerField(source="organizer.id", read_only=True)
+
+    # Verrous / dérivés
+    title = serializers.CharField(read_only=True)
+    address = serializers.CharField(read_only=True)
+    price_cents = serializers.IntegerField(read_only=True)
+    photo = serializers.ImageField(required=False, allow_null=True)
+    _links = serializers.SerializerMethodField()
 
     class Meta:
         model = Event
         fields = [
             "id",
+            "organizer", "organizer_id",
             "partner", "partner_name",
             "language", "language_code",
             "theme", "difficulty",
             "datetime_start",
-            "max_seats", "price_cents",
-            "status",
+            "price_cents",
             "photo",
-            "organizer_id",
+            "title", "address",
             "created_at", "updated_at",
+            "_links",
         ]
-        read_only_fields = ["status", "organizer_id", "created_at", "updated_at"]
+        read_only_fields = [
+            "id", "organizer", "organizer_id",
+            "price_cents", "title", "address",
+            "created_at", "updated_at", "_links",
+        ]
+        extra_kwargs = {
+            "partner": {"required": True},
+            "language": {"required": True},
+            "theme": {"required": True},
+            "difficulty": {"required": True},
+            "datetime_start": {"required": True},
+        }
 
-    def validate(self, data):
-        """
-        - max_seats ≤ 6
-        - le partenaire doit avoir assez de capacité (≥ 3)
-        - supporte les PATCH partiels (instance existante)
-        """
-        partner = data.get("partner") or getattr(self.instance, "partner", None)
-        max_seats = data.get("max_seats", getattr(self.instance, "max_seats", 6))
+    def update(self, instance, validated_data):
+        # On ne laisse jamais PATCH/PUT l’organizer/price/title/address
+        validated_data.pop("organizer", None)
+        validated_data.pop("price_cents", None)
+        validated_data.pop("title", None)
+        validated_data.pop("address", None)
+        return super().update(instance, validated_data)
 
-        if max_seats > 6:
-            raise serializers.ValidationError("Un événement ne peut pas dépasser 6 places.")
+    def get__links(self, obj):
+        request = self.context.get("request")
+        links = {
+            "self": reverse("event-detail", args=[obj.pk], request=request),
+            "list": reverse("event-list", request=request),
+            "partner": None,
+        }
+        # partner-detail si existant
+        try:
+            links["partner"] = reverse("partner-detail", args=[obj.partner_id], request=request)
+        except Exception:
+            pass
 
-        if partner:
-            if partner.capacity < 3:
-                raise serializers.ValidationError("Le partenaire n’a pas assez de capacité pour accueillir un événement.")
-            if max_seats > partner.capacity:
-                raise serializers.ValidationError("Capacité de l’événement supérieure à celle du partenaire.")
-
-        return data
+        user = getattr(request, "user", None)
+        can_edit = bool(user and (getattr(user, "is_staff", False) or user.id == obj.organizer_id))
+        if can_edit:
+            links["update"] = links["self"]
+            links["delete"] = links["self"]
+        return links

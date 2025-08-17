@@ -1,0 +1,411 @@
+@host = http://localhost:8000
+@apiprefix = api/v1
+@api = api
+@base = {{host}}/{{apiprefix}}
+@baseDocs = {{host}}/{{api}}
+@auth = {{base}}/auth
+@events = {{base}}/events
+@admin_email = admin@local
+@user2_email = alice@example.com
+@user3_email = bob@example.com
+@pwd = P@ssword1234
+@partner_id = 1
+@language_id = 1
+
+
+/****************************************************************************************
+ * A) Swagger OK ?
+ ****************************************************************************************/
+### 200
+GET {{baseDocs}}/docs/
+
+###
+
+
+/****************************************************************************************
+ * B) Non authentifié -> 401
+ ****************************************************************************************/
+### 401
+GET {{events}}
+###
+### 401
+GET {{events}}/1/
+
+###
+
+
+/****************************************************************************************
+ * C) CRUD complet par ADMIN (indépendant)
+ ****************************************************************************************/
+@ts_c = {{$timestamp}}
+
+### Login admin — 200
+# @name c_login_admin
+POST {{auth}}/login/
+Content-Type: application/json
+
+{ "email": "{{admin_email}}", "password": "{{pwd}}" }
+###
+### Voir le profil (vérifier is_staff=true) — 200
+GET {{auth}}/me/
+Authorization: Bearer {{c_login_admin.response.body.$.access}}
+###
+### Create — 201
+# @name c_create
+POST {{events}}/
+Authorization: Bearer {{c_login_admin.response.body.$.access}}
+Content-Type: application/json
+
+{
+  "partner": {{partner_id}},
+  "language": {{language_id}},
+  "theme": "Admin flow {{ts_c}}",
+  "difficulty": "easy",
+  "datetime_start": "2025-10-01T18:30:00Z"
+}
+###
+### Retrieve — 200
+GET {{events}}/{{c_create.response.body.$.id}}/
+Authorization: Bearer {{c_login_admin.response.body.$.access}}
+###
+### Patch — 200
+PATCH {{events}}/{{c_create.response.body.$.id}}/
+Authorization: Bearer {{c_login_admin.response.body.$.access}}
+Content-Type: application/json
+
+{ "theme": "Admin flow (patched {{ts_c}})" }
+###
+### Delete — 204
+DELETE {{events}}/{{c_create.response.body.$.id}}/
+Authorization: Bearer {{c_login_admin.response.body.$.access}}
+###
+### Retrieve après delete — 404
+GET {{events}}/{{c_create.response.body.$.id}}/
+Authorization: Bearer {{c_login_admin.response.body.$.access}}
+###
+### Logout admin — 204
+POST {{auth}}/logout/
+Authorization: Bearer {{c_login_admin.response.body.$.access}}
+Content-Type: application/json
+
+{ "refresh": "{{c_login_admin.response.body.$.refresh}}" }
+
+###
+
+
+/****************************************************************************************
+ * D) Permissions : user2 NE PEUT PAS modifier/supprimer un event créé par admin
+ ****************************************************************************************/
+@ts_d = {{$timestamp}}
+
+### Login admin — 200
+# @name d_login_admin
+POST {{auth}}/login/
+Content-Type: application/json
+
+{ "email": "{{admin_email}}", "password": "{{pwd}}" }
+###
+### Voir profil admin (is_staff=true) — 200
+GET {{auth}}/me/
+Authorization: Bearer {{d_login_admin.response.body.$.access}}
+###
+### Create par admin — 201
+# @name d_admin_create
+POST {{events}}/
+Authorization: Bearer {{d_login_admin.response.body.$.access}}
+Content-Type: application/json
+
+{
+  "partner": {{partner_id}},
+  "language": {{language_id}},
+  "theme": "Admin owned {{ts_d}}",
+  "difficulty": "medium",
+  "datetime_start": "2025-10-02T19:00:00Z"
+}
+###
+### Logout admin — 204
+POST {{auth}}/logout/
+Authorization: Bearer {{d_login_admin.response.body.$.access}}
+Content-Type: application/json
+
+{ "refresh": "{{d_login_admin.response.body.$.refresh}}" }
+###
+### Login user2 — 200
+# @name d_login_u2
+POST {{auth}}/login/
+Content-Type: application/json
+
+{ "email": "{{user2_email}}", "password": "{{pwd}}" }
+###
+### Voir profil user2 (is_staff=false) — 200
+GET {{auth}}/me/
+Authorization: Bearer {{d_login_u2.response.body.$.access}}
+###
+### Patch interdit — 403
+PATCH {{events}}/{{d_admin_create.response.body.$.id}}/
+Authorization: Bearer {{d_login_u2.response.body.$.access}}
+Content-Type: application/json
+
+{ "theme": "User2 cannot edit" }
+###
+### Delete interdit — 403
+DELETE {{events}}/{{d_admin_create.response.body.$.id}}/
+Authorization: Bearer {{d_login_u2.response.body.$.access}}
+###
+### Logout user2 — 204
+POST {{auth}}/logout/
+Authorization: Bearer {{d_login_u2.response.body.$.access}}
+Content-Type: application/json
+
+{ "refresh": "{{d_login_u2.response.body.$.refresh}}" }
+
+###
+
+
+/****************************************************************************************
+ * E) Override admin : user2 CRÉE, admin PATCH/DELETE
+ ****************************************************************************************/
+@ts_e = {{$timestamp}}
+
+### Login user2 — 200
+# @name e_login_u2
+POST {{auth}}/login/
+Content-Type: application/json
+
+{ "email": "{{user2_email}}", "password": "{{pwd}}" }
+###
+### Voir profil user2 (is_staff=false) — 200
+GET {{auth}}/me/
+Authorization: Bearer {{e_login_u2.response.body.$.access}}
+###
+### Create par user2 — 201
+# @name e_u2_create
+POST {{events}}/
+Authorization: Bearer {{e_login_u2.response.body.$.access}}
+Content-Type: application/json
+
+{
+  "partner": {{partner_id}},
+  "language": {{language_id}},
+  "theme": "User2 created {{ts_e}}",
+  "difficulty": "medium",
+  "datetime_start": "2025-10-03T19:00:00Z"
+}
+###
+### Logout user2 — 204
+POST {{auth}}/logout/
+Authorization: Bearer {{e_login_u2.response.body.$.access}}
+Content-Type: application/json
+
+{ "refresh": "{{e_login_u2.response.body.$.refresh}}" }
+###
+### Login admin — 200
+# @name e_login_admin
+POST {{auth}}/login/
+Content-Type: application/json
+
+{ "email": "{{admin_email}}", "password": "{{pwd}}" }
+###
+### Voir profil admin (is_staff=true) — 200
+GET {{auth}}/me/
+Authorization: Bearer {{e_login_admin.response.body.$.access}}
+###
+### Patch par admin — 200
+PATCH {{events}}/{{e_u2_create.response.body.$.id}}/
+Authorization: Bearer {{e_login_admin.response.body.$.access}}
+Content-Type: application/json
+
+{ "theme": "Admin override {{ts_e}}" }
+###
+### Delete par admin — 204
+DELETE {{events}}/{{e_u2_create.response.body.$.id}}/
+Authorization: Bearer {{e_login_admin.response.body.$.access}}
+###
+### Logout admin — 204
+POST {{auth}}/logout/
+Authorization: Bearer {{e_login_admin.response.body.$.access}}
+Content-Type: application/json
+
+{ "refresh": "{{e_login_admin.response.body.$.refresh}}" }
+
+###
+
+/****************************************************************************************
+ * F) Erreurs de validation (400) — indépendantes (admin only)
+ ****************************************************************************************/
+@ts_f = {{$timestamp}}
+
+### Login admin — 200
+# @name f_login_admin
+POST {{auth}}/login/
+Content-Type: application/json
+
+{ "email": "{{admin_email}}", "password": "{{pwd}}" }
+###
+### Voir profil admin (is_staff=true) — 200
+GET {{auth}}/me/
+Authorization: Bearer {{f_login_admin.response.body.$.access}}
+###
+### Missing theme — 400
+POST {{events}}/
+Authorization: Bearer {{f_login_admin.response.body.$.access}}
+Content-Type: application/json
+
+{
+  "partner": {{partner_id}},
+  "language": {{language_id}},
+  "difficulty": "easy",
+  "datetime_start": "2025-10-05T18:30:00Z"
+}
+###
+### Difficulty invalide — 400
+POST {{events}}/
+Authorization: Bearer {{f_login_admin.response.body.$.access}}
+Content-Type: application/json
+
+{
+  "partner": {{partner_id}},
+  "language": {{language_id}},
+  "theme": "Bad difficulty {{ts_f}}",
+  "difficulty": "invalid",
+  "datetime_start": "2025-10-06T18:30:00Z"
+}
+###
+### Missing partner — 400
+POST {{events}}/
+Authorization: Bearer {{f_login_admin.response.body.$.access}}
+Content-Type: application/json
+
+{
+  "language": {{language_id}},
+  "theme": "No partner {{ts_f}}",
+  "difficulty": "easy",
+  "datetime_start": "2025-10-07T18:30:00Z"
+}
+###
+### Logout admin — 204
+POST {{auth}}/logout/
+Authorization: Bearer {{f_login_admin.response.body.$.access}}
+Content-Type: application/json
+
+{ "refresh": "{{f_login_admin.response.body.$.refresh}}" }
+
+###
+
+
+/****************************************************************************************
+ * G) Filtres & ordering — indépendants (admin only)
+ ****************************************************************************************/
+### Login admin — 200
+# @name g_login_admin
+POST {{auth}}/login/
+Content-Type: application/json
+
+{ "email": "{{admin_email}}", "password": "{{pwd}}" }
+###
+### Voir profil admin (is_staff=true) — 200
+GET {{auth}}/me/
+Authorization: Bearer {{g_login_admin.response.body.$.access}}
+###
+### List (ordering) — 200
+GET {{events}}/?ordering=-datetime_start
+Authorization: Bearer {{g_login_admin.response.body.$.access}}
+###
+### List filtrée — 200
+GET {{events}}/?language=fr&partner={{partner_id}}&ordering=-datetime_start
+Authorization: Bearer {{g_login_admin.response.body.$.access}}
+###
+### Logout admin — 204
+POST {{auth}}/logout/
+Authorization: Bearer {{g_login_admin.response.body.$.access}}
+Content-Type: application/json
+
+{ "refresh": "{{g_login_admin.response.body.$.refresh}}" }
+
+###
+
+
+/****************************************************************************************
+ * H) Deux non-admins : owner (user2) crée ; autre user (user3) tente PATCH/DELETE -> 403
+ ****************************************************************************************/
+@ts_h2 = {{$timestamp}}
+
+### Login user2 — 200
+# @name h2_login_u2
+POST {{auth}}/login/
+Content-Type: application/json
+
+{ "email": "{{user2_email}}", "password": "{{pwd}}" }
+###
+### Vérifier non admin — 200 (is_staff doit être false)
+GET {{auth}}/me/
+Authorization: Bearer {{h2_login_u2.response.body.$.access}}
+###
+### Create par user2 (owner) — 201
+# @name h2_u2_create
+POST {{events}}/
+Authorization: Bearer {{h2_login_u2.response.body.$.access}}
+Content-Type: application/json
+
+{
+  "partner": {{partner_id}},
+  "language": {{language_id}},
+  "theme": "User2 (owner) {{ts_h2}}",
+  "difficulty": "medium",
+  "datetime_start": "2025-10-09T19:00:00Z"
+}
+###
+### Logout user2 — 204
+POST {{auth}}/logout/
+Authorization: Bearer {{h2_login_u2.response.body.$.access}}
+Content-Type: application/json
+
+{ "refresh": "{{h2_login_u2.response.body.$.refresh}}" }
+###
+### Login user3 (autre non-admin) — 200
+# @name h2_login_u3
+POST {{auth}}/login/
+Content-Type: application/json
+
+{ "email": "{{user3_email}}", "password": "{{pwd}}" }
+###
+### Vérifier non admin — 200 (is_staff doit être false)
+GET {{auth}}/me/
+Authorization: Bearer {{h2_login_u3.response.body.$.access}}
+###
+### Tente PATCH -> 403
+PATCH {{events}}/{{h2_u2_create.response.body.$.id}}/
+Authorization: Bearer {{h2_login_u3.response.body.$.access}}
+Content-Type: application/json
+
+{ "theme": "User3 tries (should 403)" }
+###
+### Tente DELETE -> 403
+DELETE {{events}}/{{h2_u2_create.response.body.$.id}}/
+Authorization: Bearer {{h2_login_u3.response.body.$.access}}
+###
+### Logout user3 — 204
+POST {{auth}}/logout/
+Authorization: Bearer {{h2_login_u3.response.body.$.access}}
+Content-Type: application/json
+
+{ "refresh": "{{h2_login_u3.response.body.$.refresh}}" }
+
+###
+# (Option) Cleanup: l’owner supprime son event — 204
+# @name h2_login_u2_again
+POST {{auth}}/login/
+Content-Type: application/json
+
+{ "email": "{{user2_email}}", "password": "{{pwd}}" }
+###
+DELETE {{events}}/{{h2_u2_create.response.body.$.id}}/
+Authorization: Bearer {{h2_login_u2_again.response.body.$.access}}
+###
+POST {{auth}}/logout/
+Authorization: Bearer {{h2_login_u2_again.response.body.$.access}}
+Content-Type: application/json
+
+{ "refresh": "{{h2_login_u2_again.response.body.$.refresh}}" }
+
+###

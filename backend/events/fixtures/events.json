@@ -3,48 +3,180 @@
     "model": "events.event",
     "pk": 1,
     "fields": {
-      "partner": 1,
-      "language": 2,
-      "theme": "Afterwork en anglais",
-      "difficulty": "easy",
-      "datetime_start": "2025-09-05T18:00:00Z",
-      "price_cents": 700,
-      "status": "pending",
       "organizer": 1,
-      "created_at": "2025-08-16T18:00:00Z",
-      "updated_at": "2025-08-16T18:00:00Z"
+      "partner": 1,
+      "language": 1,
+      "theme": "Afterwork – brise-glace",
+      "difficulty": "easy",
+      "datetime_start": "2025-09-05T18:30:00Z",
+      "photo": null,
+      "title": "Bar Central",
+      "address": "Rue du Marché 10, 1000, Bruxelles, BE",
+      "created_at": "2025-08-17T00:00:00Z",
+      "updated_at": "2025-08-17T00:00:00Z",
+      "price_cents": 700
     }
   },
   {
     "model": "events.event",
     "pk": 2,
     "fields": {
-      "partner": 2,
-      "language": 1,
-      "theme": "Conversation en français autour du café",
-      "difficulty": "medium",
-      "datetime_start": "2025-09-10T19:30:00Z",
-      "price_cents": 0,
-      "status": "pending",
-      "organizer": 2,
-      "created_at": "2025-08-16T18:10:00Z",
-      "updated_at": "2025-08-16T18:10:00Z"
+      "organizer": 1,
+      "partner": 1,
+      "language": 2,
+      "theme": "Coffee chat – small talk",
+      "difficulty": "easy",
+      "datetime_start": "2025-09-06T10:00:00Z",
+      "photo": null,
+      "title": "Bar Central",
+      "address": "Rue du Marché 10, 1000, Bruxelles, BE",
+      "created_at": "2025-08-17T00:05:00Z",
+      "updated_at": "2025-08-17T00:05:00Z",
+      "price_cents": 700
     }
   },
   {
     "model": "events.event",
     "pk": 3,
     "fields": {
-      "partner": 3,
-      "language": 3,
-      "theme": "Soirée espagnole : tapas et discussion",
-      "difficulty": "hard",
-      "datetime_start": "2025-09-15T20:00:00Z",
-      "price_cents": 700,
-      "status": "pending",
       "organizer": 1,
-      "created_at": "2025-08-16T18:20:00Z",
-      "updated_at": "2025-08-16T18:20:00Z"
+      "partner": 1,
+      "language": 3,
+      "theme": "Apéro vocab – voyages",
+      "difficulty": "medium",
+      "datetime_start": "2025-09-06T19:00:00Z",
+      "photo": null,
+      "title": "Bar Central",
+      "address": "Rue du Marché 10, 1000, Bruxelles, BE",
+      "created_at": "2025-08-17T00:10:00Z",
+      "updated_at": "2025-08-17T00:10:00Z",
+      "price_cents": 700
+    }
+  },
+  {
+    "model": "events.event",
+    "pk": 4,
+    "fields": {
+      "organizer": 1,
+      "partner": 1,
+      "language": 4,
+      "theme": "Jeux de rôle – restaurant",
+      "difficulty": "medium",
+      "datetime_start": "2025-09-07T18:30:00Z",
+      "photo": null,
+      "title": "Bar Central",
+      "address": "Rue du Marché 10, 1000, Bruxelles, BE",
+      "created_at": "2025-08-17T00:15:00Z",
+      "updated_at": "2025-08-17T00:15:00Z",
+      "price_cents": 700
+    }
+  },
+  {
+    "model": "events.event",
+    "pk": 5,
+    "fields": {
+      "organizer": 1,
+      "partner": 1,
+      "language": 1,
+      "theme": "Speed chat – présentations",
+      "difficulty": "easy",
+      "datetime_start": "2025-09-08T18:00:00Z",
+      "photo": null,
+      "title": "Bar Central",
+      "address": "Rue du Marché 10, 1000, Bruxelles, BE",
+      "created_at": "2025-08-17T00:20:00Z",
+      "updated_at": "2025-08-17T00:20:00Z",
+      "price_cents": 700
+    }
+  },
+  {
+    "model": "events.event",
+    "pk": 6,
+    "fields": {
+      "organizer": 1,
+      "partner": 1,
+      "language": 2,
+      "theme": "Debate night – tech & IA",
+      "difficulty": "hard",
+      "datetime_start": "2025-09-09T20:00:00Z",
+      "photo": null,
+      "title": "Bar Central",
+      "address": "Rue du Marché 10, 1000, Bruxelles, BE",
+      "created_at": "2025-08-17T00:25:00Z",
+      "updated_at": "2025-08-17T00:25:00Z",
+      "price_cents": 700
+    }
+  },
+  {
+    "model": "events.event",
+    "pk": 7,
+    "fields": {
+      "organizer": 1,
+      "partner": 1,
+      "language": 3,
+      "theme": "Jeux – Taboo & Guess Who",
+      "difficulty": "medium",
+      "datetime_start": "2025-09-10T19:30:00Z",
+      "photo": null,
+      "title": "Bar Central",
+      "address": "Rue du Marché 10, 1000, Bruxelles, BE",
+      "created_at": "2025-08-17T00:30:00Z",
+      "updated_at": "2025-08-17T00:30:00Z",
+      "price_cents": 700
+    }
+  },
+  {
+    "model": "events.event",
+    "pk": 8,
+    "fields": {
+      "organizer": 1,
+      "partner": 1,
+      "language": 4,
+      "theme": "Conversa Quiz – culture",
+      "difficulty": "medium",
+      "datetime_start": "2025-09-11T19:00:00Z",
+      "photo": null,
+      "title": "Bar Central",
+      "address": "Rue du Marché 10, 1000, Bruxelles, BE",
+      "created_at": "2025-08-17T00:35:00Z",
+      "updated_at": "2025-08-17T00:35:00Z",
+      "price_cents": 700
+    }
+  },
+  {
+    "model": "events.event",
+    "pk": 9,
+    "fields": {
+      "organizer": 1,
+      "partner": 1,
+      "language": 2,
+      "theme": "Business English – pitch",
+      "difficulty": "hard",
+      "datetime_start": "2025-09-12T18:30:00Z",
+      "photo": null,
+      "title": "Bar Central",
+      "address": "Rue du Marché 10, 1000, Bruxelles, BE",
+      "created_at": "2025-08-17T00:40:00Z",
+      "updated_at": "2025-08-17T00:40:00Z",
+      "price_cents": 700
+    }
+  },
+  {
+    "model": "events.event",
+    "pk": 10,
+    "fields": {
+      "organizer": 1,
+      "partner": 1,
+      "language": 1,
+      "theme": "Conversation libre – actu",
+      "difficulty": "easy",
+      "datetime_start": "2025-09-13T17:00:00Z",
+      "photo": null,
+      "title": "Bar Central",
+      "address": "Rue du Marché 10, 1000, Bruxelles, BE",
+      "created_at": "2025-08-17T00:45:00Z",
+      "updated_at": "2025-08-17T00:45:00Z",
+      "price_cents": 700
     }
   }
 ]

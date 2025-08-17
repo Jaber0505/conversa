@@ -1,57 +1,68 @@
-from django.db import models
 from django.conf import settings
+from django.db import models
+
 
 class Event(models.Model):
-    DIFFICULTY_CHOICES = [
-        ("easy", "Facile"),
-        ("medium", "Moyen"),
-        ("hard", "Difficile"),
-    ]
+    class Difficulty(models.TextChoices):
+        EASY = "easy", "Débutant"
+        MEDIUM = "medium", "Intermédiaire"
+        HARD = "hard", "Avancé"
 
-    STATUS_CHOICES = [
-        ("pending", "En attente"),
-        ("finished", "Terminé"),
-        ("cancelled", "Annulé"),
-        ("full", "Complet"),
-    ]
+    organizer = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="organized_events",
+    )
+    partner = models.ForeignKey(
+        "partners.Partner",
+        on_delete=models.PROTECT,
+        related_name="events",
+    )
+    language = models.ForeignKey(
+        "languages.Language",
+        on_delete=models.PROTECT,
+        related_name="events",
+    )
 
-    partner = models.ForeignKey("partners.Partner", on_delete=models.PROTECT, related_name="events")
-    language = models.ForeignKey("languages.Language", on_delete=models.PROTECT, related_name="events")
-    organizer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="organized_events")
-
-    theme = models.CharField(max_length=200)
-    difficulty = models.CharField(max_length=10, choices=DIFFICULTY_CHOICES)
+    theme = models.CharField(max_length=120)
+    difficulty = models.CharField(max_length=10, choices=Difficulty.choices)
     datetime_start = models.DateTimeField()
 
-    max_seats = models.PositiveSmallIntegerField(default=6)
-    price_cents = models.PositiveIntegerField(default=700)
-    photo = models.ImageField(upload_to="event_photos/", null=True, blank=True)
+    # Prix fixe: 7 € (en cents)
+    price_cents = models.PositiveIntegerField(default=700, editable=False)
 
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
+    # Photo optionnelle
+    photo = models.ImageField(upload_to="events/", null=True, blank=True)
 
+    # Champs dérivés / méta
+    title = models.CharField(max_length=160, editable=False, blank=True, default="")
+    address = models.CharField(max_length=255, editable=False, blank=True, default="")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ["datetime_start"]
+        ordering = ["-datetime_start"]
         indexes = [
-            models.Index(fields=["datetime_start"]),
-            models.Index(fields=["status"]),
+            models.Index(fields=["partner", "datetime_start"]),
+            models.Index(fields=["language", "datetime_start"]),
         ]
 
-    def __str__(self):
-        return f"{self.partner.name} - {self.language.code} ({self.theme})"
+    def _partner_address_str(self):
+        p = self.partner
+        parts = [
+            getattr(p, "address", None),
+            getattr(p, "postal_code", None),
+            getattr(p, "city", None),
+            getattr(p, "country", None),
+        ]
+        return ", ".join([str(x) for x in parts if x])
 
-    # 🔒 logique métier
-    def clean(self):
-        """
-        - max_seats ≤ 6 sauf si le partenaire a moins de sièges restants
-        - on ne peut pas créer un event si le partenaire n’a pas assez de places
-        """
-        partner_capacity = self.partner.capacity
-        if self.max_seats > 6:
-            self.max_seats = 6
-        if self.max_seats > partner_capacity:
-            self.max_seats = partner_capacity
-        if partner_capacity < 3:
-            raise ValueError("Impossible de créer un événement : le partenaire n’a pas assez de capacité.")
+    def save(self, *args, **kwargs):
+        # Title & address dérivés du partner ; prix verrouillé
+        self.title = getattr(self.partner, "name", "") or ""
+        self.address = self._partner_address_str()
+        self.price_cents = 700
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"[{self.id}] {self.title} – {self.datetime_start:%Y-%m-%d %H:%M}"

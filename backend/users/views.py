@@ -16,7 +16,6 @@ from common.metadata import HateoasMetadata
 User = get_user_model()
 
 
-# REGISTER → crée user + renvoie profil + tokens
 @extend_schema(
     tags=["Auth"],
     request=RegisterSerializer,
@@ -134,7 +133,7 @@ class LogoutView(HateoasOptionsMixin, APIView):
 @extend_schema(
     tags=["Auth"],
     responses={
-        200: UserSerializer,
+        200: UserSerializer,   # => inclut is_staff/is_superuser/is_active
         401: OpenApiResponse(description="Non authentifié"),
     },
 )

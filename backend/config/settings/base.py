@@ -38,8 +38,8 @@ PROJECT_APPS = [
     "languages",
     "users",
     "events",
-    "bookings",
-    "payments",
+    #"bookings",
+    #"payments",
     "partners",
 ]
 

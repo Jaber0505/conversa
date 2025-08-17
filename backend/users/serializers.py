@@ -6,9 +6,16 @@ from languages.models import Language
 
 User = get_user_model()
 
+
 class UserSerializer(serializers.ModelSerializer):
+    # Relations en lecture
     native_langs = serializers.SlugRelatedField(slug_field="code", many=True, read_only=True)
     target_langs = serializers.SlugRelatedField(slug_field="code", many=True, read_only=True)
+
+    # Flags d’admin/état pour visibilité côté client
+    is_staff = serializers.BooleanField(read_only=True)
+    is_superuser = serializers.BooleanField(read_only=True)
+    is_active = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = User
@@ -16,8 +23,11 @@ class UserSerializer(serializers.ModelSerializer):
             "id", "email", "first_name", "last_name", "age",
             "bio", "avatar",
             "address", "city", "country", "latitude", "longitude",
-            "native_langs", "target_langs", "date_joined",
+            "native_langs", "target_langs",
+            "is_staff", "is_superuser", "is_active",
+            "date_joined",
         ]
+
 
 MeSerializer = UserSerializer
 
@@ -46,7 +56,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         many=True,
         help_text="Langues cibles (codes ISO, ex: en)"
     )
-
 
     bio = serializers.CharField(required=False, allow_blank=True, max_length=500, help_text="Bio (≤500)")
     avatar = serializers.URLField(required=False, allow_blank=True, help_text="URL avatar")
@@ -95,4 +104,5 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
 
     def to_representation(self, instance):
+        # Retourne le profil complet (incluant is_staff/is_superuser/is_active)
         return UserSerializer(instance).data
