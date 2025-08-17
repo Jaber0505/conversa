@@ -1,26 +1,22 @@
 <shared-container>
   <shared-headline-bar
-    [title]="event?.title || ('events.detail.title' | t)"
+    [title]="event()?.title ?? ('events.detail.title' | t)"
     [actionLabel]="'common.back' | t"
     [actionLink]="actionHref">
   </shared-headline-bar>
 
-  <!-- Not found -->
-  <div class="state error" *ngIf="!event">
+  <div class="state error" *ngIf="!event()">
     <shared-badge variant="danger" tone="soft">{{ 'events.detail.not_found' | t }}</shared-badge>
     <a [routerLink]="backLink()" class="linky">{{ 'common.back' | t }}</a>
   </div>
 
-  <!-- Détail -->
-  <shared-card *ngIf="event as ev" class="event-card">
-    <!-- media (placeholder visuel) -->
+  <shared-card *ngIf="event() as ev" class="event-card">
     <div media class="thumb" aria-hidden="true"></div>
 
-    <!-- header -->
     <div header class="ev-head">
       <h3 class="h5">{{ ev.title }}</h3>
       <div class="badges">
-        <shared-badge variant="accent" tone="soft">{{ ev.language.name }}</shared-badge>
+        <shared-badge variant="accent" tone="soft">{{ ev.language }}</shared-badge>
         <shared-badge variant="muted" tone="soft">{{ ev.city }}</shared-badge>
         <shared-badge variant="danger" tone="soft" *ngIf="ev.is_cancelled">
           {{ 'events.cancelled' | t }}
@@ -28,7 +24,6 @@
       </div>
     </div>
 
-    <!-- body -->
     <div class="ev-body">
       <div class="row">
         <span class="label">{{ 'events.venue' | t }}</span>
@@ -54,13 +49,22 @@
       </div>
     </div>
 
-    <!-- footer (CTA) -->
     <div footer class="ev-foot">
       <a [routerLink]="backLink()" class="linky">{{ 'common.back' | t }}</a>
-
-      <shared-button type="button" [disabled]="ev.is_cancelled">
+      <shared-button type="button" [disabled]="ev.is_cancelled" (click)="openPopup()">
         {{ ev.is_cancelled ? ('events.cancelled' | t) : ('events.book' | t) }}
       </shared-button>
     </div>
   </shared-card>
 </shared-container>
+
+<app-confirm-purchase *ngIf="confirmPopup"
+                      [titleKey]="'checkout.confirm.title'"
+                      [messageKey]="'checkout.confirm.message'"
+                      [buyKey]="'checkout.buy'"
+                      [cancelKey]="'common.cancel'"
+                      [priceCents]="1500"
+                      [asModal]="true"
+                      (cancel)="closeDialog()"
+                      (buy)="performPurchase()">
+</app-confirm-purchase>

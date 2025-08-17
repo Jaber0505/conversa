@@ -1,7 +1,7 @@
 import { ID } from './common.model';
 
 // Lecture
-export type Event = {
+export type EventDto = {
   id: ID;
   title: string;               // maxLength 140
   city: string;                // maxLength 80

@@ -1,0 +1,29 @@
+<div class="modal" *ngIf="asModal">
+  <div class="overlay" aria-hidden="true"></div>
+
+  <div class="dialog" role="dialog" aria-modal="true"
+       [attr.aria-labelledby]="'confirm-title'"
+       [attr.aria-describedby]="'confirm-desc'">
+
+    <shared-card class="confirm-card">
+      <div header class="head">
+        <h2 id="confirm-title" class="h5">{{ titleKey | t }}</h2>
+        <div class="price" *ngIf="price() as p">{{ p }}</div>
+      </div>
+
+      <div class="body">
+        <p id="confirm-desc" class="muted">{{ messageKey | t }}</p>
+      </div>
+
+      <div footer class="actions">
+        <shared-button type="button" variant="outline" [disabled]="loading" (click)="onCancel()">
+          {{ cancelKey | t }}
+        </shared-button>
+
+        <shared-button type="button" [disabled]="disabled || loading" (click)="onBuy()">
+          {{ loading ? ('common.loading' | t) : (buyKey | t) }}
+        </shared-button>
+      </div>
+    </shared-card>
+  </div>
+</div>

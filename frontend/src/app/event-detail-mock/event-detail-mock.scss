@@ -1,51 +1,73 @@
-/* Carte responsive et lisible */
-.event-card { margin-top: var(--space-4); }
-
-.thumb {
-  height: 180px;
-  border-radius: var(--radius-md);
-  background: linear-gradient(135deg, rgba(0,0,0,.04), rgba(0,0,0,.02));
+/* Plein écran + centrage */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: var(--space-4); /* garde des marges sur mobile */
 }
 
-.ev-head {
-  display: grid;
-  gap: var(--space-2);
-  h3 { margin: 0; }
-  .badges { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+/* Overlay pour mode modal — sans flou */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);   /* obscurcit, mais pas de blur */
+  backdrop-filter: none;         /* <- retire le flou */
+  -webkit-backdrop-filter: none;
+  z-index: 999;                  /* sous le popup */
 }
 
-.ev-body {
-  display: grid;
+/* Le popup au-dessus de l’overlay */
+shared-container, .confirm-card {
+  position: relative;
+  z-index: 1000;
+}
+
+
+/* Boîte de dialogue centrée */
+.dialog {
+  position: relative;
+  width: min(560px, 100%);
+  max-width: 560px;
+  filter: none;
+  animation: pop-in var(--duration-med) ease-out;
+}
+
+/* Carte claire et lisible */
+.confirm-card {
+  background: var(--surface-0);
+  border: 1px solid color-mix(in oklab, var(--color-text), #fff 92%);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-2);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: var(--space-3);
 
-  .row {
-    display: grid;
-    grid-template-columns: 180px 1fr;
-    gap: var(--space-2);
-  }
-  .label { color: var(--color-text); opacity: .7; }
-  .value { color: var(--color-text); }
+  .h5 { margin: 0; }
+  .price { font-weight: 700; }
 }
 
-.ev-foot {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: var(--space-3);
+.body { margin-top: var(--space-2); }
 
-  .linky {
-    background: transparent;
-    border: 0;
-    color: var(--color-secondary);
-    text-decoration: underline;
-    cursor: pointer;
-  }
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
 }
 
 /* Mobile */
 @media (max-width: 640px) {
-  .thumb { height: 140px; }
-  .ev-body .row { grid-template-columns: 1fr; }
-  .ev-foot { flex-direction: column; gap: var(--space-3); align-items: stretch; }
-  .ev-foot shared-button, .ev-foot .linky { width: 100%; text-align: center; }
+  .actions { grid-template-columns: 1fr; }
+}
+
+/* Petite anim d’apparition */
+@keyframes pop-in {
+  from { transform: translateY(8px) scale(.98); opacity: 0; }
+  to   { transform: translateY(0)    scale(1);   opacity: 1; }
 }

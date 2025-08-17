@@ -1,0 +1,37 @@
+/* Plein écran + centrage */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: var(--space-4);
+}
+
+/* Overlay au-dessus de la page, floutant l’arrière-plan */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.35);  /* assombrit */
+  backdrop-filter: blur(4px);    /* flou derrière */
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 999;                  /* sous la boîte de dialogue */
+}
+
+/* Boîte de dialogue centrée */
+.dialog {
+  position: relative;
+  width: min(560px, 100%);
+  max-width: 560px;
+  z-index: 1000;                 /* au-dessus de l’overlay */
+  animation: pop-in var(--duration-med) ease-out;
+}
+
+.confirm-card { /* tu gardes tes styles existants */
+  background: var(--surface-0);
+  border: 1px solid color-mix(in oklab, var(--color-text), #fff 92%);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-2);
+}
+
+/* le reste de tes règles (.head, .body, .actions, @media, @keyframes) reste identique */
