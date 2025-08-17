@@ -74,3 +74,7 @@ class EventViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(organizer=self.request.user)
+
+    def get_throttles(self):
+        self.throttle_scope = "events_read" if self.action in ("list", "retrieve") else "events_write"
+        return super().get_throttles()

@@ -118,7 +118,15 @@ REST_FRAMEWORK = {
 }
 REST_FRAMEWORK.update({
     "DEFAULT_THROTTLE_CLASSES": ["rest_framework.throttling.ScopedRateThrottle"],
-    "DEFAULT_THROTTLE_RATES": { "auth_login": "10/min", "auth_refresh": "30/min"}
+    "DEFAULT_THROTTLE_RATES": {
+        # Auth
+        "auth_register": "5/min",
+        "auth_login": "10/min",
+        "auth_refresh": "30/min",
+        # Events
+        "events_read": "120/min",
+        "events_write": "20/min",
+    },
 })
 REST_FRAMEWORK["EXCEPTION_HANDLER"] = "config.api_errors.drf_exception_handler"
 

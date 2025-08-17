@@ -25,6 +25,7 @@ User = get_user_model()
     },
 )
 class RegisterView(HateoasOptionsMixin, generics.CreateAPIView):
+    throttle_scope = "auth_register"  # <— ajouté
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
     permission_classes = [permissions.AllowAny]
@@ -45,7 +46,6 @@ class RegisterView(HateoasOptionsMixin, generics.CreateAPIView):
         )
 
 
-# LOGIN → email + password → tokens
 @extend_schema(
     tags=["Auth"],
     request={"application/json": {"email": "string", "password": "string"}},
@@ -55,6 +55,7 @@ class RegisterView(HateoasOptionsMixin, generics.CreateAPIView):
     },
 )
 class EmailLoginView(HateoasOptionsMixin, APIView):
+    throttle_scope = "auth_login"
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
     metadata_class = HateoasMetadata
@@ -71,7 +72,6 @@ class EmailLoginView(HateoasOptionsMixin, APIView):
         return Response({"refresh": str(refresh), "access": str(refresh.access_token)}, status=200)
 
 
-# REFRESH → rotation + blacklist (activée en settings)
 @extend_schema(
     tags=["Auth"],
     request={"application/json": {"refresh": "string"}},
@@ -81,6 +81,7 @@ class EmailLoginView(HateoasOptionsMixin, APIView):
     },
 )
 class RefreshView(HateoasOptionsMixin, TokenRefreshView):
+    throttle_scope = "auth_refresh"
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
     metadata_class = HateoasMetadata
@@ -88,7 +89,6 @@ class RefreshView(HateoasOptionsMixin, TokenRefreshView):
     extra_hateoas = {"related": {"login": "/api/v1/auth/login/"}}
 
 
-# LOGOUT → invalide refresh + revoke access
 @extend_schema(
     tags=["Auth"],
     request={"application/json": {"refresh": "string"}},
@@ -100,7 +100,6 @@ class RefreshView(HateoasOptionsMixin, TokenRefreshView):
 class LogoutView(HateoasOptionsMixin, APIView):
     permission_classes = [permissions.IsAuthenticated]
     metadata_class = HateoasMetadata
-
     extra_hateoas = {"related": {"login": "/api/v1/auth/login/"}}
 
     def post(self, request, *args, **kwargs):
@@ -108,32 +107,34 @@ class LogoutView(HateoasOptionsMixin, APIView):
         if not refresh_token:
             return Response({"detail": "Refresh token required."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # 1) Blacklist refresh
+        # 1) Blacklist du refresh
         try:
             token = RefreshToken(refresh_token)
             token.blacklist()
         except Exception:
             return Response({"detail": "Invalid or expired token."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # 2) Révoque access courant (denylist)
+        # 2) Révoquer l'ACCESS courant (denylist) — exige Authorization
+        raw_access = str(request.auth) if request.auth else None
+        if not raw_access:
+            return Response({"detail": "Authorization header with access token required."},
+                            status=status.HTTP_400_BAD_REQUEST)
+
         try:
             from rest_framework_simplejwt.tokens import AccessToken
             from .models import RevokedAccessToken
-
-            raw_access = str(request.auth)
             jti = AccessToken(raw_access)["jti"]
             RevokedAccessToken.objects.get_or_create(jti=jti)
         except Exception:
-            pass
+            return Response({"detail": "Invalid access token."}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-# ME → profil courant
 @extend_schema(
     tags=["Auth"],
     responses={
-        200: UserSerializer,   # => inclut is_staff/is_superuser/is_active
+        200: UserSerializer,
         401: OpenApiResponse(description="Non authentifié"),
     },
 )

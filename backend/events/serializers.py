@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from rest_framework.reverse import reverse
+from django.utils import timezone
 from .models import Event
 
 
@@ -44,12 +45,18 @@ class EventSerializer(serializers.ModelSerializer):
             "datetime_start": {"required": True},
         }
 
+    def validate(self, attrs):
+        theme = attrs.get("theme", getattr(self.instance, "theme", "")).strip()
+        if not theme:
+            raise serializers.ValidationError({"theme": "Obligatoire (non vide)."})
+        dt = attrs.get("datetime_start", getattr(self.instance, "datetime_start", None))
+        if dt and dt <= timezone.now():
+            raise serializers.ValidationError({"datetime_start": "Doit être dans le futur."})
+        return attrs
+
     def update(self, instance, validated_data):
-        # On ne laisse jamais PATCH/PUT l’organizer/price/title/address
-        validated_data.pop("organizer", None)
-        validated_data.pop("price_cents", None)
-        validated_data.pop("title", None)
-        validated_data.pop("address", None)
+        for locked in ("organizer", "price_cents", "title", "address"):
+            validated_data.pop(locked, None)
         return super().update(instance, validated_data)
 
     def get__links(self, obj):
@@ -59,7 +66,6 @@ class EventSerializer(serializers.ModelSerializer):
             "list": reverse("event-list", request=request),
             "partner": None,
         }
-        # partner-detail si existant
         try:
             links["partner"] = reverse("partner-detail", args=[obj.partner_id], request=request)
         except Exception:

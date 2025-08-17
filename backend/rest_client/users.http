@@ -1,15 +1,47 @@
-@base = http://localhost:8000/api/v1/auth
-@pwd = Test1234!
-@ts = {{$timestamp}}
-@email = bob{{ts}}@example.com
+@host = http://localhost:8000
+@apiprefix = api/v1
+@api = api
+@base = {{host}}/{{apiprefix}}
+@baseDocs = {{host}}/{{api}}
+@auth = {{base}}/auth
 
-### Register — 201
-# @name register
-POST {{base}}/register/
+@admin_email = admin@local
+@user2_email = alice@example.com
+@user3_email = bob@example.com
+@pwd = P@ssword1234
+@ts = {{$timestamp}}
+
+
+/****************************************************************************************
+ * A) Sanity — Swagger OK ?
+ ****************************************************************************************/
+### 200
+GET {{baseDocs}}/docs/
+
+###
+
+
+/****************************************************************************************
+ * B) /auth/me/ — 401 sans token
+ ****************************************************************************************/
+### 401
+GET {{auth}}/me/
+
+###
+
+
+/****************************************************************************************
+ * C) Parcours simple : register → me → refresh → me → logout → me(401) → login → me
+ ****************************************************************************************/
+@reg_email_simple = user_simple_{{ts}}@example.com
+
+### 201 — Register
+# @name c_register
+POST {{auth}}/register/
 Content-Type: application/json
 
 {
-  "email": "{{email}}",
+  "email": "{{reg_email_simple}}",
   "password": "{{pwd}}",
   "first_name": "Bob",
   "last_name": "Dupont",
@@ -19,43 +51,256 @@ Content-Type: application/json
   "consent_given": true
 }
 
-### Me direct — 200
-GET {{base}}/me/
-Authorization: Bearer {{register.response.body.$.access}}
+###
+### 200 — Me (access initial)
+GET {{auth}}/me/
+Authorization: Bearer {{c_register.response.body.$.access}}
 
-### Refresh — 200
-# @name refresh
-POST {{base}}/refresh/
+###
+### 200 — Refresh
+# @name c_refresh
+POST {{auth}}/refresh/
 Content-Type: application/json
 
 {
-  "refresh": "{{register.response.body.$.refresh}}"
+  "refresh": "{{c_register.response.body.$.refresh}}"
 }
 
-### Logout — 204 (utilise le dernier refresh)
-POST {{base}}/logout/
-Authorization: Bearer {{register.response.body.$.access}}
+###
+### 200 — Me (avec le NOUVEL access)
+GET {{auth}}/me/
+Authorization: Bearer {{c_refresh.response.body.$.access}}
+
+###
+### 204 — Logout (révoque le refresh et l’ACCESS utilisé ici)
+POST {{auth}}/logout/
+Authorization: Bearer {{c_refresh.response.body.$.access}}
 Content-Type: application/json
 
 {
-  "refresh": "{{refresh.response.body.$.refresh}}"
+  "refresh": "{{c_refresh.response.body.$.refresh}}"
 }
 
-### Me après logout — 401 (strict)
-GET {{base}}/me/
-Authorization: Bearer {{register.response.body.$.access}}
+###
+### 401 — Me après logout (tester le MÊME access que celui révoqué)
+GET {{auth}}/me/
+Authorization: Bearer {{c_refresh.response.body.$.access}}
 
-### Login — 200 (aucun Authorization ici)
-# @name login
-POST {{base}}/login/
+###
+### 200 — Login (aucun Authorization ici)
+# @name c_login_again
+POST {{auth}}/login/
 Content-Type: application/json
-Authorization:
 
 {
-  "email": "{{register.response.body.$.email}}",
+  "email": "{{c_register.response.body.$.email}}",
   "password": "{{pwd}}"
 }
 
-### Me après login — 200
-GET {{base}}/me/
-Authorization: Bearer {{login.response.body.$.access}}
+###
+### 200 — Me après login
+GET {{auth}}/me/
+Authorization: Bearer {{c_login_again.response.body.$.access}}
+
+###
+
+
+/****************************************************************************************
+ * D) Login end-to-end (indépendant) — login admin → me → logout
+ ****************************************************************************************/
+### 200 — Login admin
+# @name d_login_admin
+POST {{auth}}/login/
+Content-Type: application/json
+
+{ "email": "{{admin_email}}", "password": "{{pwd}}" }
+
+###
+### 200 — Me (vérifier is_staff=true)
+GET {{auth}}/me/
+Authorization: Bearer {{d_login_admin.response.body.$.access}}
+
+###
+### 204 — Logout
+POST {{auth}}/logout/
+Authorization: Bearer {{d_login_admin.response.body.$.access}}
+Content-Type: application/json
+
+{ "refresh": "{{d_login_admin.response.body.$.refresh}}" }
+
+
+###
+
+/****************************************************************************************
+ * E) Refresh token (indépendant) — login → refresh → me avec le nouveau access
+ ****************************************************************************************/
+### 200 — Login user2
+# @name e_login_u2
+POST {{auth}}/login/
+Content-Type: application/json
+
+{ "email": "{{user2_email}}", "password": "{{pwd}}" }
+
+###
+### 200 — Refresh
+# @name e_refresh
+POST {{auth}}/refresh/
+Content-Type: application/json
+
+{ "refresh": "{{e_login_u2.response.body.$.refresh}}" }
+
+###
+### 200 — Me (avec le nouveau access)
+GET {{auth}}/me/
+Authorization: Bearer {{e_refresh.response.body.$.access}}
+
+###
+### 204 — Logout
+POST {{auth}}/logout/
+Authorization: Bearer {{e_refresh.response.body.$.access}}
+Content-Type: application/json
+
+{ "refresh": "{{e_refresh.response.body.$.refresh}}" }
+
+###
+
+/****************************************************************************************
+ * F) Validations register (indépendant) — 400 attendus
+ ****************************************************************************************/
+@ts_f = {{$timestamp}}
+
+### 400 — consent_missing
+POST {{auth}}/register/
+Content-Type: application/json
+
+{
+  "email": "val1_{{ts_f}}@example.com",
+  "password": "{{pwd}}",
+  "first_name": "No",
+  "last_name": "Consent",
+  "age": 22,
+  "native_langs": ["fr"],
+  "target_langs": ["en"]
+}
+
+###
+### 400 — age < 18
+POST {{auth}}/register/
+Content-Type: application/json
+
+{
+  "email": "val2_{{ts_f}}@example.com",
+  "password": "{{pwd}}",
+  "first_name": "Too",
+  "last_name": "Young",
+  "age": 15,
+  "native_langs": ["fr"],
+  "target_langs": ["en"],
+  "consent_given": true
+}
+
+###
+### 400 — missing langs
+POST {{auth}}/register/
+Content-Type: application/json
+
+{
+  "email": "val3_{{ts_f}}@example.com",
+  "password": "{{pwd}}",
+  "first_name": "No",
+  "last_name": "Langs",
+  "age": 22,
+  "native_langs": [],
+  "target_langs": [],
+  "consent_given": true
+}
+
+
+/****************************************************************************************
+ * G) Throttling register — 429 sur la 6e requête dans 60s (rate=5/min)
+ ****************************************************************************************/
+@ts_g = {{$timestamp}}
+
+### 201 (r1)
+POST {{auth}}/register/
+Content-Type: application/json
+
+{
+  "email": "r1_{{ts_g}}@example.com",
+  "password": "{{pwd}}",
+  "first_name": "R1",
+  "last_name": "Test",
+  "age": 20,
+  "native_langs": ["fr"],
+  "target_langs": ["en"],
+  "consent_given": true
+}
+
+###
+### 201 (r2)
+POST {{auth}}/register/
+Content-Type: application/json
+
+{
+  "email": "r2_{{ts_g}}@example.com",
+  "password": "{{pwd}}",
+  "first_name": "R2",
+  "last_name": "Test",
+  "age": 20,
+  "native_langs": ["fr"],
+  "target_langs": ["en"],
+  "consent_given": true
+}
+
+###
+### 201 (r3)
+POST {{auth}}/register/
+Content-Type: application/json
+
+{
+  "email": "r3_{{ts_g}}@example.com",
+  "password": "{{pwd}}",
+  "first_name": "R3",
+  "last_name": "Test",
+  "age": 20,
+  "native_langs": ["fr"],
+  "target_langs": ["en"],
+  "consent_given": true
+}
+
+###
+### 201 (r4)
+POST {{auth}}/register/
+Content-Type: application/json
+
+{
+  "email": "r4_{{ts_g}}@example.com",
+  "password": "{{pwd}}",
+  "first_name": "R4",
+  "last_name": "Test",
+  "age": 20,
+  "native_langs": ["fr"],
+  "target_langs": ["en"],
+  "consent_given": true
+}
+
+###
+### 201 (r5)
+POST {{auth}}/register/
+Content-Type: application/json
+
+{
+  "email": "r5_{{ts_g}}@example.com",
+  "password": "{{pwd}}",
+  "first_name": "R5",
+  "last_name": "Test",
+  "age": 20,
+  "native_langs": ["fr"],
+  "target_langs": ["en"],
+  "consent_given": true
+}
+
+###
+### 429 attendu (r6)
+POST {{auth}}/register/
+Content-Type: application/jso

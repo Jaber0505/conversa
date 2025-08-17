@@ -409,3 +409,106 @@ Content-Type: application/json
 { "refresh": "{{h2_login_u2_again.response.body.$.refresh}}" }
 
 ###
+
+
+/****************************************************************************************
+ * I) Throttling — read vs write scopes (smoke test)
+ ****************************************************************************************/
+### Login admin — 200
+# @name i_login_admin
+POST {{auth}}/login/
+Content-Type: application/json
+
+{ "email": "{{admin_email}}", "password": "{{pwd}}" }
+###
+# 1 lecture (OK)
+GET {{events}}/?ordering=-datetime_start
+Authorization: Bearer {{i_login_admin.response.body.$.access}}
+###
+# 1 écriture (OK)
+POST {{events}}/
+Authorization: Bearer {{i_login_admin.response.body.$.access}}
+Content-Type: application/json
+
+{
+  "partner": {{partner_id}},
+  "language": {{language_id}},
+  "theme": "Throttle write {{$timestamp}}",
+  "difficulty": "easy",
+  "datetime_start": "2099-10-01T18:30:00Z"
+}
+###
+POST {{auth}}/logout/
+Authorization: Bearer {{i_login_admin.response.body.$.access}}
+Content-Type: application/json
+
+{ "refresh": "{{i_login_admin.response.body.$.refresh}}" }
+
+###
+
+
+/****************************************************************************************
+ * J) Validation — date passée, thème vide, mass assignment ignoré
+ ****************************************************************************************/
+### Login admin — 200
+# @name j_login_admin
+POST {{auth}}/login/
+Content-Type: application/json
+
+{ "email": "{{admin_email}}", "password": "{{pwd}}" }
+###
+# Date passée -> 400
+POST {{events}}/
+Authorization: Bearer {{j_login_admin.response.body.$.access}}
+Content-Type: application/json
+
+{
+  "partner": {{partner_id}},
+  "language": {{language_id}},
+  "theme": "Past date",
+  "difficulty": "easy",
+  "datetime_start": "2000-01-01T00:00:00Z"
+}
+###
+# Thème vide -> 400
+POST {{events}}/
+Authorization: Bearer {{j_login_admin.response.body.$.access}}
+Content-Type: application/json
+
+{
+  "partner": {{partner_id}},
+  "language": {{language_id}},
+  "theme": "   ",
+  "difficulty": "easy",
+  "datetime_start": "2099-10-01T18:30:00Z"
+}
+###
+# Tentative de mass assignment -> 201 (mais price=700, organizer/title/address ignorés)
+# @name j_create_mass
+POST {{events}}/
+Authorization: Bearer {{j_login_admin.response.body.$.access}}
+Content-Type: application/json
+
+{
+  "partner": {{partner_id}},
+  "language": {{language_id}},
+  "theme": "Mass assign test {{$timestamp}}",
+  "difficulty": "easy",
+  "datetime_start": "2099-10-02T18:30:00Z",
+  "price_cents": 0,
+  "organizer": 999,
+  "title": "Hacker title",
+  "address": "Hacker address"
+}
+###
+# Vérifie que price=700, title/address = depuis le partner, organizer = toi
+GET {{events}}/{{j_create_mass.response.body.$.id}}/
+Authorization: Bearer {{j_login_admin.response.body.$.access}}
+###
+POST {{auth}}/logout/
+Authorization: Bearer {{j_login_admin.response.body.$.access}}
+Content-Type: application/json
+
+{ "refresh": "{{j_login_admin.response.body.$.refresh}}" }
+
+###
