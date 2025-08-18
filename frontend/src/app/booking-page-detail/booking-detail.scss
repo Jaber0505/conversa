@@ -1,0 +1,75 @@
+/* Plein écran + centrage */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: var(--space-4);
+}
+
+/* Overlay floutant l’arrière-plan */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.35);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 999;
+}
+
+/* Boîte de dialogue centrée */
+.dialog {
+  position: relative;
+  width: min(560px, 100%);
+  max-width: 560px;
+  z-index: 1000;
+  animation: pop-in var(--duration-med) ease-out;
+}
+
+.booking-card {
+  background: var(--surface-0);
+  border: 1px solid color-mix(in oklab, var(--color-text), #fff 92%);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-2);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+
+  .h5 { margin: 0; }
+}
+
+.body {
+  display: grid;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+
+  .row {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: var(--space-3);
+
+    .label { color: var(--color-text); opacity: .7; }
+    .value { font-weight: 600; }
+  }
+
+  @media (max-width: 640px) {
+    .row { grid-template-columns: 1fr; }
+  }
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+@keyframes pop-in {
+  from { transform: translateY(8px) scale(.98); opacity: 0; }
+  to   { transform: translateY(0)    scale(1);   opacity: 1; }
+}

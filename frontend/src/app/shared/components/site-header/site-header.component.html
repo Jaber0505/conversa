@@ -7,6 +7,7 @@
     <nav class="nav desktop-only" [attr.aria-label]="'common.nav.menu' | t">
       <a class="link" [routerLink]="['/', langCode(), 'faq']" routerLinkActive="active">{{ 'nav.faq' | t }}</a>
       <a class="link" [routerLink]="['/', langCode(), 'about']" routerLinkActive="active">{{ 'nav.about' | t }}</a>
+      <a *ngIf="tokens?.access" class="link" [routerLink]="['/', langCode(), 'bookings']" routerLinkActive="active">{{ 'nav.booking' | t }}</a>
       <a *ngIf="tokens?.access" class="link" [routerLink]="['/', langCode(), 'events']" routerLinkActive="active">{{ 'nav.events' | t }}</a>
     </nav>
     <div class="lang-wrap">
