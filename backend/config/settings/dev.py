@@ -1,16 +1,20 @@
-# backend/config/settings/dev.py
 """
 Configuration de développement.
 PostgreSQL local (Docker), DEBUG activé, CORS/CSRF ouverts pour Angular (localhost:4200),
 journalisation verbeuse.
 """
-
 from .base import *  # noqa
 import os
 
+def _truthy(v: str) -> bool: return str(v).strip().lower() in {"1","true","yes","y","on"}
+# On lit/écrase les flags ici si nécessaire (sinon hérités de base.py)
+STRIPE_CONFIRM_SIMULATOR_ENABLED = _truthy(os.getenv("STRIPE_CONFIRM_SIMULATOR_ENABLED", os.getenv("SIMULATOR", "1")))
+STRIPE_RAW_CARD_SIM_ENABLED = _truthy(os.getenv("STRIPE_RAW_CARD_SIM_ENABLED", "1"))
+STRIPE_PI_ALLOW_REDIRECTS = os.getenv("STRIPE_PI_ALLOW_REDIRECTS", "always")
+
 DEBUG = True
 SECRET_KEY = os.getenv("SECRET_KEY", "dev-insecure-key")
-ALLOWED_HOSTS = ["*"] #["localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["*"]
 
 DATABASES = {
     "default": {
@@ -28,7 +32,6 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",
     "http://127.0.0.1:4200",
 ]
-
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:4200",
     "http://127.0.0.1:4200",

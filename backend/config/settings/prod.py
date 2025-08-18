@@ -1,16 +1,19 @@
-# backend/config/settings/prod.py
 """
 Configuration de production (Render).
 Sécurité renforcée (HTTPS via proxy, cookies sécurisés, HSTS), CORS/CSRF stricts,
 hôtes autorisés limités, base PostgreSQL définie par variables d’environnement.
 """
-
 from .base import *  # noqa
 import os
 
+def _truthy(v: str) -> bool: return str(v).strip().lower() in {"1","true","yes","y","on"}
+
+STRIPE_CONFIRM_SIMULATOR_ENABLED = _truthy(os.getenv("STRIPE_CONFIRM_SIMULATOR_ENABLED", "1"))
+STRIPE_RAW_CARD_SIM_ENABLED = _truthy(os.getenv("STRIPE_RAW_CARD_SIM_ENABLED", "0"))
+STRIPE_PI_ALLOW_REDIRECTS = os.getenv("STRIPE_PI_ALLOW_REDIRECTS", "always")
+
 DEBUG = False
 SECRET_KEY = os.getenv("SECRET_KEY")
-
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
 
 DATABASES = {
@@ -28,7 +31,7 @@ DATABASES["default"]["CONN_MAX_AGE"] = 60
 
 CORS_ALLOWED_ORIGINS = os.getenv("DJANGO_CORS_ALLOWED_ORIGINS", "").split(",") if os.getenv("DJANGO_CORS_ALLOWED_ORIGINS") else []
 CSRF_TRUSTED_ORIGINS = os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",") if os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS") else []
-REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] = ["rest_framework.renderers.JSONRenderer"]
+REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] = ["rest_framework.renderers.JSONRenderer"]  # noqa: F405
 
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True

@@ -1,33 +1,40 @@
-from uuid import UUID
 from rest_framework import serializers
-from bookings.models import Booking
 
 class CreateIntentSerializer(serializers.Serializer):
-    booking_public_id = serializers.CharField(required=False, help_text="UUID public de la réservation (préféré).")
-    booking = serializers.IntegerField(required=False, min_value=1, help_text="ID numérique (rétro-compat).")
+    """
+    Utilisé par la route 'réelle' /payments/create-intent/
+    Accepte soit un booking_public_id (UUID), soit un booking (PK int).
+    """
+    booking_public_id = serializers.UUIDField(required=False)
+    booking = serializers.IntegerField(required=False)
+    return_url = serializers.URLField(required=False, allow_blank=True)
 
     def validate(self, attrs):
         if not attrs.get("booking_public_id") and not attrs.get("booking"):
-            raise serializers.ValidationError("Fournir booking_public_id (UUID) ou booking (ID).")
+            raise serializers.ValidationError("booking_public_id ou booking est requis.")
         return attrs
 
 
-class ConfirmIntentSerializer(serializers.Serializer):
-    booking_public_id = serializers.CharField(required=False)
-    booking = serializers.IntegerField(required=False, min_value=1)
-    payment_method = serializers.CharField(required=False, default="pm_card_visa")
+class ConfirmSimulatorSerializer(serializers.Serializer):
+    """
+    Utilisé par la route simulateur /payments/sim/confirm/ (tests .http)
+    """
+    booking_public_id = serializers.UUIDField()
+    # 1) PaymentMethod test (pm_card_visa…) OU
+    payment_method = serializers.CharField(required=False, allow_blank=True)
+    # 2) Carte brute (si STRIPE_RAW_CARD_SIM_ENABLED)
+    card_number = serializers.CharField(required=False, allow_blank=True)
+    exp_month = serializers.IntegerField(required=False)
+    exp_year = serializers.IntegerField(required=False)
+    cvc = serializers.CharField(required=False, allow_blank=True)
+
+    return_url = serializers.URLField(required=False, allow_blank=True)
 
     def validate(self, attrs):
-        request = self.context["request"]
-        ident = attrs.get("booking_public_id") or attrs.get("booking")
-        if not ident:
-            raise serializers.ValidationError({"booking_public_id": ["Obligatoire (ou 'booking' id)."]})
-        try:
-            UUID(str(ident))
-            booking = Booking.objects.filter(public_id=ident, user=request.user).first()
-        except Exception:
-            booking = Booking.objects.filter(pk=ident, user=request.user).first()
-        if not booking:
-            raise serializers.ValidationError({"booking_public_id": ["Réservation introuvable."]})
-        attrs["__booking"] = booking
+        pm = attrs.get("payment_method")
+        has_card = all(k in attrs and attrs[k] for k in ("card_number", "exp_month", "exp_year", "cvc"))
+        if not pm and not has_card:
+            raise serializers.ValidationError(
+                "Fournir payment_method OU (card_number, exp_month, exp_year, cvc)."
+            )
         return attrs

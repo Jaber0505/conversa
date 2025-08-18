@@ -1,443 +1,261 @@
-@host = http://localhost:8000
-@apiprefix = api/v1
-@api = api
-@base = {{host}}/{{apiprefix}}
-@baseDocs = {{host}}/{{api}}
+### Conversa – mini scénarios .http (Auth, Languages, Partners, Events, Bookings, Payments)
+### Prérequis:
+### - DJANGO_ENABLE_PAYMENT_SIMULATOR=1  (ou ENABLE_PAYMENT_SIMULATOR=1)
+### - STRIPE_SECRET_KEY (clé test)
+### - Fixtures: Languages (codes actifs), Partners (≥1 actif)
+### - Extension VS Code "REST Client"
 
-@auth = {{base}}/auth
-@events = {{base}}/events
-@bookings = {{base}}/bookings
-@payments = {{base}}/payments
+### ============================================================
+### 0) ENV
+### ============================================================
+@HOST = http://localhost:8000
+@BASE = {{HOST}}/api/v1
+@AUTH = {{BASE}}/auth
+@LANGS = {{BASE}}/languages
+@PARTNERS = {{BASE}}/partners
+@EVENTS = {{BASE}}/events
+@BOOKINGS = {{BASE}}/bookings
+@PAYMENTS = {{BASE}}/payments
+@RETURN_URL = http://localhost:3000/stripe/return
 
-# Évènements existants en base
-@event_paid_id = 3
-@event_free_id = 2
+# Mails (exemples fixes ; adapte si collision)
+@ORG_EMAIL = org_30@example.com
+@PART_EMAIL = part_31@example.com
+@PWD = P@ssword1234
 
-# Génère des emails uniques à chaque run
-@ts = 5
-@u2_email = user2_{{ts}}@example.com
-@u3_email = user3_{{ts}}@example.com
-@pwd = P@ssword1234
+# Codes langues exigés par /auth/register (via fixtures)
+@ORG_NATIVE = fr
+@ORG_TARGET = en
+@PART_NATIVE = en
+@PART_TARGET = fr
 
-
-/****************************************************************************************
- * A) Swagger / Docs
- ****************************************************************************************/
-### 200
-GET {{baseDocs}}/docs/
+# IDs simples (évite les JSONPath dynamiques)
+@PARTNER_ID = 1
+@LANG_ID = 1
 ###
 
-
-/****************************************************************************************
- * B) Non authentifié -> 401
- ****************************************************************************************/
-### 401 list bookings
-GET {{bookings}}
+### ============================================================
+### A) LANGUAGES — lister les codes actifs (no auth)
+### ============================================================
+# @name langs_list
+GET {{LANGS}}/
 ###
 
-### 401 create-intent
-POST {{payments}}/create-intent/
-Content-Type: application/json
-
-{ "booking_public_id": "00000000-0000-0000-0000-000000000000" }
-###
-
-
-/****************************************************************************************
- * C) Flow PAYANT (inscription user2) : signup -> login -> booking -> intent -> confirm (simulateur) -> verify
- ****************************************************************************************/
-### C-0) Signup user2 — 201
-# @name c0_signup_u2
-POST {{auth}}/register/
+### ============================================================
+### B) AUTH (ORGANISATEUR) — register + login + me
+### ============================================================
+# @name org_register
+POST {{AUTH}}/register/
 Content-Type: application/json
 
 {
-  "email": "{{u2_email}}",
-  "password": "{{pwd}}",
-  "first_name": "Alice",
-  "last_name": "Tester",
-  "age": 25,
+  "email": "{{ORG_EMAIL}}",
+  "password": "{{PWD}}",
+  "first_name": "Org",
+  "last_name": "Owner",
+  "age": 21,
   "consent_given": true,
-  "native_langs": ["fr"],
-  "target_langs": ["en", "nl"]
+  "native_langs": ["{{ORG_NATIVE}}"],
+  "target_langs": ["{{ORG_TARGET}}"]
 }
 ###
 
-### C-1) Login user2 — 200
-# @name c1_login_u2
-POST {{auth}}/login/
-Content-Type: application/json
-
-{ "email": "{{u2_email}}", "password": "{{pwd}}" }
-###
-
-### C-2) Mon profil — 200
-GET {{auth}}/me/
-Authorization: Bearer {{c1_login_u2.response.body.$.access}}
-###
-
-### C-3) Créer une réservation PENDING — 201
-# @name c3_create_booking
-POST {{bookings}}/
-Authorization: Bearer {{c1_login_u2.response.body.$.access}}
+# @name org_login
+POST {{AUTH}}/login/
 Content-Type: application/json
 
 {
-  "event": {{event_paid_id}},
-  "quantity": 1
+  "email": "{{ORG_EMAIL}}",
+  "password": "{{PWD}}"
 }
 ###
 
-### C-4) Créer / réutiliser PaymentIntent — 201
-# @name c4_create_intent
-POST {{payments}}/create-intent/
-Authorization: Bearer {{c1_login_u2.response.body.$.access}}
+# @name org_me
+GET {{AUTH}}/me/
+Authorization: Bearer {{org_login.response.body.$.access}}
+###
+
+### ============================================================
+### C) PARTNERS — lister (auth requise)
+### ============================================================
+# @name partners_list
+GET {{PARTNERS}}/
+Authorization: Bearer {{org_login.response.body.$.access}}
+###
+
+# (optionnel) détail du partner choisi
+GET {{PARTNERS}}/{{PARTNER_ID}}/
+Authorization: Bearer {{org_login.response.body.$.access}}
+###
+
+### ============================================================
+### D) EVENTS (ORGA) — créer DRAFT (+ auto-booking PENDING)
+### ============================================================
+# @name ev_create
+POST {{EVENTS}}/
+Authorization: Bearer {{org_login.response.body.$.access}}
 Content-Type: application/json
 
 {
-  "booking_public_id": "{{c3_create_booking.response.body.$.public_id}}"
+  "partner": {{PARTNER_ID}},
+  "language": {{LANG_ID}},
+  "theme": "Soirée FR {{$timestamp}}",
+  "difficulty": "easy",
+  "datetime_start": "2099-12-31T20:00:00Z"
 }
 ###
 
-### C-5) Confirmer comme le front (sans Stripe CLI) — 200
-# @name c5_confirm
-POST {{payments}}/confirm/
-Authorization: Bearer {{c1_login_u2.response.body.$.access}}
+# Détail (doit être DRAFT)
+GET {{EVENTS}}/{{ev_create.response.body.$.id}}/
+Authorization: Bearer {{org_login.response.body.$.access}}
+###
+
+# Auto-booking ORGANISATEUR (PENDING) pour cet event
+# @name org_pending
+GET {{BOOKINGS}}/?status=PENDING&event={{ev_create.response.body.$.id}}
+Authorization: Bearer {{org_login.response.body.$.access}}
+###
+
+### ============================================================
+### E) PAYMENTS (ORGA) — create-intent + simulateur → event PUBLISHED
+### ============================================================
+# (optionnel) config Stripe (AllowAny)
+GET {{PAYMENTS}}/config/
+###
+
+# @name org_ci
+POST {{PAYMENTS}}/create-intent/
+Authorization: Bearer {{org_login.response.body.$.access}}
 Content-Type: application/json
 
 {
-  "booking_public_id": "{{c3_create_booking.response.body.$.public_id}}",
-  "payment_method": "pm_card_visa"
+  "booking": {{org_pending.response.body.$.results[0].id}},
+  "return_url": "{{RETURN_URL}}"
 }
 ###
 
-### C-6) Vérifier -> CONFIRMED — 200
-GET {{bookings}}/{{c3_create_booking.response.body.$.public_id}}/
-Authorization: Bearer {{c1_login_u2.response.body.$.access}}
-###
-
-### C-7) Logout user2 — 204
-POST {{auth}}/logout/
-Authorization: Bearer {{c1_login_u2.response.body.$.access}}
-Content-Type: application/json
-
-{ "refresh": "{{c1_login_u2.response.body.$.refresh}}" }
-###
-
-
-/****************************************************************************************
- * D) Flow GRATUIT (inscription user2 bis) : signup -> login -> booking -> intent (free) -> verify
- ****************************************************************************************/
-### D-0) Signup user2_bis — 201
-# @name d0_signup_u2b
-POST {{auth}}/register/
+# Confirmer via simulateur unique (UUID requis)
+POST {{PAYMENTS}}/sim/confirm/
+Authorization: Bearer {{org_login.response.body.$.access}}
 Content-Type: application/json
 
 {
-  "email": "u2b_{{ts}}@example.com",
-  "password": "{{pwd}}",
-  "first_name": "Alice2",
-  "last_name": "Tester",
-  "age": 25,
-  "consent_given": true
+  "booking_public_id": "{{org_pending.response.body.$.results[0].public_id}}",
+  "payment_method": "pm_card_visa",
+  "return_url": "{{RETURN_URL}}"
 }
 ###
 
-### D-1) Login user2_bis — 200
-# @name d1_login_u2b
-POST {{auth}}/login/
-Content-Type: application/json
-
-{ "email": "u2b_{{ts}}@example.com", "password": "{{pwd}}" }
+# Vérifs: booking CONFIRMED, event PUBLISHED
+GET {{BOOKINGS}}/{{org_pending.response.body.$.results[0].public_id}}/
+Authorization: Bearer {{org_login.response.body.$.access}}
 ###
 
-### D-2) Booking sur event gratuit — 201
-# @name d2_create_booking_free
-POST {{bookings}}/
-Authorization: Bearer {{d1_login_u2b.response.body.$.access}}
+GET {{EVENTS}}/{{ev_create.response.body.$.id}}/
+Authorization: Bearer {{org_login.response.body.$.access}}
+###
+
+### ============================================================
+### F) AUTH (PARTICIPANT) — register + login + me
+### ============================================================
+# @name part_register
+POST {{AUTH}}/register/
 Content-Type: application/json
 
 {
-  "event": {{event_free_id}},
-  "quantity": 1
+  "email": "{{PART_EMAIL}}",
+  "password": "{{PWD}}",
+  "first_name": "Pat",
+  "last_name": "User",
+  "age": 22,
+  "consent_given": true,
+  "native_langs": ["{{PART_NATIVE}}"],
+  "target_langs": ["{{PART_TARGET}}"]
 }
 ###
 
-### D-3) create-intent (free:true) => CONFIRMED immédiat — 201
-# @name d3_intent_free
-POST {{payments}}/create-intent/
-Authorization: Bearer {{d1_login_u2b.response.body.$.access}}
+# @name part_login
+POST {{AUTH}}/login/
 Content-Type: application/json
 
 {
-  "booking_public_id": "{{d2_create_booking_free.response.body.$.public_id}}"
+  "email": "{{PART_EMAIL}}",
+  "password": "{{PWD}}"
 }
 ###
 
-### D-4) Vérifier CONFIRMED — 200
-GET {{bookings}}/{{d2_create_booking_free.response.body.$.public_id}}/
-Authorization: Bearer {{d1_login_u2b.response.body.$.access}}
+GET {{AUTH}}/me/
+Authorization: Bearer {{part_login.response.body.$.access}}
 ###
 
-### D-5) Logout — 204
-POST {{auth}}/logout/
-Authorization: Bearer {{d1_login_u2b.response.body.$.access}}
-Content-Type: application/json
-
-{ "refresh": "{{d1_login_u2b.response.body.$.refresh}}" }
-###
-
-
-/****************************************************************************************
- * E) Annulation (nouvel utilisateur user2_cancel) : PENDING -> CANCELLED
- ****************************************************************************************/
-### E-0) Signup user2_cancel — 201
-# @name e0_signup_u2c
-POST {{auth}}/register/
+### ============================================================
+### G) BOOKINGS (PARTICIPANT) — créer + payer (simulateur)
+### ============================================================
+# @name part_booking_create
+POST {{BOOKINGS}}/
+Authorization: Bearer {{part_login.response.body.$.access}}
 Content-Type: application/json
 
 {
-  "email": "u2c_{{ts}}@example.com",
-  "password": "{{pwd}}",
-  "first_name": "AliceC",
-  "last_name": "Tester",
-  "age": 25,
-  "consent_given": true
+  "event": {{ev_create.response.body.$.id}}
 }
 ###
 
-### E-1) Login — 200
-# @name e1_login_u2c
-POST {{auth}}/login/
-Content-Type: application/json
-
-{ "email": "u2c_{{ts}}@example.com", "password": "{{pwd}}" }
-###
-
-### E-2) Créer une réservation PENDING — 201
-# @name e2_create_booking
-POST {{bookings}}/
-Authorization: Bearer {{e1_login_u2c.response.body.$.access}}
+# @name part_ci
+POST {{PAYMENTS}}/create-intent/
+Authorization: Bearer {{part_login.response.body.$.access}}
 Content-Type: application/json
 
 {
-  "event": {{event_paid_id}},
-  "quantity": 1
+  "booking": {{part_booking_create.response.body.$.id}},
+  "return_url": "{{RETURN_URL}}"
 }
 ###
 
-### E-3) Annuler — 200 (ou 409 si déjà confirmée)
-POST {{bookings}}/{{e2_create_booking.response.body.$.public_id}}/cancel/
-Authorization: Bearer {{e1_login_u2c.response.body.$.access}}
-###
-
-### E-4) Vérifier CANCELLED — 200
-GET {{bookings}}/{{e2_create_booking.response.body.$.public_id}}/
-Authorization: Bearer {{e1_login_u2c.response.body.$.access}}
-###
-
-### E-5) Logout — 204
-POST {{auth}}/logout/
-Authorization: Bearer {{e1_login_u2c.response.body.$.access}}
-Content-Type: application/json
-
-{ "refresh": "{{e1_login_u2c.response.body.$.refresh}}" }
-###
-
-
-/****************************************************************************************
- * F) Accès croisés : user3 ne peut PAS voir/annuler la booking de user2 (404)
- ****************************************************************************************/
-### F-0) Signup user2_x — 201
-# @name f0_signup_u2x
-POST {{auth}}/register/
+POST {{PAYMENTS}}/sim/confirm/
+Authorization: Bearer {{part_login.response.body.$.access}}
 Content-Type: application/json
 
 {
-  "email": "{{u2_email}}.x",
-  "password": "{{pwd}}",
-  "first_name": "AliceX",
-  "last_name": "Tester",
-  "age": 25,
-  "consent_given": true
+  "booking_public_id": "{{part_booking_create.response.body.$.public_id}}",
+  "payment_method": "pm_card_visa",
+  "return_url": "{{RETURN_URL}}"
 }
 ###
 
-### F-1) Login user2_x — 200
-# @name f1_login_u2x
-POST {{auth}}/login/
-Content-Type: application/json
-
-{ "email": "{{u2_email}}.x", "password": "{{pwd}}" }
+# Vérif: booking participant CONFIRMED
+GET {{BOOKINGS}}/{{part_booking_create.response.body.$.public_id}}/
+Authorization: Bearer {{part_login.response.body.$.access}}
 ###
 
-### F-2) Créer une réservation (user2_x) — 201
-# @name f2_u2x_create_booking
-POST {{bookings}}/
-Authorization: Bearer {{f1_login_u2x.response.body.$.access}}
+# Mes bookings filtrés par event
+GET {{BOOKINGS}}/?event={{ev_create.response.body.$.id}}
+Authorization: Bearer {{part_login.response.body.$.access}}
+###
+
+# (règle) re-book même event (attendu: 400)
+POST {{BOOKINGS}}/
+Authorization: Bearer {{part_login.response.body.$.access}}
 Content-Type: application/json
 
 {
-  "event": {{event_paid_id}},
-  "quantity": 1
+  "event": {{ev_create.response.body.$.id}}
 }
 ###
 
-### F-3) Signup user3 — 201
-# @name f3_signup_u3
-POST {{auth}}/register/
-Content-Type: application/json
-
-{
-  "email": "{{u3_email}}",
-  "password": "{{pwd}}",
-  "first_name": "Bob",
-  "last_name": "Tester",
-  "age": 25,
-  "consent_given": true
-}
+### ============================================================
+### H) ANNULATION — par l’organisateur (cascade → CANCELLED)
+### ============================================================
+POST {{EVENTS}}/{{ev_create.response.body.$.id}}/cancel/
+Authorization: Bearer {{org_login.response.body.$.access}}
 ###
 
-### F-4) Login user3 — 200
-# @name f4_login_u3
-POST {{auth}}/login/
-Content-Type: application/json
-
-{ "email": "{{u3_email}}", "password": "{{pwd}}" }
+# Vérifier l’état des bookings côté participant
+GET {{BOOKINGS}}/?event={{ev_create.response.body.$.id}}
+Authorization: Bearer {{part_login.response.body.$.access}}
 ###
 
-### F-5) Tenter de voir la booking de user2_x — 404
-GET {{bookings}}/{{f2_u2x_create_booking.response.body.$.public_id}}/
-Authorization: Bearer {{f4_login_u3.response.body.$.access}}
-###
-
-### F-6) Tenter d’annuler — 404
-POST {{bookings}}/{{f2_u2x_create_booking.response.body.$.public_id}}/cancel/
-Authorization: Bearer {{f4_login_u3.response.body.$.access}}
-###
-
-### F-7) Logout user3 — 204
-POST {{auth}}/logout/
-Authorization: Bearer {{f4_login_u3.response.body.$.access}}
-Content-Type: application/json
-
-{ "refresh": "{{f4_login_u3.response.body.$.refresh}}" }
-###
-
-
-/****************************************************************************************
- * G) Doublon PENDING pour même (user,event) -> 400
- ****************************************************************************************/
-### G-0) Signup user2_dup — 201
-# @name g0_signup_u2d
-POST {{auth}}/register/
-Content-Type: application/json
-
-{
-  "email": "u2d_{{ts}}@example.com",
-  "password": "{{pwd}}",
-  "first_name": "AliceD",
-  "last_name": "Tester",
-  "age": 25,
-  "consent_given": true
-}
-###
-
-### G-1) Login — 200
-# @name g1_login_u2d
-POST {{auth}}/login/
-Content-Type: application/json
-
-{ "email": "u2d_{{ts}}@example.com", "password": "{{pwd}}" }
-###
-
-### G-2) Booking #1 — 201
-# @name g2_b1
-POST {{bookings}}/
-Authorization: Bearer {{g1_login_u2d.response.body.$.access}}
-Content-Type: application/json
-
-{
-  "event": {{event_paid_id}},
-  "quantity": 1
-}
-###
-
-### G-3) Booking #2 (doublon attendu) — 400
-POST {{bookings}}/
-Authorization: Bearer {{g1_login_u2d.response.body.$.access}}
-Content-Type: application/json
-
-{
-  "event": {{event_paid_id}},
-  "quantity": 1
-}
-###
-
-### G-4) Cleanup: annuler la #1 — 200
-POST {{bookings}}/{{g2_b1.response.body.$.public_id}}/cancel/
-Authorization: Bearer {{g1_login_u2d.response.body.$.access}}
-###
-
-### G-5) Logout — 204
-POST {{auth}}/logout/
-Authorization: Bearer {{g1_login_u2d.response.body.$.access}}
-Content-Type: application/json
-
-{ "refresh": "{{g1_login_u2d.response.body.$.refresh}}" }
-###
-
-
-/****************************************************************************************
- * H) Liste avec filtres — 200
- ****************************************************************************************/
-### H-0) Signup user2_list — 201
-# @name h0_signup_u2l
-POST {{auth}}/register/
-Content-Type: application/json
-
-{
-  "email": "u2l_{{ts}}@example.com",
-  "password": "{{pwd}}",
-  "first_name": "AliceL",
-  "last_name": "Tester",
-  "age": 25,
-  "consent_given": true
-}
-###
-
-### H-1) Login — 200
-# @name h1_login_u2l
-POST {{auth}}/login/
-Content-Type: application/json
-
-{ "email": "u2l_{{ts}}@example.com", "password": "{{pwd}}" }
-###
-
-### H-2) Lister tout — 200
-GET {{bookings}}/
-Authorization: Bearer {{h1_login_u2l.response.body.$.access}}
-###
-
-### H-3) Lister PENDING — 200
-GET {{bookings}}/?status=PENDING
-Authorization: Bearer {{h1_login_u2l.response.body.$.access}}
-###
-
-### H-4) Lister CONFIRMED — 200
-GET {{bookings}}/?status=CONFIRMED
-Authorization: Bearer {{h1_login_u2l.response.body.$.access}}
-###
-
-### H-5) Lister CANCELLED — 200
-GET {{bookings}}/?status=CANCELLED
-Authorization: Bearer {{h1_login_u2l.response.body.$.access}}
-###
-
-### H-6) Logout — 204
-POST {{auth}}/logout/
-Authorization: Bearer {{h1_login_u2l.response.body.$.access}}
-Content-Type: application/json
-
-{ "refresh": "{{h1_login_u2l.response.body.$.refresh}}" }
+# Vérifier côté organisateur
+GET {{BOOKINGS}}/?event={{ev_create.response.body.$.id}}
+Authorization: Bearer {{org_login.response.body.$.access}}
 ###

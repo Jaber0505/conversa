@@ -3,7 +3,6 @@
 Base settings : API REST sécurisée par défaut (IsAuthenticated), CORS, Swagger (drf-spectacular),
 pagination minimale.
 """
-
 from pathlib import Path
 import os
 from datetime import timedelta
@@ -84,6 +83,19 @@ STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "")
 STRIPE_PUBLISHABLE_KEY = os.getenv("STRIPE_PUBLISHABLE_KEY", "")
 STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "")
 STRIPE_CURRENCY = os.getenv("STRIPE_CURRENCY", "eur")
+
+# Flags de test/simulation (gardent le simulateur pour .http)
+def _truthy(v: str) -> bool: return str(v).strip().lower() in {"1","true","yes","y","on"}
+
+# Autorise l’endpoint POST /payments/confirm/ (simulateur backend)
+STRIPE_CONFIRM_SIMULATOR_ENABLED = _truthy(os.getenv("STRIPE_CONFIRM_SIMULATOR_ENABLED", ""))
+# Autorise d’envoyer une carte brute au simulateur (PAN/CVC de test) — à éviter en prod
+STRIPE_RAW_CARD_SIM_ENABLED = _truthy(os.getenv("STRIPE_RAW_CARD_SIM_ENABLED", ""))
+# Contrôle la stratégie de redirection des AME (Payment Element veut "always")
+STRIPE_PI_ALLOW_REDIRECTS = os.getenv("STRIPE_PI_ALLOW_REDIRECTS", "always")  # "always" | "never"
+
+# Optionnel : URL par défaut à passer au confirm backend si Stripe exige un return_url
+STRIPE_CONFIRM_RETURN_URL_DEFAULT = os.getenv("STRIPE_CONFIRM_RETURN_URL_DEFAULT", "")
 
 # --- Auth ---
 AUTH_USER_MODEL = "users.User"

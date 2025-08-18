@@ -14,6 +14,9 @@ class EventSerializer(serializers.ModelSerializer):
     title = serializers.CharField(read_only=True)
     address = serializers.CharField(read_only=True)
     price_cents = serializers.IntegerField(read_only=True)
+    status = serializers.CharField(read_only=True)
+    published_at = serializers.DateTimeField(read_only=True)
+    cancelled_at = serializers.DateTimeField(read_only=True)
     photo = serializers.ImageField(required=False, allow_null=True)
     _links = serializers.SerializerMethodField()
 
@@ -29,12 +32,14 @@ class EventSerializer(serializers.ModelSerializer):
             "price_cents",
             "photo",
             "title", "address",
+            "status", "published_at", "cancelled_at",
             "created_at", "updated_at",
             "_links",
         ]
         read_only_fields = [
             "id", "organizer", "organizer_id",
             "price_cents", "title", "address",
+            "status", "published_at", "cancelled_at",
             "created_at", "updated_at", "_links",
         ]
         extra_kwargs = {
@@ -55,7 +60,8 @@ class EventSerializer(serializers.ModelSerializer):
         return attrs
 
     def update(self, instance, validated_data):
-        for locked in ("organizer", "price_cents", "title", "address"):
+        # Verrouiller certains champs
+        for locked in ("organizer", "price_cents", "title", "address", "status", "published_at", "cancelled_at"):
             validated_data.pop(locked, None)
         return super().update(instance, validated_data)
 
@@ -76,4 +82,5 @@ class EventSerializer(serializers.ModelSerializer):
         if can_edit:
             links["update"] = links["self"]
             links["delete"] = links["self"]
+            links["cancel"] = reverse("event-cancel", args=[obj.pk], request=request)
         return links

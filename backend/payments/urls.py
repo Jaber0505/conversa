@@ -1,8 +1,16 @@
+# payments/urls.py
 from django.urls import path
-from .views import CreateIntentView, ConfirmIntentView, StripeWebhookView
+from payments.views import CreateIntentView, StripeWebhookView, ConfirmSimulatorView, StripeConfigView
+from django.conf import settings
 
 urlpatterns = [
-    path("create-intent/", CreateIntentView.as_view(), name="payments-create-intent"),
-    path("confirm/", ConfirmIntentView.as_view(), name="payments-confirm"),  # ← simulateur front
-    path("stripe-webhook/", StripeWebhookView.as_view(), name="payments-stripe-webhook"),
+    path("config/", StripeConfigView.as_view(), name="stripe-config"),
+    path("create-intent/", CreateIntentView.as_view(), name="payments-create-intent"),   # réel (front)
+    path("stripe-webhook/", StripeWebhookView.as_view(), name="stripe-webhook"),         # réel (webhook)
 ]
+
+# Route simulateur visible uniquement en dev/test (DEBUG=True)
+if getattr(settings, "DEBUG", False):
+    urlpatterns += [
+        path("sim/confirm/", ConfirmSimulatorView.as_view(), name="payments-confirm-simulator"),  # simulateur (.http)
+    ]
