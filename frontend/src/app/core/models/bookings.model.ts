@@ -7,12 +7,18 @@ export type BookingStatus = 'confirmed' | 'waiting_for_payment' | 'cancelled_use
 
 export interface Booking {
   id: number;
-  event: number;        // id de l'événement
-  user: number;         // id du user
-  status: BookingStatus;
-  event_start: string;  // ISO date-time (server: serializer)
-  created_at: string;   // ISO
-  updated_at: string;   // ISO
+  public_id: string;
+  user: number;
+  event: number;
+  status: string;
+  amount_cents: number;
+  currency: string;
+  expires_at: string | null;
+  confirmed_at: string | null;
+  cancelled_at: string | null;
+  confirmed_after_expiry: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 

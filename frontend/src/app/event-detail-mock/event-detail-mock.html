@@ -51,9 +51,12 @@
 
     <div footer class="ev-foot">
       <a [routerLink]="backLink()" class="linky">{{ 'common.back' | t }}</a>
-      <shared-button type="button" [disabled]="ev.is_cancelled" (click)="openPopup()">
+      <shared-button type="button" [disabled]="ev.is_cancelled" (click)="openPopup()" *ngIf="!alreadyBooked()">
         {{ ev.is_cancelled ? ('events.cancelled' | t) : ('events.book' | t) }}
       </shared-button>
+      <span class="booked-info">
+    <shared-badge tone="soft" variant="accent" *ngIf="alreadyBooked()">{{ 'events.already_booked' | t }}</shared-badge>
+  </span>
     </div>
   </shared-card>
 </shared-container>

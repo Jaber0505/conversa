@@ -12,9 +12,9 @@ import {
 } from '@shared';
 import {ConfirmPurchaseComponent} from "@app/confirm-purchase/confirm-purchase";
 import {EventDto} from "@core/models";
-import {EventsApiService} from "@core/http";
+import {BookingsApiService, EventsApiService} from "@core/http";
 import {toSignal} from "@angular/core/rxjs-interop";
-import {filter, map} from "rxjs/operators";
+import {filter, map, take} from "rxjs/operators";
 
 
 @Component({
@@ -31,10 +31,12 @@ import {filter, map} from "rxjs/operators";
 export class EventDetailMockComponent {
   private route = inject(ActivatedRoute);
   confirmPopup = false;
+  alreadyBooked = signal(false);
   lang = this.route.snapshot.paramMap.get('lang') ?? 'fr';
   id   = Number(this.route.snapshot.paramMap.get('id') ?? '0');
   actionHref = `/${this.lang}/events`;
   private eventsApi = inject(EventsApiService);
+  private bookingsApiService = inject(BookingsApiService);
   readonly error = signal<string | null>(null);
 
   protected readonly event = signal<EventDto | null>(null);
@@ -50,7 +52,9 @@ export class EventDetailMockComponent {
   }
 
   performPurchase() {
-
+    this.bookingsApiService.create(this.eventId()!).subscribe({
+    });
+this.bookingsApiService.create(this.event()?.id!);
   }
 
   openPopup() {
@@ -64,6 +68,7 @@ export class EventDetailMockComponent {
   );
   constructor() {
     const id = this.eventId();
+    debugger;
     if (id ) {
       this.eventsApi.get(id).subscribe({
         next: (res: EventDto) => {
@@ -73,6 +78,17 @@ export class EventDetailMockComponent {
           console.error('Error while fetching events:', err);
           this.error.set('Erreur lors du chargement des événements.');
         }
+      });
+      this.bookingsApiService.list().pipe(take(1)).subscribe({
+        next: (res: any) => {
+          // gère les 2 formats: tableau direct ou pagination { results: [...] }
+          const items = Array.isArray(res) ? res : res?.results ?? [];
+          const exists = items.some((b: any) => b.event === id);
+          this.alreadyBooked.set(exists); // ← on met à jour le signal
+        },
+        error: () => {
+          this.alreadyBooked.set(false);
+        },
       });
     }
 

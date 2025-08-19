@@ -33,8 +33,8 @@ export class EventListMockComponent {
 
   constructor() {
     this.eventsApi.list().subscribe({
-      next: (res: Paginated<EventDto>) => {
-        this.events.set(res.results ?? []);
+      next: (res : Paginated<EventDto>) => {
+        this.events.set(res.results);
         this.loading.set(false);
       },
       error: (err) => {

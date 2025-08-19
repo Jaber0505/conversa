@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { catchError, map, of, shareReplay, startWith, switchMap, Subject } from 'rxjs';
 
 import { TPipe } from '@core/i18n';
@@ -14,7 +14,8 @@ import {
 
 import { Booking } from '@core/models';
 import { BookingsApiService } from '@core/http';
-import {BookingDetailModalComponent} from "@app/booking-page-detail/booking-detail";
+import { BookingDetailModalComponent } from '@app/booking-page-detail/booking-detail';
+import {HttpErrorResponse} from "@angular/common/http";
 
 type Vm =
   | { state: 'loading' }
@@ -33,51 +34,19 @@ type Vm =
   styleUrls: ['./booking-page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BookingsPageComponent {
+export class BookingsPageComponent implements OnInit {
   private route = inject(ActivatedRoute);
-  private _api  = inject(BookingsApiService); // conservé pour rebrancher l'API
+  private api = inject(BookingsApiService);
 
   private refresh$ = new Subject<void>();
-
-  // ---- MOCK DATA (structure alignée avec Booking)
-  bookings: Booking[] = [
-    {
-      id: 1001,
-      event: 1,
-      user: 11,
-      status: 'confirmed',
-      event_start: new Date(Date.now() + 2 * 86400000).toISOString(),
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    },
-    {
-      id: 1002,
-      event: 2,
-      user: 11,
-      status: 'confirmed',
-      event_start: new Date(Date.now() + 4 * 86400000).toISOString(),
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    },
-    {
-      id: 1003,
-      event: 3,
-      user: 11,
-      status: 'cancelled_user',
-      event_start: new Date(Date.now() - 1 * 86400000).toISOString(),
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    },
-  ];
 
   lang(): string { return this.route.snapshot.paramMap.get('lang') ?? 'fr'; }
 
   vm$ = this.refresh$.pipe(
     startWith(void 0),
     switchMap(() =>
-      // ⬇️ remplace l'appel API par les mocks
-      of(this.bookings).pipe(
-        map(items => ({ state: 'ready', items }) as Vm),
+      this.api.list().pipe(
+        map(res => ({ state: 'ready', items: res.results }) as Vm),
         catchError(() => of({ state: 'error', message: 'bookings.load_error' } as Vm)),
         startWith({ state: 'loading' } as Vm),
       )
@@ -85,7 +54,9 @@ export class BookingsPageComponent {
     shareReplay({ bufferSize: 1, refCount: true }),
   );
 
-  // Helpers d’affichage
+  ngOnInit(): void {
+  }
+
   dateLabel(iso: string): string {
     try {
       return new Intl.DateTimeFormat('fr-BE', {
@@ -96,19 +67,30 @@ export class BookingsPageComponent {
   }
 
   badgeVariant(b: Booking): 'accent' | 'danger' {
-    return b.status === 'confirmed' ? 'accent' : 'danger';
+    const s = String(b.status).toUpperCase();
+    return s === 'CONFIRMED' ? 'accent' : 'danger';
   }
 
-  // canCancel(b: Booking): boolean { return canCancel(b); }
-  // cancel(b: Booking) {
-  //   if (!this.canCancel(b)) return;
-  //   this._api.cancel(b.id).subscribe({
-  //     next: () => this.refresh$.next(),
-  //     error: () => this.refresh$.next(),
-  //   });
-  // }
+  trackById = (_: number, it: Booking) => (it as any).public_id ?? it.id;
 
-  trackById = (_: number, it: Booking) => it.id;
   showDetail = false;
   booking: Booking = {} as Booking;
+
+  openDetail(b: Booking) {
+    this.booking = b;
+    this.showDetail = true;
+  }
+
+  refresh() {
+    this.refresh$.next();
+  }
+
+  cancel(id: string) {
+    this.api.cancel(id).subscribe({
+      error: (err: HttpErrorResponse) => {
+        if (err.status === 409) console.warn('Déjà confirmé: annulation refusée.');
+        else console.error('Erreur annulation:', err);
+      }
+    });
+  }
 }

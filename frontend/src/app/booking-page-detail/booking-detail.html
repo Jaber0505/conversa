@@ -20,14 +20,12 @@
         </div>
         <div class="row">
           <span class="label">{{ 'bookings.when' | t }}</span>
-          <span class="value">{{ dateLabel(booking.event_start) }}</span>
+          <span class="value">{{ dateLabel(booking.confirmed_at!) }}</span>
         </div>
         <div class="row">
           <span class="label">{{ 'events.title' | t }}</span>
           <span class="value">#{{ booking.event }}</span>
         </div>
-
-
 
         <div class="row">
           <span class="label">{{ 'common.created_at' | t }}</span>
