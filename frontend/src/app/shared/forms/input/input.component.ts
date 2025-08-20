@@ -24,6 +24,7 @@ export class InputComponent implements ControlValueAccessor {
   @Input() type: 'text' | 'email' | 'password' | 'number' = 'text';
   @Input() placeholder = '';
   @Input() disabled = false;
+  @Input() errorMessage = false;
 
   // ✅ RESTAURE en @Input() pour autoriser [value]="..."
   @Input() set value(v: string | number | null | undefined) {
