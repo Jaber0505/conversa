@@ -43,6 +43,8 @@ export const routes: Routes = [
       { path: 'bookings', component: BookingsPageComponent },
       { path: 'faq', component: FaqComponent },
       { path: 'about', component: About },
+      { path: ':lang/stripe/success', component: StripeSuccessPage },
+      { path: ':lang/stripe/cancel',  component: StripeCancelPage  },
       { path: '**', redirectTo: '' },
     ],
   },
