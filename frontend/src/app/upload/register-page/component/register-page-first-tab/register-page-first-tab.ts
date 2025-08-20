@@ -22,6 +22,9 @@ type Option = { value: string; label: string };
 export class RegisterPageFirstTab implements OnInit {
   @Input({ required: true }) firstTabInfo!: FirstTabInfoModel;
   @Output() suivant = new EventEmitter<FirstTabInfoModel>();
+  firstNameErrorMessage = false;
+  lastNameErrorMessage = false;
+  ageErrorMessage = false;
 
   // Mock langues
   langs: Option[] = [
@@ -72,6 +75,9 @@ export class RegisterPageFirstTab implements OnInit {
   }
 
   onNext(): void {
-    this.suivant.emit(this.firstTabInfo); // le modèle contient déjà native_langs & target_langs
+    if(!this.firstTabInfo.prenom) this.firstNameErrorMessage = true;
+     if(!this.firstTabInfo.age) this.lastNameErrorMessage = true;
+     if(!this.firstTabInfo.nom) this.ageErrorMessage = true;
+if(!this.firstNameErrorMessage && !this.lastNameErrorMessage && !this.ageErrorMessage)    this.suivant.emit(this.firstTabInfo); // le modèle contient déjà native_langs & target_langs
   }
 }

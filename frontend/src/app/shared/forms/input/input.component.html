@@ -1,4 +1,4 @@
-<label *ngIf="label" [for]="id">{{ label }}</label>
+<label *ngIf="label" [for]="id" [class.invalid]="errorMessage">{{ label }}</label>
 <input
   [id]="id"
   [name]="name"
@@ -6,6 +6,8 @@
   [placeholder]="placeholder"
   [value]="value"
   [disabled]="disabled"
+  [class.invalid]="errorMessage"
+  [attr.aria-invalid]="errorMessage ? 'true' : null"
   (input)="onInput($event)"
   (blur)="onTouched()"
 />
