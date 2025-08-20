@@ -79,23 +79,21 @@ TEMPLATES = [{
 DATABASES = {}
 
 # --- Stripe ---
-STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "")
-STRIPE_PUBLISHABLE_KEY = os.getenv("STRIPE_PUBLISHABLE_KEY", "")
-STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "")
-STRIPE_CURRENCY = os.getenv("STRIPE_CURRENCY", "eur")
+STRIPE_SECRET_KEY     = os.getenv("DJANGO_STRIPE_SECRET_KEY", "")
+STRIPE_WEBHOOK_SECRET = os.getenv("DJANGO_STRIPE_WEBHOOK_SECRET", "")
+STRIPE_CURRENCY       = (os.getenv("DJANGO_STRIPE_CURRENCY", "eur") or "eur").lower()
 
-# Flags de test/simulation (gardent le simulateur pour .http)
-def _truthy(v: str) -> bool: return str(v).strip().lower() in {"1","true","yes","y","on"}
+FRONTEND_BASE_URL = os.getenv("DJANGO_FRONTEND_BASE_URL", "http://localhost:4200").rstrip("/")
 
-# Autorise l’endpoint POST /payments/confirm/ (simulateur backend)
-STRIPE_CONFIRM_SIMULATOR_ENABLED = _truthy(os.getenv("STRIPE_CONFIRM_SIMULATOR_ENABLED", ""))
-# Autorise d’envoyer une carte brute au simulateur (PAN/CVC de test) — à éviter en prod
-STRIPE_RAW_CARD_SIM_ENABLED = _truthy(os.getenv("STRIPE_RAW_CARD_SIM_ENABLED", ""))
-# Contrôle la stratégie de redirection des AME (Payment Element veut "always")
-STRIPE_PI_ALLOW_REDIRECTS = os.getenv("STRIPE_PI_ALLOW_REDIRECTS", "always")  # "always" | "never"
+def _with_leading_slash(p: str, default: str) -> str:
+    p = (p or default).strip()
+    return p if p.startswith("/") else "/" + p
 
-# Optionnel : URL par défaut à passer au confirm backend si Stripe exige un return_url
-STRIPE_CONFIRM_RETURN_URL_DEFAULT = os.getenv("STRIPE_CONFIRM_RETURN_URL_DEFAULT", "")
+STRIPE_SUCCESS_PATH = _with_leading_slash(os.getenv("DJANGO_STRIPE_SUCCESS_PATH", "/stripe/success"), "/stripe/success")
+STRIPE_CANCEL_PATH  = _with_leading_slash(os.getenv("DJANGO_STRIPE_CANCEL_PATH",  "/stripe/cancel"),  "/stripe/cancel")
+
+if STRIPE_SECRET_KEY and not STRIPE_SECRET_KEY.startswith("sk_test_"):
+    raise RuntimeError("Stripe TEST uniquement : STRIPE_SECRET_KEY doit commencer par 'sk_test_'.")
 
 # --- Auth ---
 AUTH_USER_MODEL = "users.User"
@@ -161,9 +159,26 @@ SPECTACULAR_SETTINGS = {
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
     "SCHEMA_PATH_PREFIX": r"/api/v1",
+    # <-- Auth: schéma Bearer JWT
     "SECURITY": [{"bearerAuth": []}],
-    "SECURITY_SCHEMES": {"bearerAuth": {"type": "http", "scheme": "bearer", "bearerFormat": "JWT"}},
+    "SECURITY_SCHEMES": {
+        "bearerAuth": {"type": "http", "scheme": "bearer", "bearerFormat": "JWT"}
+    },
+    # <-- UI: options Swagger-UI (persiste l’Authorization)
+    "SWAGGER_UI_SETTINGS": {
+        "persistAuthorization": True,          
+        "displayRequestDuration": True,       
+        "docExpansion": "none",                
+        "filter": True                         
+    },
 }
+SPECTACULAR_SETTINGS.update({
+    "APPEND_COMPONENTS": {
+        "securitySchemes": {
+            "bearerAuth": { "type": "http", "scheme": "bearer", "bearerFormat": "JWT" }
+        }
+    }
+})
 
 # --- BOOKING ---
 BOOKING_TTL_MINUTES = int(os.getenv("DJANGO_BOOKING_TTL_MINUTES", "15"))

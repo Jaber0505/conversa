@@ -65,7 +65,7 @@ Content-Type: application/json
 }
 ###
 ### Retrieve — 200
-GET {{events}}/{{c_create.response.body.$.id}}/
+GET {{events}}/
 Authorization: Bearer {{c_login_admin.response.body.$.access}}
 ###
 ### Patch — 200
