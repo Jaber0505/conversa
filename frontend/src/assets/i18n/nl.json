@@ -11,11 +11,50 @@
   "nav": {
     "faq": "FAQ",
     "about": "Over ons",
-    "events": "Evenementen"
+    "events": "Evenementen",
+    "booking": "Mijn boekingen"
+  },
+  "register": {
+    "firstTab": {
+      "firstName": "Voornaam",
+      "lastName": "Achternaam",
+      "age": "Leeftijd",
+      "nativeLangs": "Moedertalen",
+      "targetLangs": "Doeltalen",
+      "selectLang": "Selecteer een taal"
+    },
+    "secondTab": {
+      "bio": "Uw bio",
+      "bioPlaceHolder": "Stel uzelf voor in 2–3 zinnen (ervaring, interesses, doelen). 10 tot 500 tekens.",
+      "limit": "Tussen 10 en 500 tekens"
+    },
+    "thirdTab": {
+      "email": "E-mailadres",
+      "password": "Wachtwoord",
+      "consent": "Ik ga akkoord met het privacybeleid en de gebruiksvoorwaarden.",
+      "consent_required": "U moet akkoord gaan om verder te gaan."
+    },
+    "title": "Maak uw account aan",
+    "subtitle": "Voltooi de stappen om uw registratie te voltooien."
+  },
+  "common": {
+    "add": "Toevoegen",
+    "remove": "Verwijderen",
+    "next": "Volgende",
+    "back": "Terug",
+    "register": "Mijn account aanmaken",
+    "cancel": "Annuleren",
+    "save": "Opslaan",
+    "details": "Details",
+    "pay": "Betalen",
+    "language": "Taal"
   },
   "auth": {
+    "email_placeholder": "bijv. voornaam.achternaam@email.com",
+    "password_placeholder": "Minstens 8 tekens",
     "login": "Inloggen",
-    "register": "Registreren"
+    "register": "Registreren",
+    "logout": "Afmelden"
   },
   "languages": {
     "fr": "Frans",
@@ -232,5 +271,67 @@
       "payment_price_a": "Een standaardticket kost €7 per sessie, inclusief toegang tot het gespreksgame en het in contact brengen met andere deelnemers. Speciale evenementen of workshops kunnen een ander tarief hebben, dat altijd vooraf wordt aangegeven."
     },
     "no_results": "Geen vraag gevonden? conversa@hotmail.com"
+  },
+
+  "payments": {
+    "success": {
+      "title": "Betaling bevestigd",
+      "thanks": "Dank u! Uw boeking is succesvol gevalideerd.",
+      "for_booking": "voor de boeking {{id}}",
+      "my_bookings": "Mijn boekingen",
+      "back_to_events": "Terug naar evenementen"
+    },
+    "cancel": {
+      "title": "Betaling niet voltooid",
+      "line1": "Uw betaling is geannuleerd",
+      "for_booking": "voor de boeking {{id}}",
+      "reassure": "U kunt het op elk moment opnieuw proberen.",
+      "retry": "Betaling opnieuw proberen",
+      "view_booking": "Mijn boeking bekijken",
+      "back_to_events": "Terug naar evenementen",
+      "help": "Als het probleem aanhoudt, controleer uw verbinding of probeer een andere betaalmethode."
+    },
+    "badge": {
+      "interrupted": "Transactie onderbroken",
+      "success": "Betaling geslaagd"
+    },
+    "meta": {
+      "session": "Sessie",
+      "booking": "Boeking"
+    }
+  },
+  "bookings": {
+    "title": "Mijn boekingen",
+    "empty": "Nog geen boekingen.",
+    "when": "Wanneer",
+    "amount": "Bedrag",
+    "event": "Evenement",
+    "status": {
+      "PENDING": "In afwachting van betaling",
+      "CONFIRMED": "Bevestigd",
+      "CANCELLED": "Geannuleerd",
+      "FAILED": "Mislukt",
+      "EXPIRED": "Verlopen",
+      "REFUNDED": "Terugbetaald"
+    }
+  },
+  "events": {
+    "title": "Evenementen",
+    "empty": "Nog geen evenementen.",
+    "cancelled": "Geannuleerd",
+    "address": "Adres",
+    "when": "Wanneer",
+    "theme": "Thema",
+    "free": "Gratis",
+    "book": "Boeken",
+    "already_booked": "Al geboekt",
+    "filters": {
+      "languages_placeholder": "Doeltalen"
+    }
+  },
+  "checkout": {
+    "title": "Aankoop bevestigen",
+    "message": "Wilt u uw aankoop bevestigen?",
+    "buy": "Betalen"
   }
 }

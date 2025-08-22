@@ -11,11 +11,50 @@
   "nav": {
     "faq": "FAQ",
     "about": "About",
-    "events": "Events"
+    "events": "Events",
+    "booking": "My bookings"
+  },
+  "register": {
+    "firstTab": {
+      "firstName": "First name",
+      "lastName": "Last name",
+      "age": "Age",
+      "nativeLangs": "Native languages",
+      "targetLangs": "Target languages",
+      "selectLang": "Select a language"
+    },
+    "secondTab": {
+      "bio": "Your bio",
+      "bioPlaceHolder": "Introduce yourself in 2–3 sentences (experience, interests, goals). 10 to 500 characters.",
+      "limit": "Between 10 and 500 characters"
+    },
+    "thirdTab": {
+      "email": "Email address",
+      "password": "Password",
+      "consent": "I accept the privacy policy and terms of use.",
+      "consent_required": "You must accept to continue."
+    },
+    "title": "Create your account",
+    "subtitle": "Complete the steps to finish your registration."
+  },
+  "common": {
+    "add": "Add",
+    "remove": "Remove",
+    "next": "Next",
+    "back": "Back",
+    "register": "Create my account",
+    "cancel": "Cancel",
+    "save": "Save",
+    "details": "Details",
+    "pay": "Pay",
+    "language": "Language"
   },
   "auth": {
+    "email_placeholder": "e.g. firstname.lastname@email.com",
+    "password_placeholder": "At least 8 characters",
     "login": "Login",
-    "register": "Sign up"
+    "register": "Sign up",
+    "logout": "Log out"
   },
   "languages": {
     "fr": "French",
@@ -232,5 +271,66 @@
       "payment_price_a": "The standard ticket is €7 per session, which includes access to the conversation game and meeting other participants. Some special events or workshops may have different prices, always shown in advance."
     },
     "no_results": "No question matches your search? conversa@hotmail.com"
+  },
+  "payments": {
+    "success": {
+      "title": "Payment confirmed",
+      "thanks": "Thank you! Your booking has been successfully validated.",
+      "for_booking": "for booking {{id}}",
+      "my_bookings": "My bookings",
+      "back_to_events": "Back to events"
+    },
+    "cancel": {
+      "title": "Payment not completed",
+      "line1": "Your payment was cancelled",
+      "for_booking": "for booking {{id}}",
+      "reassure": "You can try again anytime.",
+      "retry": "Retry payment",
+      "view_booking": "View my booking",
+      "back_to_events": "Back to events",
+      "help": "If the problem persists, check your connection or try another payment method."
+    },
+    "badge": {
+      "interrupted": "Transaction interrupted",
+      "success": "Payment successful"
+    },
+    "meta": {
+      "session": "Session",
+      "booking": "Booking"
+    }
+  },
+  "bookings": {
+    "title": "My bookings",
+    "empty": "No bookings yet.",
+    "when": "When",
+    "amount": "Amount",
+    "event": "Event",
+    "status": {
+      "PENDING": "Pending payment",
+      "CONFIRMED": "Confirmed",
+      "CANCELLED": "Cancelled",
+      "FAILED": "Failed",
+      "EXPIRED": "Expired",
+      "REFUNDED": "Refunded"
+    }
+  },
+  "events": {
+    "title": "Events",
+    "empty": "No events yet.",
+    "cancelled": "Cancelled",
+    "address": "Address",
+    "when": "When",
+    "theme": "Theme",
+    "free": "Free",
+    "book": "Book",
+    "already_booked": "Already booked",
+    "filters": {
+      "languages_placeholder": "Target languages"
+    }
+  },
+  "checkout": {
+      "title": "Confirm purchase",
+      "message": "Do you want to confirm your purchase?",
+      "buy": "Pay"
   }
 }

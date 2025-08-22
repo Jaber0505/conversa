@@ -1,22 +1,25 @@
+<shared-multi-select
+  [placeholder]="'Langues cibles'"
+  [options]="langOptions()"
+  [value]="selectedLangCodes()"
+  (valueChange)="onCodesChange($event)">
+</shared-multi-select>
+<shared-button (click)="search()">
+  {{ 'common.search' | t }}
+</shared-button>
+
+<div class="mt-2">
+  Codes sélectionnés: {{ selectedLangCodes() | json }}
+</div>
 <shared-container>
   <shared-headline-bar
-    [title]="'events.list.title' | t"
-    [actionLabel]="'events.create' | t"
-    [actionLink]="'/events/new'">
+    [title]="'events.title' | t">
   </shared-headline-bar>
-
-  <!-- Loading -->
-  <div class="state loading" *ngIf="loading()">
-    <shared-badge variant="muted" tone="soft">{{ 'common.loading' | t }}</shared-badge>
-  </div>
-
-  <!-- Error -->
   <div class="state error" *ngIf="error() as err">
     <shared-badge variant="danger" tone="soft">{{ err }}</shared-badge>
   </div>
 
-  <!-- Content -->
-  <ng-container *ngIf="!loading()">
+  <ng-container >
     <div class="state empty" *ngIf="events().length === 0">
       <shared-badge variant="muted" tone="soft">{{ 'events.empty' | t }}</shared-badge>
     </div>
@@ -29,7 +32,7 @@
         <div header class="ev-head">
           <h3 class="h6">{{ ev.title }}</h3>
           <div class="badges">
-            <shared-badge variant="accent" tone="soft">{{ ev.language }}</shared-badge>
+            <shared-badge variant="accent" tone="soft">{{ ev.language_code }}</shared-badge>
             <shared-badge variant="muted"  tone="soft">{{ ev.city }}</shared-badge>
             <shared-badge variant="danger" tone="soft" *ngIf="ev.is_cancelled">
               {{ 'events.cancelled' | t }}
@@ -39,8 +42,8 @@
 
         <div class="ev-body">
           <div class="row">
-            <span class="label">{{ 'events.venue' | t }}</span>
-            <span class="value">{{ ev.venue_name }}</span>
+            <span class="label">{{ 'events.language' | t }}</span>
+            <span class="value">{{ ev.language_code }}</span>
           </div>
           <div class="row">
             <span class="label">{{ 'events.address' | t }}</span>
@@ -51,8 +54,8 @@
             <span class="value">{{ ev.datetime_start | date:'EEEE d MMM, HH:mm' }}</span>
           </div>
           <div class="row">
-            <span class="label">{{ 'events.seats' | t }}</span>
-            <span class="value">{{ ev.max_seats }}</span>
+            <span class="label">{{ 'events.theme' | t }}</span>
+            <span class="value">{{ ev.theme }}</span>
           </div>
         </div>
 
@@ -60,10 +63,23 @@
           <div class="price">
             {{ ev.price_cents === 0 ? ('events.free' | t) : price(ev) }}
           </div>
-          <shared-button type="button" (click)="goTo(ev.id)" [disabled]="ev.is_cancelled">
-            {{ ev.is_cancelled ? ('events.cancelled' | t) : ('events.view' | t) }}
-          </shared-button>
+            <shared-button type="button" [disabled]="ev.is_cancelled" (click)="goTo(ev.id)" *ngIf="!ev.alreadyBooked">
+              {{ ev.is_cancelled ? ('events.cancelled' | t) : ('events.book' | t) }}
+            </shared-button>
+            <span class="booked-info">
+    <shared-badge tone="soft" variant="accent" *ngIf="ev.alreadyBooked">{{ 'events.already_booked' | t }}</shared-badge>
+  </span>
         </div>
+        <app-confirm-purchase *ngIf="confirmPopup"
+                              [titleKey]="'checkout.title'"
+                              [messageKey]="'checkout.message'"
+                              [buyKey]="'checkout.buy'"
+                              [cancelKey]="'common.cancel'"
+                              [priceCents]="ev.price_cents"
+                              [asModal]="true"
+                              (cancel)="closeDialog()"
+                              (buy)="performPurchase()">
+        </app-confirm-purchase>
       </shared-card>
     </shared-grid>
   </ng-container>

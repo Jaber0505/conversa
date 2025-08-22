@@ -1,5 +1,5 @@
 import {Component, inject, OnInit} from '@angular/core';
-import { Router, RouterLink, UrlSegmentGroup } from '@angular/router';
+import {ActivatedRoute, Router, RouterLink, UrlSegmentGroup} from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { LanguagePopoverComponent, type Lang } from '../language-popover/language-popover.component';
 import { SHARED_IMPORTS } from '@shared';
@@ -36,7 +36,7 @@ export class SiteHeaderComponent{
   private _showLang = false;
   protected authApi = inject(AuthApiService);
   protected tokens = inject(AuthTokenService);
-  constructor(private router: Router) {}
+  constructor(private router: Router, private route: ActivatedRoute,) {}
 
   showLang() { return this._showLang; }
   openLang() { this._showLang = true; }
@@ -50,7 +50,7 @@ export class SiteHeaderComponent{
     return (code && (['fr', 'en', 'nl'] as const).includes(code)) ? code : 'fr';
   }
   currentLang(): Lang { return this.langCode(); }
-
+  private lang(): string { return this.route.snapshot.paramMap.get('lang') ?? 'fr'; }
   langLabelKey(): string { return `languages.${this.langCode()}`; }
   loading = false;
   confirmLang(next: Lang) {
@@ -77,6 +77,7 @@ export class SiteHeaderComponent{
     this.authApi.logout(refresh!).subscribe({
       next: () => { this.loading = false;
         this.tokens.clear();
+        this.router.navigate(['/', this.lang()]);
         debugger; },
       error: () => { this.loading = false; },
     });

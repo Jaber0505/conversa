@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
+import {Component, EventEmitter, Input, Output, OnInit, signal, computed} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { InputComponent, SelectComponent, BadgeComponent, ButtonComponent } from '@shared';
 import { TPipe } from '@core/i18n';
@@ -22,11 +22,6 @@ type Option = { value: string; label: string };
 export class RegisterPageFirstTab implements OnInit {
   @Input({ required: true }) firstTabInfo!: FirstTabInfoModel;
   @Output() suivant = new EventEmitter<FirstTabInfoModel>();
-  firstNameErrorMessage = false;
-  lastNameErrorMessage = false;
-  ageErrorMessage = false;
-
-  // Mock langues
   langs: Option[] = [
     { value: 'fr', label: 'Français' },
     { value: 'nl', label: 'Nederlands' },
@@ -35,17 +30,14 @@ export class RegisterPageFirstTab implements OnInit {
     { value: 'de', label: 'Deutsch' },
     { value: 'ar', label: 'العربية' },
   ];
-
-  // Sélections en cours (via shared-select)
   pendingNative?: string;
   pendingTarget?: string;
+  formSubmitted = false;
 
   ngOnInit() {
-    // Sécurise les tableaux si le parent ne les a pas initialisés
     this.firstTabInfo.native_langs ||= [];
     this.firstTabInfo.target_langs ||= [];
   }
-
   addNative() {
     const c = this.pendingNative;
     if (!c) return;
@@ -75,9 +67,8 @@ export class RegisterPageFirstTab implements OnInit {
   }
 
   onNext(): void {
-    if(!this.firstTabInfo.prenom) this.firstNameErrorMessage = true;
-     if(!this.firstTabInfo.age) this.lastNameErrorMessage = true;
-     if(!this.firstTabInfo.nom) this.ageErrorMessage = true;
-if(!this.firstNameErrorMessage && !this.lastNameErrorMessage && !this.ageErrorMessage)    this.suivant.emit(this.firstTabInfo); // le modèle contient déjà native_langs & target_langs
+    this.formSubmitted = true;
+    if(this.firstTabInfo.prenom.length === 0 || this.firstTabInfo.nom.length === 0 || this.firstTabInfo.age < 18 ) return;
+    else    this.suivant.emit(this.firstTabInfo); // le modèle contient déjà native_langs & target_langs
   }
 }

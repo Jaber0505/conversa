@@ -2,7 +2,8 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SHARED_IMPORTS } from '@shared';
 import { SearchBarComponent, type FilterConfig, type GenericSearch } from '@shared/forms/search-bar/search-bar.component';
-import {I18nService, TPipe} from '@core/i18n'; // ⬅️ i18n
+import {I18nService, TPipe} from '@core/i18n';
+import {BlockingSpinnerService} from "@app/core/http/services/spinner-service";
 
 type EventItem = {
   id: number;
@@ -26,7 +27,6 @@ type EventItem = {
 export class HomeComponent {
   private readonly i18n = inject(I18nService);
 
-  // Données brutes de test (on garde le FR tel quel)
   private readonly eventsAll: EventItem[] = [
     { id: 1, badge: { text: 'FR', variant: 'secondary' }, meta: 'Jeu 19:00 • Bruxelles', title: 'Café linguistique — débutants', desc: 'Jeu “Icebreaker” • 6 places', lang: 'fr', area: 'brussels', free: false },
     { id: 2, badge: { text: 'EN', variant: 'tertiary' },  meta: 'Ven 18:30 • Ixelles',   title: 'Afterwork — English talk',       desc: 'Jeu “Speed rounds” • 4 places',  lang: 'en', area: 'brussels', free: true  },
@@ -37,17 +37,17 @@ export class HomeComponent {
 
   events: EventItem[] = [];
 
-  // Filtres i18n (reconstruits à chaque changement de langue)
   filters: FilterConfig[] = [];
 
-  constructor() {
+  constructor( private loader: BlockingSpinnerService) {
     this.rebuildI18n();
-    // Si ton I18nService expose un signal/observable de readiness, on regénère:
     this.i18n.ready$.subscribe(() => this.rebuildI18n());
   }
-
+  doSomethingAsync() {
+    this.loader.show('Paiement en cours…');
+    this.loader.hide();
+  }
   private rebuildI18n() {
-    // 1) Filtres
     this.filters = [
       {
         key: 'lang',
@@ -81,7 +81,6 @@ export class HomeComponent {
       },
     ];
 
-    // 2) CTA “Détails” traduite (facultatif si utilisé par la carte)
     this.events = this.eventsAll.map(e => ({ ...e, cta: this.i18n.t('shared.actions.details') }));
   }
 

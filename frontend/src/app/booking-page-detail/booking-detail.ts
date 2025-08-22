@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 import { CommonModule } from '@angular/common';
 import { TPipe } from '@core/i18n';
 import { CardComponent, ButtonComponent, BadgeComponent } from '@shared';
-import type { Booking } from '@core/models';
+import type {Booking, EventDto} from '@core/models';
 
 @Component({
   selector: 'app-booking-detail',
@@ -14,10 +14,10 @@ import type { Booking } from '@core/models';
 })
 export class BookingDetailModalComponent {
   @Input({ required: true }) booking!: Booking;
+  @Input({ required: true }) eventDto!: EventDto;
 
   @Input() asModal = true;
   @Input() titleKey = 'bookings.detail.title';
-  @Input() closeKey = 'common.close';
 
   @Output() close = new EventEmitter<void>();
 

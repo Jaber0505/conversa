@@ -1,0 +1,47 @@
+:host {
+  display: block;
+}
+
+.success-card,
+.cancel-card {
+  max-width: 680px;
+  margin: 2rem auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+.icon.success { color: #16a34a; }  /* vert */
+.icon.cancel { color: #dc2626; }   /* rouge */
+
+.title {
+  margin: 0.25rem 0 0.75rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.muted {
+  color: var(--color-muted-text, #6b7280);
+  margin-bottom: 1.25rem;
+}
+
+.info {
+  margin: 1rem 0;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.help {
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  color: var(--color-muted-text, #6b7280);
+}

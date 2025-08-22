@@ -16,7 +16,7 @@
     <div header class="ev-head">
       <h3 class="h5">{{ ev.title }}</h3>
       <div class="badges">
-        <shared-badge variant="accent" tone="soft">{{ ev.language }}</shared-badge>
+        <shared-badge variant="accent" tone="soft">{{ ev.language_code }}</shared-badge>
         <shared-badge variant="muted" tone="soft">{{ ev.city }}</shared-badge>
         <shared-badge variant="danger" tone="soft" *ngIf="ev.is_cancelled">
           {{ 'events.cancelled' | t }}

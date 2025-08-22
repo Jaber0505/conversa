@@ -8,7 +8,9 @@ import {Routes} from "@angular/router";
 import {HomeComponent} from "@app/features/home/home.component";
 import {EventListMockComponent} from "@app/event-list-mock/event-list-mock";
 import {EventDetailMockComponent} from "@app/event-detail-mock/event-detail-mock";
-import {BookingsPageComponent} from "@app/booking-page/booking-page";
+import {StripeSuccessPage} from "@app/stripe-success/stripe-success";
+import {StripeCancelPage} from "@app/stripe-cancel/stripe-cancel";
+import {BookingsListComponent} from "@app/booking-page/booking-page";
 
 export const routes: Routes = [
   { path: '', redirectTo: '/fr', pathMatch: 'full' },
@@ -40,11 +42,11 @@ export const routes: Routes = [
       },
       { path: 'register', component: RegisterPageComponent },
       { path: 'login', component: LoginPageComponent },
-      { path: 'bookings', component: BookingsPageComponent },
+      { path: 'bookings', component: BookingsListComponent },
       { path: 'faq', component: FaqComponent },
       { path: 'about', component: About },
-      { path: ':lang/stripe/success', component: StripeSuccessPage },
-      { path: ':lang/stripe/cancel',  component: StripeCancelPage  },
+      { path: 'stripe/success', component: StripeSuccessPage },
+      { path: 'stripe/cancel',  component: StripeCancelPage  },
       { path: '**', redirectTo: '' },
     ],
   },

@@ -11,11 +11,52 @@
   "nav": {
     "faq": "FAQ",
     "about": "À propos",
-    "events": "Événements"
+    "events": "Événements",
+    "booking": "Mes réservations"
+  },
+  "register": {
+    "firstTab": {
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "age": "Âge",
+      "nativeLangs": "Langues maternelles",
+      "targetLangs": "Langues cibles",
+      "selectLang": "Sélectionner une langue"
+    },
+    "secondTab": {
+      "bio": "Votre bio",
+      "bioPlaceHolder": "Présentez-vous en 2–3 phrases (expérience, centres d’intérêt, objectifs). 10 à 500 caractères.",
+      "limit": "Entre 10 et 500 caractères"
+    },
+    "thirdTab": {
+      "email": "Adresse e-mail",
+      "password": "Mot de passe",
+      "consent": "J’accepte la politique de confidentialité et les conditions d’utilisation.",
+      "consent_required": "Vous devez accepter pour continuer."
+    },
+    "title": "Créer votre compte",
+    "subtitle": "Complétez les étapes pour finaliser votre inscription."
+  },
+  "common": {
+    "brand": "Conversa",
+    "add": "Ajouter",
+    "remove": "Retirer",
+    "next": "Suivant",
+    "back": "Retour",
+    "register": "Créer mon compte",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "details": "Détails",
+    "pay": "Payer",
+    "language": "Langue",
+    "search": "Rechercher"
   },
   "auth": {
+    "email_placeholder": "ex. prénom.nom@email.com",
+    "password_placeholder": "Au moins 8 caractères",
     "login": "Connexion",
-    "register": "Inscription"
+    "register": "Inscription",
+    "logout": "Se déconnecter"
   },
   "languages": {
     "fr": "Français",
@@ -232,5 +273,92 @@
       "payment_price_a": "Le billet standard est à 7 € par session, ce qui inclut l’accès au jeu de conversation et la mise en relation avec d’autres participants. Certains événements spéciaux ou ateliers peuvent avoir un tarif différent, toujours indiqué à l’avance."
     },
     "no_results": "Aucune question ne correspond à ta recherche ? conversa@hotmail.com"
-  }
+  },
+  "payments": {
+    "success": {
+      "title": "Paiement confirmé",
+      "thanks": "Merci ! Votre réservation a bien été validée.",
+      "for_booking": "pour la réservation {{id}}",
+      "my_bookings": "Mes réservations",
+      "back_to_events": "Retour aux événements"
+    },
+    "cancel": {
+      "title": "Paiement non finalisé",
+      "line1": "Votre paiement a été annulé",
+      "for_booking": "pour la réservation {{id}}",
+      "reassure": "Vous pouvez réessayer à tout moment.",
+      "retry": "Réessayer le paiement",
+      "view_booking": "Voir ma réservation",
+      "back_to_events": "Retour aux événements",
+      "help": "Si le problème persiste, vérifiez votre connexion ou essayez un autre moyen de paiement."
+    },
+    "badge": {
+      "interrupted": "Transaction interrompue",
+      "success": "Paiement réussi"
+    },
+    "meta": {
+      "session": "Session",
+      "booking": "Réservation"
+    }
+  },
+  "bookings": {
+    "title": "Mes réservations",
+    "empty": "Aucune réservation pour le moment.",
+    "when": "Quand",
+    "amount": "Montant",
+    "event": "Événement",
+    "status": {
+      "PENDING": "En attente de paiement",
+      "CONFIRMED": "Confirmée",
+      "CANCELLED": "Annulée",
+      "FAILED": "Échouée",
+      "EXPIRED": "Expirée",
+      "REFUNDED": "Remboursée"
+    }
+  },
+  "events": {
+    "empty": "Aucun événement pour le moment.",
+    "cancelled": "Annulé",
+    "address": "Adresse",
+    "when": "Quand",
+    "theme": "Thème",
+    "free": "Gratuit",
+    "book": "Réserver",
+    "already_booked": "Déjà réservé",
+    "filters": {
+      "languages_placeholder": "Langues cibles"
+    }
+  },
+  "events": {
+    "empty": "Aucun événement pour le moment.",
+    "cancelled": "Annulé",
+    "address": "Adresse",
+    "when": "Quand",
+    "theme": "Thème",
+    "free": "Gratuit",
+    "book": "Réserver",
+    "already_booked": "Déjà réservé",
+    "filters": {
+      "languages_placeholder": "Langues cibles"
+    }
+  },
+  "events": {
+    "title": "Événements",
+    "empty": "Aucun événement pour le moment.",
+    "cancelled": "Annulé",
+    "address": "Adresse",
+    "when": "Quand",
+    "theme": "Thème",
+    "free": "Gratuit",
+    "book": "Réserver",
+    "already_booked": "Déjà réservé",
+    "filters": {
+      "languages_placeholder": "Langues cibles"
+    }
+  },
+  "checkout": {
+      "title": "Confirmer l'achat",
+      "message": "Voulez-vous confirmer votre achat ?",
+      "buy": "Payer"
+    }
 }

@@ -1,6 +1,6 @@
-import { ID } from './common.model';
+import {EventDto} from "@app/core/models/events.model";
 
-export type StatusEnum = 'pending' | 'paid' | 'cancelled' | string; // la spec expose un enum string
+export type StatusEnum = 'pending' | 'paid' | 'cancelled' | string;
 
 // Lecture
 export type BookingStatus = 'confirmed' | 'waiting_for_payment' | 'cancelled_user';
@@ -10,6 +10,7 @@ export interface Booking {
   public_id: string;
   user: number;
   event: number;
+  eventObject?: EventDto;
   status: string;
   amount_cents: number;
   currency: string;

@@ -5,7 +5,7 @@
       name="prenom"
       label="{{ 'register.firstTab.firstName' | t }}"
       [(ngModel)]="firstTabInfo.prenom"
-      [errorMessage]="firstNameErrorMessage"
+      [errorMessage]="formSubmitted && firstTabInfo.prenom.length===0"
       required>
     </shared-input>
   </div>
@@ -16,7 +16,7 @@
       name="nom"
       label="{{ 'register.firstTab.lastName' | t }}"
       [(ngModel)]="firstTabInfo.nom"
-      [errorMessage]="lastNameErrorMessage"
+      [errorMessage]="formSubmitted && firstTabInfo.nom.length===0"
       required>
     </shared-input>
   </div>
@@ -27,12 +27,11 @@
       name="age"
       type="number"
       label="{{ 'register.firstTab.age' | t }}"
-      [errorMessage]="ageErrorMessage"
+      [errorMessage]=" formSubmitted && firstTabInfo.age<18"
       [(ngModel)]="firstTabInfo.age">
     </shared-input>
   </div>
 
-  <!-- Langues natives (écrit dans firstTabInfo.native_langs) -->
   <div class="form__row">
     <label for="native-select">{{ 'register.firstTab.nativeLangs' | t }}</label>
     <shared-select
@@ -104,12 +103,6 @@
         {{ 'common.add' | t }}
       </shared-button>
     </div>
-  </div>
-
-  <div class="actions">
-    <button type="submit" class="btn btn--primary" [disabled]="f.invalid">
-      {{ 'common.next' | t }}
-    </button>
   </div>
 </form>
 

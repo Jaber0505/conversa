@@ -12,7 +12,7 @@ import {
 } from '@shared';
 import {ConfirmPurchaseComponent} from "@app/confirm-purchase/confirm-purchase";
 import {EventDto} from "@core/models";
-import {BookingsApiService, EventsApiService} from "@core/http";
+import {BookingsApiService, EventsApiService, PaymentsApiService} from "@core/http";
 import {toSignal} from "@angular/core/rxjs-interop";
 import {filter, map, take} from "rxjs/operators";
 
@@ -37,6 +37,7 @@ export class EventDetailMockComponent {
   actionHref = `/${this.lang}/events`;
   private eventsApi = inject(EventsApiService);
   private bookingsApiService = inject(BookingsApiService);
+  private paymentsApiService = inject(PaymentsApiService);
   readonly error = signal<string | null>(null);
 
   protected readonly event = signal<EventDto | null>(null);
@@ -52,10 +53,32 @@ export class EventDetailMockComponent {
   }
 
   performPurchase() {
-    this.bookingsApiService.create(this.eventId()!).subscribe({
+    const evId = this.eventId();
+    if (!evId) return;
+
+    this.bookingsApiService.create(evId).pipe(take(1)).subscribe({
+      next: (booking) => {
+        this.paymentsApiService.createCheckoutSession({
+          booking_public_id: booking.public_id,
+          lang: 'fr',
+        }).pipe(take(1)).subscribe({
+          next: (res) => {
+            debugger; window.location.href = res.url; },
+          error: (err) => {
+            debugger;
+            console.error('Erreur paiement', err);
+            this.error.set('Erreur lors de la création de la session de paiement.');
+          },
+        });
+      },
+      error: (err) => {
+        debugger;
+        console.error('Erreur booking', err);
+        this.error.set('Erreur lors de la création de la réservation.');
+      },
     });
-this.bookingsApiService.create(this.event()?.id!);
   }
+
 
   openPopup() {
     this.confirmPopup = true;

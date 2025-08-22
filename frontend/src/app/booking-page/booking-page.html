@@ -1,76 +1,74 @@
 <shared-container>
   <shared-headline-bar
     [title]="'bookings.title' | t"
-    [actionLabel]="'common.back' | t"
-    [actionLink]="'/' + lang()">
+    [actionLink]="'/' + lang">
   </shared-headline-bar>
+  <div class="state error" *ngIf="error() as err">
+    <shared-badge variant="danger" tone="soft">{{ err }}</shared-badge>
+  </div>
 
-  <ng-container *ngIf="vm$ | async as vm">
-    <div class="state muted" *ngIf="vm.state === 'loading'">
-      {{ 'common.loading' | t }}
+  <ng-container>
+    <div class="state empty" *ngIf="!loading() && items().length === 0">
+      <shared-badge variant="muted" tone="soft">{{ 'bookings.empty' | t }}</shared-badge>
     </div>
-
-    <div class="state error" *ngIf="vm.state === 'error'">
-      <shared-badge variant="danger" tone="soft">
-        {{ vm.message || ('bookings.load_error' | t) }}
-      </shared-badge>
-    </div>
-
-    <ng-container *ngIf="vm.state === 'ready'">
-      <div class="empty" *ngIf="!vm.items.length">
-        <shared-badge variant="muted" tone="outline">
-          {{ 'bookings.empty' | t }}
-        </shared-badge>
-      </div>
-
-      <div class="grid" *ngIf="vm.items.length">
-        <shared-card *ngFor="let b of vm.items; trackBy: trackById" class="bk-card">
-          <div header class="bk-head">
-            <h3 class="h6 title">#{{ b.id }}</h3>
-            <div class="badges">
-              <shared-badge [variant]="badgeVariant(b)">
-                {{ ('bookings.status.' + b.status) | t }}
-              </shared-badge>
-            </div>
+    <shared-grid class="bk-grid" *ngIf="items().length > 0">
+      <shared-card *ngFor="let b of items(); trackBy: trackById" class="bk-card">
+        <div media class="thumb" aria-hidden="true"></div>
+        <div header class="bk-head">
+          <h3 class="h6">#{{ b.id }}</h3>
+          <div class="badges">
+            <shared-badge [variant]="badgeVariant(b)" tone="soft">
+              {{ ('bookings.status.' + b.status) | t }}
+            </shared-badge>
           </div>
-
-          <div class="bk-body">
-            <div class="row">
-              <span class="label">{{ 'bookings.when' | t }}</span>
-              <span class="value">{{ dateLabel(b.confirmed_at!) }}</span>
-            </div>
-            <div class="row">
-              <span class="label">ID {{ 'events.title' | t }}</span>
-              <span class="value">#{{ b.event }}</span>
-            </div>
+        </div>
+        <div class="bk-body">
+          <div class="row">
+            <span class="label">{{ 'bookings.when' | t }}</span>
+            <span class="value">{{ dateLabel(b.confirmed_at || b.created_at) }}</span>
           </div>
-
-          <div footer class="bk-foot">
-            <shared-button
-              variant="outline"
-              size="sm"
-              type="button"
-              (click)="openDetail(b)">
-              {{ 'common.details' | t }}
-            </shared-button>
-
-            <shared-button *ngIf="b.status !=='CANCELLED'"
-              variant="outline"
-              size="sm"
-              type="button"
-              (click)="cancel(b.public_id)">
-              {{ 'common.cancel' | t }}
-            </shared-button>
+          <div class="row">
+            <span class="label">{{ 'bookings.event' | t }}</span>
+            <span class="value">#{{ b.event }}</span>
           </div>
-        </shared-card>
-      </div>
-    </ng-container>
+          <div class="row">
+            <span class="label">{{ 'bookings.amount' | t }}</span>
+            <span class="value">{{ price(b) }}</span>
+          </div>
+        </div>
+
+        <div footer class="bk-foot">
+          <shared-button
+            variant="outline"
+            size="sm"
+            type="button"
+            (click)="openDetail(b)">
+            {{ 'common.details' | t }}
+          </shared-button>
+
+          <shared-button *ngIf="b.status !== 'CANCELLED'"
+                         variant="outline"
+                         size="sm"
+                         type="button"
+                         (click)="cancel(b.public_id)">
+            {{ 'common.cancel' | t }}
+          </shared-button>
+
+          <shared-button *ngIf="b.status === 'PENDING'"
+                         size="sm"
+                         type="button"
+                         (click)="pay(b.public_id)">
+            {{ 'common.pay' | t }}
+          </shared-button>
+        </div>
+      </shared-card>
+    </shared-grid>
   </ng-container>
+  <app-booking-detail
+    *ngIf="showDetail"
+    [booking]="selected()!"
+    [eventDto]="selectedEvent()!"
+    [asModal]="true"
+    (close)="showDetail = false">
+  </app-booking-detail>
 </shared-container>
-
-<app-booking-detail
-  *ngIf="showDetail"
-  [booking]="booking"
-  [asModal]="true"
-  (close)="showDetail = false">
-</app-booking-detail>

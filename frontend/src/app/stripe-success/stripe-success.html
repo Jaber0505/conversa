@@ -1,0 +1,30 @@
+<shared-container>
+  <shared-card class="success-card">
+    <div class="icon success">✅</div>
+
+    <h2 class="title">{{ 'payments.success.title' | t }}</h2>
+
+    <p class="muted">
+      {{ 'payments.success.thanks' | t }}
+      <ng-container *ngIf="bookingPublicId">
+        {{ 'payments.success.for_booking' | t : { id: bookingPublicId } }}
+      </ng-container>
+    </p>
+
+    <div class="info">
+      <shared-badge variant="success" tone="soft">
+        {{ 'payments.badge.success' | t }}
+      </shared-badge>
+    </div>
+
+    <div class="actions">
+      <shared-button type="button" (click)="goToMyBookings()">
+        {{ 'payments.success.my_bookings' | t }}
+      </shared-button>
+
+      <shared-button type="button" variant="outline" (click)="goToEvents()">
+        {{ 'payments.success.back_to_events' | t }}
+      </shared-button>
+    </div>
+  </shared-card>
+</shared-container>

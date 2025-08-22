@@ -1,63 +1,88 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { catchError, map, of, shareReplay, startWith, switchMap, Subject } from 'rxjs';
 
 import { TPipe } from '@core/i18n';
+import {Booking, EventDto} from '@core/models';
+import {BookingsApiService, EventsApiService, PaymentsApiService} from '@core/http';
+
 import {
-  ContainerComponent,
-  HeadlineBarComponent,
-  CardComponent,
-  BadgeComponent,
-  ButtonComponent,
+  ContainerComponent, GridComponent, HeadlineBarComponent,
+  CardComponent, BadgeComponent, ButtonComponent
 } from '@shared';
 
-import { Booking } from '@core/models';
-import { BookingsApiService } from '@core/http';
+import { BlockingSpinnerService } from '@app/core/http/services/spinner-service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { take, finalize } from 'rxjs/operators';
 import { BookingDetailModalComponent } from '@app/booking-page-detail/booking-detail';
-import {HttpErrorResponse} from "@angular/common/http";
-
-type Vm =
-  | { state: 'loading' }
-  | { state: 'error'; message?: string }
-  | { state: 'ready'; items: Booking[] };
 
 @Component({
-  selector: 'app-booking-page',
+  selector: 'app-bookings-list',
   standalone: true,
   imports: [
     CommonModule, TPipe,
-    ContainerComponent, HeadlineBarComponent, CardComponent, BadgeComponent, ButtonComponent,
-    BadgeComponent, BadgeComponent, BadgeComponent, HeadlineBarComponent, BookingDetailModalComponent, // (laisse tel quel)
+    ContainerComponent, GridComponent, HeadlineBarComponent,
+    CardComponent, BadgeComponent, ButtonComponent,
+    BookingDetailModalComponent,
   ],
   templateUrl: './booking-page.html',
   styleUrls: ['./booking-page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BookingsPageComponent implements OnInit {
+export class BookingsListComponent {
   private route = inject(ActivatedRoute);
-  private api = inject(BookingsApiService);
+  private bookingsApi = inject(BookingsApiService);
+  private eventsApiService = inject(EventsApiService);
+  private paymentsApi = inject(PaymentsApiService);
+  private loader = inject(BlockingSpinnerService);
 
-  private refresh$ = new Subject<void>();
+  readonly items = signal<Booking[]>([]);
+  readonly error = signal<string | null>(null);
+  readonly loading = signal<boolean>(false);
 
-  lang(): string { return this.route.snapshot.paramMap.get('lang') ?? 'fr'; }
+  get lang(): string { return this.route.snapshot.paramMap.get('lang') ?? 'fr'; }
 
-  vm$ = this.refresh$.pipe(
-    startWith(void 0),
-    switchMap(() =>
-      this.api.list().pipe(
-        map(res => ({ state: 'ready', items: res.results }) as Vm),
-        catchError(() => of({ state: 'error', message: 'bookings.load_error' } as Vm)),
-        startWith({ state: 'loading' } as Vm),
-      )
-    ),
-    shareReplay({ bufferSize: 1, refCount: true }),
-  );
+  // modal
+  showDetail = false;
+  private _selected = signal<Booking | null>(null);
+  private _selectedEvent = signal<EventDto | null>(null);
+  selected = this._selected.asReadonly();
+  selectedEvent = this._selectedEvent.asReadonly();
 
-  ngOnInit(): void {
+  constructor() {
+    this.fetch();
   }
 
-  dateLabel(iso: string): string {
+  fetch() {
+    this.loading.set(true);
+    this.loader.show('Chargement…');
+    this.bookingsApi.list().pipe(
+      take(1),
+      finalize(() => {
+        this.loading.set(false);
+        this.loader.hide();
+      })
+    ).subscribe({
+      next: (res) => {
+        this.items.set(res.results);
+        this.error.set(null);
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Bookings load error:', err);
+        this.error.set('bookings.load_error');
+      },
+    });
+  }
+
+  trackById = (_: number, it: Booking) => (it as any).public_id ?? it.id;
+
+  badgeVariant(b: Booking): 'accent' | 'danger' {
+    const s = String(b.status).toUpperCase();
+    return s === 'CONFIRMED' ? 'accent' : 'danger';
+  }
+
+  dateLabel(iso?: string): string {
+    if (!iso) return '—';
     try {
       return new Intl.DateTimeFormat('fr-BE', {
         weekday: 'short', day: '2-digit', month: 'short',
@@ -66,31 +91,45 @@ export class BookingsPageComponent implements OnInit {
     } catch { return iso; }
   }
 
-  badgeVariant(b: Booking): 'accent' | 'danger' {
-    const s = String(b.status).toUpperCase();
-    return s === 'CONFIRMED' ? 'accent' : 'danger';
+  price(b: Booking): string {
+    const cents = Number((b as any).amount_cents ?? 0);
+    return new Intl.NumberFormat('fr-BE', { style: 'currency', currency: 'EUR' }).format(cents / 100);
   }
 
-  trackById = (_: number, it: Booking) => (it as any).public_id ?? it.id;
-
-  showDetail = false;
-  booking: Booking = {} as Booking;
-
   openDetail(b: Booking) {
-    this.booking = b;
+    this._selected.set(b);
+    this.eventsApiService.get(b.event).subscribe({
+      next:(event)=>{
+        this._selectedEvent.set(event);
+      }
+    })
     this.showDetail = true;
   }
 
-  refresh() {
-    this.refresh$.next();
-  }
-
-  cancel(id: string) {
-    this.api.cancel(id).subscribe({
+  cancel(public_id: string) {
+    this.loader.show('Annulation…');
+    this.bookingsApi.cancel(public_id).pipe(
+      take(1),
+      finalize(() => this.loader.hide())
+    ).subscribe({
+      next: () => this.fetch(),
       error: (err: HttpErrorResponse) => {
         if (err.status === 409) console.warn('Déjà confirmé: annulation refusée.');
         else console.error('Erreur annulation:', err);
+        this.fetch();
       }
     });
+  }
+
+  pay(public_id: string) {
+    this.loader.show('Redirection Stripe…');
+    this.paymentsApi.createCheckoutSession({
+      booking_public_id: public_id,
+      lang: this.lang,
+    }).pipe(take(1), finalize(() => this.loader.hide()))
+      .subscribe({
+        next: (res) => { window.location.href = res.url; },
+        error: (err) => { console.error('Erreur paiement', err); }
+      });
   }
 }

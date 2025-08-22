@@ -21,7 +21,7 @@
         </shared-button>
 
         <shared-button type="button" [disabled]="disabled || loading" (click)="onBuy()">
-          {{ loading ? ('common.loading' | t) : (buyKey | t) }}
+          {{ buyKey | t }}
         </shared-button>
       </div>
     </shared-card>

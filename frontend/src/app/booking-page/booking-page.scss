@@ -1,53 +1,14 @@
-.grid {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: var(--space-4);
-}
-
-.bk-card {
-  grid-column: span 6; /* 2 colonnes desktop */
-  @media (max-width: 960px) { grid-column: span 12; } /* 1 colonne mobile */
-}
+.bk-grid { --gap: 16px; }
+.bk-card .thumb { background: #f2f3f5; height: 120px; border-radius: 8px; }
 
 .bk-head {
-  display: flex;
-  align-items: start;
-  justify-content: space-between;
-  gap: var(--space-3);
-
-  .title { margin: 0; }
-  .badges { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
 }
-
-.bk-body {
-  display: grid;
-  gap: var(--space-2);
-  margin-top: var(--space-2);
-
-  .row {
-    display: grid;
-    grid-template-columns: 160px 1fr;
-    gap: var(--space-3);
-
-    .label { color: var(--color-text); opacity: .7; }
-    .value { font-weight: 600; }
-  }
-
-  @media (max-width: 640px) {
-    .row { grid-template-columns: 1fr; }
-  }
+.bk-body .row {
+  display: grid; grid-template-columns: 120px 1fr; gap: 8px; margin: 6px 0;
 }
-
+.bk-body .label { color: #6b7280; }
 .bk-foot {
-  display: flex;
-  justify-content: space-between;
-  gap: var(--space-3);
-  margin-top: var(--space-4);
+  display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;
 }
-
-.state { margin-top: var(--space-6); }
-.empty {
-  margin-top: var(--space-6);
-  display: flex;
-  justify-content: center;
-}
+.state.empty, .state.error { margin: 12px 0; }

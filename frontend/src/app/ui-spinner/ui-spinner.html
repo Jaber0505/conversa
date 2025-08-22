@@ -1,0 +1,14 @@
+<div *ngIf="show" class="ui-backdrop" aria-hidden="true"></div>
+
+<div *ngIf="show"
+     id="blocking-modal"
+     class="ui-modal"
+     role="dialog"
+     aria-modal="true"
+     tabindex="-1"
+     aria-label="Veuillez patienter">
+  <div class="ui-box">
+    <div class="ui-spinner" aria-hidden="true"></div>
+    <p *ngIf="message" class="ui-msg">{{ message }}</p>
+  </div>
+</div>

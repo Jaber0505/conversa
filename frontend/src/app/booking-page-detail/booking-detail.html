@@ -7,7 +7,7 @@
 
     <shared-card class="booking-card">
       <div header class="head">
-        <h2 id="booking-title" class="h5">{{ titleKey | t }}</h2>
+        <h2 id="booking-title" class="h5">{{ eventDto.title  }}</h2>
         <shared-badge tone="soft" [variant]="statusVariant(booking)">
           {{ ('bookings.status.' + booking.status) | t }}
         </shared-badge>
@@ -15,27 +15,27 @@
 
       <div class="body" id="booking-desc">
         <div class="row">
-          <span class="label">#</span>
-          <span class="value">{{ booking.id }}</span>
+          <span class="label">{{ 'bookings.event' | t }}</span>
+          <span class="value">{{ eventDto.id }}</span>
         </div>
         <div class="row">
           <span class="label">{{ 'bookings.when' | t }}</span>
-          <span class="value">{{ dateLabel(booking.confirmed_at!) }}</span>
+          <span class="value">{{ dateLabel(eventDto.datetime_start) }}</span>
         </div>
         <div class="row">
-          <span class="label">{{ 'events.title' | t }}</span>
-          <span class="value">#{{ booking.event }}</span>
+          <span class="label">{{ 'bookings.title' | t }}</span>
+          <span class="value">{{ eventDto.title }}</span>
         </div>
 
         <div class="row">
-          <span class="label">{{ 'common.created_at' | t }}</span>
-          <span class="value">{{ dateLabel(booking.created_at) }}</span>
+          <span class="label">{{ 'common.language' | t }}</span>
+          <span class="value">{{ eventDto.language_code }}</span>
         </div>
       </div>
 
       <div footer class="actions">
         <shared-button type="button" variant="outline" (click)="onClose()">
-          {{ closeKey | t }}
+          {{ 'common.close' | t }}
         </shared-button>
       </div>
     </shared-card>

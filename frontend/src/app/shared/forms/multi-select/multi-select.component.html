@@ -1,6 +1,5 @@
-<!-- Contrôle -->
 <div class="ms-control" [class.ms--disabled]="disabled" (click)="toggleOpen($event)" role="button" tabindex="0">
-  <div class="ms-control__chips" *ngIf="selected.length; else placeholderTpl">
+  <div class="ms-control__chips" *ngIf="selected?.length; else placeholderTpl">
     <shared-badge
       *ngFor="let s of selected"
       variant="secondary"
@@ -11,7 +10,6 @@
       <span class="chip__text">{{ s.label }}</span>
       <button type="button" class="chip__close" aria-label="Retirer" (click)="removeOne(s.value, $event)">×</button>
     </shared-badge>
-    <!-- Bouton Effacer retiré comme demandé -->
   </div>
 
   <ng-template #placeholderTpl>
@@ -21,7 +19,6 @@
   <div class="ms-control__caret" aria-hidden="true">▾</div>
 </div>
 
-<!-- Panneau -->
 <div class="ms-panel" *ngIf="isOpen" (click)="$event.stopPropagation()">
   <div class="ms-panel__search">
     <input

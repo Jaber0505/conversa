@@ -1,13 +1,10 @@
-<!-- VITRINE / HERO -->
 <shared-section spacing="lg" tone="subtle">
   <shared-container>
     <div class="home-grid">
-      <!-- Colonne gauche -->
       <div class="left-col">
         <h1>{{ 'pages.home.hero.title' | t }}</h1>
         <p class="subtitle">{{ 'pages.home.hero.subtitle' | t }}</p>
 
-        <!-- Carte recherche -->
         <shared-card tone="soft" class="search-card">
           <div header>
             <h2 class="h3">{{ 'pages.home.search.title' | t }}</h2>
@@ -27,7 +24,6 @@
           </div>
         </shared-card>
 
-        <!-- Badges de confiance -->
         <div class="trust">
           <shared-badge variant="accent" tone="solid">{{ 'shared.badges.members_1000_plus' | t }}</shared-badge>
           <shared-badge variant="accent" tone="solid">{{ 'shared.badges.partners_20' | t }}</shared-badge>
@@ -35,7 +31,6 @@
         </div>
       </div>
 
-      <!-- Colonne droite : image + tuto -->
       <div class="right-col">
         <shared-card tone="elevated" class="howto-card">
           <img class="howto-img" src="/assets/images/home/conversation-illustration.jpg" alt="{{ 'pages.home.howto.img_alt' | t }}">
@@ -78,7 +73,7 @@
 <!-- ÉVÉNEMENTS À VENIR -->
 <shared-section spacing="lg">
   <shared-container>
-    <shared-headline-bar 
+    <shared-headline-bar
       [title]="'pages.home.upcoming.title' | t"
       [actionLabel]="'shared.actions.see_all' | t"
       (action)="goToEvents()">
@@ -103,15 +98,15 @@
     </shared-headline-bar>
 
     <shared-grid [cols]="1" [colsSm]="2" [colsMd]="3">
-      <shared-category-card 
+      <shared-category-card
         [title]="'pages.home.categories.items.cafe.title' | t"
         [subtitle]="'pages.home.categories.items.cafe.subtitle' | t">
       </shared-category-card>
-      <shared-category-card 
+      <shared-category-card
         [title]="'pages.home.categories.items.pro.title' | t"
         [subtitle]="'pages.home.categories.items.pro.subtitle' | t">
       </shared-category-card>
-      <shared-category-card 
+      <shared-category-card
         [title]="'pages.home.categories.items.events.title' | t"
         [subtitle]="'pages.home.categories.items.events.subtitle' | t">
       </shared-category-card>

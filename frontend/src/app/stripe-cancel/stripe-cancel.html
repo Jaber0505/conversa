@@ -1,0 +1,57 @@
+<shared-container>
+  <shared-card class="cancel-card">
+    <div class="icon">✖</div>
+
+    <h2>{{ 'payments.cancel.title' | t }}</h2>
+
+    <p class="muted">
+      {{ 'payments.cancel.line1' | t }}
+      <ng-container *ngIf="bookingPublicId">
+        {{ 'payments.cancel.for_booking' | t : { id: bookingPublicId } }}
+      </ng-container>
+      {{ 'payments.cancel.reassure' | t }}
+    </p>
+
+    <div class="info">
+      <shared-badge variant="danger" tone="soft">
+        {{ 'payments.badge.interrupted' | t }}
+      </shared-badge>
+
+      <div class="meta">
+        <div *ngIf="checkoutSessionId">
+          <span>{{ 'payments.meta.session' | t }}:</span> {{ checkoutSessionId }}
+        </div>
+        <div *ngIf="bookingPublicId">
+          <span>{{ 'payments.meta.booking' | t }}:</span> {{ bookingPublicId }}
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <shared-button
+        type="button"
+        (click)="performPurchase()"
+        *ngIf="bookingPublicId">
+        {{ 'payments.cancel.retry' | t }}
+      </shared-button>
+
+      <shared-button
+        type="button"
+        variant="outline"
+        (click)="goToBooking()"
+        *ngIf="bookingPublicId">
+        {{ 'payments.cancel.view_booking' | t }}
+      </shared-button>
+
+      <shared-button
+        type="button"
+        (click)="goToEvents()">
+        {{ 'payments.cancel.back_to_events' | t }}
+      </shared-button>
+    </div>
+
+    <div class="help">
+      {{ 'payments.cancel.help' | t }}
+    </div>
+  </shared-card>
+</shared-container>

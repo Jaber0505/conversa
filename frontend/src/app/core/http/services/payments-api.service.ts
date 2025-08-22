@@ -1,22 +1,40 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { API_URL } from '@core/http';
-import {
-  CreateIntentRequest,
-  CreateIntentResponse,
-  assertCreateIntentResponse,
-} from '@core/models';
-import { tap } from 'rxjs/operators';
+
+export interface CreateCheckoutSessionPayload {
+  booking_public_id: string;
+  lang: string;            // ex: "fr"
+  success_url?: string;    // optionnel
+  cancel_url?: string;     // optionnel
+}
+
+export interface CheckoutSessionCreated {
+  url: string;
+  session_id?: string | null;
+}
+
+export interface APIError {
+  detail: string;
+  code?: string;
+}
 
 @Injectable({ providedIn: 'root' })
 export class PaymentsApiService {
   private http = inject(HttpClient);
   private base = inject(API_URL);
 
-  // POST /payments/create-intent/
-  createIntent(payload: CreateIntentRequest) {
-    return this.http
-      .post<CreateIntentResponse>(`${this.base}/payments/create-intent/`, payload)
-      .pipe(tap(res => assertCreateIntentResponse(res))); // optionnel, sécurise le typage à l’exécution
+  /**
+   * Crée une session Stripe Checkout (TEST).
+   * Retourne l’URL Stripe à ouvrir.
+   */
+  createCheckoutSession(
+    payload: CreateCheckoutSessionPayload
+  ): Observable<CheckoutSessionCreated> {
+    return this.http.post<CheckoutSessionCreated>(
+      `${this.base}/payments/checkout-session/`,
+      payload
+    );
   }
 }

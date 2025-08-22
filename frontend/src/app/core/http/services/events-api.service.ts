@@ -19,7 +19,6 @@ export class EventsApiService {
     if (params?.partner != null)  httpParams = httpParams.set('partner', String(params.partner));
     if (params?.language)         httpParams = httpParams.set('language', params.language);
     if (params?.ordering)         httpParams = httpParams.set('ordering', params.ordering);
-    debugger;
     return this.http.get<Paginated<EventDto>>(`${this.base}/events/`, { params: httpParams });
   }
 
