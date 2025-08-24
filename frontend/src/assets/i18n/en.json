@@ -41,6 +41,7 @@
   },
   "common": {
     "clear": "Clear",
+    "close": "close",
     "LanguageSearch": "Target languages",
     "searchInput": "Search",
     "add": "Add",

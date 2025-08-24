@@ -1,5 +1,6 @@
 {
   "common": {
+    "close": "close",
     "brand": "Conversa",
     "lang_change": "Taal wijzigen",
     "save": "Opslaan",
@@ -40,6 +41,7 @@
     "subtitle": "Voltooi de stappen om uw registratie te voltooien."
   },
   "common": {
+    "close": "dichtbij",
     "clear": "Wissen",
     "LanguageSearch": "Doeltalen",
     "searchInput": "Zoeken",
