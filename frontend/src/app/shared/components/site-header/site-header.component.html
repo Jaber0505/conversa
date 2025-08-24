@@ -53,6 +53,12 @@
       </shared-button>
     </div>
   </shared-container>
+  <nav class="mobile-nav" [attr.aria-label]="'common.nav.menu' | t">
+    <a class="m-link" [routerLink]="['/', langCode(), 'faq']">{{ 'nav.faq' | t }}</a>
+    <a class="m-link" [routerLink]="['/', langCode(), 'about']">{{ 'nav.about' | t }}</a>
+    <a *ngIf="tokens?.access" class="m-link" [routerLink]="['/', langCode(), 'bookings']">{{ 'nav.booking' | t }}</a>
+    <a *ngIf="tokens?.access" class="m-link" [routerLink]="['/', langCode(), 'events']">{{ 'nav.events' | t }}</a>
+  </nav>
 </header>
 
 <app-language-popover
