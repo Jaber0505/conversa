@@ -5,6 +5,7 @@
   z-index: 1000;
   display: grid;
   place-items: center;
+  background: transparent;
   padding: var(--space-4);
 }
 
@@ -12,7 +13,6 @@
 .overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,.35);  /* assombrit */
   backdrop-filter: blur(4px);    /* flou derrière */
   -webkit-backdrop-filter: blur(4px);
   z-index: 999;                  /* sous la boîte de dialogue */
