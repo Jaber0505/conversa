@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Output, OnInit, signal, computed} from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { InputComponent, SelectComponent, BadgeComponent, ButtonComponent } from '@shared';
+import {InputComponent, SelectComponent, BadgeComponent, ButtonComponent, MultiSelectComponent} from '@shared';
 import { TPipe } from '@core/i18n';
 import { NavigationButtonsComponent } from '@shared/forms/navigation-button/navigation-buttons';
 import { FirstTabInfoModel } from '@app/upload/register-page/models/firstTabInfo.model';
@@ -14,7 +14,7 @@ type Option = { value: string; label: string };
   imports: [
     FormsModule, TPipe,
     InputComponent, SelectComponent, BadgeComponent, ButtonComponent,
-    NavigationButtonsComponent,CommonModule
+    NavigationButtonsComponent, CommonModule, MultiSelectComponent
   ],
   templateUrl: './register-page-first-tab.html',
   styleUrls: ['./register-page-first-tab.scss']
@@ -30,13 +30,23 @@ export class RegisterPageFirstTab implements OnInit {
     { value: 'de', label: 'Deutsch' },
     { value: 'ar', label: 'العربية' },
   ];
+  pendingTargets: string[] = [];
+  get pendingTarget(): string | null {
+    return this.pendingTargets.length ? this.pendingTargets[0] : null;
+  }
+  onTargetsChange(values: string[]) {
+    this.pendingTargets = values ?? [];
+  }
   pendingNative?: string;
-  pendingTarget?: string;
+  //pendingTarget?: string;
   formSubmitted = false;
 
   ngOnInit() {
     this.firstTabInfo.native_langs ||= [];
     this.firstTabInfo.target_langs ||= [];
+    if (this.pendingTargets.length === 0 && this.pendingTarget /* ancienne var */) {
+      this.pendingTargets = [this.pendingTarget];
+    }
   }
   addNative() {
     const c = this.pendingNative;
@@ -50,14 +60,14 @@ export class RegisterPageFirstTab implements OnInit {
     this.firstTabInfo.native_langs = this.firstTabInfo.native_langs.filter(x => x !== code);
   }
 
-  addTarget() {
-    const c = this.pendingTarget;
-    if (!c) return;
-    if (!this.firstTabInfo.target_langs.includes(c)) {
-      this.firstTabInfo.target_langs = [...this.firstTabInfo.target_langs, c];
-    }
-    this.pendingTarget = undefined;
-  }
+  //addTarget() {
+  //  const c = this.pendingTarget;
+  //if (!c) return;
+  // if (!this.firstTabInfo.target_langs.includes(c)) {
+  //  this.firstTabInfo.target_langs = [...this.firstTabInfo.target_langs, c];
+  //}
+  //this.pendingTarget = undefined;
+  //}
   removeTarget(code: string) {
     this.firstTabInfo.target_langs = this.firstTabInfo.target_langs.filter(x => x !== code);
   }
