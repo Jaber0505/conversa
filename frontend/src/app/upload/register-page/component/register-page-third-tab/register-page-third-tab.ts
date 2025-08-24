@@ -7,10 +7,10 @@ import {NavigationButtonsComponent} from "@shared/forms/navigation-button/naviga
 
 @Component({
   selector: 'app-register-page-third-tab',
-    imports: [
-        FormsModule,
-        JsonPipe, CommonModule, TPipe, InputComponent, NavigationButtonsComponent, ButtonComponent
-    ],
+  imports: [
+    FormsModule,
+     CommonModule, TPipe, InputComponent, NavigationButtonsComponent, ButtonComponent, InputComponent, InputComponent
+  ],
   templateUrl: './register-page-third-tab.html',
   standalone: true,
   styleUrl: './register-page-third-tab.scss'
@@ -19,11 +19,12 @@ export class RegisterPageThirdTab {
   email = '';
   password = '';
   consent_given = false;
-
+  formNotValid = false;
   @Output() suivant = new EventEmitter<{ email: string; password: string,  consent_given: boolean}>();
   @Output() previous = new EventEmitter();
   onNext(): void {
-    if (!this.consent_given) return;
+    if (!this.consent_given || this.email.length === 0 || this.password.length === 0 || this.password.length < 9 ) this.formNotValid = true;
+    else
     this.suivant.emit({ email: (this.email || '').trim(), password: this.password, consent_given: this.consent_given });
   }
   onPrevious() {

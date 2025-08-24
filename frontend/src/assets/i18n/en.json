@@ -19,6 +19,7 @@
       "firstName": "First name",
       "lastName": "Last name",
       "age": "Age",
+      "ageError": "You must be at least 18 years old",
       "nativeLangs": "Native languages",
       "targetLangs": "Target languages",
       "selectLang": "Select a language"
@@ -31,6 +32,7 @@
     "thirdTab": {
       "email": "Email address",
       "password": "Password",
+      "passwordLimit": "The password must be at least 9 characters long",
       "consent": "I accept the privacy policy and terms of use.",
       "consent_required": "You must accept to continue."
     },
@@ -38,6 +40,9 @@
     "subtitle": "Complete the steps to finish your registration."
   },
   "common": {
+    "clear": "Clear",
+    "LanguageSearch": "Target languages",
+    "searchInput": "Search",
     "add": "Add",
     "remove": "Remove",
     "next": "Next",

@@ -19,10 +19,11 @@ export class RegisterPageSecondTab {
   @Output() previous = new EventEmitter();
 
   bio: string = '';
-
+  formNotValid = false;
   onNext(form?: NgForm) {
-    debugger;
     const value = (this.currentBio ?? '').trim();
+    if(this.currentBio.length===0) this.formNotValid =true;
+    else
       this.bioReturn.emit(value);
   }
   onPrevious() {

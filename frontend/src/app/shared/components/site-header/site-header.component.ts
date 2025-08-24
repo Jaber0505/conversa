@@ -73,12 +73,11 @@ export class SiteHeaderComponent{
     this.loading = true;
 
     const refresh = this.tokens.refresh;
-    debugger;
     this.authApi.logout(refresh!).subscribe({
       next: () => { this.loading = false;
         this.tokens.clear();
         this.router.navigate(['/', this.lang()]);
-        debugger; },
+        },
       error: () => { this.loading = false; },
     });
   }

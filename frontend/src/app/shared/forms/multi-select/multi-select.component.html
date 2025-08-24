@@ -1,4 +1,9 @@
-<div class="ms-control" [class.ms--disabled]="disabled" (click)="toggleOpen($event)" role="button" tabindex="0">
+<div class="ms-control"
+     [class.ms--disabled]="disabled"
+     [class.ms--error]="error"
+     (click)="toggleOpen($event)"
+     role="button"
+     tabindex="0"><div class="ms-control" [class.ms--disabled]="disabled" (click)="toggleOpen($event)" role="button" tabindex="0">
   <div class="ms-control__chips" *ngIf="selected?.length; else placeholderTpl">
     <shared-badge
       *ngFor="let s of selected"
@@ -44,4 +49,5 @@
 
     <div class="ms-panel__empty" *ngIf="!filtered().length">Aucun résultat</div>
   </div>
+</div>
 </div>

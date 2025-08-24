@@ -122,3 +122,13 @@
 .ms-panel__empty {
   padding:.75rem; color: color-mix(in oklab, var(--color-text), white 40%);
 }
+.ms--error {
+  border: 1px solid red;
+  color: red;
+
+  .chip,
+  .ms-control__placeholder,
+  .ms-option__label {
+    color: red;
+  }
+}

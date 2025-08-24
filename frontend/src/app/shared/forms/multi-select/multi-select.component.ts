@@ -22,6 +22,8 @@ export class MultiSelectComponent {
   @Input() placeholder = 'Sélectionner…';
   @Input() options: SelectOption[] = [];
   @Input() disabled = false;
+  @Input() error = false;
+
 
   // API value (string[])
   private _value = signal<string[]>([]);

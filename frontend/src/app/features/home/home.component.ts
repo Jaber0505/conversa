@@ -1,9 +1,14 @@
-import { Component, inject } from '@angular/core';
+import {Component, inject, signal} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SHARED_IMPORTS } from '@shared';
 import { SearchBarComponent, type FilterConfig, type GenericSearch } from '@shared/forms/search-bar/search-bar.component';
 import {I18nService, TPipe} from '@core/i18n';
 import {BlockingSpinnerService} from "@app/core/http/services/spinner-service";
+import {ActivatedRoute, Router} from "@angular/router";
+import {SharedSearchPanelComponent} from "@app/shared-search-panel/shared-search-panel";
+import {SelectOption} from "@shared/forms/select/select.component";
+import {langToOptionsSS, Language} from "@core/models";
+import {LanguagesApiService} from "@core/http";
 
 type EventItem = {
   id: number;
@@ -20,99 +25,51 @@ type EventItem = {
 @Component({
   standalone: true,
   selector: 'app-home',
-  imports: [CommonModule, ...SHARED_IMPORTS, SearchBarComponent, TPipe],
+  imports: [CommonModule, ...SHARED_IMPORTS, TPipe, SharedSearchPanelComponent],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent {
   private readonly i18n = inject(I18nService);
-
-  private readonly eventsAll: EventItem[] = [
-    { id: 1, badge: { text: 'FR', variant: 'secondary' }, meta: 'Jeu 19:00 • Bruxelles', title: 'Café linguistique — débutants', desc: 'Jeu “Icebreaker” • 6 places', lang: 'fr', area: 'brussels', free: false },
-    { id: 2, badge: { text: 'EN', variant: 'tertiary' },  meta: 'Ven 18:30 • Ixelles',   title: 'Afterwork — English talk',       desc: 'Jeu “Speed rounds” • 4 places',  lang: 'en', area: 'brussels', free: true  },
-    { id: 3, badge: { text: 'ES', variant: 'secondary' }, meta: 'Sam 17:00 • Saint-Gilles', title: 'Conversa Café — Español',     desc: 'Jeu “Story cards” • 3 places',  lang: 'es', area: 'brussels', free: false },
-    { id: 4, badge: { text: 'FR', variant: 'secondary' }, meta: 'Mer 20:00 • Paris 11e',    title: 'Apéro-conversa — tous niveaux', desc: 'Ambiance chill',             lang: 'fr', area: 'paris',    free: true  },
-    { id: 5, badge: { text: 'EN', variant: 'tertiary' },  meta: 'Mar 18:00 • Liège',        title: 'English meetup — intermediate', desc: 'Jeu “Topic cards” • 5 places', lang: 'en', area: 'liege',   free: false },
-  ];
-
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  lang = this.route.snapshot.paramMap.get('lang') ?? 'fr';
   events: EventItem[] = [];
-
+  private languagesApiService = inject(LanguagesApiService);
+  allLanguage: Language[] = [];
+  searchInput = "";
+  selectedLangCodes : string[]=[];
   filters: FilterConfig[] = [];
+  langOptions = signal<SelectOption[]>([]);
+  uiLang: string | null = 'fr';
+  onCodesChange(codes: string[]) {
+    this.selectedLangCodes = codes;
+  }
 
   constructor( private loader: BlockingSpinnerService) {
-    this.rebuildI18n();
-    this.i18n.ready$.subscribe(() => this.rebuildI18n());
+    this.languagesApiService.list().subscribe((paginatedLanguage =>{
+      this.allLanguage = paginatedLanguage.results;
+      this.langOptions.set(langToOptionsSS(this.allLanguage, this.uiLang!));
+    }))
   }
-  doSomethingAsync() {
-    this.loader.show('Paiement en cours…');
-    this.loader.hide();
-  }
-  private rebuildI18n() {
-    this.filters = [
-      {
-        key: 'lang',
-        label: this.i18n.t('shared.filters.lang.label'),
-        type: 'select',
-        options: [
-          { value: 'fr', label: this.i18n.t('shared.filters.lang.options.fr') },
-          { value: 'en', label: this.i18n.t('shared.filters.lang.options.en') },
-          { value: 'es', label: this.i18n.t('shared.filters.lang.options.es') },
-        ],
-        searchable: true,
-        placeholder: this.i18n.t('shared.filters.lang.placeholder'),
+
+  onSearch(evt: { searchInput: string; selectedLangCodes: string[] }) {
+    debugger;
+    this.router.navigate(['fr','events'], {
+      queryParams: {
+        search: evt.searchInput || null,
+        langs: evt.selectedLangCodes?.length ? evt.selectedLangCodes.join(',') : null
       },
-      {
-        key: 'area',
-        label: this.i18n.t('shared.filters.area.label'),
-        type: 'select',
-        options: [
-          { value: 'brussels', label: this.i18n.t('shared.filters.area.options.brussels') },
-          { value: 'paris',    label: this.i18n.t('shared.filters.area.options.paris') },
-          { value: 'liege',    label: this.i18n.t('shared.filters.area.options.liege') },
-        ],
-        searchable: false,
-        placeholder: this.i18n.t('shared.filters.area.placeholder'),
-      },
-      {
-        key: 'free',
-        label: this.i18n.t('shared.filters.free.label'),
-        type: 'boolean',
-        placeholder: this.i18n.t('shared.filters.free.placeholder'),
-      },
-    ];
-
-    this.events = this.eventsAll.map(e => ({ ...e, cta: this.i18n.t('shared.actions.details') }));
+      queryParamsHandling: 'merge'
+    });
   }
 
-  private norm(s?: string): string {
-    return (s ?? '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  goToEvents()     {
+    this.router.navigate(['/', this.lang, 'events']);
+    console.log('Naviguer vers événements');
+
   }
-
-  onSearch({ q, filters }: GenericSearch) {
-    const nq = this.norm(q);
-    const wantLang = (filters['lang'] as string | undefined) || undefined;
-    const wantArea = (filters['area'] as string | undefined) || undefined;
-    const wantFree = typeof filters['free'] === 'boolean' ? (filters['free'] as boolean) : undefined;
-
-    this.events = this.eventsAll
-      .map(e => ({ ...e, cta: this.i18n.t('shared.actions.details') }))
-      .filter(e => {
-        const inText =
-          !nq ||
-          this.norm(e.title).includes(nq) ||
-          this.norm(e.desc).includes(nq) ||
-          this.norm(e.meta).includes(nq);
-
-        const inLang = !wantLang || e.lang === wantLang;
-        const inArea = !wantArea || e.area === wantArea;
-        const inFree = wantFree === undefined || e.free === wantFree;
-
-        return inText && inLang && inArea && inFree;
-      });
-  }
-
-  onEventClick(e: EventItem) { console.log('Event click', e); }
-  goToEvents()     { console.log('Naviguer vers événements'); }
-  goToSignUp()     { console.log('Naviguer vers inscription'); }
-  goToCategories() { console.log('Naviguer vers catégories'); }
+  goToSignUp()     {
+    this.router.navigate(['/', this.lang, 'register']);
+    console.log('Naviguer vers inscription'); }
 }

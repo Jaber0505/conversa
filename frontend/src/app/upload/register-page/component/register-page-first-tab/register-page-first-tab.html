@@ -5,7 +5,7 @@
       name="prenom"
       label="{{ 'register.firstTab.firstName' | t }}"
       [(ngModel)]="firstTabInfo.prenom"
-      [errorMessage]="formSubmitted && firstTabInfo.prenom.length===0"
+      [errorMessage]="formNotValid && firstTabInfo.prenom.length===0"
       required>
     </shared-input>
   </div>
@@ -16,7 +16,7 @@
       name="nom"
       label="{{ 'register.firstTab.lastName' | t }}"
       [(ngModel)]="firstTabInfo.nom"
-      [errorMessage]="formSubmitted && firstTabInfo.nom.length===0"
+      [errorMessage]="formNotValid && firstTabInfo.nom.length===0"
       required>
     </shared-input>
   </div>
@@ -27,92 +27,38 @@
       name="age"
       type="number"
       label="{{ 'register.firstTab.age' | t }}"
-      [errorMessage]=" formSubmitted && firstTabInfo.age<18"
+      [errorMessage]=" formNotValid && firstTabInfo.age<18"
       [(ngModel)]="firstTabInfo.age">
     </shared-input>
+    <div class="error-message" *ngIf="formNotValid && firstTabInfo.age < 18">
+      {{ 'register.firstTab.ageError' | t }}
+    </div>
   </div>
-
   <div class="form__row">
     <label for="native-select">{{ 'register.firstTab.nativeLangs' | t }}</label>
-    <!--<shared-select
+    <shared-multi-select
       id="native-select"
-      [options]="langs"
-      [value]="pendingNative"
-      (valueChange)="pendingNative = $event"
-      [searchable]="true"
+      [options]="langOptions()"
+      [error] = "formNotValid && firstTabInfo.native_langs.length===0"
+      [value]="firstTabInfo.native_langs"
+      (valueChange)="onNativeChange($event)"
       [placeholder]="'register.firstTab.selectLang' | t">
-    </shared-select>-->
-
-    <div class="chips" *ngIf="firstTabInfo.native_langs?.length">
-      <!-- <button
-         type="button"
-         class="chip"
-         *ngFor="let code of firstTabInfo.native_langs"
-         (click)="removeNative(code)">
-         <shared-badge variant="accent" tone="soft">
-           {{ displayLabel(langs, code) }}
-           <span class="chip-x" aria-hidden="true">×</span>
-           <span class="sr-only">{{ 'common.remove' | t }}</span>
-         </shared-badge>
-       </button>-->
-     </div>
-
-     <div class="row-actions">
-       <!--<shared-button
-         type="button"
-         variant="outline"
-         size="sm"
-         (click)="addNative()">
-         {{ 'common.add' | t }}
-       </shared-button>-->
-     </div>
+    </shared-multi-select>
+    {{firstTabInfo.native_langs}}
    </div>
 
-   <!-- Langues cibles (écrit dans firstTabInfo.target_langs) -->
   <div class="form__row">
     <label for="target-select">{{ 'register.firstTab.targetLangs' | t }}</label>
     <shared-multi-select
       id="target-select"
-      [options]="langs"
-      [value]="pendingTargets"
+      [options]="langOptions()"
+      [error] = "formNotValid && firstTabInfo.target_langs.length===0"
+      [value]="firstTabInfo.target_langs"
       (valueChange)="onTargetsChange($event)"
       [placeholder]="'register.firstTab.selectLang' | t">
     </shared-multi-select>
-    <!--<shared-select
-      id="target-select"
-      [options]="langs"
-      [value]="pendingTarget"
-      (valueChange)="pendingTarget = $event"
-      [searchable]="true"
-      [placeholder]="'register.firstTab.selectLang' | t">
-    </shared-select>-->
-
-    <div class="chips" *ngIf="firstTabInfo.target_langs?.length">
-      <button
-        type="button"
-        class="chip"
-        *ngFor="let code of firstTabInfo.target_langs"
-        (click)="removeTarget(code)">
-        <shared-badge variant="tertiary" tone="soft">
-          {{ displayLabel(langs, code) }}
-          <span class="chip-x" aria-hidden="true">×</span>
-          <span class="sr-only">{{ 'common.remove' | t }}</span>
-        </shared-badge>
-      </button>
-    </div>
-
-    <div class="row-actions">
-      <!-- <shared-button
-         type="button"
-         variant="outline"
-         size="sm"
-         (click)="addTarget()">
-         {{ 'common.add' | t }}
-       </shared-button> -->
-     </div>
    </div>
  </form>
-
  <navigation-buttons
    [showPrev]="false"
    [showNext]="true"

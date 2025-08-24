@@ -6,6 +6,7 @@
       id="bio"
       name="bio"
       class="textarea"
+      [class.textarea--error]="formNotValid && (currentBio.length === 0 || currentBio.length > 500)"
       [(ngModel)]="currentBio"
       required
       minlength="10"
@@ -14,9 +15,10 @@
       placeholder="{{ 'register.secondTab.bioPlaceHolder' | t }}"
       aria-describedby="bio-help bio-count"
     ></textarea>
-
-    <div id="bio-help" class="muted small">{{ 'register.secondTab.limit' | t }}</div>
-    <div id="bio-count" class="muted small">{{ bio.length || 0 }}/500</div>
+    <div class="error-message" *ngIf="formNotValid && (currentBio.length === 0 || currentBio.length >500)">
+      {{ 'register.secondTab.limit' | t }}
+    </div>
+    <div id="bio-count" class="muted small">{{ currentBio.length || 0 }}/500</div>
   </div>
 
 

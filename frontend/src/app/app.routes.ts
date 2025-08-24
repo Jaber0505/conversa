@@ -7,7 +7,6 @@ import {languageUrlGuard} from "@core/i18n";
 import {Routes} from "@angular/router";
 import {HomeComponent} from "@app/features/home/home.component";
 import {EventListMockComponent} from "@app/event-list-mock/event-list-mock";
-import {EventDetailMockComponent} from "@app/event-detail-mock/event-detail-mock";
 import {StripeSuccessPage} from "@app/stripe-success/stripe-success";
 import {StripeCancelPage} from "@app/stripe-cancel/stripe-cancel";
 import {BookingsListComponent} from "@app/booking-page/booking-page";
@@ -29,7 +28,6 @@ export const routes: Routes = [
       },
 
       { path: 'events', component: EventListMockComponent },
-      { path: 'events/:id', component: EventDetailMockComponent }, // ← corrigé
 
       {
         path: 'auth',

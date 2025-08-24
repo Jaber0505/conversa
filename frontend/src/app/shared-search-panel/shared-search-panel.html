@@ -1,0 +1,29 @@
+<div class="filters">
+  <label class="filters__label">{{ labelKey | t }}</label>
+
+  <shared-multi-select
+    class="filters__multi"
+    [placeholder]="labelKey | t"
+    [options]="options"
+    [value]="value"
+    (valueChange)="onCodesChange($event)">
+  </shared-multi-select>
+
+  <shared-input
+    class="filters__input"
+    id="search-input"
+    name="searchInput"
+    [(ngModel)]="searchInput"
+    [label]="searchLabelKey | t"
+    [placeholder]="(searchPlaceholderKey | t)">
+  </shared-input>
+
+
+  <shared-button class="filters__btn" (click)="onSearchClick()">
+    {{ 'common.search' | t }}
+  </shared-button>
+
+  <shared-button class="filters__btn" (click)="onResetClick()" *ngIf="clearButton">
+    {{ 'common.clear' | t }}
+  </shared-button>
+</div>

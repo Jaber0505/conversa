@@ -19,6 +19,7 @@
       "firstName": "Voornaam",
       "lastName": "Achternaam",
       "age": "Leeftijd",
+      "ageError": "Je moet minstens 18 jaar oud zijn",
       "nativeLangs": "Moedertalen",
       "targetLangs": "Doeltalen",
       "selectLang": "Selecteer een taal"
@@ -31,6 +32,7 @@
     "thirdTab": {
       "email": "E-mailadres",
       "password": "Wachtwoord",
+      "passwordLimit": "Het wachtwoord moet minstens 9 tekens lang zijn",
       "consent": "Ik ga akkoord met het privacybeleid en de gebruiksvoorwaarden.",
       "consent_required": "U moet akkoord gaan om verder te gaan."
     },
@@ -38,6 +40,9 @@
     "subtitle": "Voltooi de stappen om uw registratie te voltooien."
   },
   "common": {
+    "clear": "Wissen",
+    "LanguageSearch": "Doeltalen",
+    "searchInput": "Zoeken",
     "add": "Toevoegen",
     "remove": "Verwijderen",
     "next": "Volgende",

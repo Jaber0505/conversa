@@ -1,7 +1,6 @@
 export type EventDto = {
   id: number;
   title: string;
-  city: string;
   address: string;
   venue_name: string;
   partner_name: string;

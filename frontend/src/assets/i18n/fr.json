@@ -19,6 +19,7 @@
       "firstName": "Prénom",
       "lastName": "Nom",
       "age": "Âge",
+      "ageError": "Vous devez avoir au moins 18 ans",
       "nativeLangs": "Langues maternelles",
       "targetLangs": "Langues cibles",
       "selectLang": "Sélectionner une langue"
@@ -31,6 +32,7 @@
     "thirdTab": {
       "email": "Adresse e-mail",
       "password": "Mot de passe",
+      "passwordLimit": "Le mot de passe doit contenir au minimum 9 caractères",
       "consent": "J’accepte la politique de confidentialité et les conditions d’utilisation.",
       "consent_required": "Vous devez accepter pour continuer."
     },
@@ -38,6 +40,9 @@
     "subtitle": "Complétez les étapes pour finaliser votre inscription."
   },
   "common": {
+    "clear": "Réinitialiser",
+    "LanguageSearch": "Langues cibles",
+    "searchInput": "Rechercher",
     "brand": "Conversa",
     "add": "Ajouter",
     "remove": "Retirer",

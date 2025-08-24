@@ -16,8 +16,8 @@ type Option = { value: string; label: string };
   standalone: true,
   imports: [
     FormsModule, TPipe,
-    InputComponent, BadgeComponent,MultiSelectComponent,
-    NavigationButtonsComponent, CommonModule, MultiSelectComponent
+    InputComponent, MultiSelectComponent,
+    NavigationButtonsComponent, CommonModule, MultiSelectComponent, MultiSelectComponent
   ],
   templateUrl: './register-page-first-tab.html',
   styleUrls: ['./register-page-first-tab.scss']
@@ -25,71 +25,28 @@ type Option = { value: string; label: string };
 export class RegisterPageFirstTab implements OnInit {
   @Input({ required: true }) firstTabInfo!: FirstTabInfoModel;
   @Output() suivant = new EventEmitter<FirstTabInfoModel>();
-  langs: Option[] = [
-    { value: 'fr', label: 'Français' },
-    { value: 'nl', label: 'Nederlands' },
-    { value: 'en', label: 'English' },
-    { value: 'es', label: 'Español' },
-    { value: 'de', label: 'Deutsch' },
-    { value: 'ar', label: 'العربية' },
-  ];
+
   uiLang: string | null = 'fr';
-  pendingTargets: string[] = [];
-  get pendingTarget(): string | null {
-    return this.pendingTargets.length ? this.pendingTargets[0] : null;
-  }
   onTargetsChange(values: string[]) {
-    this.pendingTargets = values ?? [];
+    this.firstTabInfo.target_langs = values ?? [];
   }
-  pendingNative?: string;
-  //pendingTarget?: string;
+  onNativeChange(values: string[]) {
+    this.firstTabInfo.native_langs = values ?? [];
+  }
   langOptions = signal<SelectOption[]>([]);
-  formSubmitted = false;
+  formNotValid = false;
   allLanguage: Language[] = [];
   private languagesApiService = inject(LanguagesApiService);
   ngOnInit() {
     this.firstTabInfo.native_langs ||= [];
     this.firstTabInfo.target_langs ||= [];
-    if (this.pendingTargets.length === 0 && this.pendingTarget /* ancienne var */) {
-      this.pendingTargets = [this.pendingTarget];
-    }
     this.languagesApiService.list().subscribe((paginatedLanguage =>{
       this.allLanguage = paginatedLanguage.results;
-      debugger;
       this.langOptions.set(langToOptionsSS(this.allLanguage, this.uiLang!));
     }))
   }
-  addNative() {
-    const c = this.pendingNative;
-    if (!c) return;
-    if (!this.firstTabInfo.native_langs.includes(c)) {
-      this.firstTabInfo.native_langs = [...this.firstTabInfo.native_langs, c];
-    }
-    this.pendingNative = undefined;
-  }
-  removeNative(code: string) {
-    this.firstTabInfo.native_langs = this.firstTabInfo.native_langs.filter(x => x !== code);
-  }
-
-  //addTarget() {
-  //  const c = this.pendingTarget;
-  //if (!c) return;
-  // if (!this.firstTabInfo.target_langs.includes(c)) {
-  //  this.firstTabInfo.target_langs = [...this.firstTabInfo.target_langs, c];
-  //}
-  //this.pendingTarget = undefined;
-  //}
-  removeTarget(code: string) {
-    this.firstTabInfo.target_langs = this.firstTabInfo.target_langs.filter(x => x !== code);
-  }
-
-  displayLabel(options: Option[], value?: string) {
-    return options.find(o => o.value === value)?.label ?? value;
-  }
-
   onNext(): void {
-    this.formSubmitted = true;
-    if(this.firstTabInfo.prenom.length === 0 || this.firstTabInfo.nom.length === 0 || this.firstTabInfo.age < 18 ) return;
-    else    this.suivant.emit(this.firstTabInfo); // le modèle contient déjà native_langs & target_langs
+    if(this.firstTabInfo.prenom.length === 0 || this.firstTabInfo.nom.length === 0 || this.firstTabInfo.age < 18 || this.firstTabInfo.target_langs.length===0 || this.firstTabInfo.native_langs.length===0 ) this.formNotValid = true;
+    else    this.suivant.emit(this.firstTabInfo);
   }
 }

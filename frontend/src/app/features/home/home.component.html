@@ -5,25 +5,26 @@
         <h1>{{ 'pages.home.hero.title' | t }}</h1>
         <p class="subtitle">{{ 'pages.home.hero.subtitle' | t }}</p>
 
-        <shared-card tone="soft" class="search-card">
-          <div header>
-            <h2 class="h3">{{ 'pages.home.search.title' | t }}</h2>
-            <p class="muted" style="margin:.25rem 0 0">
-              {{ 'pages.home.search.desc' | t }}
-            </p>
-          </div>
-
-          <shared-search-bar
-            [placeholder]="'shared.search.placeholder_event' | t"
-            [filters]="filters"
-            (search)="onSearch($event)">
-          </shared-search-bar>
-
-          <div footer class="muted">
-            {{ 'shared.search.tip_keywords' | t }}
-          </div>
-        </shared-card>
-
+        <div header>
+          <h2 class="h3">{{ 'pages.home.search.title' | t }}</h2>
+          <p class="muted" style="margin:.25rem 0 0">
+            {{ 'pages.home.search.desc' | t }}
+          </p>
+        </div>
+        <shared-search-panel
+          [labelKey]="'common.LanguageSearch'"
+          [searchLabelKey]="'common.searchInput'"
+          [searchPlaceholderKey]="'search.input.placeholder'"
+          [options]="langOptions()"
+          [value]="selectedLangCodes"
+          [searchInput]="searchInput"
+          (valueChange)="onCodesChange($event)"
+          [clearButton]="false"
+          (search)="onSearch($event)">
+        </shared-search-panel>
+        <div footer clasus="muted">
+          {{ 'shared.search.tip_keywords' | t }}
+        </div>
         <div class="trust">
           <shared-badge variant="accent" tone="solid">{{ 'shared.badges.members_1000_plus' | t }}</shared-badge>
           <shared-badge variant="accent" tone="solid">{{ 'shared.badges.partners_20' | t }}</shared-badge>
@@ -70,79 +71,79 @@
   </shared-container>
 </shared-section>
 
-<!-- ÉVÉNEMENTS À VENIR -->
-<shared-section spacing="lg">
-  <shared-container>
-    <shared-headline-bar
-      [title]="'pages.home.upcoming.title' | t"
-      [actionLabel]="'shared.actions.see_all' | t"
-      (action)="goToEvents()">
-    </shared-headline-bar>
-    <shared-grid [cols]="1" [colsSm]="2" [colsMd]="3">
-      <shared-event-card
-        *ngFor="let e of events"
-        [event]="e"
-        (cta)="onEventClick(e)">
-      </shared-event-card>
-    </shared-grid>
-  </shared-container>
-</shared-section>
+<!--&lt;!&ndash; ÉVÉNEMENTS À VENIR &ndash;&gt;-->
+<!--<shared-section spacing="lg">-->
+<!--  <shared-container>-->
+<!--    <shared-headline-bar-->
+<!--      [title]="'pages.home.upcoming.title' | t"-->
+<!--      [actionLabel]="'shared.actions.see_all' | t"-->
+<!--      (action)="goToEvents()">-->
+<!--    </shared-headline-bar>-->
+<!--    <shared-grid [cols]="1" [colsSm]="2" [colsMd]="3">-->
+<!--      <shared-event-card-->
+<!--        *ngFor="let e of events"-->
+<!--        [event]="e"-->
+<!--        (cta)="onEventClick(e)">-->
+<!--      </shared-event-card>-->
+<!--    </shared-grid>-->
+<!--  </shared-container>-->
+<!--</shared-section>-->
 
-<!-- CATÉGORIES -->
-<shared-section spacing="lg" tone="subtle">
-  <shared-container>
-    <shared-headline-bar
-      [title]="'pages.home.categories.title' | t"
-      [actionLabel]="'shared.actions.see_all' | t"
-      (action)="goToCategories()">
-    </shared-headline-bar>
+<!--&lt;!&ndash; CATÉGORIES &ndash;&gt;-->
+<!--<shared-section spacing="lg" tone="subtle">-->
+<!--  <shared-container>-->
+<!--    <shared-headline-bar-->
+<!--      [title]="'pages.home.categories.title' | t"-->
+<!--      [actionLabel]="'shared.actions.see_all' | t"-->
+<!--      (action)="goToCategories()">-->
+<!--    </shared-headline-bar>-->
 
-    <shared-grid [cols]="1" [colsSm]="2" [colsMd]="3">
-      <shared-category-card
-        [title]="'pages.home.categories.items.cafe.title' | t"
-        [subtitle]="'pages.home.categories.items.cafe.subtitle' | t">
-      </shared-category-card>
-      <shared-category-card
-        [title]="'pages.home.categories.items.pro.title' | t"
-        [subtitle]="'pages.home.categories.items.pro.subtitle' | t">
-      </shared-category-card>
-      <shared-category-card
-        [title]="'pages.home.categories.items.events.title' | t"
-        [subtitle]="'pages.home.categories.items.events.subtitle' | t">
-      </shared-category-card>
-    </shared-grid>
-  </shared-container>
-</shared-section>
+<!--    <shared-grid [cols]="1" [colsSm]="2" [colsMd]="3">-->
+<!--      <shared-category-card-->
+<!--        [title]="'pages.home.categories.items.cafe.title' | t"-->
+<!--        [subtitle]="'pages.home.categories.items.cafe.subtitle' | t">-->
+<!--      </shared-category-card>-->
+<!--      <shared-category-card-->
+<!--        [title]="'pages.home.categories.items.pro.title' | t"-->
+<!--        [subtitle]="'pages.home.categories.items.pro.subtitle' | t">-->
+<!--      </shared-category-card>-->
+<!--      <shared-category-card-->
+<!--        [title]="'pages.home.categories.items.events.title' | t"-->
+<!--        [subtitle]="'pages.home.categories.items.events.subtitle' | t">-->
+<!--      </shared-category-card>-->
+<!--    </shared-grid>-->
+<!--  </shared-container>-->
+<!--</shared-section>-->
 
-<!-- CTA FINAL -->
-<shared-section spacing="xl" tone="subtle">
-  <shared-container>
-    <shared-card class="cta-panel" tone="elevated">
-      <div class="cta-content">
-        <div class="cta-copy">
-          <h2 class="cta-title">{{ 'pages.home.cta.title' | t }}</h2>
-          <p class="cta-subtitle">{{ 'pages.home.cta.subtitle' | t }}</p>
-          <ul class="cta-benefits">
-            <li>
-              <shared-badge variant="secondary" tone="solid">{{ 'shared.badges.rapid' | t }}</shared-badge>
-              <span>{{ 'pages.home.cta.benefits.rapid.desc' | t }}</span>
-            </li>
-            <li>
-              <shared-badge variant="tertiary" tone="solid">{{ 'shared.badges.local' | t }}</shared-badge>
-              <span>{{ 'pages.home.cta.benefits.local.desc' | t }}</span>
-            </li>
-            <li>
-              <shared-badge variant="primary" tone="solid">{{ 'shared.badges.effective' | t }}</shared-badge>
-              <span>{{ 'pages.home.cta.benefits.effective.desc' | t }}</span>
-            </li>
-          </ul>
-        </div>
-        <div class="cta-actions">
-          <shared-button size="lg" variant="accent" (click)="goToSignUp()">{{ 'shared.actions.create_free_account' | t }}</shared-button>
-          <shared-button size="lg" variant="outline" (click)="goToEvents()">{{ 'shared.actions.browse_events' | t }}</shared-button>
-          <div class="cta-hint muted">{{ 'pages.home.cta.hint' | t }}</div>
-        </div>
-      </div>
-    </shared-card>
-  </shared-container>
-</shared-section>
+<!--&lt;!&ndash; CTA FINAL &ndash;&gt;-->
+<!--<shared-section spacing="xl" tone="subtle">-->
+<!--  <shared-container>-->
+<!--    <shared-card class="cta-panel" tone="elevated">-->
+<!--      <div class="cta-content">-->
+<!--&lt;!&ndash;        <div class="cta-copy">&ndash;&gt;-->
+<!--&lt;!&ndash;          <h2 class="cta-title">{{ 'pages.home.cta.title' | t }}</h2>&ndash;&gt;-->
+<!--&lt;!&ndash;          <p class="cta-subtitle">{{ 'pages.home.cta.subtitle' | t }}</p>&ndash;&gt;-->
+<!--&lt;!&ndash;          <ul class="cta-benefits">&ndash;&gt;-->
+<!--&lt;!&ndash;            <li>&ndash;&gt;-->
+<!--&lt;!&ndash;              <shared-badge variant="secondary" tone="solid">{{ 'shared.badges.rapid' | t }}</shared-badge>&ndash;&gt;-->
+<!--&lt;!&ndash;              <span>{{ 'pages.home.cta.benefits.rapid.desc' | t }}</span>&ndash;&gt;-->
+<!--&lt;!&ndash;            </li>&ndash;&gt;-->
+<!--&lt;!&ndash;            <li>&ndash;&gt;-->
+<!--&lt;!&ndash;              <shared-badge variant="tertiary" tone="solid">{{ 'shared.badges.local' | t }}</shared-badge>&ndash;&gt;-->
+<!--&lt;!&ndash;              <span>{{ 'pages.home.cta.benefits.local.desc' | t }}</span>&ndash;&gt;-->
+<!--&lt;!&ndash;            </li>&ndash;&gt;-->
+<!--&lt;!&ndash;            <li>&ndash;&gt;-->
+<!--&lt;!&ndash;              <shared-badge variant="primary" tone="solid">{{ 'shared.badges.effective' | t }}</shared-badge>&ndash;&gt;-->
+<!--&lt;!&ndash;              <span>{{ 'pages.home.cta.benefits.effective.desc' | t }}</span>&ndash;&gt;-->
+<!--&lt;!&ndash;            </li>&ndash;&gt;-->
+<!--&lt;!&ndash;          </ul>&ndash;&gt;-->
+<!--&lt;!&ndash;        </div>&ndash;&gt;-->
+<!--        <div class="cta-actions">-->
+<!--          <shared-button size="lg" variant="accent" (click)="goToSignUp()">{{ 'shared.actions.create_free_account' | t }}</shared-button>-->
+<!--          <shared-button size="lg" variant="outline" (click)="goToEvents()">{{ 'shared.actions.browse_events' | t }}</shared-button>-->
+<!--          <div class="cta-hint muted">{{ 'pages.home.cta.hint' | t }}</div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </shared-card>-->
+<!--  </shared-container>-->
+<!--</shared-section>-->

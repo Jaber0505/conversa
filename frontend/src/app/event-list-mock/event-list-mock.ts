@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, signal} from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, Params, Router} from '@angular/router';
 
 import {I18nService, TPipe} from '@core/i18n';
 import {
@@ -11,17 +11,19 @@ import {
   PaymentsApiService
 } from '@core/http';
 import {Booking, EventDto, langToOptionsSS, Language, Paginated} from '@core/models';
-
+type SearchEvt = { searchInput: string; selectedLangCodes: string[] };
 import {
   ContainerComponent, GridComponent,
-  CardComponent, BadgeComponent, ButtonComponent, MultiSelectComponent, HeadlineBarComponent
+  CardComponent, BadgeComponent, ButtonComponent, MultiSelectComponent, HeadlineBarComponent, InputComponent
 } from '@shared';
 import {BlockingSpinnerService} from "@app/core/http/services/spinner-service";
 import {ConfirmPurchaseComponent} from "@app/confirm-purchase/confirm-purchase";
 import {map, take} from "rxjs/operators";
-import {Observable} from "rxjs";
-import type {FilterConfig, GenericSearch} from "@shared/forms/search-bar/search-bar.component";
+import {distinctUntilChanged, Observable} from "rxjs";
+import type {FilterConfig} from "@shared/forms/search-bar/search-bar.component";
 import {SelectOption} from "@shared/forms/select/select.component";
+import {FormsModule} from "@angular/forms";
+import {SharedSearchPanelComponent} from "@app/shared-search-panel/shared-search-panel";
 
 @Component({
   selector: 'app-event-list-mock',
@@ -29,7 +31,7 @@ import {SelectOption} from "@shared/forms/select/select.component";
   imports: [
     CommonModule, DatePipe, TPipe,
     ContainerComponent, GridComponent,
-    CardComponent, BadgeComponent, ButtonComponent, ConfirmPurchaseComponent, MultiSelectComponent, ButtonComponent, HeadlineBarComponent
+    CardComponent, BadgeComponent, ButtonComponent, ConfirmPurchaseComponent, ButtonComponent, FormsModule,SharedSearchPanelComponent
   ],
   templateUrl: './event-list-mock.html',
   styleUrls: ['./event-list-mock.scss'],
@@ -42,12 +44,9 @@ export class EventListMockComponent {
   private languagesApiService = inject(LanguagesApiService);
   allLanguage: Language[] = [];
   uiLang: string | null = 'fr';
-
-  // 2) Options pour le multi-select
+  searchInput = "";
   langOptions = signal<SelectOption[]>([]);
-
-  confirmPopup = false
-  ;
+  confirmPopup = false;
   readonly events = signal<EventDto[]>([]);
   readonly eventsCopy = signal<EventDto[]>([]);
   readonly error = signal<string | null>(null);
@@ -60,7 +59,6 @@ export class EventListMockComponent {
     loader.show("loading");
     this.languagesApiService.list().subscribe((paginatedLanguage =>{
       this.allLanguage = paginatedLanguage.results;
-      debugger;
       this.langOptions.set(langToOptionsSS(this.allLanguage, this.uiLang!));
     }))
     const vv={} as EventsListParams;
@@ -70,6 +68,8 @@ export class EventListMockComponent {
           console.log(finalList);
           this.events.set(finalList);
           this.eventsCopy.set(finalList.slice());
+          const evt = this.paramsToEvt(this.route.snapshot.queryParams);
+          this.onSearch(evt);
         });
         loader.hide();
       },
@@ -79,13 +79,11 @@ export class EventListMockComponent {
         loader.hide();
       }
     });
-
   }
   setAlreadyBooked(list: EventDto[]): Observable<EventDto[]> {
     return this.bookingsApiService.list().pipe(
       map((bookings: Paginated<Booking>) => {
         bookings.results.forEach(booking => {
-          debugger;
           const rr = list.filter(s => s.id === booking.event && booking.status !== "CANCELLED");
           if(rr.length>0)
           rr.at(0)!.alreadyBooked = true;
@@ -137,23 +135,42 @@ export class EventListMockComponent {
     this.confirmPopup = true;
   }
   private readonly i18n = inject(I18nService);
-  selectedLangCodes = signal<string[]>([]);
+  selectedLangCodes : string[]=[];
   onCodesChange(codes: string[]) {
-    this.selectedLangCodes.set(codes);
+    this.selectedLangCodes = codes;
   }
-  search() {
-    const sel = this.selectedLangCodes();
-    if (!sel.length) {
+  onSearch(evt?: { searchInput: string; selectedLangCodes: string[] }) {
+    debugger;
+    this.searchInput=evt?.searchInput!;
+    this.selectedLangCodes=evt?.selectedLangCodes!;
+    if ((this.searchInput && this.searchInput.trim() !== '') || this.selectedLangCodes.length > 0) {
+      this.events.set(
+        this.eventsCopy().filter(e =>
+          (this.searchInput && this.searchInput.trim() !== '' ? e.theme.includes(this.searchInput) || e.title.includes(this.searchInput) || e.address.includes(this.searchInput)  : true) &&
+          (this.selectedLangCodes.length > 0 ? this.selectedLangCodes.includes(e.language_code) : true)
+        )
+      );
+    } else {
       this.events.set(this.eventsCopy());
-      return;
     }
-    const wanted = new Set(sel.map(s => s.toLowerCase()));
-    this.events.set(
-      this.eventsCopy().filter(e => {
-        const code = (e.language_code ?? '').toLowerCase();
-        return code !== '' && wanted.has(code);
-      })
-    );
+
   }
 
+  resetSearch() {
+    this.searchInput = "";
+    this.selectedLangCodes = [];
+    this.onSearch({ searchInput: "", selectedLangCodes:[] });
+  }
+  private paramsToEvt(params: Params): SearchEvt {
+    const rawSearch = params['search'];
+    const search = Array.isArray(rawSearch) ? (rawSearch[0] ?? '') : (rawSearch ?? '');
+    const rawLangs = params['langs'];
+    const langsArr = Array.isArray(rawLangs) ? rawLangs : (rawLangs ? [rawLangs] : []);
+    const langs = langsArr
+      .flatMap(v => (v ?? '').split(','))
+      .map(s => s.trim())
+      .filter(Boolean);
+
+    return { searchInput: search.trim(), selectedLangCodes: langs };
+  }
 }
