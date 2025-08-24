@@ -1,10 +1,13 @@
-import {Component, EventEmitter, Input, Output, OnInit, signal, computed} from '@angular/core';
+import {Component, EventEmitter, Input, Output, OnInit, signal, computed, inject} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {InputComponent, SelectComponent, BadgeComponent, ButtonComponent, MultiSelectComponent} from '@shared';
 import { TPipe } from '@core/i18n';
 import { NavigationButtonsComponent } from '@shared/forms/navigation-button/navigation-buttons';
 import { FirstTabInfoModel } from '@app/upload/register-page/models/firstTabInfo.model';
 import {CommonModule} from "@angular/common";
+import {SelectOption} from "@shared/forms/select/select.component";
+import {LanguagesApiService} from "@core/http";
+import {langToOptionsSS, Language} from "@core/models";
 
 type Option = { value: string; label: string };
 
@@ -13,7 +16,7 @@ type Option = { value: string; label: string };
   standalone: true,
   imports: [
     FormsModule, TPipe,
-    InputComponent, SelectComponent, BadgeComponent, ButtonComponent,
+    InputComponent, BadgeComponent,MultiSelectComponent,
     NavigationButtonsComponent, CommonModule, MultiSelectComponent
   ],
   templateUrl: './register-page-first-tab.html',
@@ -30,6 +33,7 @@ export class RegisterPageFirstTab implements OnInit {
     { value: 'de', label: 'Deutsch' },
     { value: 'ar', label: 'العربية' },
   ];
+  uiLang: string | null = 'fr';
   pendingTargets: string[] = [];
   get pendingTarget(): string | null {
     return this.pendingTargets.length ? this.pendingTargets[0] : null;
@@ -39,14 +43,21 @@ export class RegisterPageFirstTab implements OnInit {
   }
   pendingNative?: string;
   //pendingTarget?: string;
+  langOptions = signal<SelectOption[]>([]);
   formSubmitted = false;
-
+  allLanguage: Language[] = [];
+  private languagesApiService = inject(LanguagesApiService);
   ngOnInit() {
     this.firstTabInfo.native_langs ||= [];
     this.firstTabInfo.target_langs ||= [];
     if (this.pendingTargets.length === 0 && this.pendingTarget /* ancienne var */) {
       this.pendingTargets = [this.pendingTarget];
     }
+    this.languagesApiService.list().subscribe((paginatedLanguage =>{
+      this.allLanguage = paginatedLanguage.results;
+      debugger;
+      this.langOptions.set(langToOptionsSS(this.allLanguage, this.uiLang!));
+    }))
   }
   addNative() {
     const c = this.pendingNative;
