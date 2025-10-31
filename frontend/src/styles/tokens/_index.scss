@@ -1,0 +1,11 @@
+// ============================================
+// DESIGN TOKENS - INDEX
+// ============================================
+// Import all design tokens
+// Usage: @use 'styles/tokens' as *;
+
+@forward 'colors';
+@forward 'spacing';
+@forward 'typography';
+@forward 'breakpoints';
+@forward 'shadows';

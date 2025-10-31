@@ -1,0 +1,14 @@
+.bk-grid { --gap: 16px; }
+.bk-card .thumb { background: #f2f3f5; height: 120px; border-radius: 8px; }
+
+.bk-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.bk-body .row {
+  display: grid; grid-template-columns: 120px 1fr; gap: 8px; margin: 6px 0;
+}
+.bk-body .label { color: #6b7280; }
+.bk-foot {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;
+}
+.state.empty, .state.error { margin: 12px 0; }

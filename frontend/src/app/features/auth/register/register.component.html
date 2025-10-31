@@ -1,0 +1,37 @@
+<section class="section register">
+  <div class="hero">
+    <div class="hero__copy">
+      <h1>{{ 'register.title' | t }}</h1>
+      <p class="muted">{{ 'register.subtitle' | t }}</p>
+    </div>
+  </div>
+
+  <div class="container grid">
+    <div class="col col--main register-tabs">
+      <div class="card" *ngIf="currentTab === 0">
+        <h2 class="h5">{{ 'auth.register' | t }}</h2>
+        <app-register-page-first-tab
+          [firstTabInfo]="firstTabData"
+          (suivant)="onFirstTabSuivant($event)">
+        </app-register-page-first-tab>
+      </div>
+
+      <div class="card" *ngIf="currentTab === 1">
+        <h2 class="h5">{{ 'auth.register' | t }}</h2>
+        <app-register-page-second-tab
+          [currentBio]="currentBio"
+          (previous)="onSecondTabPrevious()"
+          (bioReturn)="onSecondTabSuivant($event)">
+        </app-register-page-second-tab>
+      </div>
+
+      <div class="card" *ngIf="currentTab === 2">
+        <h2 class="h5">{{ 'auth.register' | t }}</h2>
+        <app-register-page-third-tab
+          (previous)="onthirdTabPrevious()"
+          (suivant)="onThirdTabSuivant($event)">
+        </app-register-page-third-tab>
+      </div>
+    </div>
+  </div>
+</section>

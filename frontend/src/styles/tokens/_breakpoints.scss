@@ -1,0 +1,21 @@
+// ============================================
+// DESIGN TOKENS - BREAKPOINTS
+// ============================================
+
+// Breakpoints (mobile-first)
+$bp-xs: 375px;   // Small phones
+$bp-sm: 640px;   // Phones
+$bp-md: 768px;   // Tablets
+$bp-lg: 1024px;  // Desktop
+$bp-xl: 1280px;  // Large desktop
+$bp-2xl: 1536px; // Extra large desktop
+
+// CSS Custom Properties
+:root {
+  --bp-xs: #{$bp-xs};
+  --bp-sm: #{$bp-sm};
+  --bp-md: #{$bp-md};
+  --bp-lg: #{$bp-lg};
+  --bp-xl: #{$bp-xl};
+  --bp-2xl: #{$bp-2xl};
+}

@@ -1,0 +1,8 @@
+// ============================================
+// MIXINS - INDEX
+// ============================================
+// Import all mixins
+// Usage: @use 'styles/mixins' as *;
+
+@forward 'responsive';
+@forward 'utilities';

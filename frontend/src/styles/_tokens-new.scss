@@ -1,0 +1,46 @@
+// ============================================
+// DESIGN TOKENS - UNIFIED SYSTEM
+// ============================================
+// This file combines the existing tokens with the new Design System
+// Import this instead of the old _tokens.scss
+
+@use 'tokens' as *;
+
+// Re-export existing color scheme (keeping brand colors)
+:root {
+  /* Brand colors (existing) */
+  --color-primary:   #F25F5C; /* CORAIL = CTA principal */
+  --color-secondary: #5B5F97; /* VIOLET = actions secondaires / liens */
+  --color-tertiary:  #70C1B3; /* MENTHE = success/badges */
+
+  /* Accent (new - cyan for language learning theme) */
+  --color-accent: #06b6d4;
+  --color-accent-dark: #0891b2;
+  --color-accent-light: #22d3ee;
+
+  /* Neutres / fond / texte */
+  --color-bg:    #F7F7F7;
+  --color-text:  #333333;
+  --color-muted: #E5E5E5;
+
+  /* États */
+  --color-danger: #FF6B6B;
+  --color-success: var(--color-tertiary);
+  --color-warning: #f59e0b;
+  --color-info: #3b82f6;
+
+  /* Derivés pour :hover / :active */
+  --color-primary-600:   color-mix(in oklab, var(--color-primary), black 10%);
+  --color_secondary-600: color-mix(in oklab, var(--color-secondary), black 10%);
+  --color_tertiary-600:  color-mix(in oklab, var(--color-tertiary),  black 10%);
+
+  /* Surfaces */
+  --surface-0: #ffffff;
+  --surface-1: color-mix(in oklab, #fff, var(--color-text) 3%);
+  --surface-2: color-mix(in oklab, #fff, var(--color-text) 6%);
+
+  /* Animations */
+  --duration-fast: 120ms;
+  --duration-med:  200ms;
+  --duration-slow: 300ms;
+}

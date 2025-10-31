@@ -54,7 +54,6 @@ export class HomeComponent {
   }
 
   onSearch(evt: { searchInput: string; selectedLangCodes: string[] }) {
-    debugger;
     this.router.navigate(['fr','events'], {
       queryParams: {
         search: evt.searchInput || null,
@@ -66,10 +65,9 @@ export class HomeComponent {
 
   goToEvents()     {
     this.router.navigate(['/', this.lang, 'events']);
-    console.log('Naviguer vers événements');
-
   }
+
   goToSignUp()     {
     this.router.navigate(['/', this.lang, 'register']);
-    console.log('Naviguer vers inscription'); }
+  }
 }

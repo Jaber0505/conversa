@@ -1,0 +1,72 @@
+<form (ngSubmit)="onNext()" #f="ngForm" class="form">
+  <div class="form__row">
+    <shared-input
+      id="prenom"
+      name="prenom"
+      label="{{ 'register.firstTab.firstName' | t }}"
+      [(ngModel)]="firstTabInfo.prenom"
+      [errorMessage]="formNotValid && firstTabInfo.prenom.length===0"
+      required>
+    </shared-input>
+  </div>
+
+  <div class="form__row">
+    <shared-input
+      id="nom"
+      name="nom"
+      label="{{ 'register.firstTab.lastName' | t }}"
+      [(ngModel)]="firstTabInfo.nom"
+      [errorMessage]="formNotValid && firstTabInfo.nom.length===0"
+      required>
+    </shared-input>
+  </div>
+
+  <div class="form__row">
+    <shared-input
+      id="age"
+      name="age"
+      type="number"
+      label="{{ 'register.firstTab.age' | t }}"
+      [errorMessage]=" formNotValid && firstTabInfo.age<18"
+      [(ngModel)]="firstTabInfo.age">
+    </shared-input>
+    <div class="error-message" *ngIf="formNotValid && firstTabInfo.age < 18">
+      {{ 'register.firstTab.ageError' | t }}
+    </div>
+  </div>
+  <div class="form__row">
+    <label for="native-select">{{ 'register.firstTab.nativeLangs' | t }}</label>
+    <shared-multi-select
+      id="native-select"
+      [options]="langOptions()"
+      [error] = "formNotValid && firstTabInfo.native_langs.length===0"
+      [value]="firstTabInfo.native_langs"
+      (valueChange)="onNativeChange($event)"
+      [placeholder]="'register.firstTab.selectLang' | t">
+    </shared-multi-select>
+    {{firstTabInfo.native_langs}}
+   </div>
+
+  <div class="form__row">
+    <label for="target-select">{{ 'register.firstTab.targetLangs' | t }}</label>
+    <shared-multi-select
+      id="target-select"
+      [options]="langOptions()"
+      [error] = "formNotValid && firstTabInfo.target_langs.length===0"
+      [value]="firstTabInfo.target_langs"
+      (valueChange)="onTargetsChange($event)"
+      [placeholder]="'register.firstTab.selectLang' | t">
+    </shared-multi-select>
+   </div>
+ </form>
+ <navigation-buttons
+   [showPrev]="false"
+   [showNext]="true"
+   [prevLabel]="'common.back'"
+   [nextLabel]="'common.next'"
+   [prevDisabled]="true"
+   [nextDisabled]="false"
+   align="between"
+   [block]="false"
+   (nextClick)="onNext()">
+ </navigation-buttons>

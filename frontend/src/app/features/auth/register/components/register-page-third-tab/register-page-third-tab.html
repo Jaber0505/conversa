@@ -1,0 +1,65 @@
+<form (ngSubmit)="onNext()" #f="ngForm" class="form">
+  <div class="form__row">
+    <shared-input
+      id="email"
+      name="email"
+      type="email"
+      label="{{ 'register.thirdTab.email' | t }}"
+      placeholder="{{ 'auth.email_placeholder' | t }}"
+      [(ngModel)]="email"
+      [errorMessage]="formNotValid && email.length ===0"
+      required
+      email>
+    </shared-input>
+  </div>
+
+  <div class="form__row">
+    <shared-input
+      id="password"
+      name="password"
+      type="password"
+      label="{{ 'register.thirdTab.password' | t }}"
+      placeholder="{{ 'auth.password_placeholder' | t }}"
+      [(ngModel)]="password"
+      [errorMessage]="formNotValid && (password.length ===0 || password.length < 9)"
+      required
+      minlength="8">
+    </shared-input>
+    <div class="error-message" *ngIf="formNotValid && (password.length === 0 || password.length <8)">
+      {{ 'register.thirdTab.passwordLimit' | t }}
+    </div>
+  </div>
+
+  <div class="form__row">
+    <label class="checkbox" for="consent_given">
+      <input
+        id="consent_given"
+        name="consent_given"
+        type="checkbox"
+        [(ngModel)]="consent_given"
+        #consent="ngModel"
+        required />
+      <span>{{ 'register.thirdTab.consent' | t }}</span>
+    </label>
+    <div class="error-message" *ngIf="formNotValid && !consent_given">
+      {{ 'register.thirdTab.consent_required' | t }}
+    </div>
+  </div>
+
+</form>
+
+<navigation-buttons
+  [showPrev]="true"
+  [showNext]="false"
+  [prevLabel]="'common.back'"
+  align="between"
+  (prevClick)="onPrevious()">
+</navigation-buttons>
+
+<div class="slot slot--next">
+  <shared-button
+    type="button"
+    (click)="onNext()">
+    {{ 'common.register' | t }}
+  </shared-button>
+</div>

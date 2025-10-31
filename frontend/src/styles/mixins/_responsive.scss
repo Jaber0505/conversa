@@ -1,0 +1,96 @@
+// ============================================
+// MIXINS - RESPONSIVE
+// ============================================
+
+@use '../tokens/breakpoints' as *;
+
+// Mobile-first media queries
+@mixin mobile-only {
+  @media (max-width: #{$bp-sm - 1}) {
+    @content;
+  }
+}
+
+@mixin tablet-up {
+  @media (min-width: #{$bp-md}) {
+    @content;
+  }
+}
+
+@mixin tablet-only {
+  @media (min-width: #{$bp-md}) and (max-width: #{$bp-lg - 1}) {
+    @content;
+  }
+}
+
+@mixin desktop-up {
+  @media (min-width: #{$bp-lg}) {
+    @content;
+  }
+}
+
+@mixin desktop-only {
+  @media (min-width: #{$bp-lg}) and (max-width: #{$bp-xl - 1}) {
+    @content;
+  }
+}
+
+@mixin large-desktop-up {
+  @media (min-width: #{$bp-xl}) {
+    @content;
+  }
+}
+
+// Custom breakpoint
+@mixin from($breakpoint) {
+  @media (min-width: #{$breakpoint}) {
+    @content;
+  }
+}
+
+@mixin until($breakpoint) {
+  @media (max-width: #{$breakpoint - 1}) {
+    @content;
+  }
+}
+
+@mixin between($min, $max) {
+  @media (min-width: #{$min}) and (max-width: #{$max - 1}) {
+    @content;
+  }
+}
+
+// Responsive container
+@mixin container($max-width: 1280px, $padding: 1rem) {
+  width: 100%;
+  max-width: $max-width;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: $padding;
+  padding-right: $padding;
+}
+
+// Responsive grid
+@mixin grid-responsive($mobile-cols: 1, $tablet-cols: 2, $desktop-cols: 3, $gap: 1rem) {
+  display: grid;
+  gap: $gap;
+  grid-template-columns: repeat($mobile-cols, 1fr);
+
+  @include tablet-up {
+    grid-template-columns: repeat($tablet-cols, 1fr);
+  }
+
+  @include desktop-up {
+    grid-template-columns: repeat($desktop-cols, 1fr);
+  }
+}
+
+// Responsive font size
+@mixin fluid-font($min-size, $max-size, $min-vw: 320px, $max-vw: 1280px) {
+  font-size: clamp(#{$min-size}, calc(#{$min-size} + (#{$max-size} - #{$min-size}) * ((100vw - #{$min-vw}) / (#{strip-unit($max-vw)} - #{strip-unit($min-vw)}))), #{$max-size});
+}
+
+// Helper function to strip units
+@function strip-unit($value) {
+  @return $value / ($value * 0 + 1);
+}

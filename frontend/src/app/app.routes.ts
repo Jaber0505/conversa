@@ -1,15 +1,11 @@
 import {FaqComponent} from "@shared/components/faq/faq";
 import {About} from "@shared/components/about/about";
-import {LoginPageComponent} from "@app/login-page/login-page";
-import {RegisterPageComponent} from "@app/upload/register-page/register-page";
 import {guestGuard} from "@core/http";
 import {languageUrlGuard} from "@core/i18n";
 import {Routes} from "@angular/router";
 import {HomeComponent} from "@app/features/home/home.component";
-import {EventListMockComponent} from "@app/event-list-mock/event-list-mock";
 import {StripeSuccessPage} from "@app/stripe-success/stripe-success";
 import {StripeCancelPage} from "@app/stripe-cancel/stripe-cancel";
-import {BookingsListComponent} from "@app/booking-page/booking-page";
 
 export const routes: Routes = [
   { path: '', redirectTo: '/fr', pathMatch: 'full' },
@@ -27,20 +23,39 @@ export const routes: Routes = [
           data: { hidden: true },
       },
 
-      { path: 'events', component: EventListMockComponent },
+      {
+        path: 'events',
+        loadComponent: () => import('./features/events/list/events-list.component').then(m => m.EventsListComponent)
+      },
 
       {
         path: 'auth',
         canActivate: [guestGuard],
         children: [
-          { path: '', pathMatch: 'full', redirectTo: 'register' },
-
-          { path: '**', redirectTo: 'register' },
+          { path: '', pathMatch: 'full', redirectTo: 'login' },
+          {
+            path: 'login',
+            loadComponent: () => import('./features/auth/login/login.component').then(m => m.AuthLoginComponent)
+          },
+          {
+            path: 'register',
+            loadComponent: () => import('./features/auth/register/register.component').then(m => m.AuthRegisterComponent)
+          },
+          { path: '**', redirectTo: 'login' },
         ],
       },
-      { path: 'register', component: RegisterPageComponent },
-      { path: 'login', component: LoginPageComponent },
-      { path: 'bookings', component: BookingsListComponent },
+      {
+        path: 'register',
+        loadComponent: () => import('./features/auth/register/register.component').then(m => m.AuthRegisterComponent)
+      },
+      {
+        path: 'login',
+        loadComponent: () => import('./features/auth/login/login.component').then(m => m.AuthLoginComponent)
+      },
+      {
+        path: 'bookings',
+        loadComponent: () => import('./features/bookings/my-bookings/my-bookings.component').then(m => m.MyBookingsComponent)
+      },
       { path: 'faq', component: FaqComponent },
       { path: 'about', component: About },
       { path: 'stripe/success', component: StripeSuccessPage },
