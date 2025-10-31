@@ -1,0 +1,125 @@
+.landing-header {
+  padding: var(--space-3) 0;
+  background: transparent;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  backdrop-filter: blur(12px);
+  background: color-mix(in oklab, white, transparent 3%);
+  border-bottom: 1px solid color-mix(in oklab, var(--color-border), transparent 60%);
+  transition: transform 0.3s ease-in-out;
+  transform: translateY(0);
+
+  &.header-hidden {
+    transform: translateY(-100%);
+  }
+}
+
+.header-spacer { height: var(--header-h, 88px); }
+
+.header-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  box-sizing: border-box;
+
+  @media (max-width: 768px) {
+    padding: 0 var(--space-4);
+  }
+
+  @media (max-width: 480px) {
+    padding: 0 var(--space-3);
+  }
+}
+
+.header-logo {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+
+  .logo-text {
+    font-size: 1.375rem;
+    font-weight: 800;
+    margin: 0;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+
+    @media (max-width: 480px) {
+      font-size: 1.125rem;
+    }
+  }
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+
+  @media (min-width: 640px) {
+    gap: var(--space-3);
+  }
+
+  @media (max-width: 640px) {
+    gap: var(--space-1);
+  }
+}
+
+/* Language Chip - même design que site-header */
+.lang-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  height: 36px;
+  padding: 0 .6rem;
+  border-radius: var(--radius-md, .6rem);
+  border: 1px solid color-mix(in oklab, var(--color-muted), transparent 25%);
+  background: var(--surface-1);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  white-space: nowrap;
+
+  &:hover {
+    background: color-mix(in oklab, var(--color-primary), transparent 92%);
+    border-color: color-mix(in oklab, var(--color-primary), transparent 50%);
+  }
+
+  &:focus-visible {
+    outline: 2px solid color-mix(in oklab, var(--color-primary), white 18%);
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 480px) {
+    height: 32px;
+    padding: 0 .5rem;
+  }
+}
+
+.globe {
+  line-height: 1;
+  font-size: 1rem;
+}
+
+.lang-text {
+  font-size: 0.875rem;
+  font-weight: 600;
+  display: inline;
+
+  @media (max-width: 640px) {
+    display: none;
+  }
+}

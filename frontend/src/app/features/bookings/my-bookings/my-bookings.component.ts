@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { TPipe } from '@core/i18n';
 import {Booking, EventDto} from '@core/models';
 import {BookingsApiService, EventsApiService, PaymentsApiService} from '@core/http';
+import { CurrencyFormatterService, DateFormatterService } from '@app/core/services';
 
 import {
   ContainerComponent, GridComponent, HeadlineBarComponent,
@@ -12,9 +13,8 @@ import {
 } from '@shared';
 
 import { BlockingSpinnerService } from '@app/core/http/services/spinner-service';
-import { HttpErrorResponse } from '@angular/common/http';
 import { take, finalize } from 'rxjs/operators';
-import { BookingDetailModalComponent } from '@app/booking-page-detail/booking-detail';
+import { BookingDetailModalComponent } from '../components/booking-detail/booking-detail.component';
 
 @Component({
   selector: 'app-my-bookings',
@@ -35,6 +35,8 @@ export class MyBookingsComponent {
   private readonly eventsApiService = inject(EventsApiService);
   private readonly paymentsApi = inject(PaymentsApiService);
   private readonly loader = inject(BlockingSpinnerService);
+  private readonly currencyFormatter = inject(CurrencyFormatterService);
+  private readonly dateFormatter = inject(DateFormatterService);
 
   readonly items = signal<Booking[]>([]);
   readonly error = signal<string | null>(null);
@@ -67,8 +69,7 @@ export class MyBookingsComponent {
         this.items.set(res.results);
         this.error.set(null);
       },
-      error: (err: HttpErrorResponse) => {
-        console.error('Bookings load error:', err);
+      error: () => {
         this.error.set('bookings.load_error');
       },
     });
@@ -82,23 +83,17 @@ export class MyBookingsComponent {
   }
 
   dateLabel(iso?: string): string {
-    if (!iso) return '—';
-    try {
-      return new Intl.DateTimeFormat('fr-BE', {
-        weekday: 'short', day: '2-digit', month: 'short',
-        hour: '2-digit', minute: '2-digit',
-      }).format(new Date(iso));
-    } catch { return iso; }
+    return this.dateFormatter.formatDateTime(iso);
   }
 
   price(b: Booking): string {
     const cents = Number((b as any).amount_cents ?? 0);
-    return new Intl.NumberFormat('fr-BE', { style: 'currency', currency: 'EUR' }).format(cents / 100);
+    return this.currencyFormatter.formatEUR(cents);
   }
 
   openDetail(b: Booking) {
     this._selected.set(b);
-    this.eventsApiService.get(b.event).subscribe({
+    this.eventsApiService.get(b.event).pipe(take(1)).subscribe({
       next:(event)=>{
         this._selectedEvent.set(event);
       }
@@ -113,9 +108,7 @@ export class MyBookingsComponent {
       finalize(() => this.loader.hide())
     ).subscribe({
       next: () => this.fetch(),
-      error: (err: HttpErrorResponse) => {
-        if (err.status === 409) console.warn('Déjà confirmé: annulation refusée.');
-        else console.error('Erreur annulation:', err);
+      error: () => {
         this.fetch();
       }
     });
@@ -129,7 +122,7 @@ export class MyBookingsComponent {
     }).pipe(take(1), finalize(() => this.loader.hide()))
       .subscribe({
         next: (res) => { window.location.href = res.url; },
-        error: (err) => { console.error('Erreur paiement', err); }
+        error: () => { }
       });
   }
 }

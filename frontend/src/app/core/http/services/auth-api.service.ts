@@ -15,6 +15,11 @@ export type MeRes = {
   native_langs?: string[];
   target_langs?: string[];
   avatar?: string;
+  address?: string;
+  city?: string;
+  country?: string;
+  latitude?: number | null;
+  longitude?: number | null;
 };
 export type RegisterFormModel = {
   email: string;
@@ -24,7 +29,7 @@ export type RegisterFormModel = {
   age: number;
   birthDate?: Date | string | null;
   bio?: string;
-  native_langs?: string;
+  native_langs?: string[];
   target_langs?: string[];
   consentGiven?: boolean;
 };
@@ -51,4 +56,6 @@ export class AuthApiService {
   refresh(refresh: string)    { return this.http.post<RefreshRes>(`${this.base}/auth/refresh/`, { refresh }); }
   me()                        { return this.http.get<MeRes>(`${this.base}/auth/me/`); }
   logout(refresh: string)     { return this.http.post(`${this.base}/auth/logout/`, { refresh }); }
+  requestPasswordReset(email: string) { return this.http.post(`${this.base}/auth/password-reset/`, { email }); }
 }
+

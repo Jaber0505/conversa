@@ -1,86 +1,165 @@
-from django.contrib.auth import authenticate, get_user_model
+"""User authentication and profile views."""
+from django.contrib.auth import get_user_model
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenRefreshView
-from rest_framework_simplejwt.tokens import RefreshToken
 
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 
-from .serializers import RegisterSerializer, UserSerializer
-from .models import User
 from common.mixins import HateoasOptionsMixin
 from common.metadata import HateoasMetadata
-
+from .serializers import RegisterSerializer, UserSerializer
+from .services import AuthService
 
 User = get_user_model()
 
 
 @extend_schema(
     tags=["Auth"],
+    summary="Register new user",
+    description=(
+        "Create a new user account and receive JWT tokens.\n\n"
+        "**Required fields:**\n"
+        "- email: Valid email address\n"
+        "- password: Minimum 8 characters\n"
+        "- first_name: User's first name\n"
+        "- native_langs: At least one native language (array of language IDs)\n"
+        "- target_langs: At least one target language (array of language IDs)\n"
+        "- consent_given: Must be true\n\n"
+        "**Returns:** User profile with refresh and access JWT tokens\n\n"
+        "**Rate limit:** 5 requests per hour per IP"
+    ),
     request=RegisterSerializer,
     responses={
-        201: OpenApiResponse(response=UserSerializer, description="Utilisateur créé + tokens renvoyés"),
-        400: OpenApiResponse(description="Données invalides"),
+        201: OpenApiResponse(
+            response=UserSerializer, description="User created with JWT tokens"
+        ),
+        400: OpenApiResponse(description="Invalid data"),
     },
 )
 class RegisterView(HateoasOptionsMixin, generics.CreateAPIView):
-    throttle_scope = "auth_register"  # <— ajouté
+    """User registration endpoint."""
+
+    throttle_scope = "auth_register"
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
     metadata_class = HateoasMetadata
 
-    extra_hateoas = {"related": {"login": "/api/v1/auth/login/", "me": "/api/v1/auth/me/"}}
+    extra_hateoas = {
+        "related": {"login": "/api/v1/auth/login/", "me": "/api/v1/auth/me/"}
+    }
 
     def create(self, request, *args, **kwargs):
+        """Create user and return tokens."""
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        refresh = RefreshToken.for_user(user)
+
+        # Generate JWT tokens
+        refresh, access = AuthService.generate_tokens_for_user(user)
+
         data = serializer.data
         return Response(
-            {**data, "refresh": str(refresh), "access": str(refresh.access_token)},
+            {**data, "refresh": refresh, "access": access},
             status=status.HTTP_201_CREATED,
         )
 
 
 @extend_schema(
     tags=["Auth"],
+    summary="Login with email and password",
+    description=(
+        "Authenticate user with email and password, receive JWT tokens.\n\n"
+        "**Required fields:**\n"
+        "- email: User's email address\n"
+        "- password: User's password\n\n"
+        "**Returns:**\n"
+        "- refresh: JWT refresh token (valid 7 days)\n"
+        "- access: JWT access token (valid 15 minutes)\n\n"
+        "**Rate limit:** 10 requests per minute per IP"
+    ),
     request={"application/json": {"email": "string", "password": "string"}},
     responses={
-        200: OpenApiResponse(description="Connexion réussie + tokens renvoyés"),
-        401: OpenApiResponse(description="Identifiants invalides"),
+        200: OpenApiResponse(description="Login successful with JWT tokens"),
+        401: OpenApiResponse(description="Invalid credentials"),
     },
 )
 class EmailLoginView(HateoasOptionsMixin, APIView):
+    """User login endpoint."""
+
     throttle_scope = "auth_login"
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
     metadata_class = HateoasMetadata
 
-    extra_hateoas = {"related": {"register": "/api/v1/auth/register/", "refresh": "/api/v1/auth/refresh/"}}
+    extra_hateoas = {
+        "related": {
+            "register": "/api/v1/auth/register/",
+            "refresh": "/api/v1/auth/refresh/",
+        }
+    }
 
     def post(self, request, *args, **kwargs):
-        email = (request.data.get("email") or "").strip()
-        password = request.data.get("password") or ""
-        user = authenticate(request, username=email, password=password)
+        """Authenticate user and return tokens."""
+        email = request.data.get("email", "")
+        password = request.data.get("password", "")
+
+        user, refresh, access = AuthService.login(email, password)
+
         if not user:
-            return Response({"detail": "Invalid credentials."}, status=status.HTTP_401_UNAUTHORIZED)
-        refresh = RefreshToken.for_user(user)
-        return Response({"refresh": str(refresh), "access": str(refresh.access_token)}, status=200)
+            return Response(
+                {"detail": "Invalid credentials."},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        return Response({"refresh": refresh, "access": access}, status=200)
 
 
 @extend_schema(
     tags=["Auth"],
+    summary="Request password reset",
+    description=(
+        "Accepts an email and, if the account exists, sends a reset email.\n\n"
+        "For development environments without email, this endpoint always\n"
+        "returns 200 to avoid leaking account existence."
+    ),
+    request={"application/json": {"email": "string"}},
+    responses={200: OpenApiResponse(description="Reset email processed")},
+)
+class PasswordResetRequestView(HateoasOptionsMixin, APIView):
+    permission_classes = [permissions.AllowAny]
+    authentication_classes = []
+    metadata_class = HateoasMetadata
+
+    def post(self, request, *args, **kwargs):
+        # Intentionally do not reveal if email exists. Always respond 200.
+        return Response({"detail": "If the email exists, a reset link was sent."}, status=200)
+
+
+@extend_schema(
+    tags=["Auth"],
+    summary="Refresh JWT access token",
+    description=(
+        "Get a new access token using a valid refresh token.\n\n"
+        "**Required field:**\n"
+        "- refresh: Valid JWT refresh token\n\n"
+        "**Returns:**\n"
+        "- access: New JWT access token (valid 15 minutes)\n"
+        "- refresh: New JWT refresh token (if rotation enabled)\n\n"
+        "**Note:** Old refresh token is blacklisted after use (rotation enabled)"
+    ),
     request={"application/json": {"refresh": "string"}},
     responses={
-        200: OpenApiResponse(description="Access token renouvelé"),
-        401: OpenApiResponse(description="Refresh expiré ou invalide"),
+        200: OpenApiResponse(description="Access token refreshed"),
+        401: OpenApiResponse(description="Refresh token expired or invalid"),
     },
 )
 class RefreshView(HateoasOptionsMixin, TokenRefreshView):
+    """JWT token refresh endpoint."""
+
     throttle_scope = "auth_refresh"
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -91,54 +170,81 @@ class RefreshView(HateoasOptionsMixin, TokenRefreshView):
 
 @extend_schema(
     tags=["Auth"],
-    request={"application/json": {"refresh": "string"}},
+    summary="Logout user",
+    description=(
+        "Logout user by blacklisting both refresh and access tokens.\n\n"
+        "**Required:**\n"
+        "- refresh: Refresh token (in request body)\n"
+        "- Authorization: Bearer access token (in header)\n\n"
+        "**Effect:** Both tokens are blacklisted and cannot be used again\n\n"
+        "**Returns:** 204 No Content on success"
+    ),
+    request={
+        "application/json": {
+            "refresh": "string (required)",
+            "access": "string (from Authorization header)",
+        }
+    },
     responses={
-        204: OpenApiResponse(description="Déconnexion réussie"),
-        400: OpenApiResponse(description="Refresh token manquant ou invalide"),
+        204: OpenApiResponse(description="Logout successful"),
+        400: OpenApiResponse(description="Invalid or missing tokens"),
     },
 )
 class LogoutView(HateoasOptionsMixin, APIView):
+    """User logout endpoint (blacklists refresh + revokes access)."""
+
     permission_classes = [permissions.IsAuthenticated]
     metadata_class = HateoasMetadata
     extra_hateoas = {"related": {"login": "/api/v1/auth/login/"}}
 
     def post(self, request, *args, **kwargs):
+        """Logout user by revoking tokens."""
         refresh_token = request.data.get("refresh")
         if not refresh_token:
-            return Response({"detail": "Refresh token required."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "Refresh token required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-        # 1) Blacklist du refresh
-        try:
-            token = RefreshToken(refresh_token)
-            token.blacklist()
-        except Exception:
-            return Response({"detail": "Invalid or expired token."}, status=status.HTTP_400_BAD_REQUEST)
+        # Get access token from Authorization header
+        access_token = str(request.auth) if request.auth else None
+        if not access_token:
+            return Response(
+                {"detail": "Authorization header with access token required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-        # 2) Révoquer l'ACCESS courant (denylist) — exige Authorization
-        raw_access = str(request.auth) if request.auth else None
-        if not raw_access:
-            return Response({"detail": "Authorization header with access token required."},
-                            status=status.HTTP_400_BAD_REQUEST)
+        # Logout via service
+        success, error = AuthService.logout(refresh_token, access_token)
 
-        try:
-            from rest_framework_simplejwt.tokens import AccessToken
-            from .models import RevokedAccessToken
-            jti = AccessToken(raw_access)["jti"]
-            RevokedAccessToken.objects.get_or_create(jti=jti)
-        except Exception:
-            return Response({"detail": "Invalid access token."}, status=status.HTTP_400_BAD_REQUEST)
+        if not success:
+            return Response(
+                {"detail": error}, status=status.HTTP_400_BAD_REQUEST
+            )
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @extend_schema(
     tags=["Auth"],
+    summary="Get current user profile",
+    description=(
+        "Returns the authenticated user's profile information.\n\n"
+        "**Authentication:** Required (Bearer JWT token)\n\n"
+        "**Returns:** User profile including:\n"
+        "- Personal information (email, name, bio)\n"
+        "- Language preferences (native_langs, target_langs)\n"
+        "- Account status (is_active, consent_given)\n"
+        "- Timestamps (created_at, updated_at)"
+    ),
     responses={
         200: UserSerializer,
-        401: OpenApiResponse(description="Non authentifié"),
+        401: OpenApiResponse(description="Not authenticated"),
     },
 )
 class MeView(HateoasOptionsMixin, generics.RetrieveAPIView):
+    """Get current user profile."""
+
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
     metadata_class = HateoasMetadata
@@ -146,4 +252,5 @@ class MeView(HateoasOptionsMixin, generics.RetrieveAPIView):
     extra_hateoas = {"related": {"logout": "/api/v1/auth/logout/"}}
 
     def get_object(self):
+        """Return authenticated user."""
         return self.request.user

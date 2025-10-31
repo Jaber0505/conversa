@@ -1,79 +1,78 @@
-<shared-search-panel
-  [labelKey]="'common.LanguageSearch'"
-  [searchLabelKey]="'common.searchInput'"
-  [searchPlaceholderKey]="'search.input.placeholder'"
-  [options]="langOptions()"
-  [value]="selectedLangCodes"
-  [searchInput]="searchInput"
-  (valueChange)="onCodesChange($event)"
-  (search)="onSearch($event)"
-  (reset)="resetSearch()">
-</shared-search-panel>
-
 <shared-container>
-  <h2> {{'events.title' | t}}</h2>
-  <div class="state error" *ngIf="error() as err">
-    <shared-badge variant="danger" tone="soft">{{ err }}</shared-badge>
-  </div>
-  <ng-container >
-    <div class="state empty" *ngIf="events().length === 0">
-      <shared-badge variant="muted" tone="soft">{{ 'events.empty' | t }}</shared-badge>
+  <!-- Header avec titre et indicateur de tri intelligent -->
+  <div class="events-header">
+    <div class="header-content">
+      <h1 class="events-title">{{ 'events.title' | t }}</h1>
+      <p class="events-subtitle" *ngIf="userCity">
+        {{ 'events.near_city' | t:{ city: userCity } }}
+      </p>
     </div>
 
-    <shared-grid class="events-grid" *ngIf="events().length > 0">
-      <shared-card *ngFor="let ev of events(); trackBy: trackById">
-        <div media class="thumb" aria-hidden="true"></div>
-        <div header class="ev-head">
-          <h3 class="h6">{{ ev.title }}</h3>
-          <div class="badges">
-            <shared-badge variant="accent" tone="soft">{{ ev.language_code }}</shared-badge>
-            <shared-badge variant="danger" tone="soft" *ngIf="ev.is_cancelled">
-              {{ 'events.cancelled' | t }}
-            </shared-badge>
-          </div>
-        </div>
+    <!-- Indicateur de tri intelligent -->
+    <div class="smart-sort-indicator" *ngIf="isSmartSortActive()">
+      <shared-badge variant="primary" tone="soft" class="smart-badge">
+        <span class="badge-icon">✨</span>
+        {{ 'events.sort_info.title' | t }}
+      </shared-badge>
+    </div>
+  </div>
 
-        <div class="ev-body">
-          <div class="row">
-            <span class="label">{{ 'common.language' | t }}</span>
-            <span class="value">{{ ev.language_code }}</span>
-          </div>
-          <div class="row">
-            <span class="label">{{ 'events.address' | t }}</span>
-            <span class="value">{{ ev.address }}</span>
-          </div>
-          <div class="row">
-            <span class="label">{{ 'events.when' | t }}</span>
-            <span class="value">{{ ev.datetime_start | date:'EEEE d MMM, HH:mm' }}</span>
-          </div>
-          <div class="row">
-            <span class="label">{{ 'events.theme' | t }}</span>
-            <span class="value">{{ ev.theme }}</span>
-          </div>
-        </div>
+  <!-- Barre de recherche et filtres -->
+  <div class="search-section">
+    <shared-search-bar
+      [fields]="[
+        { type: 'multiselect', placeholder: ('shared.search.select_placeholder' | t), options: langOptions(), width: '200px' },
+        { type: 'text',        placeholder: ('shared.search.placeholder_event' | t), width: '1fr' }
+      ]"
+      [searchButtonText]="'shared.search.submit' | t"
+      (search)="onSearchBar($event)">
+    </shared-search-bar>
+  </div>
 
-        <div footer class="ev-foot">
-          <div class="price">
-            {{ ev.price_cents === 0 ? ('events.free' | t) : price(ev) }}
-          </div>
-            <shared-button type="button" [disabled]="ev.is_cancelled" (click)="goTo(ev.id)" *ngIf="!ev.alreadyBooked">
-              {{ ev.is_cancelled ? ('events.cancelled' | t) : ('events.book' | t) }}
-            </shared-button>
-            <span class="booked-info">
-    <shared-badge tone="soft" variant="accent" *ngIf="ev.alreadyBooked">{{ 'events.already_booked' | t }}</shared-badge>
-  </span>
-        </div>
-        <app-confirm-purchase *ngIf="confirmPopup"
-                              [titleKey]="'checkout.title'"
-                              [messageKey]="'checkout.message'"
-                              [buyKey]="'checkout.buy'"
-                              [cancelKey]="'common.cancel'"
-                              [priceCents]="ev.price_cents"
-                              [asModal]="true"
-                              (cancel)="closeDialog()"
-                              (buy)="performPurchase()">
-        </app-confirm-purchase>
-      </shared-card>
-    </shared-grid>
-  </ng-container>
+  <!-- Message d'erreur -->
+  <div class="state-error" *ngIf="error() as err">
+    <shared-badge variant="danger" tone="soft">{{ err | t }}</shared-badge>
+  </div>
+
+  <!-- État vide -->
+  <div class="state-empty" *ngIf="filteredEvents().length === 0 && !error()">
+    <div class="empty-illustration">🔍</div>
+    <h3 class="empty-title">{{ 'events.empty' | t }}</h3>
+    <p class="empty-subtitle">Essayez d'ajuster vos filtres ou revenez plus tard</p>
+    <shared-button variant="outline" (click)="resetSearch()" *ngIf="searchInput || selectedLangCodes.length > 0">
+      {{ 'events.filters.reset' | t }}
+    </shared-button>
+  </div>
+
+  <!-- Grille d'événements -->
+  <div class="events-grid" *ngIf="filteredEvents().length > 0">
+    <app-event-card
+      *ngFor="let scoredEvent of filteredEvents(); trackBy: trackById"
+      [event]="scoredEvent.event"
+      [isNearby]="scoredEvent.isNearby"
+      [isRecommended]="scoredEvent.isRecommended"
+      (book)="onBookEvent($event)"
+      (viewDetails)="onViewDetails($event)">
+    </app-event-card>
+  </div>
+
+  <!-- Compteur de résultats -->
+  <div class="results-count" *ngIf="filteredEvents().length > 0">
+    <p class="count-text">
+      {{ filteredEvents().length }} événement{{ filteredEvents().length > 1 ? 's' : '' }} trouvé{{ filteredEvents().length > 1 ? 's' : '' }}
+    </p>
+  </div>
 </shared-container>
+
+<!-- Modal de confirmation d'achat -->
+<app-confirm-purchase
+  *ngIf="confirmPopup"
+  [titleKey]="'checkout.title'"
+  [messageKey]="'checkout.message'"
+  [buyKey]="'checkout.buy'"
+  [cancelKey]="'common.cancel'"
+  [priceCents]="getSelectedEventPrice()"
+  [asModal]="true"
+  (cancel)="closeDialog()"
+  (buy)="performPurchase()">
+</app-confirm-purchase>

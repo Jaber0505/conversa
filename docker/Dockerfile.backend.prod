@@ -1,18 +1,20 @@
-# ---- BUILDER : compile les wheels ----
+# ---- BUILDER STAGE: Compile Python wheels ----
 FROM python:3.11-slim AS builder
 ENV PIP_NO_CACHE_DIR=1
 WORKDIR /wheels
 
+# Install build dependencies for compiling Python packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential gcc libpq-dev \
  && rm -rf /var/lib/apt/lists/*
 
+# Copy requirements and build wheels (pre-compiled packages)
 COPY requirements/base.txt requirements/prod.txt /tmp/req/
 RUN --mount=type=cache,target=/root/.cache/pip \
     python -m pip install --upgrade pip wheel \
  && pip wheel -r /tmp/req/prod.txt
 
-# ---- RUNTIME : image finale légère ----
+# ---- RUNTIME STAGE: Minimal production image ----
 FROM python:3.11-slim
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
@@ -23,25 +25,30 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-# lib runtime pour psycopg2
+# Install runtime dependencies only (no build tools)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq5 \
  && rm -rf /var/lib/apt/lists/*
 
-# wheels précompilées + serveur
+# Copy pre-compiled wheels and install production dependencies
 COPY --from=builder /wheels /wheels
 RUN python -m pip install --upgrade pip \
  && pip install /wheels/* \
  && pip install gunicorn uvicorn
 
-# code app + config gunicorn
+# Copy application code
 COPY backend/ /app/
-# important: copier le fichier de conf au bon endroit (même dossier que CMD)
-# (si ton fichier est déjà dans backend/, il est copié par la ligne précédente)
+
+# Create non-root user for security (defense in depth)
+RUN useradd -m -u 1000 django && chown -R django:django /app
+
+# Switch to non-root user - container will run as 'django' instead of 'root'
+USER django
 
 EXPOSE 8000
 
-# ASGI + gunicorn.conf.py (filtre /healthz)
+# Run Gunicorn with Uvicorn workers (ASGI server)
+# Uses gunicorn.conf.py for filtering /healthz endpoint
 CMD bash -lc "gunicorn config.asgi:application \
   -k uvicorn.workers.UvicornWorker \
   --config gunicorn.conf.py \

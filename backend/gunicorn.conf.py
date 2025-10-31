@@ -1,28 +1,38 @@
+"""
+Gunicorn configuration for Conversa backend.
+
+Configures logging to filter out health check requests for cleaner logs.
+"""
 import logging
 
-# Évite de logguer les requêtes d'accès sur /healthz
+
 class SkipHealthzFilter(logging.Filter):
+    """Filter to exclude /healthz endpoint from access logs."""
+
     def filter(self, record: logging.LogRecord) -> bool:
-        # record.getMessage() contient la ligne d'accès: 'IP - "GET /healthz HTTP/1.1" 200 ...'
+        """Return False if record contains /healthz request."""
         try:
             return "/healthz" not in record.getMessage()
         except Exception:
             return True
 
-# Fichiers de log: stdout
+
+# Log to stdout/stderr
 accesslog = "-"
 errorlog = "-"
-# Format simple (contient la requête → exploitable par le filtre)
+
+# Simple format for access logs (enables filtering)
 access_log_format = '%(h)s - "%(r)s" %(s)s'
 
+# Logging configuration
 logconfig_dict = {
     "version": 1,
     "disable_existing_loggers": False,
     "filters": {
-        "skip_healthz": { "()": SkipHealthzFilter },
+        "skip_healthz": {"()": SkipHealthzFilter},
     },
     "formatters": {
-        "generic": { "format": "%(message)s" },
+        "generic": {"format": "%(message)s"},
     },
     "handlers": {
         "console_access": {
@@ -35,7 +45,7 @@ logconfig_dict = {
             "formatter": "generic",
         },
     },
-    # On cible spécifiquement le logger d'accès de gunicorn
+    # Target Gunicorn's access and error loggers specifically
     "loggers": {
         "gunicorn.access": {
             "handlers": ["console_access"],

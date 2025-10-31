@@ -17,6 +17,7 @@ export class RegisterPageSecondTab {
   @Output() bioReturn = new EventEmitter<string>();
   @Input({ required: true }) currentBio!: string;
   @Output() previous = new EventEmitter();
+  @Input() serverErrors: Partial<{ bio: string[] }> = {};
 
   bio: string = '';
   formNotValid = false;

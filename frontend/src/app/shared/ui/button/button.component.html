@@ -1,6 +1,13 @@
 <button
   [attr.type]="type"
   [disabled]="disabled"
+  [routerLink]="routerLink"
+  [queryParams]="queryParams"
+  [fragment]="fragment"
+  [state]="state"
+  [queryParamsHandling]="queryParamsHandling"
+  [replaceUrl]="replaceUrl"
+  [skipLocationChange]="skipLocationChange"
 >
   <ng-content></ng-content>
 </button>

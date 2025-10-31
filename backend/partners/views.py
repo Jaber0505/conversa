@@ -1,29 +1,32 @@
+"""Partner venue API views."""
 from rest_framework import viewsets
 from drf_spectacular.utils import (
     extend_schema, extend_schema_view, OpenApiResponse, OpenApiExample
 )
 from .models import Partner
 from .serializers import PartnerSerializer
-from common.permissions import IsAuthenticatedAndActive
+from common.permissions import IsAuthenticatedAndActive, IsAdminUser
+
 
 @extend_schema_view(
     list=extend_schema(
-        description="Lister tous les partenaires actifs",
+        summary="List partner venues",
+        description="List all active partner venues that host language exchange events",
         responses={
             200: PartnerSerializer,
-            401: OpenApiResponse(description="Non authentifié"),
+            401: OpenApiResponse(description="Unauthenticated"),
         },
         examples=[
             OpenApiExample(
-                "Exemple de réponse",
+                "Response example",
                 value=[
                     {
                         "id": 1,
                         "name": "Bar du Centre",
                         "address": "Rue Exemple 12, Bruxelles",
+                        "city": "Brussels",
                         "reputation": 4.5,
                         "capacity": 50,
-                        "available_seats": 30,
                         "is_active": True,
                         "created_at": "2025-08-16T19:45:00Z",
                         "updated_at": "2025-08-16T19:45:00Z",
@@ -38,19 +41,25 @@ from common.permissions import IsAuthenticatedAndActive
         ],
     ),
     retrieve=extend_schema(
-        description="Détails d’un partenaire actif",
-        responses={200: PartnerSerializer, 404: OpenApiResponse(description="Non trouvé")},
+        summary="Get partner venue details",
+        description="Get details of a specific active partner venue",
+        responses={
+            200: PartnerSerializer,
+            404: OpenApiResponse(description="Partner not found")
+        },
     ),
     create=extend_schema(
-        description="Créer un nouveau partenaire",
+        summary="Create partner venue",
+        description="Create a new partner venue (admin only)",
         request=PartnerSerializer,
         responses={201: PartnerSerializer},
         examples=[
             OpenApiExample(
-                "Exemple de requête",
+                "Request example",
                 value={
                     "name": "Nouvelle Brasserie",
                     "address": "Boulevard Exemple 45, Bruxelles",
+                    "city": "Brussels",
                     "reputation": 4.2,
                     "capacity": 80,
                     "is_active": True
@@ -60,27 +69,52 @@ from common.permissions import IsAuthenticatedAndActive
         ],
     ),
     update=extend_schema(
-        description="Mettre à jour un partenaire existant (remplace tout l’objet)",
+        summary="Update partner venue (PUT)",
+        description="Update an existing partner venue - replaces entire object (admin only)",
         request=PartnerSerializer,
         responses={200: PartnerSerializer},
     ),
     partial_update=extend_schema(
-        description="Modifier partiellement un partenaire (PATCH)",
+        summary="Partially update partner venue (PATCH)",
+        description="Partially update a partner venue - only provided fields are updated (admin only)",
         request=PartnerSerializer,
         responses={200: PartnerSerializer},
     ),
     destroy=extend_schema(
-        description="Supprimer un partenaire",
-        responses={204: OpenApiResponse(description="Supprimé avec succès")},
+        summary="Delete partner venue",
+        description="Delete a partner venue (admin only)",
+        responses={204: OpenApiResponse(description="Successfully deleted")},
     ),
 )
 @extend_schema(tags=["Partners"])
 class PartnerViewSet(viewsets.ModelViewSet):
+    """
+    Partner venue ViewSet.
+
+    Provides CRUD operations for partner venues that host language exchange events.
+
+    Permissions:
+        - List/Retrieve: All authenticated users
+        - Create/Update/Delete: Admin users only (is_staff or is_superuser)
+
+    Queryset filtering:
+        - GET operations (list/retrieve): Only active partners
+        - Other operations (create/update/delete): All partners
+    """
+
     serializer_class = PartnerSerializer
     permission_classes = [IsAuthenticatedAndActive]
 
+    def get_permissions(self):
+        """Apply admin-only permissions for modification actions."""
+        if self.action in ("create", "update", "partial_update", "destroy"):
+            return [IsAdminUser()]
+        return [IsAuthenticatedAndActive()]
+
     def get_queryset(self):
-        # GET (list/retrieve) → seulement les partenaires actifs
+        """Filter queryset based on action."""
+        # GET (list/retrieve) → only active partners
         if self.action in ["list", "retrieve"]:
             return Partner.objects.filter(is_active=True)
+        # Other actions → all partners (for admin operations)
         return Partner.objects.all()

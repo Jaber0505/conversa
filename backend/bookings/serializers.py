@@ -1,3 +1,4 @@
+"""Booking serializers for API endpoints."""
 from rest_framework import serializers
 from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
 from .models import Booking, BookingStatus
@@ -6,7 +7,7 @@ from .models import Booking, BookingStatus
 @extend_schema_serializer(
     examples=[
         OpenApiExample(
-            "Exemple Booking",
+            "Booking Example",
             value={
                 "id": 12,
                 "public_id": "c1c1c1c1-2b2b-4d4d-9e9e-aaaa1111bbbb",
@@ -31,20 +32,32 @@ from .models import Booking, BookingStatus
     ]
 )
 class BookingSerializer(serializers.ModelSerializer):
-    links = serializers.SerializerMethodField(help_text="Liens HATEOAS utiles.")
+    """Booking read serializer with HATEOAS links."""
+
+    links = serializers.SerializerMethodField(help_text="HATEOAS links for related resources")
 
     class Meta:
         model = Booking
         fields = (
-            "id", "public_id", "user", "event", "status",
-            "amount_cents", "currency",
-            "expires_at", "confirmed_at", "cancelled_at", "confirmed_after_expiry",
-            "created_at", "updated_at",
+            "id",
+            "public_id",
+            "user",
+            "event",
+            "status",
+            "amount_cents",
+            "currency",
+            "expires_at",
+            "confirmed_at",
+            "cancelled_at",
+            "confirmed_after_expiry",
+            "created_at",
+            "updated_at",
             "links",
         )
         read_only_fields = fields
 
     def get_links(self, obj: Booking) -> dict:
+        """Generate HATEOAS links for booking resource."""
         request = self.context.get("request")
         base = request.build_absolute_uri("/")[:-1] if request else ""
         return {
@@ -55,56 +68,83 @@ class BookingSerializer(serializers.ModelSerializer):
 
 
 class BookingCreateSerializer(serializers.Serializer):
-    event = serializers.IntegerField(help_text="ID interne de l’évènement.")
+    """Booking creation serializer with validation rules."""
+
+    event = serializers.IntegerField(help_text="Event ID to book")
 
     def validate(self, attrs):
-        # import local pour éviter un import circulaire
+        """
+        Validate booking creation.
+
+        Business Rules:
+        1. Event must exist
+        2. Event must be PUBLISHED (not draft/cancelled)
+        3. User cannot have duplicate PENDING booking for same event
+        4. Multiple CONFIRMED bookings per event ARE allowed
+        """
+        # Local import to avoid circular dependency
         from events.models import Event
 
         request = self.context["request"]
         user = request.user
         event_id = attrs["event"]
 
-        # 1) existence event
+        # 1) Check event exists
         try:
             event = Event.objects.get(pk=event_id)
         except Event.DoesNotExist:
-            raise serializers.ValidationError({"event": "Évènement introuvable."})
+            raise serializers.ValidationError({"event": "Event not found."})
 
-        # 2) l'évènement doit être PUBLISHED (les brouillons / awaiting / cancelled sont non réservables)
-        if getattr(event, "status", None) != getattr(Event.Status, "PUBLISHED", "PUBLISHED"):
-            raise serializers.ValidationError("L’évènement n’est pas disponible à la réservation.")
+        # 2) Event must be PUBLISHED (not draft/awaiting/cancelled)
+        if getattr(event, "status", None) != getattr(
+            Event.Status, "PUBLISHED", "PUBLISHED"
+        ):
+            raise serializers.ValidationError(
+                "Event is not available for booking."
+            )
 
-        # 3) règles d’unicité par (user, event)
+        # 3) Check for duplicate PENDING booking (user must pay current booking first)
         exists_pending = Booking.objects.filter(
             user=user, event=event, status=BookingStatus.PENDING
         ).exists()
         if exists_pending:
-            raise serializers.ValidationError("Réservation en attente déjà existante pour cet évènement.")
+            raise serializers.ValidationError(
+                "You already have a pending booking for this event. "
+                "Please complete payment before creating a new booking."
+            )
 
-        exists_confirmed = Booking.objects.filter(
-            user=user, event=event, status=BookingStatus.CONFIRMED
-        ).exists()
-        if exists_confirmed:
-            raise serializers.ValidationError("Vous avez déjà une réservation confirmée pour cet évènement.")
+        # 4) NOTE: Multiple CONFIRMED bookings ARE ALLOWED
+        # User can book multiple seats for the same event
 
+        # Extract pricing from event
         price_cents = int(getattr(event, "price_cents", 0) or 0)
         currency = getattr(event, "currency", "EUR") or "EUR"
 
+        # Store event and pricing in validated data
         attrs["__event"] = event
         attrs["__amount_cents"] = price_cents
         attrs["__currency"] = currency
         return attrs
 
     def create(self, validated_data):
+        """
+        Create booking using service layer for proper validation.
+
+        Service layer will validate:
+        - Event capacity (>= 3 available slots required)
+        """
+        from .services import BookingService
+
         request = self.context["request"]
-        booking = Booking.objects.create(
+
+        # Use service to create booking (validates capacity)
+        booking = BookingService.create_booking(
             user=request.user,
             event=validated_data["__event"],
             amount_cents=validated_data["__amount_cents"],
-            currency=validated_data["__currency"],
         )
         return booking
 
     def to_representation(self, instance: Booking):
+        """Return booking using read serializer."""
         return BookingSerializer(instance, context=self.context).data

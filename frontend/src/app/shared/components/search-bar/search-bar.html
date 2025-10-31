@@ -1,0 +1,27 @@
+<div class="search-bar" [style.grid-template-columns]="getGridTemplate()">
+  @for (field of fields(); track $index) {
+    @if (field.type === 'multiselect') {
+      <shared-multi-select
+        class="search-field"
+        [placeholder]="field.placeholder || ''"
+        [options]="field.options || []"
+        [value]="getMultiValue($index)"
+        (valueChange)="onFieldChange($index, $event)">
+      </shared-multi-select>
+    } @else if (field.type === 'text') {
+      <input
+        type="text"
+        class="search-field search-input"
+        [placeholder]="field.placeholder || ''"
+        [value]="getTextValue($index)"
+        (input)="onFieldChange($index, ($any($event.target)).value)">
+    }
+  }
+
+  <shared-button
+    class="search-button"
+    [variant]="'primary'"
+    (click)="onSearch()">
+    {{ searchButtonText() }}
+  </shared-button>
+</div>

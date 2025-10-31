@@ -1,4 +1,4 @@
-<form (ngSubmit)="onNext()" #f="ngForm" class="form">
+<form [formGroup]="thirdForm" (ngSubmit)="onNext()" class="form">
   <div class="form__row">
     <shared-input
       id="email"
@@ -6,28 +6,43 @@
       type="email"
       label="{{ 'register.thirdTab.email' | t }}"
       placeholder="{{ 'auth.email_placeholder' | t }}"
-      [(ngModel)]="email"
-      [errorMessage]="formNotValid && email.length ===0"
-      required
-      email>
+      [formControl]="emailControl">
     </shared-input>
+    <span class="field-error" *ngIf="emailErrors" role="alert">
+      {{ emailErrors | t }}
+    </span>
+    <ng-container *ngIf="serverErrors.email as emailErrs">
+      <div class="error-message" *ngIf="emailErrs.length">{{ emailErrs[0] }}</div>
+    </ng-container>
   </div>
 
   <div class="form__row">
-    <shared-input
-      id="password"
-      name="password"
-      type="password"
-      label="{{ 'register.thirdTab.password' | t }}"
-      placeholder="{{ 'auth.password_placeholder' | t }}"
-      [(ngModel)]="password"
-      [errorMessage]="formNotValid && (password.length ===0 || password.length < 9)"
-      required
-      minlength="8">
-    </shared-input>
-    <div class="error-message" *ngIf="formNotValid && (password.length === 0 || password.length <8)">
-      {{ 'register.thirdTab.passwordLimit' | t }}
+    <div class="password-field">
+      <shared-input
+        id="password"
+        name="password"
+        [type]="showPassword ? 'text' : 'password'"
+        label="{{ 'register.thirdTab.password' | t }}"
+        placeholder="{{ 'auth.password_placeholder' | t }}"
+        [formControl]="passwordControl">
+      </shared-input>
+      <button type="button" class="eye-btn" (click)="togglePassword()" [attr.aria-label]="(showPassword ? ('auth.hide_password' | t) : ('auth.show_password' | t))">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" *ngIf="!showPassword">
+          <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" *ngIf="showPassword">
+          <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a20.77 20.77 0 0 1 5.06-6.06"/>
+          <path d="M1 1l22 22"/>
+        </svg>
+      </button>
     </div>
+    <span class="field-error" *ngIf="passwordErrors" role="alert">
+      {{ passwordErrors | t }}
+    </span>
+    <ng-container *ngIf="serverErrors.password as passwordErrs">
+      <div class="error-message" *ngIf="passwordErrs.length">{{ passwordErrs[0] }}</div>
+    </ng-container>
   </div>
 
   <div class="form__row">
@@ -36,30 +51,27 @@
         id="consent_given"
         name="consent_given"
         type="checkbox"
-        [(ngModel)]="consent_given"
-        #consent="ngModel"
-        required />
+        [formControl]="consentControl" />
       <span>{{ 'register.thirdTab.consent' | t }}</span>
     </label>
-    <div class="error-message" *ngIf="formNotValid && !consent_given">
-      {{ 'register.thirdTab.consent_required' | t }}
-    </div>
+    <span class="field-error" *ngIf="consentErrors" role="alert">
+      {{ consentErrors | t }}
+    </span>
+    <ng-container *ngIf="serverErrors.consent_given as consentErrs">
+      <div class="error-message" *ngIf="consentErrs.length">{{ consentErrs[0] }}</div>
+    </ng-container>
   </div>
 
 </form>
 
 <navigation-buttons
   [showPrev]="true"
-  [showNext]="false"
+  [showNext]="true"
   [prevLabel]="'common.back'"
+  [nextLabel]="'common.register'"
+  [nextDisabled]="loading"
+  [block]="true"
   align="between"
-  (prevClick)="onPrevious()">
+  (prevClick)="onPrevious()"
+  (nextClick)="onNext()">
 </navigation-buttons>
-
-<div class="slot slot--next">
-  <shared-button
-    type="button"
-    (click)="onNext()">
-    {{ 'common.register' | t }}
-  </shared-button>
-</div>

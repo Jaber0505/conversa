@@ -1,0 +1,80 @@
+.search-bar {
+  display: grid;
+  gap: 0.75rem;
+  align-items: center;
+  width: 100%;
+  position: relative;
+  z-index: 1; // Pour s'assurer que les dropdowns sont au-dessus
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+.search-field {
+  height: 42px;
+  position: relative; // Pour que le dropdown absolute se positionne correctement
+
+  // Style pour les inputs text
+  &.search-input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    padding: 0 1rem;
+    font-size: 0.9375rem;
+    color: #333;
+    transition: all 0.2s ease;
+
+    &::placeholder {
+      color: #999;
+    }
+
+    &:focus {
+      outline: none;
+      background: white;
+      border-color: rgba(255, 255, 255, 0.5);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  // Style pour le multi-select (via ::ng-deep)
+  ::ng-deep {
+    .ms-control {
+      background: rgba(255, 255, 255, 0.95) !important;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3) !important;
+      border-radius: 8px !important;
+      padding: 0 1rem !important;
+      font-size: 0.9375rem !important;
+      color: #333 !important;
+      height: 42px !important;
+      transition: all 0.2s ease;
+
+      &:hover {
+        border-color: rgba(255, 255, 255, 0.5) !important;
+        background: rgba(255, 255, 255, 1) !important;
+      }
+
+      &:focus-within {
+        border-color: #ffffff !important;
+        background: rgba(255, 255, 255, 1) !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+    }
+
+    // Cacher le champ de recherche interne du multi-select
+    .ms-panel__search {
+      display: none !important;
+    }
+  }
+}
+
+.search-button {
+  // Le bouton utilise déjà le variant="primary" donc on force juste la hauteur
+  ::ng-deep button {
+    height: 42px !important;
+    min-height: 42px !important;
+  }
+}

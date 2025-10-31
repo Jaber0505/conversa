@@ -1,11 +1,12 @@
-import {Component, inject, OnInit} from '@angular/core';
-import {ActivatedRoute, Router, RouterLink, UrlSegmentGroup} from '@angular/router';
+import {Component, inject, OnInit, ChangeDetectorRef} from '@angular/core';
+import {ActivatedRoute, Router, RouterLink, UrlSegmentGroup, NavigationEnd} from '@angular/router';
+import { filter } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 import { LanguagePopoverComponent, type Lang } from '../language-popover/language-popover.component';
 import { SHARED_IMPORTS } from '@shared';
 import { TPipe } from '@core/i18n';
 import {AuthApiService, AuthTokenService} from "@core/http";
-import {Observable} from "rxjs";
+import {Observable, of} from "rxjs";
 export type MeRes = {
   id: number;
   email: string;
@@ -31,17 +32,31 @@ export type MeRes = {
     ...SHARED_IMPORTS,
   ],
 })
-export class SiteHeaderComponent{
+export class SiteHeaderComponent implements OnInit {
   langs: ReadonlyArray<Lang> = ['fr', 'en', 'nl'] as const;
   private _showLang = false;
   protected authApi = inject(AuthApiService);
   protected tokens = inject(AuthTokenService);
-  constructor(private router: Router, private route: ActivatedRoute,) {}
+  constructor(private router: Router, private route: ActivatedRoute, private cdr: ChangeDetectorRef) {}
 
   showLang() { return this._showLang; }
   openLang() { this._showLang = true; }
   closeLang() { this._showLang = false; }
-  me$: Observable<MeRes> = this.authApi.me()
+  me$: Observable<MeRes | null> = of(null);
+
+  ngOnInit(): void {
+    this.updateMeStream();
+    // Re-évaluer après chaque navigation (ex: login → redirect events)
+    this.router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe(() => {
+      this.updateMeStream();
+    });
+  }
+
+  private updateMeStream() {
+    this.me$ = this.tokens.hasAccess() ? this.authApi.me() : of(null);
+    // Force la détection au cas où
+    this.cdr.markForCheck?.();
+  }
   langCode(): Lang {
     const tree = this.router.parseUrl(this.router.url);
     const primary: UrlSegmentGroup | undefined = tree.root.children['primary'];

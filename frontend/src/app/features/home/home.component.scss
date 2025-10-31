@@ -1,134 +1,456 @@
-/* ===== Layout principal ===== */
-.home-grid {
-  display: grid;
-  gap: var(--space-8, 2.5rem);
+/* ===== SCROLL CONTAINER (scroll libre, pas de snap) ===== */
+.scroll-container {
+  overflow-x: hidden;
+  width: 100%;
+}
 
-  @media (min-width: 1024px) {
-    grid-template-columns: 1.45fr 0.9fr; /* colonne gauche élargie */
-    gap: var(--space-8, 2.5rem);
-    align-items: start;
+/* ===== SECTIONS ===== */
+.snap-section {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh; /* Chaque section prend toute la hauteur */
+  padding: var(--space-20) 0;
+
+  @media (max-width: 768px) {
+    padding: var(--space-16) var(--space-4);
   }
 }
 
-/* ===== Titre principal ===== */
-h1 {
-  font-size: clamp(2rem, 2.8vw + 1rem, 3rem);
-  line-height: 1.15;
+/* Les en-têtes de section ont aussi une marge haute dédiée */
+.section-header { margin: var(--space-12) auto var(--space-16); }
+.section-title { margin-top: var(--space-4); }
+
+@media (max-width: 768px) {
+  .section-header { margin: var(--space-10) auto var(--space-14); }
+}
+
+/* Dernière section */
+.cta-section {
+  min-height: 100vh;
+
+  @media (max-width: 768px) {
+    padding: var(--space-16) var(--space-4);
+  }
+}
+
+/* Background layer pour chaque section */
+.section-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+}
+
+/* ===== 1. HERO SECTION - Gradient fort primary→secondary ===== */
+.hero-section {
+  .section-background {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  }
+}
+
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+  align-items: center;
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+
+  @media (max-width: 768px) {
+    gap: var(--space-6);
+    padding: 0 var(--space-4);
+    margin-top: var(--space-6);
+  }
+}
+
+.hero-title {
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  line-height: 1.1;
   font-weight: 800;
+  margin: 0;
+  color: white;
+  letter-spacing: -0.5px;
+
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
+}
+
+.hero-subtitle {
+  font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+  line-height: 1.6;
+  color: color-mix(in oklab, white, transparent 10%);
+  margin: 0;
+  max-width: 650px;
+}
+
+.hero-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  justify-content: center;
+  margin-top: var(--space-4);
+}
+
+.trust-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-10); /* Augmenté encore plus */
+  justify-content: center;
+  opacity: 0.95;
+  margin-top: var(--space-8); /* Plus d'espace au-dessus */
+
+  @media (max-width: 768px) {
+    gap: var(--space-8); /* Augmenté aussi sur mobile */
+    margin-top: var(--space-6);
+  }
+}
+
+/* ===== 2. STATS SECTION - Blanc pur ===== */
+.stats-section {
+  .section-background {
+    background: white;
+  }
+}
+
+.stats-content {
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.location-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: color-mix(in oklab, var(--color-primary), white 95%);
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-full);
+  margin: var(--space-6) 0 var(--space-10);
+  border: 1px solid color-mix(in oklab, var(--color-primary), white 85%);
+}
+
+.location-icon {
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.location-city {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--color-text);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-8);
+  margin-top: var(--space-10);
+}
+
+.stat-card {
+  background: white;
+  border-radius: var(--radius-4);
+  padding: var(--space-8);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid color-mix(in oklab, var(--color-border), transparent 50%);
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+  }
+}
+
+.stat-number {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+  margin-bottom: var(--space-3);
+}
+
+.stat-label {
+  font-size: 0.9375rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+/* ===== 3. HOW IT WORKS - Accent très léger ===== */
+.howto-section {
+  .section-background {
+    background: linear-gradient(
+      135deg,
+      color-mix(in oklab, var(--color-accent), white 98%) 0%,
+      color-mix(in oklab, var(--color-primary), white 98%) 100%
+    );
+  }
+}
+
+.section-header {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto var(--space-16);
+  padding: 0 var(--space-6);
+}
+
+.section-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  margin: 0 0 var(--space-6);
+  line-height: 1.2;
+  color: var(--color-text);
+}
+
+.section-subtitle {
+  font-size: 1.125rem;
+  color: var(--color-text-muted);
+  margin: 0;
+  line-height: 1.65;
+}
+
+.steps-grid {
+  display: grid;
+  gap: var(--space-10);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-12);
+  }
+}
+
+.step-card {
+  position: relative;
+  background: white;
+  border-radius: var(--radius-4);
+  padding: var(--space-8);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+  border: 1px solid color-mix(in oklab, var(--color-border), transparent 60%);
+  transition: all 0.3s ease;
+  text-align: center;
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
+    border-color: var(--color-primary);
+  }
+}
+
+.step-number {
+  position: absolute;
+  top: var(--space-5);
+  right: var(--space-5);
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  color: white;
+  font-weight: 700;
+  font-size: 1.125rem;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.step-icon {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--space-6);
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--color-primary), white 90%) 0%,
+    color-mix(in oklab, var(--color-secondary), white 90%) 100%
+  );
+  border-radius: var(--radius-3);
+  color: var(--color-primary);
+}
+
+.step-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 var(--space-3);
+  color: var(--color-text);
+}
+
+.step-desc {
+  font-size: 0.9375rem;
+  color: var(--color-text-muted);
+  line-height: 1.65;
   margin: 0;
 }
 
-/* ===== Sous-titre (description) ===== */
-.subtitle {
-  margin-top: .75rem; /* espace avec le titre */
-  font-size: 1.05rem;
-  color: var(--color-text-muted, #555);
-  line-height: 1.5;
-  max-width: 560px;
-}
-
-/* ===== Carte recherche ===== */
-.search-card {
-  margin-top: var(--space-6, 1.5rem);
-  padding: var(--space-6, 1.5rem);
-  border-radius: var(--radius-4, 20px);
-  background: var(--surface-0, #fff);
-  box-shadow: var(--shadow-lg, 0 4px 16px rgba(0, 0, 0, 0.06));
-}
-
-/* ===== Badges de confiance ===== */
-.trust {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .5rem;
-  margin-top: var(--space-6, 1.5rem);
-}
-
-/* ===== Carte tuto (comment ça marche) ===== */
-.howto-card {
-  margin-top: var(--space-5, 1.25rem);
-  padding: var(--space-5, 1.25rem);
-  border-radius: var(--radius-4, 20px);
-  background: var(--surface-0, #fff);
-  box-shadow: var(--shadow-lg, 0 4px 16px rgba(0, 0, 0, 0.06));
-}
-
-.howto-title {
-  margin: 0 0 .75rem;
-  font-size: clamp(1.15rem, 1.2vw + 1rem, 1.4rem);
-  line-height: 1.2;
-  font-weight: 700;
-}
-
-/* Image dans le tuto */
-.howto-img {
-  width: 100%;
-  border-radius: var(--radius-3, 12px);
-  margin-bottom: var(--space-5, 1.25rem);
-  display: block;
-}
-
-/* Étapes */
-.howto-list { list-style: none; padding: 0; margin: 0; }
-.howto-list li {
-  display: flex;
-  align-items: flex-start;
-  gap: .75rem;
-  margin-bottom: .85rem;
-}
-.howto-list li:last-child { margin-bottom: 0; }
-.howto-step {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--color-primary, #4b3ff2);
-  color: #fff;
-  font-weight: 600;
-  font-size: .9rem;
-  width: 1.75rem;
-  height: 1.75rem;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-.howto-actions {
-  margin-top: var(--space-5, 1.25rem);
-  display: flex; flex-wrap: wrap; gap: .75rem;
-}
-
-/* ===== CTA final amélioré ===== */
-.cta-panel {
-  border-radius: var(--radius-4, 20px);
-  padding: clamp(1rem, 1.5vw + 1rem, 2rem);
-  box-shadow: var(--shadow-lg, 0 4px 16px rgba(0,0,0,.06));
-}
-.cta-content {
-  display: grid;
-  gap: var(--space-6, 1.5rem);
-  align-items: center;
-  max-width: 1000px;
-  margin: 0 auto;
-  text-align: left;
-
-  @media (min-width: 900px) {
-    grid-template-columns: 1.2fr 1fr;
-    gap: var(--space-8, 2rem);
+/* ===== 4. FEATURED EVENTS - Secondary ultra-léger ===== */
+.featured-section {
+  .section-background {
+    background: linear-gradient(
+      135deg,
+      white 0%,
+      color-mix(in oklab, var(--color-secondary), white 97%) 100%
+    );
   }
 }
+
+.featured-grid {
+  display: grid;
+  gap: var(--space-8);
+  margin-bottom: var(--space-10);
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.section-cta {
+  text-align: center;
+  margin-top: var(--space-10);
+}
+
+/* ===== 5. TESTIMONIALS - Primary très léger ===== */
+.testimonials-section {
+  .section-background {
+    background: linear-gradient(
+      135deg,
+      color-mix(in oklab, var(--color-primary), white 97%) 0%,
+      white 100%
+    );
+  }
+}
+
+.testimonials-grid {
+  display: grid;
+  gap: var(--space-10);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-12);
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ===== 6. FINAL CTA - Gradient fort primary→secondary (rappel hero) ===== */
+.cta-section {
+  .section-background {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  }
+}
+
+.final-cta {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+  color: white;
+}
+
 .cta-title {
-  margin: 0 0 .5rem;
-  line-height: 1.15;
-  font-size: clamp(1.5rem, 1.2vw + 1.2rem, 2rem);
+  font-size: clamp(2rem, 5vw, 3.5rem);
   font-weight: 800;
+  margin: 0 0 var(--space-6);
+  line-height: 1.2;
+  color: white;
 }
+
 .cta-subtitle {
-  margin: 0 0 1rem;
-  color: color-mix(in oklab, var(--color-text, #111), transparent 15%);
-  font-size: 1.05rem;
-  line-height: 1.5;
-  max-width: 56ch;
+  font-size: clamp(1.125rem, 2vw, 1.375rem);
+  color: color-mix(in oklab, white, transparent 15%);
+  margin: 0 0 var(--space-10);
+  line-height: 1.65;
 }
-.cta-benefits { list-style: none; padding: 0; margin: 0; display: grid; gap: .6rem; }
-.cta-benefits li { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: .6rem; }
-.cta-actions { display: grid; gap: .75rem; justify-items: start; }
-@media (min-width: 900px) { .cta-actions { justify-items: stretch; } }
-.cta-hint { font-size: .95rem; }
+
+.cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  justify-content: center;
+}
+
+/* ===== RESPONSIVE ADJUSTMENTS ===== */
+@media (max-width: 768px) {
+  /* Stats section */
+  .stat-number {
+    font-size: 2rem;
+  }
+
+  .stat-card {
+    padding: var(--space-6);
+  }
+
+  /* Section headers */
+  .section-title {
+    font-size: 1.75rem;
+  }
+
+  .section-subtitle {
+    font-size: 1rem;
+  }
+
+  /* Grids */
+  .steps-grid,
+  .featured-grid,
+  .testimonials-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+  }
+
+  .step-card {
+    padding: var(--space-6);
+  }
+
+  /* CTA final */
+  .cta-title {
+    font-size: 1.75rem;
+  }
+
+  .cta-subtitle {
+    font-size: 1rem;
+  }
+
+  .final-cta {
+    padding: 0 var(--space-4);
+    width: 100%;
+  }
+
+  .cta-actions {
+    flex-direction: column;
+    width: 100%;
+    gap: var(--space-3);
+  }
+}
+
+/* ===== SMOOTH SCROLL BEHAVIOR ===== */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

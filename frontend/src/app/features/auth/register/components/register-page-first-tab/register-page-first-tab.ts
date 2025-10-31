@@ -24,6 +24,7 @@ type Option = { value: string; label: string };
 })
 export class RegisterPageFirstTab implements OnInit {
   @Input({ required: true }) firstTabInfo!: FirstTabInfoModel;
+  @Input() serverErrors: Partial<{ prenom: string[]; nom: string[]; age: string[]; native_langs: string[]; target_langs: string[] }> = {};
   @Output() suivant = new EventEmitter<FirstTabInfoModel>();
 
   uiLang: string | null = 'fr';

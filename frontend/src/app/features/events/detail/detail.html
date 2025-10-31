@@ -1,0 +1,206 @@
+<div class="event-detail-page" *ngIf="!loading() && event() as evt">
+  <!-- Bouton retour -->
+  <div class="back-section">
+    <shared-container>
+      <button class="btn-back" (click)="goBack()">
+        <span class="icon-arrow">←</span>
+        <span>{{ 'events.detail.back_to_events' | t }}</span>
+      </button>
+    </shared-container>
+  </div>
+
+  <shared-container>
+    <div class="detail-grid">
+      <!-- Colonne principale -->
+      <div class="main-column">
+        <!-- En-tête de l'événement -->
+        <div class="event-header">
+          <div class="event-badges">
+            <span class="badge badge-primary">
+              {{ evt.language_name }}
+            </span>
+            <span class="badge badge-secondary">
+              {{ evt.difficulty }}
+            </span>
+          </div>
+          <h1 class="event-title">{{ evt.title }}</h1>
+
+          <div class="event-meta">
+            <div class="meta-item">
+              <i class="icon">📅</i>
+              <span>{{ formatDate(evt.datetime_start) }}</span>
+            </div>
+            <div class="meta-item">
+              <i class="icon">🕐</i>
+              <span>{{ formatTime(evt.datetime_start) }}</span>
+            </div>
+            <div class="meta-item">
+              <i class="icon">📍</i>
+              <span>{{ evt.partner_address }}, {{ evt.partner_city }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="event-section">
+          <h2 class="section-title">{{ 'events.detail.about' | t }}</h2>
+          <p class="event-description">{{ evt.theme }}</p>
+        </div>
+
+        <!-- Carte -->
+        <div class="event-section">
+          <h2 class="section-title">{{ 'events.detail.location' | t }}</h2>
+          <div class="map-container">
+            <iframe
+              [src]="getGoogleMapsUrl(evt.partner_address + ', ' + evt.partner_city) | sanitizeUrl"
+              width="100%"
+              height="400"
+              style="border:0;"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+          </div>
+          <p class="address-text">
+            <strong>{{ evt.partner_name }}</strong><br>
+            {{ evt.partner_address }}<br>
+            {{ evt.partner_city }}
+          </p>
+        </div>
+
+        <!-- Participants -->
+        <div class="event-section">
+          <h2 class="section-title">
+            {{ 'events.detail.participants' | t }} ({{ evt.participants_count }})
+          </h2>
+          <p class="participants-info" *ngIf="evt.participants_count === 0">
+            {{ 'events.detail.no_participants_yet' | t }}
+          </p>
+          <p class="participants-info" *ngIf="evt.participants_count > 0">
+            {{ evt.participants_count }} {{ evt.participants_count === 1 ? ('events.detail.participant' | t) : ('events.detail.participants_plural' | t) }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Colonne latérale (sticky) -->
+      <div class="sidebar-column">
+        <div class="booking-card">
+          <div class="price-section">
+            <span class="price-label">{{ 'events.detail.price_per_person' | t }}</span>
+            <span class="price-value">{{ formatPrice(evt.price_cents) }}</span>
+          </div>
+
+          <div class="organizer-section">
+            <p class="organizer-label">{{ 'events.detail.organized_by' | t }}</p>
+            <p class="organizer-name">{{ evt.organizer_first_name }} {{ evt.organizer_last_name }}</p>
+          </div>
+
+          <div class="availability-section">
+            <div class="availability-bar">
+              <div
+                class="availability-fill"
+                [style.width.%]="(evt.participants_count / MAX_PARTICIPANTS) * 100">
+              </div>
+            </div>
+            <p class="availability-text">
+              {{ 'events.detail.spots_remaining' | t: { count: MAX_PARTICIPANTS - evt.participants_count } }}
+            </p>
+          </div>
+
+          <!-- Bouton selon l'état -->
+          <ng-container [ngSwitch]="getActionButtonState()">
+            <!-- Réserver -->
+            <shared-button
+              *ngSwitchCase="'book'"
+              variant="accent"
+              size="lg"
+              class="btn-book"
+              (click)="onBook()">
+              {{ 'events.detail.book_spot' | t }}
+            </shared-button>
+
+            <!-- Annuler -->
+            <shared-button
+              *ngSwitchCase="'cancel'"
+              variant="danger"
+              size="lg"
+              class="btn-cancel"
+              (click)="openCancelModal()">
+              {{ 'events.detail.cancel_booking' | t }}
+            </shared-button>
+
+            <!-- Démarre bientôt (< 3h) -->
+            <shared-button
+              *ngSwitchCase="'starting-soon'"
+              variant="outline"
+              size="lg"
+              class="btn-starting-soon"
+              [disabled]="true">
+              {{ 'events.detail.starting_soon' | t }}
+            </shared-button>
+
+            <!-- Complet -->
+            <shared-button
+              *ngSwitchCase="'full'"
+              variant="outline"
+              size="lg"
+              class="btn-full"
+              [disabled]="true">
+              {{ 'events.detail.event_full' | t }}
+            </shared-button>
+
+            <!-- Annulé -->
+            <shared-button
+              *ngSwitchCase="'cancelled'"
+              variant="outline"
+              size="lg"
+              class="btn-cancelled"
+              [disabled]="true">
+              {{ 'events.detail.event_cancelled' | t }}
+            </shared-button>
+          </ng-container>
+
+          <p class="booking-notice" *ngIf="getActionButtonState() === 'book'">
+            {{ 'events.detail.booking_notice' | t }}
+          </p>
+          <p class="booking-notice" *ngIf="getActionButtonState() === 'cancel'">
+            {{ 'events.detail.cancel_notice' | t }}
+          </p>
+          <p class="booking-notice" *ngIf="getActionButtonState() === 'starting-soon'">
+            {{ 'events.detail.starting_soon_notice' | t }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </shared-container>
+</div>
+
+<!-- Loading state -->
+<div class="loading-state" *ngIf="loading()">
+  <shared-container>
+    <div class="spinner"></div>
+    <p>{{ 'events.detail.loading' | t }}</p>
+  </shared-container>
+</div>
+
+<!-- Error state -->
+<div class="error-state" *ngIf="error() && !loading()">
+  <shared-container>
+    <h2>{{ 'events.detail.not_found' | t }}</h2>
+    <p>{{ error() }}</p>
+    <shared-button (click)="goBack()">{{ 'events.detail.back_to_events' | t }}</shared-button>
+  </shared-container>
+</div>
+
+<!-- Modale de confirmation d'annulation -->
+<app-confirm-purchase
+  *ngIf="showCancelModal()"
+  [asModal]="true"
+  [titleKey]="'events.detail.cancel_modal_title'"
+  [messageKey]="'events.detail.cancel_modal_message'"
+  [cancelKey]="'common.no'"
+  [buyKey]="'events.detail.yes_cancel'"
+  [loading]="cancellingBooking()"
+  (cancel)="closeCancelModal()"
+  (buy)="confirmCancelBooking()">
+</app-confirm-purchase>

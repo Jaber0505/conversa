@@ -35,5 +35,10 @@ def backfill(apps, schema_editor):
 def noop(apps, schema_editor): pass
 
 class Migration(migrations.Migration):
-    dependencies = [("bookings", "0004_add_booking_columns_nullable"), ("events", "__latest__")]
+    dependencies = [
+        ("bookings", "0004_add_booking_columns_nullable"),
+        ("events", "0005_add_max_participants_field"),
+    ]
+
     operations = [migrations.RunPython(backfill, noop)]
+

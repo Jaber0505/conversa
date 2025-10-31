@@ -4,12 +4,6 @@
       <a class="brand" [routerLink]="['/', langCode(), '']">{{ 'common.brand' | t }}</a>
     </div>
 
-    <nav class="nav desktop-only" [attr.aria-label]="'common.nav.menu' | t">
-      <a class="link" [routerLink]="['/', langCode(), 'faq']" routerLinkActive="active">{{ 'nav.faq' | t }}</a>
-      <a class="link" [routerLink]="['/', langCode(), 'about']" routerLinkActive="active">{{ 'nav.about' | t }}</a>
-      <a *ngIf="tokens?.access" class="link" [routerLink]="['/', langCode(), 'bookings']" routerLinkActive="active">{{ 'nav.booking' | t }}</a>
-      <a *ngIf="tokens?.access" class="link" [routerLink]="['/', langCode(), 'events']" routerLinkActive="active">{{ 'nav.events' | t }}</a>
-    </nav>
     <div class="lang-wrap">
       <button
         class="lang-chip"
@@ -22,17 +16,30 @@
     </div>
 
     <div class="auth">
-      <shared-button *ngIf="!tokens?.access"
-        class="btn-auth"
-        variant="outline"
-        size="sm"
-        [routerLink]="['/', langCode(),  'login']">
-        {{ 'auth.login' | t }}
-      </shared-button>
-      <div class="auth"*ngIf="tokens?.access">
-        <ng-container *ngIf="me$ | async as me;">
-          <h1 class="h6">{{ me.first_name }} {{ me.last_name }}</h1>
-        </ng-container>
+      <!-- Non connecté : Connexion + Inscription -->
+      <ng-container *ngIf="!tokens?.access">
+        <shared-button
+          class="btn-auth"
+          variant="outline"
+          size="sm"
+          [routerLink]="['/', langCode(), 'auth', 'login']">
+          {{ 'auth.login' | t }}
+        </shared-button>
+        <shared-button
+          class="btn-auth"
+          variant="accent"
+          size="sm"
+          [routerLink]="['/', langCode(), 'auth', 'register']">
+          {{ 'auth.register' | t }}
+        </shared-button>
+      </ng-container>
+
+      <!-- Connecté : Nom + Avatar + Déconnexion -->
+      <ng-container *ngIf="tokens?.access && (me$ | async) as me">
+        <button class="user-profile" type="button" aria-label="Profil utilisateur">
+          <span class="user-avatar" aria-hidden="true">👤</span>
+          <span class="user-name">{{ me.first_name }}</span>
+        </button>
         <shared-button
           class="btn-auth"
           variant="outline"
@@ -42,23 +49,9 @@
           [disabled]="loading">
           {{ loading ? ('common.loading' | t) : ('auth.logout' | t) }}
         </shared-button>
-      </div>
-
-      <shared-button *ngIf="!tokens?.access"
-        class="btn-auth"
-        variant="accent"
-        size="sm"
-        [routerLink]="['/', langCode(), 'register']">
-        {{ 'auth.register' | t }}
-      </shared-button>
+      </ng-container>
     </div>
   </shared-container>
-  <nav class="mobile-nav" [attr.aria-label]="'common.nav.menu' | t">
-    <a class="m-link" [routerLink]="['/', langCode(), 'faq']">{{ 'nav.faq' | t }}</a>
-    <a class="m-link" [routerLink]="['/', langCode(), 'about']">{{ 'nav.about' | t }}</a>
-    <a *ngIf="tokens?.access" class="m-link" [routerLink]="['/', langCode(), 'bookings']">{{ 'nav.booking' | t }}</a>
-    <a *ngIf="tokens?.access" class="m-link" [routerLink]="['/', langCode(), 'events']">{{ 'nav.events' | t }}</a>
-  </nav>
 </header>
 
 <app-language-popover

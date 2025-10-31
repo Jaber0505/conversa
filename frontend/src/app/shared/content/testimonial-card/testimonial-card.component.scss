@@ -1,0 +1,70 @@
+.testimonial-card {
+  height: 100%;
+  transition: transform var(--duration-normal);
+
+  &:hover {
+    transform: translateY(-4px);
+  }
+}
+
+.testimonial-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.testimonial-avatar {
+  flex-shrink: 0;
+
+  img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--color-primary);
+  }
+}
+
+.testimonial-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.testimonial-name {
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  margin: 0 0 var(--space-1);
+  color: var(--color-text);
+}
+
+.testimonial-role {
+  font-size: var(--fs-sm);
+  color: var(--color-text-light);
+  margin: 0 0 var(--space-2);
+}
+
+.testimonial-rating {
+  display: flex;
+  gap: var(--space-1);
+  margin-bottom: var(--space-3);
+}
+
+.star {
+  font-size: var(--fs-xl);
+  color: color-mix(in oklab, var(--color-text), white 80%);
+
+  &.star--filled {
+    color: var(--color-warning);
+  }
+}
+
+.testimonial-quote {
+  font-size: var(--fs-md);
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--color-text);
+  margin: 0;
+  border-left: 3px solid var(--color-primary);
+  padding-left: var(--space-4);
+}

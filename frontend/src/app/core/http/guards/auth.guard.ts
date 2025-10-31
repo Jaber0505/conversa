@@ -5,7 +5,7 @@ import { LangService } from '@core/i18n';
 
 export const authGuard: CanActivateFn = (_route, state) => {
   const tokens = inject(AuthTokenService);
-  if (tokens.access) return true; // connecté → accès OK
+  if (tokens.hasAccess()) return true; // connecté → accès OK
 
   const lang = inject(LangService).current;
   const router = inject(Router);

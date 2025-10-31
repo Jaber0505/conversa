@@ -1,149 +1,191 @@
-<shared-section spacing="lg" tone="subtle">
-  <shared-container>
-    <div class="home-grid">
-      <div class="left-col">
-        <h1>{{ 'pages.home.hero.title' | t }}</h1>
-        <p class="subtitle">{{ 'pages.home.hero.subtitle' | t }}</p>
+<!-- Scroll Container -->
+<div class="scroll-container">
 
-        <div header>
-          <h2 class="h3">{{ 'pages.home.search.title' | t }}</h2>
-          <p class="muted" style="margin:.25rem 0 0">
-            {{ 'pages.home.search.desc' | t }}
-          </p>
+  <!-- 1. HERO - Message principal avec impact maximal -->
+  <section class="snap-section hero-section" id="hero">
+    <div class="section-background"></div>
+    <shared-container>
+      <div class="hero-content" animateOnScroll="fadeInUp">
+        <h1 class="hero-title">
+          {{ 'landing.hero.title' | t }}
+        </h1>
+        <p class="hero-subtitle">
+          {{ 'landing.hero.subtitle' | t }}
+        </p>
+
+        <div class="hero-cta">
+          <shared-button variant="accent" size="lg" (click)="goToSignUp()">
+            {{ 'shared.actions.create_free_account' | t }}
+          </shared-button>
+          <shared-button variant="primary" size="lg" (click)="goToEvents()">
+            {{ 'shared.actions.browse_events' | t }}
+          </shared-button>
         </div>
-        <shared-search-panel
-          [labelKey]="'common.LanguageSearch'"
-          [searchLabelKey]="'common.searchInput'"
-          [searchPlaceholderKey]="'search.input.placeholder'"
-          [options]="langOptions()"
-          [value]="selectedLangCodes"
-          [searchInput]="searchInput"
-          (valueChange)="onCodesChange($event)"
-          [clearButton]="false"
-          (search)="onSearch($event)">
-        </shared-search-panel>
-        <div footer clasus="muted">
-          {{ 'shared.search.tip_keywords' | t }}
-        </div>
-        <div class="trust">
+
+        <div class="trust-badges">
           <shared-badge variant="accent" tone="solid">{{ 'shared.badges.members_1000_plus' | t }}</shared-badge>
           <shared-badge variant="accent" tone="solid">{{ 'shared.badges.partners_20' | t }}</shared-badge>
           <shared-badge variant="accent" tone="solid">{{ 'shared.badges.fun_100' | t }}</shared-badge>
         </div>
       </div>
+    </shared-container>
+  </section>
 
-      <div class="right-col">
-        <shared-card tone="elevated" class="howto-card">
-          <img class="howto-img" src="/assets/images/home/conversation-illustration.jpg" alt="{{ 'pages.home.howto.img_alt' | t }}">
-          <div header><h2 class="howto-title">{{ 'pages.home.howto.title' | t }}</h2></div>
+  <!-- 2. STATS - Preuve sociale avec géolocalisation -->
+  <section class="snap-section stats-section" id="stats">
+    <div class="section-background"></div>
+    <shared-container>
+      <div class="stats-content" animateOnScroll="fadeInUp">
+        <h2 class="section-title">{{ 'landing.stats.title' | t }}</h2>
 
-          <ul class="howto-list">
-            <li>
-              <span class="howto-step">1</span>
-              <div>
-                <div class="step-title">{{ 'pages.home.howto.steps.1.title' | t }}</div>
-                <div class="step-desc muted">{{ 'pages.home.howto.steps.1.desc' | t }}</div>
-              </div>
-            </li>
-            <li>
-              <span class="howto-step">2</span>
-              <div>
-                <div class="step-title">{{ 'pages.home.howto.steps.2.title' | t }}</div>
-                <div class="step-desc muted">{{ 'pages.home.howto.steps.2.desc' | t }}</div>
-              </div>
-            </li>
-            <li>
-              <span class="howto-step">3</span>
-              <div>
-                <div class="step-title">{{ 'pages.home.howto.steps.3.title' | t }}</div>
-                <div class="step-desc muted">{{ 'pages.home.howto.steps.3.desc' | t }}</div>
-              </div>
-            </li>
-          </ul>
-
-          <div class="howto-actions" footer>
-            <shared-button variant="accent" (click)="goToEvents()">{{ 'shared.actions.browse_events' | t }}</shared-button>
-            <shared-button variant="outline" (click)="goToSignUp()">{{ 'shared.actions.create_account' | t }}</shared-button>
+        @if (!isLoadingLocation() && nearbyStats()) {
+          <div class="location-badge" animateOnScroll="fadeInUp" [animateDelay]="100">
+            <svg class="location-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            <span class="location-city">{{ 'landing.hero.nearby' | t }} {{ nearbyStats()!.city }}</span>
           </div>
-        </shared-card>
+
+          <div class="stats-grid">
+            <div class="stat-card" animateOnScroll="scaleIn" [animateDelay]="200">
+              <div class="stat-number">{{ nearbyStats()!.activeMembers }}</div>
+              <div class="stat-label">{{ 'landing.hero.stats.members' | t }}</div>
+            </div>
+            <div class="stat-card" animateOnScroll="scaleIn" [animateDelay]="300">
+              <div class="stat-number">{{ nearbyStats()!.upcomingEvents }}</div>
+              <div class="stat-label">{{ 'landing.hero.stats.events' | t }}</div>
+            </div>
+            <div class="stat-card" animateOnScroll="scaleIn" [animateDelay]="400">
+              <div class="stat-number">{{ nearbyStats()!.languages.length }}+</div>
+              <div class="stat-label">{{ 'landing.hero.stats.languages' | t }}</div>
+            </div>
+          </div>
+        }
       </div>
-    </div>
-  </shared-container>
-</shared-section>
+    </shared-container>
+  </section>
 
-<!--&lt;!&ndash; ÉVÉNEMENTS À VENIR &ndash;&gt;-->
-<!--<shared-section spacing="lg">-->
-<!--  <shared-container>-->
-<!--    <shared-headline-bar-->
-<!--      [title]="'pages.home.upcoming.title' | t"-->
-<!--      [actionLabel]="'shared.actions.see_all' | t"-->
-<!--      (action)="goToEvents()">-->
-<!--    </shared-headline-bar>-->
-<!--    <shared-grid [cols]="1" [colsSm]="2" [colsMd]="3">-->
-<!--      <shared-event-card-->
-<!--        *ngFor="let e of events"-->
-<!--        [event]="e"-->
-<!--        (cta)="onEventClick(e)">-->
-<!--      </shared-event-card>-->
-<!--    </shared-grid>-->
-<!--  </shared-container>-->
-<!--</shared-section>-->
+  <!-- 3. HOW IT WORKS - 3 étapes simples -->
+  <section class="snap-section howto-section" id="howto">
+    <div class="section-background"></div>
+    <shared-container>
+      <div class="section-header" animateOnScroll="fadeInUp">
+        <h2 class="section-title">{{ 'landing.howto.title' | t }}</h2>
+        <p class="section-subtitle">{{ 'landing.howto.subtitle' | t }}</p>
+      </div>
 
-<!--&lt;!&ndash; CATÉGORIES &ndash;&gt;-->
-<!--<shared-section spacing="lg" tone="subtle">-->
-<!--  <shared-container>-->
-<!--    <shared-headline-bar-->
-<!--      [title]="'pages.home.categories.title' | t"-->
-<!--      [actionLabel]="'shared.actions.see_all' | t"-->
-<!--      (action)="goToCategories()">-->
-<!--    </shared-headline-bar>-->
+      <div class="steps-grid">
+        <div class="step-card" animateOnScroll="fadeInUp" [animateDelay]="0">
+          <div class="step-number">1</div>
+          <div class="step-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="8.5" cy="7" r="4"></circle>
+              <path d="M20 8v6M23 11h-6"></path>
+            </svg>
+          </div>
+          <h3 class="step-title">{{ 'landing.howto.steps.1.title' | t }}</h3>
+          <p class="step-desc">{{ 'landing.howto.steps.1.desc' | t }}</p>
+        </div>
 
-<!--    <shared-grid [cols]="1" [colsSm]="2" [colsMd]="3">-->
-<!--      <shared-category-card-->
-<!--        [title]="'pages.home.categories.items.cafe.title' | t"-->
-<!--        [subtitle]="'pages.home.categories.items.cafe.subtitle' | t">-->
-<!--      </shared-category-card>-->
-<!--      <shared-category-card-->
-<!--        [title]="'pages.home.categories.items.pro.title' | t"-->
-<!--        [subtitle]="'pages.home.categories.items.pro.subtitle' | t">-->
-<!--      </shared-category-card>-->
-<!--      <shared-category-card-->
-<!--        [title]="'pages.home.categories.items.events.title' | t"-->
-<!--        [subtitle]="'pages.home.categories.items.events.subtitle' | t">-->
-<!--      </shared-category-card>-->
-<!--    </shared-grid>-->
-<!--  </shared-container>-->
-<!--</shared-section>-->
+        <div class="step-card" animateOnScroll="fadeInUp" [animateDelay]="200">
+          <div class="step-number">2</div>
+          <div class="step-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+          </div>
+          <h3 class="step-title">{{ 'landing.howto.steps.2.title' | t }}</h3>
+          <p class="step-desc">{{ 'landing.howto.steps.2.desc' | t }}</p>
+        </div>
 
-<!--&lt;!&ndash; CTA FINAL &ndash;&gt;-->
-<!--<shared-section spacing="xl" tone="subtle">-->
-<!--  <shared-container>-->
-<!--    <shared-card class="cta-panel" tone="elevated">-->
-<!--      <div class="cta-content">-->
-<!--&lt;!&ndash;        <div class="cta-copy">&ndash;&gt;-->
-<!--&lt;!&ndash;          <h2 class="cta-title">{{ 'pages.home.cta.title' | t }}</h2>&ndash;&gt;-->
-<!--&lt;!&ndash;          <p class="cta-subtitle">{{ 'pages.home.cta.subtitle' | t }}</p>&ndash;&gt;-->
-<!--&lt;!&ndash;          <ul class="cta-benefits">&ndash;&gt;-->
-<!--&lt;!&ndash;            <li>&ndash;&gt;-->
-<!--&lt;!&ndash;              <shared-badge variant="secondary" tone="solid">{{ 'shared.badges.rapid' | t }}</shared-badge>&ndash;&gt;-->
-<!--&lt;!&ndash;              <span>{{ 'pages.home.cta.benefits.rapid.desc' | t }}</span>&ndash;&gt;-->
-<!--&lt;!&ndash;            </li>&ndash;&gt;-->
-<!--&lt;!&ndash;            <li>&ndash;&gt;-->
-<!--&lt;!&ndash;              <shared-badge variant="tertiary" tone="solid">{{ 'shared.badges.local' | t }}</shared-badge>&ndash;&gt;-->
-<!--&lt;!&ndash;              <span>{{ 'pages.home.cta.benefits.local.desc' | t }}</span>&ndash;&gt;-->
-<!--&lt;!&ndash;            </li>&ndash;&gt;-->
-<!--&lt;!&ndash;            <li>&ndash;&gt;-->
-<!--&lt;!&ndash;              <shared-badge variant="primary" tone="solid">{{ 'shared.badges.effective' | t }}</shared-badge>&ndash;&gt;-->
-<!--&lt;!&ndash;              <span>{{ 'pages.home.cta.benefits.effective.desc' | t }}</span>&ndash;&gt;-->
-<!--&lt;!&ndash;            </li>&ndash;&gt;-->
-<!--&lt;!&ndash;          </ul>&ndash;&gt;-->
-<!--&lt;!&ndash;        </div>&ndash;&gt;-->
-<!--        <div class="cta-actions">-->
-<!--          <shared-button size="lg" variant="accent" (click)="goToSignUp()">{{ 'shared.actions.create_free_account' | t }}</shared-button>-->
-<!--          <shared-button size="lg" variant="outline" (click)="goToEvents()">{{ 'shared.actions.browse_events' | t }}</shared-button>-->
-<!--          <div class="cta-hint muted">{{ 'pages.home.cta.hint' | t }}</div>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </shared-card>-->
-<!--  </shared-container>-->
-<!--</shared-section>-->
+        <div class="step-card" animateOnScroll="fadeInUp" [animateDelay]="400">
+          <div class="step-number">3</div>
+          <div class="step-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+          </div>
+          <h3 class="step-title">{{ 'landing.howto.steps.3.title' | t }}</h3>
+          <p class="step-desc">{{ 'landing.howto.steps.3.desc' | t }}</p>
+        </div>
+      </div>
+    </shared-container>
+  </section>
+
+  <!-- 4. FEATURED EVENTS - Aperçu des événements -->
+  <section class="snap-section featured-section" id="featured">
+    <div class="section-background"></div>
+    <shared-container>
+      <div class="section-header" animateOnScroll="fadeInUp">
+        <h2 class="section-title">{{ 'landing.featured.title' | t }}</h2>
+        <p class="section-subtitle">{{ 'landing.featured.subtitle' | t }}</p>
+      </div>
+
+      <div class="featured-grid">
+        @for (ev of featured; track ev.title) {
+          <div animateOnScroll="fadeInUp" [animateDelay]="$index * 100">
+            <shared-event-card [event]="ev" (cta)="goToEvents()"></shared-event-card>
+          </div>
+        }
+      </div>
+
+      <div class="section-cta">
+        <shared-button variant="primary" size="lg" (click)="goToEvents()">
+          {{ 'shared.actions.browse_events' | t }}
+          <span aria-hidden="true">→</span>
+        </shared-button>
+      </div>
+    </shared-container>
+  </section>
+
+  <!-- 5. TESTIMONIALS - Preuve sociale -->
+  <section class="snap-section testimonials-section" id="testimonials">
+    <div class="section-background"></div>
+    <shared-container>
+      <div class="section-header" animateOnScroll="fadeInUp">
+        <h2 class="section-title">{{ 'landing.testimonials.title' | t }}</h2>
+        <p class="section-subtitle">{{ 'landing.testimonials.subtitle' | t }}</p>
+      </div>
+
+      <div class="testimonials-grid">
+        @for (testimonial of testimonials; track testimonial.name) {
+          <div animateOnScroll="fadeInUp" [animateDelay]="$index * 150">
+            <shared-testimonial-card
+              [name]="testimonial.name"
+              [role]="testimonial.role"
+              [language]="testimonial.language"
+              [quote]="testimonial.quote"
+              [rating]="testimonial.rating"
+              [avatar]="testimonial.avatar">
+            </shared-testimonial-card>
+          </div>
+        }
+      </div>
+    </shared-container>
+  </section>
+
+  <!-- 6. FINAL CTA - Conversion finale -->
+  <section class="snap-section cta-section" id="cta">
+    <div class="section-background"></div>
+    <shared-container>
+      <div class="final-cta" animateOnScroll="scaleIn">
+        <h2 class="cta-title">{{ 'landing.cta.title' | t }}</h2>
+        <p class="cta-subtitle">{{ 'landing.cta.subtitle' | t }}</p>
+        <div class="cta-actions">
+          <shared-button variant="accent" size="lg" (click)="goToSignUp()">
+            {{ 'shared.actions.create_free_account' | t }}
+          </shared-button>
+          <shared-button variant="primary" size="lg" (click)="goToEvents()">
+            {{ 'shared.actions.browse_events' | t }}
+          </shared-button>
+        </div>
+      </div>
+    </shared-container>
+  </section>
+
+</div>

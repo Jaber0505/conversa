@@ -1,0 +1,318 @@
+// ============================================
+// PERFORMANCE UTILITIES
+// ============================================
+// Utilitaires pour optimiser les performances
+
+@use '../tokens' as *;
+
+// ============================================
+// LAZY IMAGES
+// ============================================
+
+.lazy-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: opacity var(--duration-normal) ease;
+
+  &.lazy-image--loading {
+    opacity: 0.5;
+    background: linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--color-bg), var(--color-text) 5%) 0%,
+      color-mix(in oklab, var(--color-bg), var(--color-text) 10%) 50%,
+      color-mix(in oklab, var(--color-bg), var(--color-text) 5%) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+
+  &.lazy-image--loaded {
+    opacity: 1;
+  }
+
+  &.lazy-image--error {
+    opacity: 0.3;
+    filter: grayscale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+// ============================================
+// SKELETON LOADERS
+// ============================================
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    color-mix(in oklab, var(--color-bg), var(--color-text) 5%) 0%,
+    color-mix(in oklab, var(--color-bg), var(--color-text) 10%) 50%,
+    color-mix(in oklab, var(--color-bg), var(--color-text) 5%) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--radius-md);
+}
+
+.skeleton-text {
+  @extend .skeleton;
+  height: 1em;
+  width: 100%;
+  margin-bottom: 0.5em;
+}
+
+.skeleton-title {
+  @extend .skeleton;
+  height: 1.5em;
+  width: 60%;
+  margin-bottom: 1em;
+}
+
+.skeleton-avatar {
+  @extend .skeleton;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+.skeleton-card {
+  @extend .skeleton;
+  height: 200px;
+  width: 100%;
+}
+
+.skeleton-button {
+  @extend .skeleton;
+  height: 44px;
+  width: 120px;
+}
+
+// ============================================
+// CONTENT VISIBILITY (Performance moderne)
+// ============================================
+
+// Indique au navigateur qu'un élément peut être sauté (off-screen)
+.content-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 500px; // Taille estimée
+}
+
+// Force le rendu (pour les éléments critiques)
+.content-visible {
+  content-visibility: visible;
+}
+
+// Cache complètement le rendu (meilleure performance que display: none)
+.content-hidden {
+  content-visibility: hidden;
+}
+
+// ============================================
+// WILL-CHANGE (Optimisation des animations)
+// ============================================
+
+// Indiquer au navigateur quelles propriétés vont changer
+.will-change-transform {
+  will-change: transform;
+}
+
+.will-change-opacity {
+  will-change: opacity;
+}
+
+.will-change-scroll {
+  will-change: scroll-position;
+}
+
+// Retirer will-change après l'animation (à faire avec JS)
+.will-change-auto {
+  will-change: auto;
+}
+
+// ============================================
+// CONTAINMENT (Isolation du layout)
+// ============================================
+
+// Isolation complète (layout, style, paint)
+.contain-strict {
+  contain: strict;
+}
+
+// Isolation du layout seulement
+.contain-layout {
+  contain: layout;
+}
+
+// Isolation du paint (redessinage)
+.contain-paint {
+  contain: paint;
+}
+
+// Isolation du sizing
+.contain-size {
+  contain: size;
+}
+
+// Containment pour le contenu (layout + paint + style)
+.contain-content {
+  contain: content;
+}
+
+// ============================================
+// DEBOUNCE / THROTTLE (Scroll smooth)
+// ============================================
+
+// Smooth scrolling optimisé
+.scroll-smooth-optimized {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+// Disable smooth scroll pour la performance
+.scroll-instant {
+  scroll-behavior: auto;
+}
+
+// ============================================
+// IMAGE OPTIMIZATION
+// ============================================
+
+// Optimiser le rendu d'image
+img,
+picture,
+video {
+  // Meilleure qualité de redimensionnement
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+
+  // Lazy loading natif
+  &[loading='lazy'] {
+    content-visibility: auto;
+  }
+}
+
+// Responsive images
+.img-responsive {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.img-cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.img-contain {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+
+// ============================================
+// FONT LOADING OPTIMIZATION
+// ============================================
+
+// Éviter le FOIT (Flash of Invisible Text)
+.font-display-swap {
+  font-display: swap;
+}
+
+.font-display-optional {
+  font-display: optional;
+}
+
+// ============================================
+// GPU ACCELERATION
+// ============================================
+
+// Force le GPU pour l'accélération matérielle
+.gpu-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+// ============================================
+// REDUCED DATA MODE
+// ============================================
+
+// Support pour la préférence de données réduites
+@media (prefers-reduced-data: reduce) {
+  // Désactiver les images de fond non essentielles
+  *[style*='background-image'] {
+    background-image: none !important;
+  }
+
+  // Réduire la qualité des images
+  img,
+  video {
+    image-rendering: pixelated;
+  }
+
+  // Désactiver les animations non essentielles
+  *:not(.spinner):not([role='progressbar']) {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+// ============================================
+// INTERSECTION OBSERVER HELPERS
+// ============================================
+
+// Classe ajoutée quand l'élément est visible
+.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity var(--duration-normal), transform var(--duration-normal);
+}
+
+// Classe avant que l'élément soit visible
+.is-hidden {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+// ============================================
+// VIRTUAL SCROLL OPTIMIZATION
+// ============================================
+
+.virtual-scroll-item {
+  // Isolation pour éviter le reflow
+  contain: layout style paint;
+  content-visibility: auto;
+}
+
+// ============================================
+// PRELOAD HINTS
+// ============================================
+
+// Classes pour indiquer le type de preload nécessaire
+.preload-critical {
+  // Les éléments critiques doivent être chargés immédiatement
+}
+
+.preload-high {
+  // Priorité haute (au-dessus du pli)
+}
+
+.preload-low {
+  // Priorité basse (en dessous du pli)
+}
+
+.preload-none {
+  // Pas de preload (lazy load)
+}

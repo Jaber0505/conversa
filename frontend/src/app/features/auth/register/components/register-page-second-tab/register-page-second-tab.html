@@ -18,6 +18,9 @@
     <div class="error-message" *ngIf="formNotValid && (currentBio.length === 0 || currentBio.length >500)">
       {{ 'register.secondTab.limit' | t }}
     </div>
+    <ng-container *ngIf="serverErrors.bio as bioErrs">
+      <div class="error-message" *ngIf="bioErrs.length">{{ bioErrs[0] }}</div>
+    </ng-container>
     <div id="bio-count" class="muted small">{{ currentBio.length || 0 }}/500</div>
   </div>
 
@@ -29,6 +32,7 @@
   [showNext]="true"
   [prevLabel]="'common.back'"
   [nextLabel]="'common.next'"
+  [block]="true"
   align="between"
   (nextClick)="onNext()"
   (prevClick)="onPrevious()">

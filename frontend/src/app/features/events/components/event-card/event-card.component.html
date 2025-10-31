@@ -1,0 +1,100 @@
+<shared-card class="event-card" [class.recommended]="isRecommended" [class.nearby]="isNearby" [clickable]="true" (click)="onCardClick()">
+  <!-- Image / Thumbnail avec overlay de badges -->
+  <div media class="event-thumbnail">
+    <div class="thumbnail-overlay">
+      <shared-badge variant="accent" tone="soft" class="lang-badge">
+        {{ event.language_code.toUpperCase() }}
+      </shared-badge>
+      <shared-badge variant="primary" tone="soft" *ngIf="isRecommended" class="recommended-badge">
+        <span class="badge-icon">⭐</span>
+        {{ 'events.recommended' | t }}
+      </shared-badge>
+      <shared-badge variant="primary" tone="soft" *ngIf="isNearby && !isRecommended" class="nearby-badge">
+        <span class="badge-icon">📍</span>
+        {{ 'events.nearby' | t }}
+      </shared-badge>
+    </div>
+    <div class="gradient-overlay"></div>
+  </div>
+
+  <!-- Header avec titre et thème -->
+  <div header class="event-header">
+    <h3 class="event-title">{{ event.title }}</h3>
+    <p class="event-theme" *ngIf="event.theme">
+      <span class="theme-icon">💬</span>
+      {{ event.theme }}
+    </p>
+  </div>
+
+  <!-- Body avec informations détaillées -->
+  <div class="event-body">
+    <div class="info-row">
+      <span class="info-icon">📅</span>
+      <div class="info-content">
+        <span class="info-label">{{ 'events.when' | t }}</span>
+        <span class="info-value">{{ formattedDate }}</span>
+      </div>
+    </div>
+
+    <div class="info-row">
+      <span class="info-icon">📍</span>
+      <div class="info-content">
+        <span class="info-label">{{ 'events.address' | t }}</span>
+        <span class="info-value">{{ event.address }}</span>
+      </div>
+    </div>
+
+    <div class="info-row" *ngIf="event.partner_city">
+      <span class="info-icon">🏙️</span>
+      <div class="info-content">
+        <span class="info-label">{{ 'events.city' | t }}</span>
+        <span class="info-value">{{ event.partner_city }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer avec prix et action -->
+  <div footer class="event-footer">
+    <div class="price-section">
+      <span class="price-label">{{ 'events.price' | t }}</span>
+      <span class="price-value" [class.free]="event.price_cents === 0">
+        {{ formattedPrice }}
+      </span>
+    </div>
+
+    <div class="action-section">
+      <shared-badge
+        *ngIf="event.is_cancelled"
+        variant="danger"
+        tone="soft">
+        {{ 'events.cancelled' | t }}
+      </shared-badge>
+
+      <shared-badge
+        *ngIf="event.alreadyBooked && !event.is_cancelled"
+        variant="accent"
+        tone="soft">
+        ✓ {{ 'events.already_booked' | t }}
+      </shared-badge>
+
+      <div class="button-group" *ngIf="!event.is_cancelled">
+        <shared-button
+          type="button"
+          variant="outline"
+          size="sm"
+          (click)="onViewDetails($event)">
+          {{ 'common.details' | t }}
+        </shared-button>
+
+        <shared-button
+          *ngIf="!event.alreadyBooked"
+          type="button"
+          variant="primary"
+          size="sm"
+          (click)="onBook()">
+          {{ 'events.book' | t }}
+        </shared-button>
+      </div>
+    </div>
+  </div>
+</shared-card>

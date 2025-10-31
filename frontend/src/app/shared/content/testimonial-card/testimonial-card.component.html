@@ -1,0 +1,22 @@
+<shared-card [tone]="'soft'" [padded]="true" class="testimonial-card">
+  <div class="testimonial-header">
+    <div class="testimonial-avatar">
+      <img [src]="avatar || 'https://ui-avatars.com/api/?name=' + name" [alt]="name">
+    </div>
+    <div class="testimonial-meta">
+      <h4 class="testimonial-name">{{ name }}</h4>
+      <p class="testimonial-role">{{ role }}</p>
+      <shared-badge variant="accent" size="sm" tone="soft">{{ language }}</shared-badge>
+    </div>
+  </div>
+
+  <div class="testimonial-rating">
+    <span *ngFor="let star of [1,2,3,4,5]" class="star" [class.star--filled]="star <= rating">
+      ★
+    </span>
+  </div>
+
+  <blockquote class="testimonial-quote">
+    "{{ quote }}"
+  </blockquote>
+</shared-card>

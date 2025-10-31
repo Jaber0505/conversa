@@ -1,0 +1,559 @@
+// ============================================
+// ADVANCED GRID SYSTEM
+// ============================================
+// Système de grille CSS moderne avec support responsive complet
+//
+// Usage:
+// <div class="grid grid-cols-12 gap-4">
+//   <div class="col-span-6 col-md-4">...</div>
+// </div>
+
+@use '../tokens' as *;
+
+// ============================================
+// CONFIGURATION
+// ============================================
+
+$grid-columns: 12;
+$grid-gaps: (
+  '0': 0,
+  '1': $space-1,
+  '2': $space-2,
+  '3': $space-3,
+  '4': $space-4,
+  '5': $space-5,
+  '6': $space-6,
+  '8': $space-8,
+  '10': $space-10,
+  '12': $space-12,
+);
+
+// ============================================
+// CONTENEUR DE GRILLE
+// ============================================
+
+.grid {
+  display: grid;
+  width: 100%;
+}
+
+// Display utilities
+.grid-inline {
+  display: inline-grid;
+}
+
+// ============================================
+// COLONNES (Mobile first)
+// ============================================
+
+// Générer les classes grid-cols-{n}
+@for $i from 1 through $grid-columns {
+  .grid-cols-#{$i} {
+    grid-template-columns: repeat($i, 1fr);
+  }
+}
+
+// Auto-fit et auto-fill
+.grid-cols-auto-fit {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.grid-cols-auto-fill {
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+// ============================================
+// SPAN DE COLONNES (Combien de colonnes occupe l'élément)
+// ============================================
+
+@for $i from 1 through $grid-columns {
+  .col-span-#{$i} {
+    grid-column: span $i / span $i;
+  }
+}
+
+.col-span-full {
+  grid-column: 1 / -1;
+}
+
+.col-span-auto {
+  grid-column: auto;
+}
+
+// ============================================
+// START / END DE COLONNES
+// ============================================
+
+@for $i from 1 through ($grid-columns + 1) {
+  .col-start-#{$i} {
+    grid-column-start: $i;
+  }
+
+  .col-end-#{$i} {
+    grid-column-end: $i;
+  }
+}
+
+.col-start-auto {
+  grid-column-start: auto;
+}
+
+.col-end-auto {
+  grid-column-end: auto;
+}
+
+// ============================================
+// ROWS
+// ============================================
+
+@for $i from 1 through 6 {
+  .grid-rows-#{$i} {
+    grid-template-rows: repeat($i, minmax(0, 1fr));
+  }
+}
+
+.grid-rows-none {
+  grid-template-rows: none;
+}
+
+// Row span
+@for $i from 1 through 6 {
+  .row-span-#{$i} {
+    grid-row: span $i / span $i;
+  }
+}
+
+.row-span-full {
+  grid-row: 1 / -1;
+}
+
+// Row start/end
+@for $i from 1 through 7 {
+  .row-start-#{$i} {
+    grid-row-start: $i;
+  }
+
+  .row-end-#{$i} {
+    grid-row-end: $i;
+  }
+}
+
+// ============================================
+// GAPS (Espacement entre les éléments)
+// ============================================
+
+@each $name, $value in $grid-gaps {
+  .gap-#{$name} {
+    gap: $value;
+  }
+
+  .gap-x-#{$name} {
+    column-gap: $value;
+  }
+
+  .gap-y-#{$name} {
+    row-gap: $value;
+  }
+}
+
+// ============================================
+// ALIGNEMENT
+// ============================================
+
+// Justify items (horizontal)
+.justify-items-start {
+  justify-items: start;
+}
+.justify-items-end {
+  justify-items: end;
+}
+.justify-items-center {
+  justify-items: center;
+}
+.justify-items-stretch {
+  justify-items: stretch;
+}
+
+// Align items (vertical)
+.align-items-start {
+  align-items: start;
+}
+.align-items-end {
+  align-items: end;
+}
+.align-items-center {
+  align-items: center;
+}
+.align-items-stretch {
+  align-items: stretch;
+}
+.align-items-baseline {
+  align-items: baseline;
+}
+
+// Justify content (grille entière horizontal)
+.justify-content-start {
+  justify-content: start;
+}
+.justify-content-end {
+  justify-content: end;
+}
+.justify-content-center {
+  justify-content: center;
+}
+.justify-content-between {
+  justify-content: space-between;
+}
+.justify-content-around {
+  justify-content: space-around;
+}
+.justify-content-evenly {
+  justify-content: space-evenly;
+}
+
+// Align content (grille entière vertical)
+.align-content-start {
+  align-content: start;
+}
+.align-content-end {
+  align-content: end;
+}
+.align-content-center {
+  align-content: center;
+}
+.align-content-between {
+  align-content: space-between;
+}
+.align-content-around {
+  align-content: space-around;
+}
+.align-content-evenly {
+  align-content: space-evenly;
+}
+
+// Place items (shorthand)
+.place-items-start {
+  place-items: start;
+}
+.place-items-end {
+  place-items: end;
+}
+.place-items-center {
+  place-items: center;
+}
+.place-items-stretch {
+  place-items: stretch;
+}
+
+// ============================================
+// AUTO FLOW
+// ============================================
+
+.grid-flow-row {
+  grid-auto-flow: row;
+}
+.grid-flow-col {
+  grid-auto-flow: column;
+}
+.grid-flow-dense {
+  grid-auto-flow: dense;
+}
+.grid-flow-row-dense {
+  grid-auto-flow: row dense;
+}
+.grid-flow-col-dense {
+  grid-auto-flow: column dense;
+}
+
+// ============================================
+// AUTO COLUMNS / ROWS
+// ============================================
+
+.auto-cols-auto {
+  grid-auto-columns: auto;
+}
+.auto-cols-min {
+  grid-auto-columns: min-content;
+}
+.auto-cols-max {
+  grid-auto-columns: max-content;
+}
+.auto-cols-fr {
+  grid-auto-columns: minmax(0, 1fr);
+}
+
+.auto-rows-auto {
+  grid-auto-rows: auto;
+}
+.auto-rows-min {
+  grid-auto-rows: min-content;
+}
+.auto-rows-max {
+  grid-auto-rows: max-content;
+}
+.auto-rows-fr {
+  grid-auto-rows: minmax(0, 1fr);
+}
+
+// ============================================
+// ORDER (Ordre des éléments enfants)
+// ============================================
+
+.order-first {
+  order: -9999;
+}
+.order-last {
+  order: 9999;
+}
+.order-none {
+  order: 0;
+}
+
+@for $i from 1 through 12 {
+  .order-#{$i} {
+    order: $i;
+  }
+}
+
+// ============================================
+// RESPONSIVE VARIANTS (SM - 640px+)
+// ============================================
+
+@include from($bp-sm) {
+  // Colonnes
+  @for $i from 1 through $grid-columns {
+    .grid-cols-sm-#{$i} {
+      grid-template-columns: repeat($i, 1fr);
+    }
+
+    .col-span-sm-#{$i} {
+      grid-column: span $i / span $i;
+    }
+  }
+
+  .col-span-sm-full {
+    grid-column: 1 / -1;
+  }
+
+  // Gaps
+  @each $name, $value in $grid-gaps {
+    .gap-sm-#{$name} {
+      gap: $value;
+    }
+    .gap-x-sm-#{$name} {
+      column-gap: $value;
+    }
+    .gap-y-sm-#{$name} {
+      row-gap: $value;
+    }
+  }
+
+  // Order
+  @for $i from 1 through 12 {
+    .order-sm-#{$i} {
+      order: $i;
+    }
+  }
+}
+
+// ============================================
+// RESPONSIVE VARIANTS (MD - 768px+)
+// ============================================
+
+@include from($bp-md) {
+  // Colonnes
+  @for $i from 1 through $grid-columns {
+    .grid-cols-md-#{$i} {
+      grid-template-columns: repeat($i, 1fr);
+    }
+
+    .col-span-md-#{$i} {
+      grid-column: span $i / span $i;
+    }
+  }
+
+  .col-span-md-full {
+    grid-column: 1 / -1;
+  }
+
+  // Gaps
+  @each $name, $value in $grid-gaps {
+    .gap-md-#{$name} {
+      gap: $value;
+    }
+    .gap-x-md-#{$name} {
+      column-gap: $value;
+    }
+    .gap-y-md-#{$name} {
+      row-gap: $value;
+    }
+  }
+
+  // Order
+  @for $i from 1 through 12 {
+    .order-md-#{$i} {
+      order: $i;
+    }
+  }
+
+  // Alignement
+  .justify-items-md-center {
+    justify-items: center;
+  }
+  .align-items-md-center {
+    align-items: center;
+  }
+}
+
+// ============================================
+// RESPONSIVE VARIANTS (LG - 1024px+)
+// ============================================
+
+@include from($bp-lg) {
+  // Colonnes
+  @for $i from 1 through $grid-columns {
+    .grid-cols-lg-#{$i} {
+      grid-template-columns: repeat($i, 1fr);
+    }
+
+    .col-span-lg-#{$i} {
+      grid-column: span $i / span $i;
+    }
+  }
+
+  .col-span-lg-full {
+    grid-column: 1 / -1;
+  }
+
+  // Gaps
+  @each $name, $value in $grid-gaps {
+    .gap-lg-#{$name} {
+      gap: $value;
+    }
+    .gap-x-lg-#{$name} {
+      column-gap: $value;
+    }
+    .gap-y-lg-#{$name} {
+      row-gap: $value;
+    }
+  }
+
+  // Order
+  @for $i from 1 through 12 {
+    .order-lg-#{$i} {
+      order: $i;
+    }
+  }
+}
+
+// ============================================
+// RESPONSIVE VARIANTS (XL - 1280px+)
+// ============================================
+
+@include from($bp-xl) {
+  // Colonnes
+  @for $i from 1 through $grid-columns {
+    .grid-cols-xl-#{$i} {
+      grid-template-columns: repeat($i, 1fr);
+    }
+
+    .col-span-xl-#{$i} {
+      grid-column: span $i / span $i;
+    }
+  }
+
+  .col-span-xl-full {
+    grid-column: 1 / -1;
+  }
+
+  // Gaps
+  @each $name, $value in $grid-gaps {
+    .gap-xl-#{$name} {
+      gap: $value;
+    }
+  }
+
+  // Order
+  @for $i from 1 through 12 {
+    .order-xl-#{$i} {
+      order: $i;
+    }
+  }
+}
+
+// ============================================
+// HELPER CLASSES - LAYOUTS COMMUNS
+// ============================================
+
+// Layout 2 colonnes égales
+.grid-2-cols {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $space-4;
+}
+
+// Layout 3 colonnes égales
+.grid-3-cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: $space-4;
+}
+
+// Layout sidebar + main (70/30)
+.grid-sidebar-left {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  gap: $space-6;
+}
+
+.grid-sidebar-right {
+  display: grid;
+  grid-template-columns: 1fr 250px;
+  gap: $space-6;
+}
+
+// Layout auto-responsive (cards)
+.grid-auto-responsive {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: $space-6;
+}
+
+// Holy Grail Layout
+.grid-holy-grail {
+  display: grid;
+  min-height: 100vh;
+  grid-template-areas:
+    'header header header'
+    'sidebar main aside'
+    'footer footer footer';
+  grid-template-rows: auto 1fr auto;
+  grid-template-columns: 200px 1fr 200px;
+  gap: $space-4;
+
+  @include until($bp-lg) {
+    grid-template-areas:
+      'header'
+      'main'
+      'sidebar'
+      'aside'
+      'footer';
+    grid-template-columns: 1fr;
+  }
+}
+
+.grid-area-header {
+  grid-area: header;
+}
+.grid-area-sidebar {
+  grid-area: sidebar;
+}
+.grid-area-main {
+  grid-area: main;
+}
+.grid-area-aside {
+  grid-area: aside;
+}
+.grid-area-footer {
+  grid-area: footer;
+}

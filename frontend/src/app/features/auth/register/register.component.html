@@ -7,27 +7,30 @@
   </div>
 
   <div class="container grid">
+    <!-- Stepper supprimé à la demande: carte centrée -->
+    <div class="api-error" *ngIf="apiError">{{ apiError | t }}</div>
     <div class="col col--main register-tabs">
       <div class="card" *ngIf="currentTab === 0">
-        <h2 class="h5">{{ 'auth.register' | t }}</h2>
         <app-register-page-first-tab
           [firstTabInfo]="firstTabData"
+          [serverErrors]="firstTabErrors"
           (suivant)="onFirstTabSuivant($event)">
         </app-register-page-first-tab>
       </div>
 
       <div class="card" *ngIf="currentTab === 1">
-        <h2 class="h5">{{ 'auth.register' | t }}</h2>
         <app-register-page-second-tab
           [currentBio]="currentBio"
+          [serverErrors]="secondTabErrors"
           (previous)="onSecondTabPrevious()"
           (bioReturn)="onSecondTabSuivant($event)">
         </app-register-page-second-tab>
       </div>
 
       <div class="card" *ngIf="currentTab === 2">
-        <h2 class="h5">{{ 'auth.register' | t }}</h2>
         <app-register-page-third-tab
+          [serverErrors]="thirdTabErrors"
+          [loading]="loading"
           (previous)="onthirdTabPrevious()"
           (suivant)="onThirdTabSuivant($event)">
         </app-register-page-third-tab>

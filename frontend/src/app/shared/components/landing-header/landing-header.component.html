@@ -1,0 +1,32 @@
+<header class="landing-header">
+  <div class="header-container">
+    <div class="header-logo" [routerLink]="['/', currentLang]">
+      <span class="logo-text">Conversa</span>
+    </div>
+
+    <nav class="header-nav">
+      <!-- Language Chip (opens popover) -->
+      <button class="lang-chip" type="button" (click)="openLang()">
+        <span class="globe" aria-hidden="true">🌐</span>
+        <span class="lang-text">{{ ('languages.' + currentLang) | t }}</span>
+      </button>
+
+      <shared-button variant="outline" size="sm" (click)="goToLogin()">
+        {{ 'auth.login' | t }}
+      </shared-button>
+      <shared-button variant="primary" size="sm" (click)="goToRegister()">
+        {{ 'auth.register' | t }}
+      </shared-button>
+    </nav>
+  </div>
+</header>
+
+<div *ngIf="spacer" class="header-spacer" aria-hidden="true"></div>
+
+<app-language-popover *ngIf="showLang"
+  [langs]="langs"
+  [current]="currentLang"
+  [allowMulti]="false"
+  (save)="onLangSave($event)"
+  (close)="closeLang()">
+</app-language-popover>

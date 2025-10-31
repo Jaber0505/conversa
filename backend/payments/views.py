@@ -1,9 +1,13 @@
+"""
+Payment API views.
+
+Handles Stripe Checkout session creation and webhook events.
+"""
 import re
-import stripe
 from urllib.parse import urlencode
 
 from django.conf import settings
-from django.db import transaction
+from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
@@ -15,7 +19,7 @@ from drf_spectacular.utils import (
 from rest_framework import status, views
 from rest_framework.response import Response
 
-from common.permissions import IsAuthenticatedAndActive as AuthPerm  # permission projet
+from common.permissions import IsAuthenticatedAndActive as AuthPerm
 
 from .serializers import (
     CreateCheckoutSessionSerializer,
@@ -23,102 +27,151 @@ from .serializers import (
     APIErrorSerializer,
     WebhookAckSerializer,
 )
+from .services import PaymentService, RefundService
+from .validators import validate_stripe_webhook_signature
+from .constants import (
+    DEFAULT_SUCCESS_PATH,
+    DEFAULT_CANCEL_PATH,
+    WEBHOOK_EVENT_CHECKOUT_COMPLETED,
+    WEBHOOK_EVENT_PAYMENT_FAILED,
+    WEBHOOK_EVENT_SESSION_EXPIRED,
+)
+from bookings.models import Booking
 
-from .models import Payment
-from bookings.models import Booking, BookingStatus
 
+# --- Helper Functions -----------------------------------------------------
 
-# --- helpers --------------------------------------------------------------
+def _with_leading_slash(path: str, default: str) -> str:
+    """Ensure path starts with /"""
+    path = (path or default).strip()
+    return path if path.startswith("/") else "/" + path
 
-def _require_test_key_or_500():
-    """Charge la clé Stripe TEST et échoue sinon."""
-    key = getattr(settings, "STRIPE_SECRET_KEY", "")
-    if not key.startswith("sk_test_"):
-        raise RuntimeError("Stripe TEST uniquement : STRIPE_SECRET_KEY doit commencer par 'sk_test_'.")
-    stripe.api_key = key
-    return key
-
-def _with_leading_slash(p: str, default: str) -> str:
-    p = (p or default).strip()
-    return p if p.startswith("/") else "/" + p
-
-def _front_base() -> str:
-    return getattr(settings, "FRONTEND_BASE_URL", "http://localhost:4200").rstrip("/")
 
 def _build_return_urls(lang: str, booking_public_id: str, success_override: str | None, cancel_override: str | None):
+    """
+    Build Stripe success/cancel URLs.
+
+    Args:
+        lang: Language code (e.g., "fr", "en")
+        booking_public_id: Booking UUID
+        success_override: Custom success URL (optional - must provide both or neither)
+        cancel_override: Custom cancel URL (optional - must provide both or neither)
+
+    Returns:
+        tuple: (success_url, cancel_url)
+
+    Note:
+        Both success_override and cancel_override must be provided together.
+        If only one is provided, both will be ignored and defaults will be used.
+    """
+    # Use overrides only if BOTH are provided (prevents partial override bugs)
     if success_override and cancel_override:
         success_url = success_override
-        cancel_url  = cancel_override
+        cancel_url = cancel_override
     else:
-        success_path = _with_leading_slash(getattr(settings, "STRIPE_SUCCESS_PATH", "/stripe/success"), "/stripe/success")
-        cancel_path  = _with_leading_slash(getattr(settings, "STRIPE_CANCEL_PATH",  "/stripe/cancel"),  "/stripe/cancel")
-        base = _front_base()
+        success_path = _with_leading_slash(
+            getattr(settings, "STRIPE_SUCCESS_PATH", DEFAULT_SUCCESS_PATH),
+            DEFAULT_SUCCESS_PATH
+        )
+        cancel_path = _with_leading_slash(
+            getattr(settings, "STRIPE_CANCEL_PATH", DEFAULT_CANCEL_PATH),
+            DEFAULT_CANCEL_PATH
+        )
+        base = getattr(settings, "FRONTEND_BASE_URL", "http://localhost:4200").rstrip("/")
         success_url = f"{base}/{lang}{success_path}"
-        cancel_url  = f"{base}/{lang}{cancel_path}"
+        cancel_url = f"{base}/{lang}{cancel_path}"
 
+    # Add query params (check if URL already has params)
     qs = {"b": str(booking_public_id), "lang": lang}
-    success_url = f"{success_url}?{urlencode(qs)}&cs={{CHECKOUT_SESSION_ID}}"
-    cancel_url  = f"{cancel_url}?{urlencode(qs)}"
+    separator = "&" if "?" in success_url else "?"
+    success_url = f"{success_url}{separator}{urlencode(qs)}&cs={{CHECKOUT_SESSION_ID}}"
+
+    separator = "&" if "?" in cancel_url else "?"
+    cancel_url = f"{cancel_url}{separator}{urlencode(qs)}"
+
     return success_url, cancel_url
 
 
-# --- endpoints ------------------------------------------------------------
+# --- API Views -------------------------------------------------------------
 
 class CreateCheckoutSessionView(views.APIView):
     """
-    Crée une session Stripe Checkout (TEST) et renvoie l'URL Stripe.
-    Appelée par le front.
+    Create Stripe Checkout session (TEST mode only).
+
+    Business Rules:
+        - User must be authenticated and active
+        - Booking must belong to user
+        - Booking must be PENDING
+        - Maximum 3 payment attempts per booking
+        - Zero-amount bookings skip Stripe (direct confirmation)
     """
     permission_classes = [AuthPerm]
-    
+
     @extend_schema(
         tags=["Payments"],
         operation_id="payments_create_checkout_session",
-        summary="Créer une session Stripe Checkout (TEST) et renvoyer l'URL",
+        summary="Create Stripe Checkout session (TEST only)",
+        description=(
+            "Creates a Stripe Checkout session for a pending booking.\n\n"
+            "**Business Rules:**\n"
+            "- TEST mode only (sk_test_ keys)\n"
+            "- Booking must be PENDING and not expired\n"
+            "- Maximum 3 payment attempts per booking\n"
+            "- Zero-amount bookings are confirmed directly\n\n"
+            "**Returns:**\n"
+            "Stripe Checkout URL where user should be redirected to complete payment."
+        ),
         request=CreateCheckoutSessionSerializer,
         responses={
-            201: OpenApiResponse(CheckoutSessionCreatedSerializer, description="Session créée"),
-            401: OpenApiResponse(APIErrorSerializer, description="Non authentifié"),
-            403: OpenApiResponse(APIErrorSerializer, description="Utilisateur inactif"),
-            404: OpenApiResponse(APIErrorSerializer, description="Booking introuvable"),
-            409: OpenApiResponse(APIErrorSerializer, description="Booking expirée ou non payable"),
-            502: OpenApiResponse(APIErrorSerializer, description="Erreur Stripe"),
+            201: OpenApiResponse(CheckoutSessionCreatedSerializer, description="Session created"),
+            401: OpenApiResponse(APIErrorSerializer, description="Not authenticated"),
+            403: OpenApiResponse(APIErrorSerializer, description="User inactive"),
+            404: OpenApiResponse(APIErrorSerializer, description="Booking not found"),
+            409: OpenApiResponse(APIErrorSerializer, description="Booking expired/not payable or retry limit exceeded"),
+            502: OpenApiResponse(APIErrorSerializer, description="Stripe API error"),
         },
         examples=[
             OpenApiExample(
-                "Requête minimale",
+                "Request",
                 value={"booking_public_id": "11111111-1111-1111-1111-111111111111", "lang": "fr"},
                 request_only=True,
             ),
             OpenApiExample(
-                "Réponse 201",
+                "Response - Success",
                 value={"url": "https://checkout.stripe.com/c/pay/cs_test_abc123", "session_id": "cs_test_abc123"},
                 response_only=True,
             ),
             OpenApiExample(
-                "Conflit 409 (booking expirée)",
-                value={"detail": "Réservation expirée."},
+                "Error - Booking expired",
+                value={"detail": "Booking has expired and was cancelled."},
+                response_only=True,
+                status_codes=["409"],
+            ),
+            OpenApiExample(
+                "Error - Retry limit",
+                value={"detail": "Payment retry limit exceeded (3 attempts). Please contact support."},
                 response_only=True,
                 status_codes=["409"],
             ),
         ],
     )
     def post(self, request):
+        """Create checkout session using PaymentService."""
+        # Validate serializer
         ser = CreateCheckoutSessionSerializer(data=request.data)
         ser.is_valid(raise_exception=True)
 
-        booking = get_object_or_404(Booking, public_id=ser.validated_data["booking_public_id"], user=request.user)
+        # Get booking (must belong to user)
+        booking = get_object_or_404(
+            Booking,
+            public_id=ser.validated_data["booking_public_id"],
+            user=request.user
+        )
 
-        # Vérifs métier
-        if hasattr(booking, "soft_cancel_if_expired") and booking.soft_cancel_if_expired():
-            return Response({"detail": "Réservation expirée."}, status=status.HTTP_409_CONFLICT)
-        if booking.status != BookingStatus.PENDING:
-            return Response({"detail": "Réservation non payable."}, status=status.HTTP_409_CONFLICT)
-
-        # Langue (string libre) nettoyée
+        # Clean language code
         lang = re.sub(r"[^A-Za-z\-]", "", (ser.validated_data.get("lang") or "")).strip() or "fr"
 
-        # URLs de retour
+        # Build return URLs
         success_url, cancel_url = _build_return_urls(
             lang=lang,
             booking_public_id=str(booking.public_id),
@@ -126,69 +179,58 @@ class CreateCheckoutSessionView(views.APIView):
             cancel_override=ser.validated_data.get("cancel_url"),
         )
 
-        # Montant 0 → bypass Stripe : confirme + trace Payment
-        if int(getattr(booking, "amount_cents", 0)) <= 0:
-            with transaction.atomic():
-                if hasattr(booking, "mark_confirmed"):
-                    booking.mark_confirmed()
-                else:
-                    booking.status = BookingStatus.CONFIRMED
-                    booking.save(update_fields=["status"])
-                Payment.objects.create(
-                    user=request.user,
-                    booking=booking,
-                    amount_cents=int(getattr(booking, "amount_cents", 0)),
-                    currency=(getattr(booking, "currency", None) or getattr(settings, "STRIPE_CURRENCY", "eur")).upper(),
-                    status="succeeded",
-                )
-            return Response({"url": success_url, "session_id": None}, status=status.HTTP_201_CREATED)
-
-        # Stripe Checkout (TEST)
-        _require_test_key_or_500()
-        currency = (getattr(booking, "currency", None) or getattr(settings, "STRIPE_CURRENCY", "eur")).lower()
-
         try:
-            session = stripe.checkout.Session.create(
-                mode="payment",
-                line_items=[{
-                    "price_data": {
-                        "currency": currency,
-                        "unit_amount": int(booking.amount_cents),
-                        "product_data": {"name": getattr(getattr(booking, "event", None), "title", "Conversa – Session")},
-                    },
-                    "quantity": int(getattr(booking, "quantity", 1)),
-                }],
+            # Use service to create checkout session
+            stripe_url, session_id, payment = PaymentService.create_checkout_session(
+                booking=booking,
+                user=request.user,
                 success_url=success_url,
                 cancel_url=cancel_url,
-                customer_email=getattr(request.user, "email", None) or None,
-                client_reference_id=str(booking.public_id),
-                metadata={"booking_public_id": str(booking.public_id), "user_id": str(request.user.id)},
-                payment_intent_data={"metadata": {"booking_public_id": str(booking.public_id), "user_id": str(request.user.id)}},
-                # idempotency key: peut être passée via options requête ; on s'appuie ici sur la contrainte côté DB/booking
             )
-        except stripe.error.StripeError as e:
-            return Response({"detail": getattr(e, "user_message", None) or str(e)}, status=status.HTTP_502_BAD_GATEWAY)
 
-        # Trace Payment (pending)
-        Payment.objects.update_or_create(
-            booking=booking,
-            user=request.user,
-            defaults=dict(
-                stripe_checkout_session_id=session.id,
-                amount_cents=int(booking.amount_cents),
-                currency=currency.upper(),
-                status="pending",
-            ),
-        )
+            # DEVELOPMENT SIMULATOR: Auto-confirm payment if enabled
+            # This simulates what the Stripe webhook would do in production
+            if getattr(settings, 'STRIPE_CONFIRM_SIMULATOR_ENABLED', False) and session_id:
+                # Simulate successful payment immediately
+                PaymentService.confirm_payment_from_webhook(
+                    booking_public_id=str(booking.public_id),
+                    session_id=session_id,
+                    payment_intent_id=f"pi_test_simulated_{session_id}",
+                    raw_event={"type": "checkout.session.completed", "simulated": True}
+                )
 
-        return Response({"url": session.url, "session_id": session.id}, status=status.HTTP_201_CREATED)
+            return Response(
+                {"url": stripe_url, "session_id": session_id},
+                status=status.HTTP_201_CREATED
+            )
+
+        except ValidationError as e:
+            # Business rule validation failed
+            return Response(
+                {"detail": str(e)},
+                status=status.HTTP_409_CONFLICT
+            )
+        except Exception as e:
+            # Stripe or other errors
+            return Response(
+                {"detail": str(e)},
+                status=status.HTTP_502_BAD_GATEWAY
+            )
 
 
 @method_decorator(csrf_exempt, name="dispatch")
 class StripeWebhookView(views.APIView):
     """
-    Webhook Stripe (TEST) : confirme la réservation sur checkout.session.completed.
-    Appelé par Stripe (public), signature vérifiée.
+    Stripe webhook endpoint (TEST mode).
+
+    Handles Stripe events:
+        - checkout.session.completed → Confirms booking and payment
+        - payment_intent.payment_failed → Marks payment as failed
+        - checkout.session.expired → Marks session as canceled
+
+    Security:
+        - Public endpoint (no authentication)
+        - Signature verification required (Stripe-Signature header)
     """
     authentication_classes = []
     permission_classes = []
@@ -196,12 +238,15 @@ class StripeWebhookView(views.APIView):
     @extend_schema(
         tags=["Payments"],
         operation_id="payments_stripe_webhook",
-        summary="Webhook Stripe (TEST) — reçoit les événements de paiement",
+        summary="Stripe webhook - receives payment events",
         description=(
-            "Endpoint public appelé par Stripe. Vérifie la signature `Stripe-Signature`.\n\n"
-            "- `checkout.session.completed` ➜ confirme la booking, met à jour le Payment\n"
-            "- `payment_intent.payment_failed` ➜ marque le Payment en `failed`\n"
-            "- `checkout.session.expired` ➜ marque la session `canceled` (optionnel)\n"
+            "Public endpoint called by Stripe. Verifies `Stripe-Signature` header.\n\n"
+            "**Events Handled:**\n"
+            "- `checkout.session.completed` → Confirms booking + payment\n"
+            "- `payment_intent.payment_failed` → Marks payment as failed\n"
+            "- `checkout.session.expired` → Marks session as canceled\n\n"
+            "**Security:**\n"
+            "Webhook signature must be valid (configured in settings.STRIPE_WEBHOOK_SECRET)."
         ),
         parameters=[
             OpenApiParameter(
@@ -209,99 +254,93 @@ class StripeWebhookView(views.APIView):
                 type=str,
                 location=OpenApiParameter.HEADER,
                 required=True,
-                description="Signature Stripe du webhook"
+                description="Stripe webhook signature"
             ),
         ],
-        request=None,  # payload JSON Stripe (variable)
+        request=None,
         responses={
-            200: OpenApiResponse(WebhookAckSerializer, description='ACK de l’événement ({"detail":"ok"})'),
-            400: OpenApiResponse(APIErrorSerializer, description="Signature/payload invalide"),
-            500: OpenApiResponse(APIErrorSerializer, description="Webhook secret manquant côté serveur"),
+            200: OpenApiResponse(WebhookAckSerializer, description='Event acknowledged ({"detail":"ok"})'),
+            400: OpenApiResponse(APIErrorSerializer, description="Invalid signature/payload"),
+            500: OpenApiResponse(APIErrorSerializer, description="Webhook secret missing"),
         },
         examples=[
             OpenApiExample(
-                "Extrait — checkout.session.completed",
+                "Event - checkout.session.completed",
                 value={
                     "type": "checkout.session.completed",
-                    "data": {"object": {
-                        "id": "cs_test_abc123",
-                        "payment_intent": "pi_3XYZ...",
-                        "client_reference_id": "11111111-1111-1111-1111-111111111111",
-                        "metadata": {"booking_public_id": "11111111-1111-1111-1111-111111111111"}
-                    }}
+                    "data": {
+                        "object": {
+                            "id": "cs_test_abc123",
+                            "payment_intent": "pi_3XYZ...",
+                            "client_reference_id": "11111111-1111-1111-1111-111111111111",
+                            "metadata": {"booking_public_id": "11111111-1111-1111-1111-111111111111"}
+                        }
+                    }
                 },
                 request_only=True,
             ),
             OpenApiExample(
-                "Réponse OK",
+                "Response",
                 value={"detail": "ok"},
                 response_only=True,
             ),
         ],
     )
     def post(self, request):
-        secret = getattr(settings, "STRIPE_WEBHOOK_SECRET", "")
-        if not secret:
-            return Response({"detail": "Webhook secret missing"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        """Handle Stripe webhook events."""
+        # Check webhook secret
+        webhook_secret = getattr(settings, "STRIPE_WEBHOOK_SECRET", "")
+        if not webhook_secret:
+            return Response(
+                {"detail": "Webhook secret missing"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
-        sig = request.META.get("HTTP_STRIPE_SIGNATURE", "")
+        # Verify signature
+        sig_header = request.META.get("HTTP_STRIPE_SIGNATURE", "")
         try:
-            event = stripe.Webhook.construct_event(payload=request.body, sig_header=sig, secret=secret)
-        except Exception:
-            return Response({"detail": "invalid signature/payload"}, status=status.HTTP_400_BAD_REQUEST)
+            event = validate_stripe_webhook_signature(
+                payload=request.body,
+                sig_header=sig_header,
+                webhook_secret=webhook_secret
+            )
+        except ValidationError as e:
+            return Response(
+                {"detail": str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-        etype = event.get("type")
+        # Extract event data
+        event_type = event.get("type")
         data = event.get("data", {}).get("object", {})
 
-        # Succès de Checkout
-        if etype == "checkout.session.completed":
-            public_id = (data.get("metadata") or {}).get("booking_public_id") or data.get("client_reference_id")
+        # Handle checkout.session.completed
+        if event_type == WEBHOOK_EVENT_CHECKOUT_COMPLETED:
+            booking_public_id = (
+                (data.get("metadata") or {}).get("booking_public_id") or
+                data.get("client_reference_id")
+            )
             session_id = data.get("id")
             payment_intent_id = data.get("payment_intent")
 
-            if public_id:
-                with transaction.atomic():
-                    try:
-                        booking = Booking.objects.select_for_update().get(public_id=public_id)
-                    except Booking.DoesNotExist:
-                        return Response({"detail": "ok"}, status=200)
+            if booking_public_id:
+                PaymentService.confirm_payment_from_webhook(
+                    booking_public_id=booking_public_id,
+                    session_id=session_id,
+                    payment_intent_id=payment_intent_id,
+                    raw_event=data,
+                )
 
-                    # Confirme la booking si encore en attente
-                    if booking.status == BookingStatus.PENDING:
-                        if hasattr(booking, "mark_confirmed"):
-                            booking.mark_confirmed()
-                        else:
-                            booking.status = BookingStatus.CONFIRMED
-                            booking.save(update_fields=["status"])
+        # Handle payment_intent.payment_failed
+        elif event_type == WEBHOOK_EVENT_PAYMENT_FAILED:
+            payment_intent_id = data.get("id")
+            if payment_intent_id:
+                PaymentService.mark_payment_failed(payment_intent_id)
 
-                    # Trace Payment
-                    pay, _ = Payment.objects.get_or_create(
-                        booking=booking,
-                        user=getattr(booking, "user", None),
-                        defaults=dict(
-                            amount_cents=int(getattr(booking, "amount_cents", 0)),
-                            currency=(getattr(booking, "currency", None) or getattr(settings, "STRIPE_CURRENCY", "eur")).upper(),
-                            status="pending",
-                        ),
-                    )
-                    if session_id:
-                        pay.stripe_checkout_session_id = pay.stripe_checkout_session_id or session_id
-                    if payment_intent_id:
-                        pay.stripe_payment_intent_id = pay.stripe_payment_intent_id or payment_intent_id
-                    pay.status = "succeeded"
-                    pay.raw_event = data
-                    pay.save()
+        # Handle checkout.session.expired
+        elif event_type == WEBHOOK_EVENT_SESSION_EXPIRED:
+            session_id = data.get("id")
+            if session_id:
+                PaymentService.mark_session_canceled(session_id)
 
-        # Échec de PaymentIntent (si reçu séparément)
-        elif etype == "payment_intent.payment_failed":
-            pi = data.get("id")
-            if pi:
-                Payment.objects.filter(stripe_payment_intent_id=pi).update(status="failed")
-
-        # Session expirée (optionnel: marquer "canceled")
-        elif etype == "checkout.session.expired":
-            sid = data.get("id")
-            if sid:
-                Payment.objects.filter(stripe_checkout_session_id=sid, status="pending").update(status="canceled")
-
-        return Response({"detail": "ok"}, status=200)
+        return Response({"detail": "ok"}, status=status.HTTP_200_OK)

@@ -87,15 +87,26 @@ class BookingViewSet(mixins.CreateModelMixin,
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @extend_schema(
-        responses={200: BookingSerializer, 409: OpenApiResponse(description="Déjà confirmée")},
+        responses={200: BookingSerializer, 409: OpenApiResponse(description="Impossible d'annuler")},
         summary="Annuler explicitement (POST /cancel/)",
         tags=["Bookings"],
     )
     @action(detail=True, methods=["POST"])
     def cancel(self, request, public_id=None):
+        from .services import BookingService
+        from common.exceptions import CancellationDeadlineError
+
         booking = self.get_object()  # déjà scope user
-        if booking.status == BookingStatus.CONFIRMED:
-            return Response({"detail": "Réservation déjà confirmée."}, status=409)
-        booking.mark_cancelled()
-        ser = BookingSerializer(booking, context={"request": request})
-        return Response(ser.data, status=200)
+
+        # Check if already cancelled
+        if booking.status == BookingStatus.CANCELLED:
+            return Response({"detail": "Réservation déjà annulée."}, status=409)
+
+        try:
+            # Use BookingService which handles both PENDING and CONFIRMED with proper deadline validation
+            BookingService.cancel_booking(booking, cancelled_by=request.user)
+            booking.refresh_from_db()
+            ser = BookingSerializer(booking, context={"request": request})
+            return Response(ser.data, status=200)
+        except CancellationDeadlineError as e:
+            return Response({"detail": str(e)}, status=409)

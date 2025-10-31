@@ -1,16 +1,43 @@
 export type EventDto = {
   id: number;
+  organizer: number;
+  organizer_id: number;
+  partner: number;
+  partner_name: string;
+  partner_city?: string;
+  language: number;
+  language_code: string;
   title: string;
   address: string;
-  venue_name: string;
-  partner_name: string;
-  datetime_start: string;
   theme: string;
-  language_code: string;
+  difficulty: string;
+  datetime_start: string;
   price_cents: number;
-  max_seats: number;
-  is_cancelled: boolean;
-  alreadyBooked: boolean;
+  photo?: string;
+  status: string;
+  published_at?: string;
+  cancelled_at?: string;
+  created_at: string;
+  updated_at: string;
+  _links?: any;
+  // Frontend-only fields (computed)
+  alreadyBooked?: boolean;
+  is_cancelled?: boolean; // Computed from status === 'CANCELLED' or cancelled_at !== null
+};
+
+export type EventDetailDto = EventDto & {
+  // Additional partner information
+  partner_address: string;
+  partner_capacity: number;
+  // Additional language information
+  language_name: string;
+  // Organizer information
+  organizer_first_name: string;
+  organizer_last_name: string;
+  // Computed fields
+  participants_count: number;
+  available_slots: number;
+  is_full: boolean;
 };
 
 export type EventWrite = {

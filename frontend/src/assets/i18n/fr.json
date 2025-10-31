@@ -1,343 +1,573 @@
 {
-  "common": {
-    "brand": "Conversa",
-    "lang_change": "Changer de langue",
-    "save": "Enregistrer",
-    "cancel": "Annuler",
-    "close": "Fermer",
-    "clear": "Réinitialiser",
-    "add": "Ajouter",
-    "remove": "Retirer",
-    "next": "Suivant",
-    "back": "Retour",
-    "register": "Créer mon compte",
-    "details": "Détails",
-    "pay": "Payer",
-    "language": "Langue",
-    "search": "Rechercher",
-    "searchInput": "Rechercher",
-    "LanguageSearch": "Langues cibles",
-    "loading": "Chargement...",
-    "nav": {
-      "menu": "Navigation principale"
-    }
-  },
-  "nav": {
-    "faq": "FAQ",
-    "about": "À propos",
-    "events": "Événements",
-    "booking": "Mes réservations"
-  },
-  "auth": {
-    "email_placeholder": "ex. prénom.nom@email.com",
-    "password_placeholder": "Au moins 8 caractères",
-    "login": "Connexion",
-    "register": "Inscription",
-    "logout": "Se déconnecter"
-  },
-  "register": {
-    "title": "Créer votre compte",
-    "subtitle": "Complétez les étapes pour finaliser votre inscription.",
-    "firstTab": {
-      "firstName": "Prénom",
-      "lastName": "Nom",
-      "age": "Âge",
-      "ageError": "Vous devez avoir au moins 18 ans",
-      "nativeLangs": "Langues maternelles",
-      "targetLangs": "Langues cibles",
-      "selectLang": "Sélectionner une langue"
-    },
-    "secondTab": {
-      "bio": "Votre bio",
-      "bioPlaceHolder": "Présentez-vous en 2–3 phrases (expérience, centres d'intérêt, objectifs). 10 à 500 caractères.",
-      "limit": "Entre 10 et 500 caractères"
-    },
-    "thirdTab": {
-      "email": "Adresse e-mail",
-      "password": "Mot de passe",
-      "passwordLimit": "Le mot de passe doit contenir au minimum 9 caractères",
-      "consent": "J'accepte la politique de confidentialité et les conditions d'utilisation.",
-      "consent_required": "Vous devez accepter pour continuer."
-    }
-  },
-  "languages": {
-    "fr": "Français",
-    "en": "Anglais",
-    "nl": "Néerlandais",
-    "es": "Espagnol"
-  },
-  "shared": {
-    "common": {
-      "yes": "Oui",
-      "no": "Non",
-      "yes_no": "Oui / Non"
-    },
-    "actions": {
-      "see_all": "Voir tout",
-      "browse_events": "Parcourir les événements",
-      "create_account": "Créer un compte",
-      "create_free_account": "Créer un compte gratuit",
-      "details": "Détails"
-    },
-    "search": {
-      "query": "Recherche",
-      "placeholder_event": "Rechercher un événement…",
-      "input": {
-        "placeholder": "Rechercher un événement..."
-      },
-      "submit": "Rechercher",
-      "more_filters": "Plus de filtres",
-      "hide_filters": "Masquer les filtres",
-      "reset": "Réinitialiser",
-      "select_placeholder": "Sélectionner…",
-      "tip_keywords": "Astuce : "café", "débutant", "afterwork"… essaie des mots-clés."
-    },
-    "badges": {
-      "members_1000_plus": "+1000 membres",
-      "partners_20": "20 bars partenaires",
-      "fun_100": "Sessions 100% fun",
-      "rapid": "Rapide",
-      "local": "Local",
-      "effective": "Efficace"
-    },
-    "filters": {
-      "lang": {
-        "label": "Langue",
-        "placeholder": "Toutes les langues",
-        "options": {
-          "fr": "Français",
-          "en": "Anglais",
-          "es": "Espagnol",
-          "nl": "Néerlandais"
-        }
-      },
-      "area": {
-        "label": "Zone",
-        "placeholder": "Toutes les zones",
-        "options": {
-          "brussels": "Bruxelles",
-          "paris": "Paris",
-          "liege": "Liège"
-        }
-      },
-      "free": {
-        "label": "Gratuit",
-        "placeholder": "Oui / Non"
-      }
-    }
-  },
-  "pages": {
-    "home": {
-      "hero": {
-        "title": "Parle une langue, vis une rencontre",
-        "subtitle": "Rejoignez Conversa, une communauté active grâce aux meetups linguistiques. Des jeux immersifs dans des bars à Bruxelles."
-      },
-      "search": {
-        "title": "Trouve tes partenaires de langue en 2 minutes",
-        "desc": "Entre un mot-clé, choisis ta langue et ta zone, puis lance la recherche. On te propose des sessions près de toi."
-      },
-      "howto": {
-        "img_alt": "Rencontres linguistiques conviviales",
-        "title": "Comment ça marche ?",
-        "steps": {
-          "1": { "title": "Choisis ta langue et ta zone", "desc": "Filtre avec la barre de recherche à gauche." },
-          "2": { "title": "Rejoins un groupe", "desc": "3+ participants, validation sur place." },
-          "3": { "title": "Joue & pratique", "desc": "Lance le jeu, débloque des badges, partage un avis." }
-        }
-      },
-      "upcoming": {
-        "title": "Événements à venir"
-      },
-      "categories": {
-        "title": "Explore par catégorie",
-        "items": {
-          "cafe":   { "title": "Conversa Café",   "subtitle": "Rencontres informelles" },
-          "pro":    { "title": "Conversa Pro",    "subtitle": "Échanges professionnels" },
-          "events": { "title": "Conversa Events", "subtitle": "Événements publics" }
-        }
-      },
-      "cta": {
-        "title": "Prêt·e à en parler pour de vrai ?",
-        "subtitle": "Rejoins des sessions conviviales près de chez toi et progresse dès cette semaine.",
-        "benefits": {
-          "rapid":    { "desc": "Inscription en 1 minute, aucun paiement requis" },
-          "local":    { "desc": "Groupes à taille humaine dans des bars partenaires" },
-          "effective":{ "desc": "Jeux de conversation guidés, feedback des pairs" }
-        },
-        "hint": "Tu peux explorer sans inscription. Rejoins quand tu veux."
-      }
-    }
-  },
-  "about": {
-    "hero": {
-      "badge": "À propos",
-      "title": "Apprendre des langues, rencontrer des gens",
-      "subtitle": "Conversa rend la pratique des langues simple et conviviale : petits groupes, jeux de conversation, lieux chaleureux. Pas d'école, juste des échanges vrais."
-    },
-    "mission": {
-      "title": "Notre mission",
-      "p1": "Créer des occasions naturelles de parler une langue sans pression académique. Chaque session est pensée pour t'aider à oser, progresser et t'ouvrir aux autres.",
-      "bullets": [
-        "Pratique réelle, pas de cours magistral",
-        "Groupes 3–6 personnes pour laisser de la place à chacun",
-        "Jeux et cartes de discussion pour briser la glace"
-      ]
-    },
-    "difference": {
-      "title": "Ce qui nous différencie",
-      "items": [
-        { "title": "Ludique",  "desc": "Des jeux de conversation qui relancent l'échange et encouragent l'expression spontanée." },
-        { "title": "Social",   "desc": "Tu apprends en rencontrant des personnes curieuses comme toi, pas face à un tableau." },
-        { "title": "Flexible", "desc": "Des sessions courtes, après le travail ou le week-end, sans engagement long terme." }
-      ]
-    },
-    "values": {
-      "title": "Nos valeurs",
-      "list": [
-        { "title": "Bienveillance", "desc": "Un cadre sûr pour essayer, se tromper, réessayer." },
-        { "title": "Ouverture",     "desc": "Toutes les langues, tous les niveaux, toutes les origines." },
-        { "title": "Simplicité",    "desc": "Inscription en quelques clics, règles claires, zéro jargon." },
-        { "title": "Qualité",       "desc": "Animation structurée, retours réguliers, amélioration continue." }
-      ]
-    },
-    "stats": {
-      "title": "En chiffres",
-      "sessions":  { "label": "Sessions réalisées",   "value": "250+" },
-      "learners":  { "label": "Participants",         "value": "3 000+" },
-      "languages": { "label": "Langues pratiquées",   "value": "10+" },
-      "partners":  { "label": "Lieux partenaires",    "value": "20+" }
-    },
-    "how": {
-      "title": "Comment ça marche",
-      "steps": [
-        { "title": "Choisis une langue",  "desc": "Filtre par anglais, néerlandais, espagnol… et ton quartier." },
-        { "title": "Réserve ta place",    "desc": "Groupes limités pour de vrais échanges." },
-        { "title": "Rejoins la table",    "desc": "Un animateur lance le jeu et guide le rythme." }
-      ],
-      "a11y_illustration_alt": "Illustration de personnes discutant autour d'une table"
-    },
-    "team": {
-      "title": "L'équipe",
-      "members": [
-        { "name": "Ana",  "role": "Animation & Pédagogie", "bio": "Conçoit les jeux et veille à l'expérience sur place." },
-        { "name": "Bram", "role": "Partenariats",           "bio": "Trouve des lieux chaleureux et coordonne les hôtes." }
-      ]
-    },
-    "partners": {
-      "title": "Nos partenaires",
-      "desc": "Des cafés et bars bruxellois qui aiment l'échange. Tu as un lieu et veux accueillir une table de conversation ?"
-    },
-    "timeline": {
-      "title": "Notre histoire",
-      "items": [
-        { "date": "2023", "text": "Premières tables pilotes avec des amis polyglottes." },
-        { "date": "2024", "text": "Lancement public, premiers partenaires et jeux maison." },
-        { "date": "2025", "text": "Sessions quotidiennes, nouvelles langues et quartiers." }
-      ]
-    },
-    "testimonials": {
-      "title": "Ils en parlent",
-      "quotes": [
-        { "author": "Lucía",  "text": "J'ai osé parler dès la première session. Les jeux aident beaucoup." },
-        { "author": "Thomas", "text": "On progresse sans s'en rendre compte, et on rencontre du monde." }
-      ]
-    },
-    "cta": {
-      "primary_label": "Rejoindre une session",
-      "secondary_label": "Devenir partenaire",
-      "aria_primary": "Ouvrir la page de réservation",
-      "aria_secondary": "Contacter l'équipe partenaires"
-    },
-    "contact": {
-      "title": "Nous contacter",
-      "email_label": "Écrire un email",
-      "email_value": "conversa@hotmail.com",
-      "social_label": "Nous suivre"
-    },
-    "meta": {
-      "title": "À propos — Conversa",
-      "description": "Conversa — pratique des langues à Bruxelles en petits groupes, avec jeux et échanges conviviaux."
-    }
-  },
-  "faq": {
-    "hero": {
-      "title": "Questions fréquentes",
-      "subtitle": "Tout ce qu'il faut savoir pour démarrer sur Conversa.",
-      "intro": "Bienvenue dans notre centre de questions fréquentes. Ici, tu trouveras des réponses claires aux interrogations les plus courantes sur l'utilisation de Conversa. Si tu ne trouves pas ta réponse, n'hésite pas à nous contacter."
-    },
-    "qna": {
-      "what_is_conversa_q": "Qu'est-ce que Conversa ?",
-      "what_is_conversa_a": "Conversa est une plateforme qui permet de pratiquer des langues de manière ludique, en petits groupes, dans des bars et cafés partenaires à Bruxelles. Ici, pas de cours magistral : on discute, on joue et on échange, comme avec des amis, tout en rencontrant de nouvelles personnes.",
-      "how_join_event_q": "Comment rejoindre un événement ?",
-      "how_join_event_a": "Depuis la page d'accueil, choisis une langue qui t'intéresse, explore les sessions disponibles et clique sur "Je participe". Une fois sur place, confirme ta présence via l'application et rejoins le groupe pour commencer la partie.",
-      "cancel_policy_q": "Puis-je annuler ma participation ?",
-      "cancel_policy_a": "Oui, tant que l'événement n'a pas commencé. Tu peux annuler directement depuis l'application. Cela permet de libérer ta place pour une autre personne et de garder des groupes dynamiques.",
-      "account_data_q": "Que faites-vous de mes données ?",
-      "account_data_a": "Nous ne collectons que les informations nécessaires pour organiser les sessions et garantir la sécurité des participants. Tes données ne sont jamais revendues, et tu peux à tout moment les modifier ou demander leur suppression.",
-      "payment_price_q": "Combien ça coûte ?",
-      "payment_price_a": "Le billet standard est à 7 € par session, ce qui inclut l'accès au jeu de conversation et la mise en relation avec d'autres participants. Certains événements spéciaux ou ateliers peuvent avoir un tarif différent, toujours indiqué à l'avance."
-    },
-    "no_results": "Aucune question ne correspond à ta recherche ? conversa@hotmail.com"
-  },
-  "payments": {
-    "success": {
-      "title": "Paiement confirmé",
-      "thanks": "Merci ! Votre réservation a bien été validée.",
-      "for_booking": "pour la réservation {{id}}",
-      "my_bookings": "Mes réservations",
-      "back_to_events": "Retour aux événements"
-    },
-    "cancel": {
-      "title": "Paiement non finalisé",
-      "line1": "Votre paiement a été annulé",
-      "for_booking": "pour la réservation {{id}}",
-      "reassure": "Vous pouvez réessayer à tout moment.",
-      "retry": "Réessayer le paiement",
-      "view_booking": "Voir ma réservation",
-      "back_to_events": "Retour aux événements",
-      "help": "Si le problème persiste, vérifiez votre connexion ou essayez un autre moyen de paiement."
-    },
-    "badge": {
-      "interrupted": "Transaction interrompue",
-      "success": "Paiement réussi"
-    },
-    "meta": {
-      "session": "Session",
-      "booking": "Réservation"
-    }
-  },
-  "bookings": {
-    "title": "Mes réservations",
-    "empty": "Aucune réservation pour le moment.",
-    "when": "Quand",
-    "amount": "Montant",
-    "event": "Événement",
-    "status": {
-      "PENDING": "En attente de paiement",
-      "CONFIRMED": "Confirmée",
-      "CANCELLED": "Annulée",
-      "FAILED": "Échouée",
-      "EXPIRED": "Expirée",
-      "REFUNDED": "Remboursée"
-    }
-  },
-  "events": {
-    "title": "Événements",
-    "empty": "Aucun événement pour le moment.",
-    "cancelled": "Annulé",
-    "address": "Adresse",
-    "when": "Quand",
-    "theme": "Thème",
-    "free": "Gratuit",
-    "book": "Réserver",
-    "already_booked": "Déjà réservé",
-    "filters": {
-      "languages_placeholder": "Langues cibles"
-    }
-  },
-  "checkout": {
-    "title": "Confirmer l'achat",
-    "message": "Voulez-vous confirmer votre achat ?",
-    "buy": "Payer"
-  }
+    "common":  {
+                   "brand":  "Conversa",
+                   "lang_change":  "Changer de langue",
+                   "save":  "Enregistrer",
+                   "cancel":  "Annuler",
+                   "close":  "Fermer",
+                   "clear":  "Réinitialiser",
+                   "add":  "Ajouter",
+                   "remove":  "Retirer",
+                   "next":  "Suivant",
+                   "back":  "Retour",
+                   "register":  "Créer mon compte",
+                   "details":  "Détails",
+                   "pay":  "Payer",
+                   "language":  "Langue",
+                   "search":  "Rechercher",
+                   "searchInput":  "Rechercher",
+                   "LanguageSearch":  "Langues cibles",
+                   "loading":  "Chargement...",
+                   "nav":  {
+                               "menu":  "Navigation principale"
+                           }
+               },
+    "nav":  {
+                "faq":  "FAQ",
+                "about":  "À propos",
+                "events":  "Événements",
+                "booking":  "Mes réservations"
+            },
+    "auth":  {
+                 "email_placeholder":  "ex. prenom.nom@email.com",
+                 "password_placeholder":  "Au moins 9 caractères",
+                 "login":  "Connexion",
+                 "login_subtitle":  "Accédez à votre compte pour réserver des événements et suivre vos réservations.",
+                 "email":  "Email",
+                 "password":  "Mot de passe",
+                 "forgot_password":  "Mot de passe oublié ?",
+                 "no_account":  "Pas de compte ?",
+                 "create_account":  "Créer un compte",
+                 "back_to_login":  "Retour à la connexion",
+                 "show_password":  "Afficher le mot de passe",
+                 "hide_password":  "Masquer le mot de passe",
+                 "register":  "Inscription",
+                 "logout":  "Se déconnecter",
+                 "reset":  {
+                               "title":  "Réinitialiser votre mot de passe",
+                               "subtitle":  "Saisissez votre email. Si un compte existe, vous recevrez un lien de réinitialisation.",
+                               "cta":  "Envoyer le lien",
+                               "sent":  "Si cet email existe, un lien de réinitialisation a été envoyé."
+                           },
+                 "errors":  {
+                                "generic":  "Une erreur est survenue",
+                                "bad_credentials":  "Identifiants invalides",
+                                "email_required":  "L'email est requis",
+                                "email_invalid":  "Format d'email invalide",
+                                "email_too_long":  "L'email est trop long",
+                                "password_required":  "Le mot de passe est requis",
+                                "password_too_short":  "Le mot de passe doit contenir au moins 8 caractères",
+                                "password_too_long":  "Le mot de passe est trop long",
+                                "rate_limit":  "Trop de tentatives. Veuillez réessayer dans quelques instants",
+                                "register_rate_limit":  "Limite d'inscriptions atteinte. Veuillez réessayer plus tard"
+                            }
+             },
+    "register":  {
+                     "title":  "Créer votre compte",
+                     "subtitle":  "Complétez les étapes pour finaliser votre inscription.",
+                     "firstTab":  {
+                                      "firstName":  "Prénom",
+                                      "lastName":  "Nom",
+                                      "age":  "Âge",
+                                      "ageError":  "Vous devez avoir au moins 18 ans",
+                                      "nativeLangs":  "Langues maternelles",
+                                      "targetLangs":  "Langues cibles",
+                                      "selectLang":  "Sélectionner une langue"
+                                  },
+                     "secondTab":  {
+                                       "bio":  "Votre bio",
+                                       "bioPlaceHolder":  "Présentez-vous en 2–3 phrases (expérience, centres d\u0027intérêt, objectifs). 10 à 500 caractères.",
+                                       "limit":  "Entre 10 et 500 caractères"
+                                   },
+                     "thirdTab":  {
+                                      "email":  "Adresse e-mail",
+                                      "password":  "Mot de passe",
+                                      "passwordLimit":  "Le mot de passe doit contenir au minimum 9 caractères",
+                                      "consent":  "J\u0027accepte la politique de confidentialité et les conditions d\u0027utilisation.",
+                                      "consent_required":  "Vous devez accepter pour continuer."
+                                  }
+                 },
+    "languages":  {
+                      "fr":  "Français",
+                      "en":  "Anglais",
+                      "nl":  "Néerlandais",
+                      "es":  "Espagnol"
+                  },
+    "shared":  {
+                   "common":  {
+                                  "yes":  "Oui",
+                                  "no":  "Non",
+                                  "yes_no":  "Oui / Non"
+                              },
+                   "actions":  {
+                                   "see_all":  "Voir tout",
+                                   "browse_events":  "Parcourir les événements",
+                                   "create_account":  "Créer un compte",
+                                   "create_free_account":  "Créer un compte gratuit",
+                                   "details":  "Détails"
+                               },
+                   "search":  {
+                                  "query":  "Recherche",
+                                  "placeholder_event":  "Rechercher un événement…",
+                                  "input":  {
+                                                "placeholder":  "Rechercher un événement..."
+                                            },
+                                  "submit":  "Rechercher",
+                                  "more_filters":  "Plus de filtres",
+                                  "hide_filters":  "Masquer les filtres",
+                                  "reset":  "Réinitialiser",
+                                  "select_placeholder":  "Sélectionner…",
+                                  "tip_keywords":  "Astuce : \"café\", \"débutant\", \"afterwork\"… essaie des mots-clés."
+                              },
+                   "badges":  {
+                                  "members_1000_plus":  "+1000 membres",
+                                  "partners_20":  "20 bars partenaires",
+                                  "fun_100":  "Sessions 100% fun",
+                                  "rapid":  "Rapide",
+                                  "local":  "Local",
+                                  "effective":  "Efficace"
+                              },
+                   "filters":  {
+                                   "lang":  {
+                                                "label":  "Langue",
+                                                "placeholder":  "Toutes les langues",
+                                                "options":  {
+                                                                "fr":  "Français",
+                                                                "en":  "Anglais",
+                                                                "es":  "Espagnol",
+                                                                "nl":  "Néerlandais"
+                                                            }
+                                            },
+                                   "area":  {
+                                                "label":  "Zone",
+                                                "placeholder":  "Toutes les zones",
+                                                "options":  {
+                                                                "brussels":  "Bruxelles",
+                                                                "paris":  "Paris",
+                                                                "liege":  "Liège"
+                                                            }
+                                            },
+                                   "free":  {
+                                                "label":  "Gratuit",
+                                                "placeholder":  "Oui / Non"
+                                            }
+                               }
+               },
+    "i18n":  {
+                 "ui":  "Langue de l’interface",
+                 "preferred":  "Langues parlées"
+             },
+    "landing":  {
+                    "hero":  {
+                                 "title":  "Parle une langue, vis une rencontre",
+                                 "subtitle":  "Rejoins des milliers de membres qui apprennent en se rencontrant lors d\u0027événements conviviaux. Simple, local et efficace.",
+                                 "nearby":  "Près de",
+                                 "stats":  {
+                                               "members":  "membres actifs",
+                                               "events":  "événements à venir",
+                                               "languages":  "langues pratiquées"
+                                           },
+                                 "img_alt":  "Rencontres linguistiques conviviales"
+                             },
+                    "howto":  {
+                                  "title":  "Comment ça marche ?",
+                                  "subtitle":  "Rejoindre Conversa est simple et rapide. En 3 étapes, tu peux déjà participer à ton premier événement.",
+                                  "steps":  {
+                                                "1":  {
+                                                          "title":  "Crée ton compte gratuit",
+                                                          "desc":  "Inscris-toi en 2 minutes. Indique tes langues et centres d\u0027intérêt."
+                                                      },
+                                                "2":  {
+                                                          "title":  "Réserve ta place à un événement",
+                                                          "desc":  "Parcours les événements près de chez toi et réserve en un clic."
+                                                      },
+                                                "3":  {
+                                                          "title":  "Rencontre et pratique",
+                                                          "desc":  "Rejoins l\u0027événement, rencontre du monde et pratique naturellement."
+                                                      }
+                                            }
+                              },
+                    "testimonials":  {
+                                         "title":  "Ils en parlent",
+                                         "subtitle":  "Des membres partagent leur expérience."
+                                     },
+                    "cta":  {
+                                "title":  "Prêt·e à commencer ?",
+                                "subtitle":  "Crée ton compte gratuit et rejoins la prochaine session près de chez toi."
+                            }
+                },
+    "footer":  {
+                   "brand":  {
+                                 "tagline":  "Apprendre des langues en rencontrant des personnes"
+                             },
+                   "navigation":  {
+                                      "title":  "Navigation",
+                                      "events":  "Événements",
+                                      "about":  "À propos",
+                                      "faq":  "FAQ"
+                                  },
+                   "legal":  {
+                                 "title":  "Légal",
+                                 "privacy":  "Politique de confidentialité",
+                                 "terms":  "Conditions d\u0027utilisation",
+                                 "cookies":  "Cookies"
+                             },
+                   "social":  {
+                                  "title":  "Suivez-nous",
+                                  "facebook":  "Facebook",
+                                  "twitter":  "Twitter",
+                                  "instagram":  "Instagram"
+                              },
+                   "copyright":  "© {{year}} Conversa. Tous droits réservés."
+               },
+    "pages":  {
+                  "home":  {
+                               "hero":  {
+                                            "title":  "Parle une langue, vis une rencontre",
+                                            "subtitle":  "Rejoignez Conversa, une communauté active grâce aux meetups linguistiques. Des jeux immersifs dans des bars à Bruxelles."
+                                        },
+                               "search":  {
+                                              "title":  "Trouve tes partenaires de langue en 2 minutes",
+                                              "desc":  "Entre un mot-clé, choisis ta langue et ta zone, puis lance la recherche. On te propose des sessions près de toi."
+                                          },
+                               "howto":  {
+                                             "img_alt":  "Rencontres linguistiques conviviales",
+                                             "title":  "Comment ça marche ?",
+                                             "steps":  {
+                                                           "1":  {
+                                                                     "title":  "Choisis ta langue et ta zone",
+                                                                     "desc":  "Filtre avec la barre de recherche à gauche."
+                                                                 },
+                                                           "2":  {
+                                                                     "title":  "Rejoins un groupe",
+                                                                     "desc":  "3+ participants, validation sur place."
+                                                                 },
+                                                           "3":  {
+                                                                     "title":  "Joue \u0026 pratique",
+                                                                     "desc":  "Lance le jeu, débloque des badges, partage un avis."
+                                                                 }
+                                                       }
+                                         },
+                               "upcoming":  {
+                                                "title":  "Événements à venir"
+                                            },
+                               "categories":  {
+                                                  "title":  "Explore par catégorie",
+                                                  "items":  {
+                                                                "cafe":  {
+                                                                             "title":  "Conversa Café",
+                                                                             "subtitle":  "Rencontres informelles"
+                                                                         },
+                                                                "pro":  {
+                                                                            "title":  "Conversa Pro",
+                                                                            "subtitle":  "Échanges professionnels"
+                                                                        },
+                                                                "events":  {
+                                                                               "title":  "Conversa Events",
+                                                                               "subtitle":  "Événements publics"
+                                                                           }
+                                                            }
+                                              },
+                               "cta":  {
+                                           "title":  "Prêt·e à en parler pour de vrai ?",
+                                           "subtitle":  "Rejoins des sessions conviviales près de chez toi et progresse dès cette semaine.",
+                                           "benefits":  {
+                                                            "rapid":  {
+                                                                          "desc":  "Inscription en 1 minute, aucun paiement requis"
+                                                                      },
+                                                            "local":  {
+                                                                          "desc":  "Groupes à taille humaine dans des bars partenaires"
+                                                                      },
+                                                            "effective":  {
+                                                                              "desc":  "Jeux de conversation guidés, feedback des pairs"
+                                                                          }
+                                                        },
+                                           "hint":  "Tu peux explorer sans inscription. Rejoins quand tu veux."
+                                       }
+                           }
+              },
+    "about":  {
+                  "hero":  {
+                               "badge":  "À propos",
+                               "title":  "Apprendre des langues, rencontrer des gens",
+                               "subtitle":  "Conversa rend la pratique des langues simple et conviviale : petits groupes, jeux de conversation, lieux chaleureux. Pas d\u0027école, juste des échanges vrais."
+                           },
+                  "mission":  {
+                                  "title":  "Notre mission",
+                                  "p1":  "Créer des occasions naturelles de parler une langue sans pression académique. Chaque session est pensée pour t\u0027aider à oser, progresser et t\u0027ouvrir aux autres.",
+                                  "bullets":  [
+                                                  "Pratique réelle, pas de cours magistral",
+                                                  "Groupes 3–6 personnes pour laisser de la place à chacun",
+                                                  "Jeux et cartes de discussion pour briser la glace"
+                                              ]
+                              },
+                  "difference":  {
+                                     "title":  "Ce qui nous différencie",
+                                     "items":  [
+                                                   {
+                                                       "title":  "Ludique",
+                                                       "desc":  "Des jeux de conversation qui relancent l\u0027échange et encouragent l\u0027expression spontanée."
+                                                   },
+                                                   {
+                                                       "title":  "Social",
+                                                       "desc":  "Tu apprends en rencontrant des personnes curieuses comme toi, pas face à un tableau."
+                                                   },
+                                                   {
+                                                       "title":  "Flexible",
+                                                       "desc":  "Des sessions courtes, après le travail ou le week-end, sans engagement long terme."
+                                                   }
+                                               ]
+                                 },
+                  "values":  {
+                                 "title":  "Nos valeurs",
+                                 "list":  [
+                                              {
+                                                  "title":  "Bienveillance",
+                                                  "desc":  "Un cadre sûr pour essayer, se tromper, réessayer."
+                                              },
+                                              {
+                                                  "title":  "Ouverture",
+                                                  "desc":  "Toutes les langues, tous les niveaux, toutes les origines."
+                                              },
+                                              {
+                                                  "title":  "Simplicité",
+                                                  "desc":  "Inscription en quelques clics, règles claires, zéro jargon."
+                                              },
+                                              {
+                                                  "title":  "Qualité",
+                                                  "desc":  "Animation structurée, retours réguliers, amélioration continue."
+                                              }
+                                          ]
+                             },
+                  "stats":  {
+                                "title":  "En chiffres",
+                                "sessions":  {
+                                                 "label":  "Sessions réalisées",
+                                                 "value":  "250+"
+                                             },
+                                "learners":  {
+                                                 "label":  "Participants",
+                                                 "value":  "3 000+"
+                                             },
+                                "languages":  {
+                                                  "label":  "Langues pratiquées",
+                                                  "value":  "10+"
+                                              },
+                                "partners":  {
+                                                 "label":  "Lieux partenaires",
+                                                 "value":  "20+"
+                                             }
+                            },
+                  "how":  {
+                              "title":  "Comment ça marche",
+                              "steps":  [
+                                            {
+                                                "title":  "Choisis une langue",
+                                                "desc":  "Filtre par anglais, néerlandais, espagnol… et ton quartier."
+                                            },
+                                            {
+                                                "title":  "Réserve ta place",
+                                                "desc":  "Groupes limités pour de vrais échanges."
+                                            },
+                                            {
+                                                "title":  "Rejoins la table",
+                                                "desc":  "Un animateur lance le jeu et guide le rythme."
+                                            }
+                                        ],
+                              "a11y_illustration_alt":  "Illustration de personnes discutant autour d\u0027une table"
+                          },
+                  "team":  {
+                               "title":  "L\u0027équipe",
+                               "members":  [
+                                               {
+                                                   "name":  "Ana",
+                                                   "role":  "Animation \u0026 Pédagogie",
+                                                   "bio":  "Conçoit les jeux et veille à l\u0027expérience sur place."
+                                               },
+                                               {
+                                                   "name":  "Bram",
+                                                   "role":  "Partenariats",
+                                                   "bio":  "Trouve des lieux chaleureux et coordonne les hôtes."
+                                               }
+                                           ]
+                           },
+                  "partners":  {
+                                   "title":  "Nos partenaires",
+                                   "desc":  "Des cafés et bars bruxellois qui aiment l\u0027échange. Tu as un lieu et veux accueillir une table de conversation ?"
+                               },
+                  "timeline":  {
+                                   "title":  "Notre histoire",
+                                   "items":  [
+                                                 {
+                                                     "date":  "2023",
+                                                     "text":  "Premières tables pilotes avec des amis polyglottes."
+                                                 },
+                                                 {
+                                                     "date":  "2024",
+                                                     "text":  "Lancement public, premiers partenaires et jeux maison."
+                                                 },
+                                                 {
+                                                     "date":  "2025",
+                                                     "text":  "Sessions quotidiennes, nouvelles langues et quartiers."
+                                                 }
+                                             ]
+                               },
+                  "testimonials":  {
+                                       "title":  "Ils en parlent",
+                                       "quotes":  [
+                                                      {
+                                                          "author":  "Lucía",
+                                                          "text":  "J\u0027ai osé parler dès la première session. Les jeux aident vraiment."
+                                                      },
+                                                      {
+                                                          "author":  "Thomas",
+                                                          "text":  "On progresse sans s\u0027en rendre compte, et on rencontre du monde."
+                                                      }
+                                                  ]
+                                   },
+                  "cta":  {
+                              "primary_label":  "Rejoindre une session",
+                              "secondary_label":  "Devenir partenaire",
+                              "aria_primary":  "Ouvrir la page de réservation",
+                              "aria_secondary":  "Contacter l\u0027équipe partenaires"
+                          },
+                  "contact":  {
+                                  "title":  "Nous contacter",
+                                  "email_label":  "Écrire un email",
+                                  "email_value":  "conversa@hotmail.com",
+                                  "social_label":  "Nous suivre"
+                              },
+                  "meta":  {
+                               "title":  "À propos — Conversa",
+                               "description":  "Conversa — pratique des langues à Bruxelles en petits groupes, avec jeux et échanges conviviaux."
+                           }
+              },
+    "faq":  {
+                "hero":  {
+                             "title":  "Questions fréquentes",
+                             "subtitle":  "Tout ce qu\u0027il faut savoir pour démarrer sur Conversa.",
+                             "intro":  "Bienvenue dans notre centre de questions fréquentes. Ici, tu trouveras des réponses claires aux interrogations les plus courantes sur l\u0027utilisation de Conversa. Si tu ne trouves pas ta réponse, n\u0027hésite pas à nous contacter."
+                         },
+                "qna":  {
+                            "what_is_conversa_q":  "Qu\u0027est-ce que Conversa ?",
+                            "what_is_conversa_a":  "Conversa est une plateforme qui permet de pratiquer des langues de manière ludique, en petits groupes, dans des bars et cafés partenaires à Bruxelles. Ici, pas de cours magistral : on discute, on joue et on échange, comme avec des amis, tout en rencontrant de nouvelles personnes.",
+                            "how_join_event_q":  "Comment rejoindre un événement ?",
+                            "how_join_event_a":  "Depuis la page d\u0027accueil, choisis une langue qui t\u0027intéresse, explore les sessions disponibles et clique sur \"Je participe\". Une fois sur place, confirme ta présence via l\u0027application et rejoins le groupe pour commencer la partie.",
+                            "cancel_policy_q":  "Puis-je annuler ma participation ?",
+                            "cancel_policy_a":  "Oui, tant que l\u0027événement n\u0027a pas commencé. Tu peux annuler directement depuis l\u0027application. Cela permet de libérer ta place pour une autre personne et de garder des groupes dynamiques.",
+                            "account_data_q":  "Que faites-vous de mes données ?",
+                            "account_data_a":  "Nous ne collectons que les informations nécessaires pour organiser les sessions et garantir la sécurité des participants. Tes données ne sont jamais revendues, et tu peux à tout moment les modifier ou demander leur suppression.",
+                            "payment_price_q":  "Combien ça coûte ?",
+                            "payment_price_a":  "Le billet standard est à 7 € par session, ce qui inclut l\u0027accès au jeu de conversation et la mise en relation avec d\u0027autres participants. Certains événements spéciaux ou ateliers peuvent avoir un tarif différent, toujours indiqué à l\u0027avance."
+                        },
+                "no_results":  "Aucune question ne correspond à ta recherche ? conversa@hotmail.com"
+            },
+    "payments":  {
+                     "success":  {
+                                     "title":  "Paiement confirmé",
+                                     "thanks":  "Merci ! Votre réservation a bien été validée.",
+                                     "for_booking":  "pour la réservation {{id}}",
+                                     "my_bookings":  "Mes réservations",
+                                     "back_to_events":  "Retour aux événements"
+                                 },
+                     "cancel":  {
+                                    "title":  "Paiement non finalisé",
+                                    "line1":  "Votre paiement a été annulé",
+                                    "for_booking":  "pour la réservation {{id}}",
+                                    "reassure":  "Vous pouvez réessayer à tout moment.",
+                                    "retry":  "Réessayer le paiement",
+                                    "view_booking":  "Voir ma réservation",
+                                    "back_to_events":  "Retour aux événements",
+                                    "help":  "Si le problème persiste, vérifiez votre connexion ou essayez un autre moyen de paiement."
+                                },
+                     "badge":  {
+                                   "interrupted":  "Transaction interrompue",
+                                   "success":  "Paiement réussi"
+                               },
+                     "meta":  {
+                                  "session":  "Session",
+                                  "booking":  "Réservation"
+                              }
+                 },
+    "bookings":  {
+                     "title":  "Mes réservations",
+                     "empty":  "Aucune réservation pour le moment.",
+                     "when":  "Quand",
+                     "amount":  "Montant",
+                     "event":  "Événement",
+                     "status":  {
+                                    "PENDING":  "En attente de paiement",
+                                    "CONFIRMED":  "Confirmée",
+                                    "CANCELLED":  "Annulée",
+                                    "FAILED":  "Échouée",
+                                    "EXPIRED":  "Expirée",
+                                    "REFUNDED":  "Remboursée"
+                                }
+                 },
+    "events":  {
+                   "title":  "Événements",
+                   "empty":  "Aucun événement pour le moment.",
+                   "cancelled":  "Annulé",
+                   "address":  "Adresse",
+                   "city":  "Ville",
+                   "when":  "Quand",
+                   "theme":  "Thème",
+                   "price":  "Prix",
+                   "free":  "Gratuit",
+                   "book":  "Réserver",
+                   "already_booked":  "Déjà réservé",
+                   "recommended":  "Recommandé",
+                   "nearby":  "Près de vous",
+                   "near_city":  "Basé sur votre ville : {{city}}",
+                   "filters":  {
+                                   "languages_placeholder":  "Langues cibles",
+                                   "search_placeholder":  "Rechercher par titre, thème, adresse...",
+                                   "all_languages":  "Toutes les langues",
+                                   "reset":  "Réinitialiser"
+                               },
+                   "sort_reason":  {
+                                       "nearby":  "Près de vous",
+                                       "target_language":  "Langue que vous apprenez",
+                                       "native_language":  "Votre langue maternelle",
+                                       "free":  "Événement gratuit",
+                                       "coming_soon":  "Bientôt disponible",
+                                       "already_booked":  "Déjà réservé"
+                                   },
+                   "sort_info":  {
+                                     "title":  "Tri intelligent activé",
+                                     "subtitle":  "Les événements sont triés selon vos préférences"
+                                 },
+                   "detail":  {
+                                  "back_to_events":  "Retour aux événements",
+                                  "about":  "À propos de cet événement",
+                                  "location":  "Localisation",
+                                  "participants":  "Participants",
+                                  "participant":  "participant",
+                                  "participants_plural":  "participants",
+                                  "no_participants_yet":  "Aucun participant inscrit pour le moment",
+                                  "price_per_person":  "Prix par personne",
+                                  "organized_by":  "Organisé par",
+                                  "spots_remaining":  "{{count}} places restantes",
+                                  "spots_remaining_one":  "{{count}} place restante",
+                                  "book_spot":  "Réserver ma place",
+                                  "cancel_booking":  "Annuler ma réservation",
+                                  "starting_soon":  "Démarre bientôt",
+                                  "event_full":  "Complet",
+                                  "event_cancelled":  "Événement annulé",
+                                  "booking_notice":  "Confirmation immédiate • Annulation gratuite jusqu'à 3h avant",
+                                  "cancel_notice":  "Vous pouvez annuler votre réservation jusqu'à 3 heures avant le début",
+                                  "starting_soon_notice":  "L'événement démarre dans moins de 3 heures, annulation impossible",
+                                  "cancel_modal_title":  "Annuler la réservation ?",
+                                  "cancel_modal_message":  "Êtes-vous sûr de vouloir annuler votre réservation ? Cette action est irréversible.",
+                                  "yes_cancel":  "Oui, annuler",
+                                  "not_found":  "Événement introuvable",
+                                  "error":  "Une erreur est survenue lors du chargement",
+                                  "loading":  "Chargement..."
+                              }
+               },
+    "checkout":  {
+                     "title":  "Confirmer l\u0027achat",
+                     "message":  "Voulez-vous confirmer votre achat ?",
+                     "buy":  "Payer"
+                 }
 }

@@ -1,0 +1,41 @@
+name: Audit Cleanup (Render Free)
+
+# Run every Sunday at 3 AM UTC
+on:
+  schedule:
+    - cron: '0 3 * * 0'
+
+  # Allow manual trigger
+  workflow_dispatch:
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Call audit cleanup endpoint
+        run: |
+          RESPONSE=$(curl -s -w "\n%{http_code}" -X POST \
+            ${{ secrets.RENDER_APP_URL }}/api/v1/audit/cleanup/ \
+            -H "Authorization: Bearer ${{ secrets.ADMIN_TOKEN }}" \
+            -H "Content-Type: application/json")
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
+          BODY=$(echo "$RESPONSE" | head -n-1)
+
+          echo "HTTP Status: $HTTP_CODE"
+          echo "Response: $BODY"
+
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "❌ Cleanup failed with status $HTTP_CODE"
+            exit 1
+          fi
+
+          echo "✅ Audit cleanup completed successfully"
+
+      - name: Get audit stats
+        run: |
+          curl -s -X GET \
+            ${{ secrets.RENDER_APP_URL }}/api/v1/audit/stats/ \
+            -H "Authorization: Bearer ${{ secrets.ADMIN_TOKEN }}" \
+            | jq '.'

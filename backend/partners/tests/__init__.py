@@ -1,0 +1,1 @@
+"""Partners app test suite."""

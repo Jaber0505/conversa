@@ -3,7 +3,7 @@
      [class.ms--error]="error"
      (click)="toggleOpen($event)"
      role="button"
-     tabindex="0"><div class="ms-control" [class.ms--disabled]="disabled" (click)="toggleOpen($event)" role="button" tabindex="0">
+     tabindex="0">
   <div class="ms-control__chips" *ngIf="selected?.length; else placeholderTpl">
     <shared-badge
       *ngFor="let s of selected"
@@ -13,7 +13,7 @@
       class="chip"
     >
       <span class="chip__text">{{ s.label }}</span>
-      <button type="button" class="chip__close" aria-label="Retirer" (click)="removeOne(s.value, $event)">×</button>
+      <button type="button" class="chip__close" aria-label="Retirer" (click)="removeOne(s.value, $event)">&times;</button>
     </shared-badge>
   </div>
 
@@ -21,7 +21,7 @@
     <span class="ms-control__placeholder">{{ placeholder }}</span>
   </ng-template>
 
-  <div class="ms-control__caret" aria-hidden="true">▾</div>
+  <div class="ms-control__caret" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
 </div>
 
 <div class="ms-panel" *ngIf="isOpen" (click)="$event.stopPropagation()">
@@ -50,4 +50,6 @@
     <div class="ms-panel__empty" *ngIf="!filtered().length">Aucun résultat</div>
   </div>
 </div>
-</div>
+
+
+

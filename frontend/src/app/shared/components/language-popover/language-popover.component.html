@@ -4,18 +4,37 @@
       <h3>{{ titleKey() | t }}</h3>
     </header>
 
-    <ul class="lp-list" role="listbox" [attr.aria-activedescendant]="'opt-' + selected()">
-      <li *ngFor="let l of langs"
-          class="lp-item"
-          [class.active]="l === selected()"
-          role="option"
-          [attr.id]="'opt-' + l"
-          (click)="onToggle(l)">
-        <span class="code">{{ l.toUpperCase() }}</span>
-        <span class="label">{{ labelKeyOf(l) | t }}</span>
-        <span class="check" *ngIf="l === selected()">✓</span>
-      </li>
-    </ul>
+    <section class="lp-section">
+      <h4 class="lp-section__title">{{ 'i18n.ui' | t }}</h4>
+      <ul class="lp-list" role="listbox" [attr.aria-activedescendant]="'ui-' + selected()">
+        <li *ngFor="let l of langs"
+            class="lp-item"
+            [class.active]="l === selected()"
+            role="option"
+            [attr.id]="'ui-' + l"
+            (click)="onToggle(l)">
+          <span class="flag" aria-hidden="true">{{ flagOf(l) }}</span>
+          <span class="code">{{ l.toUpperCase() }}</span>
+          <span class="label">{{ labelKeyOf(l) | t }}</span>
+          <span class="check" *ngIf="l === selected()">✓</span>
+        </li>
+      </ul>
+    </section>
+
+    <section *ngIf="allowMulti" class="lp-section">
+      <h4 class="lp-section__title">{{ 'i18n.preferred' | t }}</h4>
+      <ul class="lp-list" role="group">
+        <li *ngFor="let l of langs"
+            class="lp-item"
+            [class.active]="isPref(l)"
+            (click)="onTogglePref(l)">
+          <span class="flag" aria-hidden="true">{{ flagOf(l) }}</span>
+          <input class="checkbox" type="checkbox" [checked]="isPref(l)" aria-hidden="true" />
+          <span class="code">{{ l.toUpperCase() }}</span>
+          <span class="label">{{ labelKeyOf(l) | t }}</span>
+        </li>
+      </ul>
+    </section>
 
     <footer class="lp-actions">
       <button type="button" class="btn ghost" (click)="onCancel()">{{ 'common.cancel' | t }}</button>

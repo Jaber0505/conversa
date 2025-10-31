@@ -1,18 +1,34 @@
-# backend/config/settings/base.py
 """
-Base settings : API REST sécurisée par défaut (IsAuthenticated), CORS, Swagger (drf-spectacular),
-pagination minimale.
+Base Django settings for Conversa API.
+
+This module contains shared configuration used by both development and production environments.
+
+Features:
+- Secure REST API (IsAuthenticated by default)
+- CORS configuration
+- JWT authentication with token blacklisting
+- Swagger/ReDoc documentation (drf-spectacular)
+- Rate limiting (throttling)
+- Custom exception handling
 """
+
 from pathlib import Path
 import os
 from datetime import timedelta
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-# --- Core ---
+# =============================================================================
+# CORE DJANGO SETTINGS
+# =============================================================================
+
 SECRET_KEY = os.getenv("SECRET_KEY", "dev-insecure-key")
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
-ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",") if os.getenv("DJANGO_ALLOWED_HOSTS") else []
+ALLOWED_HOSTS = (
+    os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
+    if os.getenv("DJANGO_ALLOWED_HOSTS")
+    else []
+)
 
 DJANGO_APPS = [
     "django.contrib.admin",
@@ -61,62 +77,102 @@ ROOT_URLCONF = "config.urls"
 WSGI_APPLICATION = "config.wsgi.application"
 ASGI_APPLICATION = "config.asgi.application"
 
-TEMPLATES = [{
-    "BACKEND": "django.template.backends.django.DjangoTemplates",
-    "DIRS": [],
-    "APP_DIRS": True,
-    "OPTIONS": {
-        "context_processors": [
-            "django.template.context_processors.debug",
-            "django.template.context_processors.request",
-            "django.contrib.auth.context_processors.auth",
-            "django.contrib.messages.context_processors.messages",
-        ],
-    },
-}]
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ],
+        },
+    }
+]
 
-# --- DB (définie en dev/prod) ---
+# =============================================================================
+# DATABASE
+# =============================================================================
+# Database configuration is defined in dev.py and prod.py
 DATABASES = {}
 
-# --- Stripe ---
-STRIPE_SECRET_KEY     = os.getenv("DJANGO_STRIPE_SECRET_KEY", "")
-STRIPE_WEBHOOK_SECRET = os.getenv("DJANGO_STRIPE_WEBHOOK_SECRET", "")
-STRIPE_CURRENCY       = (os.getenv("DJANGO_STRIPE_CURRENCY", "eur") or "eur").lower()
+# =============================================================================
+# STRIPE PAYMENT CONFIGURATION
+# =============================================================================
 
-FRONTEND_BASE_URL = os.getenv("DJANGO_FRONTEND_BASE_URL", "http://localhost:4200").rstrip("/")
+STRIPE_SECRET_KEY = os.getenv("DJANGO_STRIPE_SECRET_KEY", "")
+STRIPE_WEBHOOK_SECRET = os.getenv("DJANGO_STRIPE_WEBHOOK_SECRET", "")
+STRIPE_CURRENCY = (os.getenv("DJANGO_STRIPE_CURRENCY", "eur") or "eur").lower()
+
+FRONTEND_BASE_URL = os.getenv(
+    "DJANGO_FRONTEND_BASE_URL", "http://localhost:4200"
+).rstrip("/")
+
 
 def _with_leading_slash(p: str, default: str) -> str:
+    """Ensure path starts with leading slash."""
     p = (p or default).strip()
     return p if p.startswith("/") else "/" + p
 
-STRIPE_SUCCESS_PATH = _with_leading_slash(os.getenv("DJANGO_STRIPE_SUCCESS_PATH", "/stripe/success"), "/stripe/success")
-STRIPE_CANCEL_PATH  = _with_leading_slash(os.getenv("DJANGO_STRIPE_CANCEL_PATH",  "/stripe/cancel"),  "/stripe/cancel")
 
+STRIPE_SUCCESS_PATH = _with_leading_slash(
+    os.getenv("DJANGO_STRIPE_SUCCESS_PATH", "/stripe/success"), "/stripe/success"
+)
+STRIPE_CANCEL_PATH = _with_leading_slash(
+    os.getenv("DJANGO_STRIPE_CANCEL_PATH", "/stripe/cancel"), "/stripe/cancel"
+)
+
+# Security check: Only allow Stripe TEST keys
 if STRIPE_SECRET_KEY and not STRIPE_SECRET_KEY.startswith("sk_test_"):
-    raise RuntimeError("Stripe TEST uniquement : STRIPE_SECRET_KEY doit commencer par 'sk_test_'.")
+    raise RuntimeError(
+        "Stripe TEST mode only: STRIPE_SECRET_KEY must start with 'sk_test_'."
+    )
 
-# --- Auth ---
+# =============================================================================
+# AUTHENTICATION & USER MODEL
+# =============================================================================
+
 AUTH_USER_MODEL = "users.User"
 AUTH_PASSWORD_VALIDATORS = [
-    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator", "OPTIONS": {"min_length": 9}},
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {"min_length": 9},
+    },
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-# --- Internationalisation ---
+# =============================================================================
+# INTERNATIONALIZATION
+# =============================================================================
+
 LANGUAGE_CODE = "fr"
 TIME_ZONE = "Europe/Brussels"
 USE_I18N = False
 USE_TZ = True
 
-# --- Static/Media ---
+# =============================================================================
+# STATIC & MEDIA FILES
+# =============================================================================
+
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
-# --- DRF ---
+# Fixtures
+FIXTURE_DIRS = [BASE_DIR / "fixtures"]
+
+# =============================================================================
+# DJANGO REST FRAMEWORK
+# =============================================================================
+
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "users.auth.JWTAuthenticationWithDenylist",
@@ -126,21 +182,40 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "common.pagination.DefaultPagination",
     "PAGE_SIZE": 20,
 }
+
+# Rate limiting (throttling)
 REST_FRAMEWORK.update({
-    "DEFAULT_THROTTLE_CLASSES": ["rest_framework.throttling.ScopedRateThrottle"],
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
+        "rest_framework.throttling.ScopedRateThrottle",
+    ],
     "DEFAULT_THROTTLE_RATES": {
-        # Auth
-        "auth_register": "5/min",
-        "auth_login": "10/min",
-        "auth_refresh": "30/min",
-        # Events
+        # Global limits
+        "anon": "100/hour",  # Anonymous users: 100 requests/hour
+        "user": "1000/hour",  # Authenticated users: 1000 requests/hour
+        # Authentication endpoints (more restrictive)
+        "auth_register": "5/hour",  # Prevent registration spam
+        "auth_login": "10/min",  # Prevent brute force
+        "auth_refresh": "30/min",  # Normal usage
+        # Events endpoints
         "events_read": "120/min",
         "events_write": "20/min",
+        # Bookings endpoints
+        "bookings_create": "30/hour",  # Prevent booking spam
+        "bookings_cancel": "10/hour",  # Prevent abuse
+        # Payments endpoints
+        "payments_create": "20/hour",  # Prevent payment spam
     },
 })
+
+# Custom exception handler for consistent error responses
 REST_FRAMEWORK["EXCEPTION_HANDLER"] = "config.api_errors.drf_exception_handler"
 
-# --- JWT ---
+# =============================================================================
+# JWT AUTHENTICATION (SimpleJWT)
+# =============================================================================
+
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
@@ -152,38 +227,90 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
-# --- OpenAPI / Swagger ---
+# =============================================================================
+# API DOCUMENTATION (Swagger/ReDoc)
+# =============================================================================
+
 SPECTACULAR_SETTINGS = {
     "TITLE": "Conversa API",
-    "DESCRIPTION": "API RESTful documentée (Swagger/ReDoc)",
+    "DESCRIPTION": "RESTful API for language exchange event platform",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
     "SCHEMA_PATH_PREFIX": r"/api/v1",
-    # <-- Auth: schéma Bearer JWT
+    # Security: Bearer JWT authentication
     "SECURITY": [{"bearerAuth": []}],
     "SECURITY_SCHEMES": {
         "bearerAuth": {"type": "http", "scheme": "bearer", "bearerFormat": "JWT"}
     },
-    # <-- UI: options Swagger-UI (persiste l’Authorization)
+    # Tag descriptions for better API organization
+    "TAGS": [
+        {
+            "name": "Auth",
+            "description": "User authentication, registration, and profile management. Includes JWT token operations (login, refresh, logout)."
+        },
+        {
+            "name": "Events",
+            "description": "Language exchange events management. Users can browse, create, and manage events hosted at partner venues."
+        },
+        {
+            "name": "Bookings",
+            "description": "Event bookings and cancellations. Users can reserve spots for events and manage their reservations."
+        },
+        {
+            "name": "Payments",
+            "description": "Payment processing via Stripe. Includes checkout session creation and webhook handling for payment confirmations."
+        },
+        {
+            "name": "Partners",
+            "description": "Partner venues that host language exchange events. Admin-only management of venue information and capacity."
+        },
+        {
+            "name": "Languages",
+            "description": "Available languages for language exchange. Read-only list of supported native and target languages."
+        },
+        {
+            "name": "Audit",
+            "description": "Audit logging system for admin monitoring. Tracks system events, errors, and user actions for security and debugging."
+        },
+    ],
+    # Swagger UI configuration
     "SWAGGER_UI_SETTINGS": {
-        "persistAuthorization": True,          
-        "displayRequestDuration": True,       
-        "docExpansion": "none",                
-        "filter": True                         
+        "persistAuthorization": True,  # Persist auth token across page reloads
+        "displayRequestDuration": True,  # Show request duration
+        "docExpansion": "none",  # Collapse all sections by default
+        "filter": True,  # Enable search/filter
     },
 }
+
+# Additional security schemes configuration
 SPECTACULAR_SETTINGS.update({
     "APPEND_COMPONENTS": {
         "securitySchemes": {
-            "bearerAuth": { "type": "http", "scheme": "bearer", "bearerFormat": "JWT" }
+            "bearerAuth": {"type": "http", "scheme": "bearer", "bearerFormat": "JWT"}
         }
     }
 })
 
-# --- BOOKING ---
+# =============================================================================
+# BUSINESS LOGIC CONFIGURATION
+# =============================================================================
+
+# Booking expiration time in minutes
 BOOKING_TTL_MINUTES = int(os.getenv("DJANGO_BOOKING_TTL_MINUTES", "15"))
 
-# --- LOG ---
+# =============================================================================
+# SCHEDULED TASKS CONFIGURATION
+# =============================================================================
+
+# Auto-cancellation check interval (used by Render Cron Jobs)
+AUTO_CANCEL_CHECK_INTERVAL_MINUTES = int(
+    os.getenv("DJANGO_AUTO_CANCEL_CHECK_INTERVAL", "15")
+)
+
+# =============================================================================
+# LOGGING
+# =============================================================================
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -195,17 +322,35 @@ LOGGING = {
     },
     "root": {"handlers": ["console"], "level": "INFO"},
     "loggers": {
-        "django.request": {"handlers": ["console"], "level": "WARNING", "propagate": False},
+        "django.request": {
+            "handlers": ["console"],
+            "level": "WARNING",
+            "propagate": False,
+        },
         "http": {"handlers": ["console"], "level": "INFO", "propagate": False},
     },
 }
 
-# --- CORS/CSRF ---
-CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = os.getenv("DJANGO_CORS_ALLOWED_ORIGINS", "").split(",") if os.getenv("DJANGO_CORS_ALLOWED_ORIGINS") else []
-CSRF_TRUSTED_ORIGINS = os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",") if os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS") else []
+# =============================================================================
+# CORS & CSRF CONFIGURATION
+# =============================================================================
 
-# --- Sécurité ---
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = (
+    os.getenv("DJANGO_CORS_ALLOWED_ORIGINS", "").split(",")
+    if os.getenv("DJANGO_CORS_ALLOWED_ORIGINS")
+    else []
+)
+CSRF_TRUSTED_ORIGINS = (
+    os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",")
+    if os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS")
+    else []
+)
+
+# =============================================================================
+# SECURITY SETTINGS
+# =============================================================================
+
 FORMS_URLFIELD_ASSUME_HTTPS = True
 SESSION_COOKIE_HTTPONLY = True
 CSRF_COOKIE_HTTPONLY = True

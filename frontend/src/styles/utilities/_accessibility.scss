@@ -1,0 +1,479 @@
+// ============================================
+// ACCESSIBILITY UTILITIES
+// ============================================
+// Utilitaires pour améliorer l'accessibilité (a11y)
+
+@use '../tokens' as *;
+
+// ============================================
+// FOCUS MANAGEMENT
+// ============================================
+
+// Focus ring moderne et visible
+.focus-ring {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+// Focus ring avec couleur personnalisée
+.focus-ring-primary {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.focus-ring-accent {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.focus-ring-danger {
+  outline: 2px solid var(--color-danger);
+  outline-offset: 2px;
+}
+
+// Appliquer automatiquement le focus ring sur tous les éléments interactifs
+a,
+button,
+input,
+textarea,
+select,
+[tabindex]:not([tabindex='-1']) {
+  &:focus-visible {
+    @extend .focus-ring-primary;
+  }
+}
+
+// Focus visible seulement au clavier (pas à la souris)
+.focus-visible-only {
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    @extend .focus-ring-primary;
+  }
+}
+
+// Focus inset (à l'intérieur de l'élément)
+.focus-inset {
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: -2px;
+  }
+}
+
+// Suppression du focus (à utiliser avec précaution)
+.focus-none {
+  &:focus,
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+// ============================================
+// SKIP LINKS (Navigation rapide)
+// ============================================
+
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--color-primary);
+  color: white;
+  padding: $space-2 $space-4;
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  z-index: 10000;
+  font-weight: 600;
+  transition: top var(--duration-fast);
+
+  &:focus {
+    top: $space-2;
+    outline: 2px solid white;
+    outline-offset: 2px;
+  }
+}
+
+// ============================================
+// SCREEN READER ONLY
+// ============================================
+
+// Masquer visuellement mais garder accessible aux lecteurs d'écran
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+// Rendre visible au focus (ex: skip links)
+.sr-only-focusable {
+  @extend .sr-only;
+
+  &:focus,
+  &:active {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+}
+
+// ============================================
+// HIGH CONTRAST MODE
+// ============================================
+
+// Support pour le mode haut contraste Windows
+@media (prefers-contrast: high) {
+  * {
+    border-color: currentColor !important;
+  }
+
+  button,
+  a {
+    border: 2px solid currentColor !important;
+  }
+
+  .focus-ring,
+  .focus-ring-primary,
+  .focus-ring-accent {
+    outline: 3px solid currentColor !important;
+    outline-offset: 3px !important;
+  }
+}
+
+// ============================================
+// REDUCED MOTION
+// ============================================
+
+// Respecter la préférence de réduction des mouvements
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  // Garder les animations essentielles (spinners)
+  .spinner,
+  .loading,
+  [role='progressbar'],
+  [aria-busy='true'] {
+    animation-duration: 1s !important;
+  }
+}
+
+// ============================================
+// FORCED COLORS MODE (Windows High Contrast)
+// ============================================
+
+@media (forced-colors: active) {
+  // Utiliser les couleurs système
+  * {
+    background-color: Canvas;
+    color: CanvasText;
+    border-color: CanvasText;
+  }
+
+  a {
+    color: LinkText;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    border: 2px solid ButtonBorder;
+    background-color: ButtonFace;
+    color: ButtonText;
+  }
+
+  button:disabled,
+  input:disabled {
+    border-color: GrayText;
+    color: GrayText;
+  }
+}
+
+// ============================================
+// LIVE REGIONS (Annonces dynamiques)
+// ============================================
+
+.sr-live-polite {
+  @extend .sr-only;
+  role: status;
+  aria-live: polite;
+  aria-atomic: true;
+}
+
+.sr-live-assertive {
+  @extend .sr-only;
+  role: alert;
+  aria-live: assertive;
+  aria-atomic: true;
+}
+
+// ============================================
+// KEYBOARD NAVIGATION HELPERS
+// ============================================
+
+// Indicateur visuel pour la navigation au clavier
+body.keyboard-navigation {
+  *:focus {
+    outline: 3px solid var(--color-primary) !important;
+    outline-offset: 2px !important;
+  }
+}
+
+// Classe à ajouter au body quand l'utilisateur utilise le clavier
+.using-keyboard {
+  a,
+  button,
+  input,
+  textarea,
+  select,
+  [tabindex]:not([tabindex='-1']) {
+    &:focus {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+    }
+  }
+}
+
+// ============================================
+// TOUCH TARGET SIZE (44x44px minimum WCAG)
+// ============================================
+
+.touch-target {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// Pour les petits éléments, agrandir la zone de clic sans changer l'apparence
+.touch-target-pseudo {
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+// ============================================
+// COLOR CONTRAST HELPERS
+// ============================================
+
+// Texte avec contraste garanti (WCAG AA)
+.text-contrast-aa {
+  color: var(--color-text);
+  background: var(--color-bg);
+}
+
+// Texte avec contraste élevé (WCAG AAA)
+.text-contrast-aaa {
+  color: #000;
+  background: #fff;
+}
+
+// ============================================
+// ARIA HELPERS (Classes visuelles pour états ARIA)
+// ============================================
+
+// État désactivé
+[aria-disabled='true'],
+[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+// État sélectionné
+[aria-selected='true'] {
+  background-color: color-mix(in oklab, var(--color-primary), white 85%);
+  border-color: var(--color-primary);
+}
+
+// État pressé
+[aria-pressed='true'] {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+// État invalide
+[aria-invalid='true'] {
+  border-color: var(--color-danger);
+  outline-color: var(--color-danger);
+}
+
+// État requis
+[aria-required='true']::after,
+.required::after {
+  content: ' *';
+  color: var(--color-danger);
+  font-weight: bold;
+}
+
+// État busy/loading
+[aria-busy='true'] {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+// ============================================
+// TEXT SIZE & SPACING (WCAG 1.4.12)
+// ============================================
+
+// Support pour le zoom texte 200%
+html {
+  font-size: 100%;
+}
+
+@media (min-width: 1280px) {
+  html {
+    font-size: 100%;
+  }
+}
+
+// Espacement de texte ajustable
+.text-spacing-wcag {
+  line-height: 1.5 !important;
+  letter-spacing: 0.12em !important;
+  word-spacing: 0.16em !important;
+
+  p {
+    margin-bottom: 2em !important;
+  }
+}
+
+// ============================================
+// LINKS & BUTTONS
+// ============================================
+
+// Liens avec soulignement (meilleure accessibilité)
+.link-underlined {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+
+  &:hover {
+    text-decoration-thickness: 2px;
+  }
+}
+
+// Boutons avec états clairs
+.button-accessible {
+  position: relative;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  &[disabled],
+  &[aria-disabled='true'] {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+}
+
+// ============================================
+// FORM ACCESSIBILITY
+// ============================================
+
+// Labels toujours visibles (pas de placeholder-only)
+.form-field-accessible {
+  label {
+    display: block;
+    margin-bottom: $space-2;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  input,
+  textarea,
+  select {
+    width: 100%;
+    padding: $space-3;
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-md);
+
+    &:focus {
+      border-color: var(--color-primary);
+      outline: 2px solid var(--color-primary);
+      outline-offset: -1px;
+    }
+
+    &[aria-invalid='true'] {
+      border-color: var(--color-danger);
+    }
+  }
+
+  .error-message {
+    color: var(--color-danger);
+    font-size: $fs-sm;
+    margin-top: $space-1;
+    display: flex;
+    align-items: center;
+    gap: $space-1;
+  }
+
+  .hint-text {
+    color: var(--color-text-light);
+    font-size: $fs-sm;
+    margin-top: $space-1;
+  }
+}
+
+// ============================================
+// TOOLTIPS ACCESSIBLES
+// ============================================
+
+.tooltip-accessible {
+  position: relative;
+
+  &:hover::after,
+  &:focus::after {
+    content: attr(aria-label);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--color-bg-dark);
+    color: white;
+    padding: $space-2 $space-3;
+    border-radius: var(--radius-md);
+    font-size: $fs-sm;
+    white-space: nowrap;
+    z-index: 1000;
+    margin-bottom: $space-2;
+  }
+}

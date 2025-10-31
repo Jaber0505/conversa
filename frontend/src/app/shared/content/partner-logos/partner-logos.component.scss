@@ -1,0 +1,19 @@
+.partner-logos { padding: var(--space-8) 0; }
+.logos {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--space-6);
+  align-items: center;
+}
+.logo {
+  height: 28px;
+  border-radius: 6px;
+  background: color-mix(in oklab, var(--color-border), transparent 10%);
+  display: grid; place-items: center;
+  color: color-mix(in oklab, var(--color-border), transparent 20%);
+  font-size: 0.75rem;
+}
+@media (max-width: 640px) {
+  .logos { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+

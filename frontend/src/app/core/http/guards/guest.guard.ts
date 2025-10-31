@@ -5,7 +5,7 @@ import { LangService } from '@core/i18n';
 
 export const guestGuard: CanActivateFn = (_route, _state) => {
   const tokens = inject(AuthTokenService);
-  if (!tokens.access) return true;
+  if (!tokens.hasAccess()) return true;
 
   const lang = inject(LangService).current;
   const router = inject(Router);

@@ -1,0 +1,143 @@
+<div class="event-detail-page" *ngIf="!loading() && event() as evt">
+  <!-- Bouton retour -->
+  <div class="back-section">
+    <shared-container>
+      <button class="btn-back" (click)="goBack()">
+        <span class="icon-arrow">←</span>
+        <span>{{ 'events.detail.back_to_events' | t }}</span>
+      </button>
+    </shared-container>
+  </div>
+
+  <shared-container>
+    <div class="detail-grid">
+      <!-- Colonne principale -->
+      <div class="main-column">
+        <!-- En-tête de l'événement -->
+        <div class="event-header">
+          <div class="event-badges">
+            <span class="badge badge-primary">
+              {{ evt.language_name }}
+            </span>
+            <span class="badge badge-secondary">
+              {{ evt.difficulty }}
+            </span>
+          </div>
+          <h1 class="event-title">{{ evt.title }}</h1>
+
+          <div class="event-meta">
+            <div class="meta-item">
+              <span class="icon">��</span>
+              <span>{{ formatDate(evt.datetime_start) }}</span>
+            </div>
+            <div class="meta-item">
+              <span class="icon">🕐</span>
+              <span>{{ formatTime(evt.datetime_start) }}</span>
+            </div>
+            <div class="meta-item">
+              <span class="icon">📍</span>
+              <span>{{ evt.partner_address }}, {{ evt.partner_city }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="event-section">
+          <h2 class="section-title">{{ 'events.detail.about' | t }}</h2>
+          <p class="event-description">{{ evt.theme }}</p>
+        </div>
+
+        <!-- Carte -->
+        <div class="event-section">
+          <h2 class="section-title">{{ 'events.detail.location' | t }}</h2>
+          <div class="map-container">
+            <iframe
+              [src]="getGoogleMapsUrl(evt.partner_address + ', ' + evt.partner_city) | sanitizeUrl"
+              width="100%"
+              height="400"
+              style="border:0;"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+          </div>
+          <p class="address-text">
+            <strong>{{ evt.partner_name }}</strong><br>
+            {{ evt.partner_address }}<br>
+            {{ evt.partner_city }}
+          </p>
+        </div>
+
+        <!-- Participants -->
+        <div class="event-section">
+          <h2 class="section-title">
+            {{ 'events.detail.participants' | t }} ({{ evt.participants_count }})
+          </h2>
+          <p class="participants-info" *ngIf="evt.participants_count === 0">
+            {{ 'events.detail.no_participants_yet' | t }}
+          </p>
+          <p class="participants-info" *ngIf="evt.participants_count > 0">
+            {{ evt.participants_count }} {{ evt.participants_count === 1 ? ('events.detail.participant' | t) : ('events.detail.participants_plural' | t) }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Colonne latérale (sticky) -->
+      <div class="sidebar-column">
+        <div class="booking-card">
+          <div class="price-section">
+            <span class="price-label">{{ 'events.detail.price_per_person' | t }}</span>
+            <span class="price-value">{{ formatPrice(evt.price_cents) }}</span>
+          </div>
+
+          <div class="organizer-section">
+            <p class="organizer-label">{{ 'events.detail.organized_by' | t }}</p>
+            <p class="organizer-name">{{ evt.organizer_first_name }} {{ evt.organizer_last_name }}</p>
+          </div>
+
+          <div class="availability-section">
+            <div class="availability-bar">
+              <div
+                class="availability-fill"
+                [style.width.%]="(evt.participants_count / MAX_PARTICIPANTS) * 100">
+              </div>
+            </div>
+            <p class="availability-text">
+              {{ 'events.detail.spots_remaining' | t: { count: MAX_PARTICIPANTS - evt.participants_count } }}
+            </p>
+          </div>
+
+          <shared-button
+            variant="accent"
+            size="lg"
+            class="btn-book"
+            [disabled]="evt.participants_count >= MAX_PARTICIPANTS"
+            (click)="onBook()">
+            {{ evt.participants_count >= MAX_PARTICIPANTS ? ('events.detail.event_full' | t) : ('events.detail.book_spot' | t) }}
+          </shared-button>
+
+          <p class="booking-notice">
+            {{ 'events.detail.booking_notice' | t }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </shared-container>
+</div>
+
+<!-- Loading state -->
+<div class="loading-state" *ngIf="loading()">
+  <shared-container>
+    <div class="spinner"></div>
+    <p>{{ 'events.detail.loading' | t }}</p>
+  </shared-container>
+</div>
+
+<!-- Error state -->
+<div class="error-state" *ngIf="error() && !loading()">
+  <shared-container>
+    <h2>{{ 'events.detail.not_found' | t }}</h2>
+    <p>{{ error() }}</p>
+    <shared-button (click)="goBack()">{{ 'events.detail.back_to_events' | t }}</shared-button>
+  </shared-container>
+</div>

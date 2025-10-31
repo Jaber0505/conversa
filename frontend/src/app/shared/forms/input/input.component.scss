@@ -1,5 +1,7 @@
 :host { display:block; }
 
+/* Label au-dessus de l'input, bien espacé et aligné */
+label { display:block; margin-bottom: var(--space-2); font-weight: 600; color: var(--color-text); line-height: 1.2; }
 label.invalid { color: var(--color-danger); }
 
 input {

@@ -1,80 +1,85 @@
 @use '../../../../styles/tokens' as *;
 
+/* Layout auth unifié - moderne et rapproché */
 .register {
   .container {
-    max-width: 1100px;
+    max-width: 520px;
     margin-inline: auto;
     padding-inline: var(--space-4);
   }
 
   .hero {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--space-4);
-    min-height: auto;
-    padding: var(--space-6) var(--space-4) var(--space-4);
     text-align: center;
+    padding: var(--space-8) var(--space-4) var(--space-3);
 
     .hero__copy {
-      max-width: 640px;
-      margin: 0 auto;
-
-      .badge { display: inline-block; margin-bottom: var(--space-2); }
-      h1 { margin: 0 0 var(--space-2); font-size: clamp(1.8rem, 4vw, 2.2rem); font-weight: 700; }
-      .muted { margin: 0; font-size: 1rem; opacity: .8; }
+      h1 {
+        margin: 0 0 var(--space-2);
+        font-size: clamp(1.8rem, 4vw, 2.2rem);
+        font-weight: 700;
+      }
+      .muted {
+        margin: 0;
+        font-size: 1rem;
+        color: var(--color-text-muted);
+      }
     }
   }
 
-  .hero__art {
-    min-height: 160px;
-    border-radius: var(--radius-lg);
-    background: linear-gradient(135deg, rgba(0,0,0,.04), rgba(0,0,0,.02));
-  }
-
   .container.grid {
-    margin-top: var(--space-4);
     display: flex;
     justify-content: center;
-    gap: var(--space-4);
+    min-height: calc(100vh - var(--header-h, 64px) - 250px);
   }
 
   .register-tabs {
     width: 100%;
-    max-width: 520px;
   }
 
   .card {
     background: var(--surface-0);
     border: 1px solid var(--color-muted);
     border-radius: var(--radius-lg);
-    padding: var(--space-6);
+    padding: var(--space-8);
     box-shadow: var(--shadow-1);
-
-    &--muted { background: var(--surface-1); }
+    width: 100%;
   }
 
-  .form__row { margin-block: var(--space-3); }
+  .api-error {
+    background: color-mix(in oklab, var(--color-danger), white 90%);
+    color: var(--color-danger);
+    border: 1px solid color-mix(in oklab, var(--color-danger), white 70%);
+    border-radius: var(--radius-3);
+    padding: var(--space-3) var(--space-4);
+    margin-bottom: var(--space-4);
+  }
+
+  .form__row {
+    margin-block: var(--space-3);
+  }
+
+  .nav.fixed {
+    margin-top: var(--space-7);
+  }
+
+  .checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    line-height: 1.2;
+    color: var(--color-text);
+
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--color-primary);
+    }
+  }
 
   .bullets {
     margin: 0;
     padding-left: var(--space-4);
     li { margin: 0 0 var(--space-2); }
-  }
-}
-
-@media (min-width: $bp-sm) {
-  .register {
-    .hero { gap: var(--space-6); }
-    .container.grid { margin-top: var(--space-5); }
-    .card { padding: calc(var(--space-4) + var(--space-2)); }
-  }
-}
-
-@media (min-width: $bp-md) {
-  .register {
-    .hero { padding: var(--space-8) var(--space-4) var(--space-6); gap: var(--space-8); }
-    .container.grid { margin-top: var(--space-6); }
-    .card { padding: var(--space-8); }
   }
 }
 
@@ -90,10 +95,24 @@
   }
 }
 
+/* Responsive mobile */
 @media (max-width: $bp-sm) {
-  .login-actions,
-  .register-actions,
-  .tab-buttons {
+  .register {
+    .hero {
+      padding: var(--space-6) var(--space-4) var(--space-3);
+    }
+
+    .container.grid {
+      min-height: calc(100vh - var(--header-h, 64px) - 180px);
+    }
+
+    .card {
+      padding: var(--space-6);
+    }
+  }
+
+  .tab-buttons,
+  .nav.fixed {
     flex-direction: column;
     align-items: stretch;
     gap: var(--space-3);

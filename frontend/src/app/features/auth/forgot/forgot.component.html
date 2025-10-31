@@ -1,0 +1,33 @@
+<app-landing-header [spacer]="true"></app-landing-header>
+
+<section class="forgot-hero">
+  <shared-container>
+  <div class="forgot-card">
+    <h1 class="title">{{ 'auth.reset.title' | t }}</h1>
+    <p class="subtitle" *ngIf="!sent">{{ 'auth.reset.subtitle' | t }}</p>
+    <p class="subtitle" *ngIf="sent">{{ 'auth.reset.sent' | t }}</p>
+
+    <form *ngIf="!sent" [formGroup]="forgotForm" (ngSubmit)="submit()" class="form">
+      <shared-input
+        id="email"
+        name="email"
+        type="email"
+        label="{{ 'auth.email' | t }}"
+        placeholder="{{ 'auth.email_placeholder' | t }}"
+        [formControl]="emailControl">
+      </shared-input>
+      <span class="field-error" *ngIf="emailErrors" role="alert">
+        {{ emailErrors | t }}
+      </span>
+
+      <div class="actions">
+        <shared-button type="submit" [disabled]="loading || forgotForm.invalid">{{ 'auth.reset.cta' | t }}</shared-button>
+        <shared-button variant="link" type="button" (click)="backToLogin()">{{ 'auth.back_to_login' | t }}</shared-button>
+      </div>
+    </form>
+    <div class="actions" *ngIf="sent">
+      <shared-button variant="primary" type="button" (click)="backToLogin()">{{ 'auth.back_to_login' | t }}</shared-button>
+    </div>
+  </div>
+  </shared-container>
+</section>

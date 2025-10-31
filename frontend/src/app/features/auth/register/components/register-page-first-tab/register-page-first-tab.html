@@ -5,9 +5,12 @@
       name="prenom"
       label="{{ 'register.firstTab.firstName' | t }}"
       [(ngModel)]="firstTabInfo.prenom"
-      [errorMessage]="formNotValid && firstTabInfo.prenom.length===0"
+      [errorMessage]="(formNotValid && firstTabInfo.prenom.length===0) || (!!serverErrors.prenom?.length)"
       required>
     </shared-input>
+    <ng-container *ngIf="serverErrors.prenom as prenomErrs">
+      <div class="error-message" *ngIf="prenomErrs.length">{{ prenomErrs[0] }}</div>
+    </ng-container>
   </div>
 
   <div class="form__row">
@@ -16,9 +19,12 @@
       name="nom"
       label="{{ 'register.firstTab.lastName' | t }}"
       [(ngModel)]="firstTabInfo.nom"
-      [errorMessage]="formNotValid && firstTabInfo.nom.length===0"
+      [errorMessage]="(formNotValid && firstTabInfo.nom.length===0) || (!!serverErrors.nom?.length)"
       required>
     </shared-input>
+    <ng-container *ngIf="serverErrors.nom as nomErrs">
+      <div class="error-message" *ngIf="nomErrs.length">{{ nomErrs[0] }}</div>
+    </ng-container>
   </div>
 
   <div class="form__row">
@@ -27,24 +33,29 @@
       name="age"
       type="number"
       label="{{ 'register.firstTab.age' | t }}"
-      [errorMessage]=" formNotValid && firstTabInfo.age<18"
+      [errorMessage]=" (formNotValid && firstTabInfo.age<18) || (!!serverErrors.age?.length)"
       [(ngModel)]="firstTabInfo.age">
     </shared-input>
     <div class="error-message" *ngIf="formNotValid && firstTabInfo.age < 18">
       {{ 'register.firstTab.ageError' | t }}
     </div>
+    <ng-container *ngIf="serverErrors.age as ageErrs">
+      <div class="error-message" *ngIf="ageErrs.length">{{ ageErrs[0] }}</div>
+    </ng-container>
   </div>
   <div class="form__row">
     <label for="native-select">{{ 'register.firstTab.nativeLangs' | t }}</label>
     <shared-multi-select
       id="native-select"
       [options]="langOptions()"
-      [error] = "formNotValid && firstTabInfo.native_langs.length===0"
+      [error] = "(formNotValid && firstTabInfo.native_langs.length===0) || (!!serverErrors.native_langs?.length)"
       [value]="firstTabInfo.native_langs"
       (valueChange)="onNativeChange($event)"
       [placeholder]="'register.firstTab.selectLang' | t">
     </shared-multi-select>
-    {{firstTabInfo.native_langs}}
+   <ng-container *ngIf="serverErrors.native_langs as nativeErrs">
+     <div class="error-message" *ngIf="nativeErrs.length">{{ nativeErrs[0] }}</div>
+   </ng-container>
    </div>
 
   <div class="form__row">
@@ -52,11 +63,14 @@
     <shared-multi-select
       id="target-select"
       [options]="langOptions()"
-      [error] = "formNotValid && firstTabInfo.target_langs.length===0"
+      [error] = "(formNotValid && firstTabInfo.target_langs.length===0) || (!!serverErrors.target_langs?.length)"
       [value]="firstTabInfo.target_langs"
       (valueChange)="onTargetsChange($event)"
       [placeholder]="'register.firstTab.selectLang' | t">
     </shared-multi-select>
+    <ng-container *ngIf="serverErrors.target_langs as targetErrs">
+      <div class="error-message" *ngIf="targetErrs.length">{{ targetErrs[0] }}</div>
+    </ng-container>
    </div>
  </form>
  <navigation-buttons
@@ -66,7 +80,7 @@
    [nextLabel]="'common.next'"
    [prevDisabled]="true"
    [nextDisabled]="false"
+   [block]="true"
    align="between"
-   [block]="false"
    (nextClick)="onNext()">
  </navigation-buttons>
