@@ -1,0 +1,230 @@
+<shared-container>
+  <!-- En-tête avec bouton retour -->
+  <shared-headline-bar
+    [title]="'events.create.title' | t"
+    [actionLabel]="'common.back' | t"
+    (action)="goBack()">
+  </shared-headline-bar>
+
+  <!-- Indicateur d'étape -->
+  <div class="stepper">
+    <div *ngFor="let step of [1, 2, 3, 4]"
+         class="stepper-step"
+         [class.active]="currentStep() === step"
+         [class.completed]="currentStep() > step"
+         (click)="goToStep(step)">
+      <div class="step-number">{{ step }}</div>
+      <div class="step-label">{{ 'events.create.step' + step | t }}</div>
+    </div>
+  </div>
+
+  <!-- Formulaire -->
+  <form [formGroup]="eventForm" (ngSubmit)="createEvent()">
+
+    <!-- Étape 1: Sélection du lieu -->
+    <shared-section *ngIf="currentStep() === 1" spacing="md">
+      <h2 class="step-title">{{ 'events.create.step1_heading' | t }}</h2>
+      <p class="step-description">{{ 'events.create.step1_description' | t }}</p>
+
+      <!-- Champ de recherche par code postal -->
+      <div class="search-field">
+        <shared-input
+          [label]="'events.create.postal_code' | t"
+          [placeholder]="'events.create.postal_code_placeholder' | t"
+          type="text"
+          [value]="postalCode"
+          (valueChange)="onPostalCodeChange($event)">
+        </shared-input>
+      </div>
+
+      <!-- Grille de partners -->
+      <div class="partners-grid" *ngIf="filteredPartners().length > 0">
+        <shared-card
+          *ngFor="let partner of filteredPartners()"
+          [class.selected]="selectedPartner()?.id === partner.id">
+          <div class="partner-card">
+            <h3 class="partner-name">{{ partner.name }}</h3>
+            <p class="partner-address">{{ partner.address }}</p>
+            <p class="partner-city">{{ partner.postal_code }} {{ partner.city }}</p>
+            <p class="partner-capacity">
+              <span class="capacity-icon">👥</span>
+              {{ 'events.create.capacity' | t }}: {{ partner.capacity }}
+            </p>
+
+            <shared-badge variant="accent" tone="soft" *ngIf="selectedPartner()?.id === partner.id">
+              ✓ {{ 'common.selected' | t }}
+            </shared-badge>
+
+            <div class="partner-actions">
+              <shared-button
+                variant="outline"
+                size="sm"
+                (click)="viewPartnerDetails(partner.id, $event)">
+                {{ 'events.create.view_details' | t }}
+              </shared-button>
+              <shared-button
+                [variant]="selectedPartner()?.id === partner.id ? 'accent' : 'primary'"
+                size="sm"
+                (click)="selectPartner(partner)">
+                {{ selectedPartner()?.id === partner.id ? ('common.selected' | t) : ('events.create.select' | t) }}
+              </shared-button>
+            </div>
+          </div>
+        </shared-card>
+      </div>
+
+      <div *ngIf="filteredPartners().length === 0" class="empty-state">
+        <p>{{ 'events.create.no_partners' | t }}</p>
+      </div>
+    </shared-section>
+
+    <!-- Étape 2: Détails de l'événement -->
+    <shared-section *ngIf="currentStep() === 2" spacing="md">
+      <h2 class="step-title">{{ 'events.create.step2_heading' | t }}</h2>
+      <p class="step-description">{{ 'events.create.step2_description' | t }}</p>
+
+      <div class="form-fields">
+        <!-- Langue -->
+        <div class="form-group">
+          <label>{{ 'events.create.language' | t }}</label>
+          <shared-select
+            [placeholder]="'events.create.select_language' | t"
+            [options]="languageOptions()"
+            [value]="selectedLanguageValue"
+            (valueChange)="onLanguageChange($event)">
+          </shared-select>
+        </div>
+
+        <!-- Thème -->
+        <div class="form-group">
+          <shared-input
+            [label]="'events.create.theme' | t"
+            [placeholder]="'events.create.theme_placeholder' | t"
+            type="text"
+            formControlName="theme"
+            [errorMessage]="!!(eventForm.get('theme')?.invalid && eventForm.get('theme')?.touched)">
+          </shared-input>
+        </div>
+
+        <!-- Niveau de difficulté -->
+        <div class="form-group">
+          <label>{{ 'events.create.difficulty' | t }}</label>
+          <shared-select
+            [placeholder]="'events.create.select_difficulty' | t"
+            [options]="[
+              { value: 'beginner', label: ('events.difficulty.beginner' | t) },
+              { value: 'medium', label: ('events.difficulty.medium' | t) },
+              { value: 'advanced', label: ('events.difficulty.advanced' | t) }
+            ]"
+            [value]="selectedDifficultyValue"
+            (valueChange)="onDifficultyChange($event)">
+          </shared-select>
+        </div>
+      </div>
+    </shared-section>
+
+    <!-- Étape 3: Date et heure -->
+    <shared-section *ngIf="currentStep() === 3" spacing="md">
+      <h2 class="step-title">{{ 'events.create.step3_heading' | t }}</h2>
+      <p class="step-description">{{ 'events.create.step3_description' | t }}</p>
+
+      <div class="form-fields">
+        <div class="form-group">
+          <label for="date">{{ 'events.create.date' | t }}</label>
+          <input
+            id="date"
+            type="date"
+            class="form-control"
+            formControlName="date">
+        </div>
+
+        <div class="form-group">
+          <label for="time">{{ 'events.create.time' | t }}</label>
+          <input
+            id="time"
+            type="time"
+            class="form-control"
+            formControlName="time">
+        </div>
+      </div>
+    </shared-section>
+
+    <!-- Étape 4: Récapitulatif -->
+    <shared-section *ngIf="currentStep() === 4" spacing="md">
+      <h2 class="step-title">{{ 'events.create.step4_heading' | t }}</h2>
+      <p class="step-description">{{ 'events.create.step4_description' | t }}</p>
+
+      <shared-card>
+        <div class="summary">
+          <div class="summary-row">
+            <span class="summary-label">{{ 'events.create.summary_location' | t }}:</span>
+            <span class="summary-value">{{ selectedPartnerName }}</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">{{ 'events.create.summary_language' | t }}:</span>
+            <span class="summary-value">{{ selectedLanguageName }}</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">{{ 'events.create.summary_theme' | t }}:</span>
+            <span class="summary-value">{{ eventForm.get('theme')?.value }}</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">{{ 'events.create.summary_difficulty' | t }}:</span>
+            <span class="summary-value">
+              {{ 'events.difficulty.' + eventForm.get('difficulty')?.value | t }}
+            </span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">{{ 'events.create.summary_datetime' | t }}:</span>
+            <span class="summary-value">
+              {{ eventForm.get('date')?.value }} {{ 'common.at' | t }} {{ eventForm.get('time')?.value }}
+            </span>
+          </div>
+        </div>
+      </shared-card>
+
+      <shared-badge variant="danger" tone="soft" *ngIf="error()">
+        {{ error() }}
+      </shared-badge>
+    </shared-section>
+
+    <!-- Navigation entre étapes -->
+    <div class="step-navigation">
+      <shared-button
+        *ngIf="currentStep() > 1"
+        variant="outline"
+        (click)="prevStep()">
+        {{ 'common.previous' | t }}
+      </shared-button>
+
+      <shared-button
+        *ngIf="currentStep() < totalSteps"
+        variant="primary"
+        [disabled]="!canGoNext()"
+        (click)="nextStep()">
+        {{ 'common.next' | t }}
+      </shared-button>
+
+      <shared-button
+        *ngIf="currentStep() === totalSteps"
+        variant="accent"
+        type="submit"
+        [disabled]="!eventForm.valid || loading()">
+        {{ loading() ? ('common.loading' | t) : ('events.create.create_draft' | t) }}
+      </shared-button>
+    </div>
+  </form>
+</shared-container>
+
+<!-- Modal de paiement -->
+<app-confirm-purchase
+  *ngIf="showPaymentModal()"
+  [titleKey]="'events.create.payment_title'"
+  [messageKey]="'events.create.payment_message'"
+  [buyKey]="'events.create.pay_now'"
+  [cancelKey]="'events.create.pay_later'"
+  [priceCents]="500"
+  [asModal]="true"
+  (cancel)="payLater()"
+  (buy)="payNow()">
+</app-confirm-purchase>

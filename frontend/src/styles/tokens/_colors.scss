@@ -2,38 +2,55 @@
 // DESIGN TOKENS - COLORS
 // ============================================
 
-// Primary colors (brand)
-$color-primary: #4f46e5;        // Indigo-600
-$color-primary-dark: #4338ca;   // Indigo-700
-$color-primary-light: #818cf8;  // Indigo-400
+// Brand colors (aligned with app)
+$color-primary: #F25F5C;        // Coral (CTA principal)
+$color-primary-dark: #E14F4C;   // Darker coral
+$color-primary-light: #F58B88;  // Lighter coral
 
-// Accent colors
-$color-accent: #06b6d4;         // Cyan-500
-$color-accent-dark: #0891b2;    // Cyan-600
-$color-accent-light: #22d3ee;   // Cyan-400
+// Secondary & Tertiary (brand)
+$color-secondary: #5B5F97;       // Violet (actions secondaires)
+$color-secondary-dark: #4C4F82;  // Darker violet
+$color-secondary-light: #7A7EB0; // Lighter violet
 
-// Semantic colors
-$color-success: #10b981;        // Green-500
-$color-success-light: #34d399;  // Green-400
-$color-danger: #ef4444;         // Red-500
-$color-danger-light: #f87171;   // Red-400
-$color-warning: #f59e0b;        // Amber-500
-$color-info: #3b82f6;           // Blue-500
+$color-tertiary: #70C1B3;        // Menthe (success/badges)
+$color-tertiary-dark: #5AA79A;   // Darker menthe
+$color-tertiary-light: #8ED1C5;  // Lighter menthe
+
+// Accent (maps to tertiary for coherence)
+$color-accent: $color-tertiary;
+$color-accent-dark: $color-tertiary-dark;
+$color-accent-light: $color-tertiary-light;
+
+// Semantic colors (coherent with brand)
+$color-success: #70C1B3;        // Menthe
+$color-success-light: #8ED1C5;
+$color-danger: #FF6B6B;         // Soft red
+$color-danger-light: #FFA3A3;
+$color-warning: #f59e0b;        // Amber
+$color-info: #3b82f6;           // Blue
 
 // Neutral colors
-$color-text: #1f2937;           // Gray-800
-$color-text-light: #6b7280;     // Gray-500
-$color-muted: #e5e7eb;          // Gray-200
-$color-border: #d1d5db;         // Gray-300
-$color-bg: #ffffff;             // White
-$color-bg-muted: #f9fafb;       // Gray-50
-$color-bg-dark: #111827;        // Gray-900
+$color-text: #333333;           // Main text
+$color-text-light: #6b7280;     // Muted text
+$color-muted: #E5E5E5;          // Disabled elements
+$color-border: #E5E7EB;         // Light border
+$color-bg: #F7F7F7;             // App background
+$color-bg-muted: #ffffff;       // Surfaces
+$color-bg-dark: #111827;
 
 // CSS Custom Properties (pour utilisation dans les composants)
 :root {
   --color-primary: #{$color-primary};
   --color-primary-dark: #{$color-primary-dark};
   --color-primary-light: #{$color-primary-light};
+
+  --color-secondary: #{$color-secondary};
+  --color-secondary-dark: #{$color-secondary-dark};
+  --color-secondary-light: #{$color-secondary-light};
+
+  --color-tertiary: #{$color-tertiary};
+  --color-tertiary-dark: #{$color-tertiary-dark};
+  --color-tertiary-light: #{$color-tertiary-light};
 
   --color-accent: #{$color-accent};
   --color-accent-dark: #{$color-accent-dark};

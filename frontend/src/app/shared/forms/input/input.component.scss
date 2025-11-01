@@ -4,7 +4,9 @@
 label { display:block; margin-bottom: var(--space-2); font-weight: 600; color: var(--color-text); line-height: 1.2; }
 label.invalid { color: var(--color-danger); }
 
-input {
+.input-wrap { position: relative; }
+
+.input-wrap input {
   width:100%;
   padding:.65rem .75rem;
   border-radius:var(--radius-md);
@@ -13,7 +15,23 @@ input {
   color:var(--color-text);
 }
 
-input.invalid {
+.input-wrap input.invalid {
   border-color: var(--color-danger);
   box-shadow: 0 0 0 2px color-mix(in oklab, var(--color-danger), white 80%);
+}
+
+/* Positionnement des suffixes projetés (ex: bouton œil) */
+.input-wrap [suffix] {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 640px) {
+  /* Réduire très légèrement l’espace label→input sur mobile */
+  label { margin-bottom: var(--space-1); }
 }

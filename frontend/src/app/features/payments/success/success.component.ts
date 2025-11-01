@@ -30,6 +30,7 @@ export class PaymentSuccessComponent {
   sessionId = this.route.snapshot.queryParamMap.get('session_id')    // format Stripe standard
     ?? this.route.snapshot.queryParamMap.get('cs');           // fallback si tu utilises ?cs=
   bookingPublicId = this.route.snapshot.queryParamMap.get('b');      // id public de réservation (optionnel)
+  eventId = this.route.snapshot.queryParamMap.get('e');              // id de l'événement (optionnel)
 
   goToEvents() {
     this.router.navigate(['/', this.lang, 'events']);
@@ -40,6 +41,11 @@ export class PaymentSuccessComponent {
   goToBooking() {
     if (this.bookingPublicId) {
       this.router.navigate(['/', this.lang, 'bookings', this.bookingPublicId]);
+    }
+  }
+  goToEvent() {
+    if (this.eventId) {
+      this.router.navigate(['/', this.lang, 'events', this.eventId]);
     }
   }
 }

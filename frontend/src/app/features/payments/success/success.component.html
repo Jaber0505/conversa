@@ -18,7 +18,11 @@
     </div>
 
     <div class="actions">
-      <shared-button type="button" (click)="goToMyBookings()">
+      <shared-button type="button" *ngIf="eventId" (click)="goToEvent()">
+        {{ 'payments.success.back_to_event' | t }}
+      </shared-button>
+
+      <shared-button type="button" [variant]="eventId ? 'outline' : 'primary'" (click)="goToMyBookings()">
         {{ 'payments.success.my_bookings' | t }}
       </shared-button>
 

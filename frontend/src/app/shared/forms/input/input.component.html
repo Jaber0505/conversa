@@ -1,13 +1,23 @@
 <label *ngIf="label" [for]="id" [class.invalid]="errorMessage">{{ label }}</label>
-<input
-  [id]="id"
-  [name]="name"
-  [type]="type"
-  [placeholder]="placeholder"
-  [value]="value"
-  [disabled]="disabled"
-  [class.invalid]="errorMessage"
-  [attr.aria-invalid]="errorMessage ? 'true' : null"
-  (input)="onInput($event)"
-  (blur)="onTouched()"
-/>
+<div class="input-wrap">
+  <input
+    [id]="id"
+    [name]="name"
+    [type]="type"
+    [placeholder]="placeholder"
+    [attr.autocomplete]="autocomplete || null"
+    [attr.inputmode]="inputmode || null"
+    [attr.autocapitalize]="autocapitalize || null"
+    [attr.autocorrect]="autocorrect || null"
+    [attr.spellcheck]="spellcheck === undefined ? null : spellcheck"
+    [value]="value"
+    [disabled]="disabled"
+    [class.invalid]="errorMessage"
+    [attr.aria-invalid]="errorMessage ? 'true' : null"
+    (input)="onInput($event)"
+    (blur)="onTouched()"
+  />
+  <ng-content select="[suffix]"></ng-content>
+  <ng-content></ng-content>
+  
+</div>

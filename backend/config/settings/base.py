@@ -328,6 +328,11 @@ LOGGING = {
             "propagate": False,
         },
         "http": {"handlers": ["console"], "level": "INFO", "propagate": False},
+        "payments.webhook": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
     },
 }
 

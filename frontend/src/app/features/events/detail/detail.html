@@ -10,6 +10,10 @@
   </div>
 
   <shared-container>
+    <shared-headline-bar
+      [title]="evt.title"
+      [subtitle]="formatDate(evt.datetime_start) + ' • ' + (evt.partner_city || '')">
+    </shared-headline-bar>
     <div class="detail-grid">
       <!-- Colonne principale -->
       <div class="main-column">
@@ -23,7 +27,6 @@
               {{ evt.difficulty }}
             </span>
           </div>
-          <h1 class="event-title">{{ evt.title }}</h1>
 
           <div class="event-meta">
             <div class="meta-item">
@@ -119,6 +122,16 @@
               {{ 'events.detail.book_spot' | t }}
             </shared-button>
 
+            <!-- Payer (booking PENDING) -->
+            <shared-button
+              *ngSwitchCase="'pay'"
+              variant="accent"
+              size="lg"
+              class="btn-pay"
+              (click)="onPay()">
+              {{ 'events.detail.pay_booking' | t }}
+            </shared-button>
+
             <!-- Annuler -->
             <shared-button
               *ngSwitchCase="'cancel'"
@@ -162,6 +175,9 @@
 
           <p class="booking-notice" *ngIf="getActionButtonState() === 'book'">
             {{ 'events.detail.booking_notice' | t }}
+          </p>
+          <p class="booking-notice" *ngIf="getActionButtonState() === 'pay'">
+            {{ 'events.detail.pay_notice' | t }}
           </p>
           <p class="booking-notice" *ngIf="getActionButtonState() === 'cancel'">
             {{ 'events.detail.cancel_notice' | t }}

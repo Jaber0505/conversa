@@ -24,5 +24,5 @@
 .link {
   color: var(--color-secondary);
   font-weight: 700;
-  &:hover { color: var(--color_secondary-600); }
+  &:hover { color: color-mix(in oklab, var(--color-secondary), black 10%); }
 }

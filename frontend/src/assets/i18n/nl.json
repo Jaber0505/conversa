@@ -68,7 +68,7 @@
                                   },
                      "secondTab":  {
                                        "bio":  "Uw bio",
-                                       "bioPlaceHolder":  "Stel uzelf voor in 2–3 zinnen (ervaring, interesses, doelen). 10 tot 500 tekens.",
+                                       "bioPlaceHolder":  "Stel uzelf voor in 2ï¿½3 zinnen (ervaring, interesses, doelen). 10 tot 500 tekens.",
                                        "limit":  "Tussen 10 en 500 tekens"
                                    },
                      "thirdTab":  {
@@ -100,7 +100,7 @@
                                },
                    "search":  {
                                   "query":  "Zoeken",
-                                  "placeholder_event":  "Zoek een evenement…",
+                                  "placeholder_event":  "Zoek een evenementï¿½",
                                   "input":  {
                                                 "placeholder":  "Zoek een evenement..."
                                             },
@@ -108,8 +108,8 @@
                                   "more_filters":  "Meer filters",
                                   "hide_filters":  "Filters verbergen",
                                   "reset":  "Resetten",
-                                  "select_placeholder":  "Selecteer…",
-                                  "tip_keywords":  "Tip: \"café\", \"beginner\", \"afterwork\"… probeer trefwoorden."
+                                  "select_placeholder":  "Selecteerï¿½",
+                                  "tip_keywords":  "Tip: \"cafï¿½\", \"beginner\", \"afterwork\"ï¿½ probeer trefwoorden."
                               },
                    "badges":  {
                                   "members_1000_plus":  "+1000 leden",
@@ -132,7 +132,7 @@
                                             },
                                    "area":  {
                                                 "label":  "Regio",
-                                                "placeholder":  "Alle regio’s",
+                                                "placeholder":  "Alle regioï¿½s",
                                                 "options":  {
                                                                 "brussels":  "Brussel",
                                                                 "paris":  "Parijs",
@@ -153,7 +153,7 @@
                   "home":  {
                                "hero":  {
                                             "title":  "Spreek een taal, beleef een ontmoeting",
-                                            "subtitle":  "Sluit je aan bij Conversa, een actieve community dankzij taalmeetups. Immersieve spellen in cafés in Brussel."
+                                            "subtitle":  "Sluit je aan bij Conversa, een actieve community dankzij taalmeetups. Immersieve spellen in cafï¿½s in Brussel."
                                         },
                                "search":  {
                                               "title":  "Vind je taalpartners in 2 minuten",
@@ -184,7 +184,7 @@
                                                   "title":  "Ontdek per categorie",
                                                   "items":  {
                                                                 "cafe":  {
-                                                                             "title":  "Conversa Café",
+                                                                             "title":  "Conversa Cafï¿½",
                                                                              "subtitle":  "Informele ontmoetingen"
                                                                          },
                                                                 "pro":  {
@@ -205,7 +205,7 @@
                                                                           "desc":  "Inschrijving in 1 minuut, geen betaling vereist"
                                                                       },
                                                             "local":  {
-                                                                          "desc":  "Kleinschalige groepen in partnercafés"
+                                                                          "desc":  "Kleinschalige groepen in partnercafï¿½s"
                                                                       },
                                                             "effective":  {
                                                                               "desc":  "Gespreksgames met begeleiding, feedback van peers"
@@ -223,10 +223,10 @@
                            },
                   "mission":  {
                                   "title":  "Onze missie",
-                                  "p1":  "Natuurlijke gelegenheden creëren om een taal te spreken zonder academische druk. Elke sessie is ontworpen om je te helpen durven, vooruitgang te boeken en je open te stellen voor anderen.",
+                                  "p1":  "Natuurlijke gelegenheden creï¿½ren om een taal te spreken zonder academische druk. Elke sessie is ontworpen om je te helpen durven, vooruitgang te boeken en je open te stellen voor anderen.",
                                   "bullets":  [
                                                   "Echte praktijk, geen klassikaal onderwijs",
-                                                  "Groepen 3–6 personen zodat iedereen aan bod komt",
+                                                  "Groepen 3ï¿½6 personen zodat iedereen aan bod komt",
                                                   "Gesprekskaarten en spellen om het ijs te breken"
                                               ]
                               },
@@ -292,7 +292,7 @@
                               "steps":  [
                                             {
                                                 "title":  "Kies een taal",
-                                                "desc":  "Filter op Engels, Nederlands, Spaans… en jouw buurt."
+                                                "desc":  "Filter op Engels, Nederlands, Spaansï¿½ en jouw buurt."
                                             },
                                             {
                                                 "title":  "Reserveer je plaats",
@@ -316,13 +316,13 @@
                                                {
                                                    "name":  "Bram",
                                                    "role":  "Partnerschappen",
-                                                   "bio":  "Zoekt warme locaties en coördineert de gastheren."
+                                                   "bio":  "Zoekt warme locaties en coï¿½rdineert de gastheren."
                                                }
                                            ]
                            },
                   "partners":  {
                                    "title":  "Onze partners",
-                                   "desc":  "Brusselse cafés en bars die houden van uitwisseling. Heb je een locatie en wil je een gesprekstafel hosten?"
+                                   "desc":  "Brusselse cafï¿½s en bars die houden van uitwisseling. Heb je een locatie en wil je een gesprekstafel hosten?"
                                },
                   "timeline":  {
                                    "title":  "Onze geschiedenis",
@@ -345,7 +345,7 @@
                                        "title":  "Ze praten erover",
                                        "quotes":  [
                                                       {
-                                                          "author":  "Lucía",
+                                                          "author":  "Lucï¿½a",
                                                           "text":  "Ik durfde al tijdens de eerste sessie te spreken. De spellen helpen echt."
                                                       },
                                                       {
@@ -367,8 +367,8 @@
                                   "social_label":  "Volg ons"
                               },
                   "meta":  {
-                               "title":  "Over ons — Conversa",
-                               "description":  "Conversa — taalpraktijk in Brussel in kleine groepen, met spellen en gezellige uitwisselingen."
+                               "title":  "Over ons ï¿½ Conversa",
+                               "description":  "Conversa ï¿½ taalpraktijk in Brussel in kleine groepen, met spellen en gezellige uitwisselingen."
                            }
               },
     "faq":  {
@@ -379,7 +379,7 @@
                          },
                 "qna":  {
                             "what_is_conversa_q":  "Wat is Conversa?",
-                            "what_is_conversa_a":  "Conversa is een platform om op een speelse manier talen te oefenen in kleine groepen, in Brusselse cafés en bars. Geen klassikaal onderwijs: je praat, speelt en wisselt uit, net als met vrienden, terwijl je nieuwe mensen ontmoet.",
+                            "what_is_conversa_a":  "Conversa is een platform om op een speelse manier talen te oefenen in kleine groepen, in Brusselse cafï¿½s en bars. Geen klassikaal onderwijs: je praat, speelt en wisselt uit, net als met vrienden, terwijl je nieuwe mensen ontmoet.",
                             "how_join_event_q":  "Hoe sluit ik me aan bij een evenement?",
                             "how_join_event_a":  "Vanaf de startpagina kies je een taal die je interesseert, bekijk je de beschikbare sessies en klik je op \"Ik doe mee\". Ter plaatse bevestig je je aanwezigheid via de app en sluit je je aan bij de groep om te starten.",
                             "cancel_policy_q":  "Kan ik mijn deelname annuleren?",
@@ -387,7 +387,7 @@
                             "account_data_q":  "Wat doen jullie met mijn gegevens?",
                             "account_data_a":  "We verzamelen alleen de informatie die nodig is om sessies te organiseren en de veiligheid van deelnemers te waarborgen. Je gegevens worden nooit verkocht, en je kunt ze op elk moment aanpassen of laten verwijderen.",
                             "payment_price_q":  "Hoeveel kost het?",
-                            "payment_price_a":  "Een standaardticket kost €7 per sessie, inclusief toegang tot het gespreksgame en het in contact brengen met andere deelnemers. Speciale evenementen of workshops kunnen een ander tarief hebben, dat altijd vooraf wordt aangegeven."
+                            "payment_price_a":  "Een standaardticket kost ï¿½7 per sessie, inclusief toegang tot het gespreksgame en het in contact brengen met andere deelnemers. Speciale evenementen of workshops kunnen een ander tarief hebben, dat altijd vooraf wordt aangegeven."
                         },
                 "no_results":  "Geen vraag gevonden? conversa@hotmail.com"
             },
@@ -396,6 +396,7 @@
                                      "title":  "Betaling bevestigd",
                                      "thanks":  "Dank u! Uw boeking is succesvol gevalideerd.",
                                      "for_booking":  "voor de boeking {{id}}",
+                                     "back_to_event":  "Terug naar evenement",
                                      "my_bookings":  "Mijn boekingen",
                                      "back_to_events":  "Terug naar evenementen"
                                  },
@@ -475,7 +476,7 @@
                                                       },
                                                 "2":  {
                                                           "title":  "Reserveer je plaats bij een evenement",
-                                                          "desc":  "Bekijk evenementen bij jou in de buurt en reserveer met één klik."
+                                                          "desc":  "Bekijk evenementen bij jou in de buurt en reserveer met ï¿½ï¿½n klik."
                                                       },
                                                 "3":  {
                                                           "title":  "Ontmoet en oefen",

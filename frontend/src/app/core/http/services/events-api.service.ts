@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import { EventDto, EventWrite, EventUpdate } from '@app/core/models/events.model';
+import { EventDto, EventWrite, EventUpdate, EventCreatePayload } from '@app/core/models/events.model';
 import { Paginated } from '@app/core/models/common.model';
 import { API_URL } from '@core/http';
 import {Observable} from "rxjs";
@@ -26,7 +26,7 @@ export class EventsApiService {
     return this.http.get<EventDto>(`${this.base}/events/${id}/`);
   }
 
-  create(payload: EventWrite) {
+  create(payload: EventWrite | EventCreatePayload) {
     return this.http.post<EventDto>(`${this.base}/events/`, payload);
   }
 

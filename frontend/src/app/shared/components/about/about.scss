@@ -252,7 +252,7 @@
     a {
       color: var(--color-primary);
       text-decoration: underline;
-      &:hover { color: var(--color-primary-600); }
+      &:hover { color: color-mix(in oklab, var(--color-primary), black 10%); }
     }
   }
 }

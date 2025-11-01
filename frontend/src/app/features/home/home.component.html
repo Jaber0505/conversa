@@ -70,10 +70,11 @@
   <section class="snap-section howto-section" id="howto">
     <div class="section-background"></div>
     <shared-container>
-      <div class="section-header" animateOnScroll="fadeInUp">
-        <h2 class="section-title">{{ 'landing.howto.title' | t }}</h2>
-        <p class="section-subtitle">{{ 'landing.howto.subtitle' | t }}</p>
-      </div>
+      <shared-headline-bar
+        [title]="'landing.howto.title' | t"
+        [subtitle]="'landing.howto.subtitle' | t"
+        align="center">
+      </shared-headline-bar>
 
       <div class="steps-grid">
         <div class="step-card" animateOnScroll="fadeInUp" [animateDelay]="0">
@@ -121,18 +122,19 @@
   <section class="snap-section featured-section" id="featured">
     <div class="section-background"></div>
     <shared-container>
-      <div class="section-header" animateOnScroll="fadeInUp">
-        <h2 class="section-title">{{ 'landing.featured.title' | t }}</h2>
-        <p class="section-subtitle">{{ 'landing.featured.subtitle' | t }}</p>
-      </div>
+      <shared-headline-bar
+        [title]="'landing.featured.title' | t"
+        [subtitle]="'landing.featured.subtitle' | t"
+        align="center">
+      </shared-headline-bar>
 
-      <div class="featured-grid">
+      <shared-grid class="featured-grid" [cols]="1" [colsSm]="2" [colsMd]="2" [colsLg]="3">
         @for (ev of featured; track ev.title) {
           <div animateOnScroll="fadeInUp" [animateDelay]="$index * 100">
             <shared-event-card [event]="ev" (cta)="goToEvents()"></shared-event-card>
           </div>
         }
-      </div>
+      </shared-grid>
 
       <div class="section-cta">
         <shared-button variant="primary" size="lg" (click)="goToEvents()">
@@ -147,12 +149,13 @@
   <section class="snap-section testimonials-section" id="testimonials">
     <div class="section-background"></div>
     <shared-container>
-      <div class="section-header" animateOnScroll="fadeInUp">
-        <h2 class="section-title">{{ 'landing.testimonials.title' | t }}</h2>
-        <p class="section-subtitle">{{ 'landing.testimonials.subtitle' | t }}</p>
-      </div>
+      <shared-headline-bar
+        [title]="'landing.testimonials.title' | t"
+        [subtitle]="'landing.testimonials.subtitle' | t"
+        align="center">
+      </shared-headline-bar>
 
-      <div class="testimonials-grid">
+      <shared-grid class="testimonials-grid" [cols]="1" [colsSm]="2" [colsMd]="2" [colsLg]="3">
         @for (testimonial of testimonials; track testimonial.name) {
           <div animateOnScroll="fadeInUp" [animateDelay]="$index * 150">
             <shared-testimonial-card
@@ -165,7 +168,7 @@
             </shared-testimonial-card>
           </div>
         }
-      </div>
+      </shared-grid>
     </shared-container>
   </section>
 

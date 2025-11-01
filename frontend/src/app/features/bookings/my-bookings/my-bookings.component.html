@@ -8,9 +8,13 @@
   </div>
 
   <ng-container>
-    <div class="state empty" *ngIf="!loading() && items().length === 0">
-      <shared-badge variant="muted" tone="soft">{{ 'bookings.empty' | t }}</shared-badge>
-    </div>
+    <shared-empty-state
+      *ngIf="!loading() && items().length === 0"
+      [icon]="'📭'"
+      [title]="'bookings.empty' | t"
+      [actionLabel]="'events.title' | t"
+      [actionLink]="['/', lang, 'events']">
+    </shared-empty-state>
     <shared-grid class="bk-grid" *ngIf="items().length > 0">
       <shared-card *ngFor="let b of items(); trackBy: trackById" class="bk-card">
         <div media class="thumb" aria-hidden="true"></div>

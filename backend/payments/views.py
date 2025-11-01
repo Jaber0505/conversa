@@ -47,13 +47,14 @@ def _with_leading_slash(path: str, default: str) -> str:
     return path if path.startswith("/") else "/" + path
 
 
-def _build_return_urls(lang: str, booking_public_id: str, success_override: str | None, cancel_override: str | None):
+def _build_return_urls(lang: str, booking_public_id: str, event_id: int, success_override: str | None, cancel_override: str | None):
     """
     Build Stripe success/cancel URLs.
 
     Args:
         lang: Language code (e.g., "fr", "en")
         booking_public_id: Booking UUID
+        event_id: Event ID
         success_override: Custom success URL (optional - must provide both or neither)
         cancel_override: Custom cancel URL (optional - must provide both or neither)
 
@@ -82,7 +83,7 @@ def _build_return_urls(lang: str, booking_public_id: str, success_override: str 
         cancel_url = f"{base}/{lang}{cancel_path}"
 
     # Add query params (check if URL already has params)
-    qs = {"b": str(booking_public_id), "lang": lang}
+    qs = {"b": str(booking_public_id), "e": str(event_id), "lang": lang}
     separator = "&" if "?" in success_url else "?"
     success_url = f"{success_url}{separator}{urlencode(qs)}&cs={{CHECKOUT_SESSION_ID}}"
 
@@ -175,6 +176,7 @@ class CreateCheckoutSessionView(views.APIView):
         success_url, cancel_url = _build_return_urls(
             lang=lang,
             booking_public_id=str(booking.public_id),
+            event_id=booking.event_id,
             success_override=ser.validated_data.get("success_url"),
             cancel_override=ser.validated_data.get("cancel_url"),
         )
@@ -187,17 +189,6 @@ class CreateCheckoutSessionView(views.APIView):
                 success_url=success_url,
                 cancel_url=cancel_url,
             )
-
-            # DEVELOPMENT SIMULATOR: Auto-confirm payment if enabled
-            # This simulates what the Stripe webhook would do in production
-            if getattr(settings, 'STRIPE_CONFIRM_SIMULATOR_ENABLED', False) and session_id:
-                # Simulate successful payment immediately
-                PaymentService.confirm_payment_from_webhook(
-                    booking_public_id=str(booking.public_id),
-                    session_id=session_id,
-                    payment_intent_id=f"pi_test_simulated_{session_id}",
-                    raw_event={"type": "checkout.session.completed", "simulated": True}
-                )
 
             return Response(
                 {"url": stripe_url, "session_id": session_id},
@@ -288,23 +279,35 @@ class StripeWebhookView(views.APIView):
     )
     def post(self, request):
         """Handle Stripe webhook events."""
+        import logging
+        logger = logging.getLogger("payments.webhook")
+
+        logger.info("🔔 Webhook received from Stripe")
+
         # Check webhook secret
         webhook_secret = getattr(settings, "STRIPE_WEBHOOK_SECRET", "")
         if not webhook_secret:
+            logger.error("❌ Webhook secret missing in settings")
             return Response(
                 {"detail": "Webhook secret missing"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
+        logger.info(f"✅ Webhook secret found: {webhook_secret[:20]}...")
+
         # Verify signature
         sig_header = request.META.get("HTTP_STRIPE_SIGNATURE", "")
+        logger.info(f"🔑 Stripe signature: {sig_header[:50]}...")
+
         try:
             event = validate_stripe_webhook_signature(
                 payload=request.body,
                 sig_header=sig_header,
                 webhook_secret=webhook_secret
             )
+            logger.info("✅ Webhook signature verified successfully")
         except ValidationError as e:
+            logger.error(f"❌ Webhook signature validation failed: {str(e)}")
             return Response(
                 {"detail": str(e)},
                 status=status.HTTP_400_BAD_REQUEST
@@ -314,8 +317,12 @@ class StripeWebhookView(views.APIView):
         event_type = event.get("type")
         data = event.get("data", {}).get("object", {})
 
+        logger.info(f"📦 Event type: {event_type}")
+
         # Handle checkout.session.completed
         if event_type == WEBHOOK_EVENT_CHECKOUT_COMPLETED:
+            logger.info("💳 Processing checkout.session.completed event")
+
             booking_public_id = (
                 (data.get("metadata") or {}).get("booking_public_id") or
                 data.get("client_reference_id")
@@ -323,24 +330,42 @@ class StripeWebhookView(views.APIView):
             session_id = data.get("id")
             payment_intent_id = data.get("payment_intent")
 
+            logger.info(f"📋 Booking ID: {booking_public_id}")
+            logger.info(f"🎫 Session ID: {session_id}")
+            logger.info(f"💰 Payment Intent ID: {payment_intent_id}")
+
             if booking_public_id:
-                PaymentService.confirm_payment_from_webhook(
+                logger.info(f"🚀 Calling confirm_payment_from_webhook for booking {booking_public_id}")
+                result = PaymentService.confirm_payment_from_webhook(
                     booking_public_id=booking_public_id,
                     session_id=session_id,
                     payment_intent_id=payment_intent_id,
                     raw_event=data,
                 )
+                if result:
+                    logger.info(f"✅ Payment confirmed successfully for booking {booking_public_id}")
+                else:
+                    logger.error(f"❌ Failed to confirm payment for booking {booking_public_id}")
+            else:
+                logger.warning("⚠️ No booking_public_id found in webhook data")
 
         # Handle payment_intent.payment_failed
         elif event_type == WEBHOOK_EVENT_PAYMENT_FAILED:
+            logger.info("❌ Processing payment_intent.payment_failed event")
             payment_intent_id = data.get("id")
             if payment_intent_id:
+                logger.info(f"Marking payment {payment_intent_id} as failed")
                 PaymentService.mark_payment_failed(payment_intent_id)
 
         # Handle checkout.session.expired
         elif event_type == WEBHOOK_EVENT_SESSION_EXPIRED:
+            logger.info("⏰ Processing checkout.session.expired event")
             session_id = data.get("id")
             if session_id:
+                logger.info(f"Marking session {session_id} as canceled")
                 PaymentService.mark_session_canceled(session_id)
+        else:
+            logger.warning(f"⚠️ Unhandled event type: {event_type}")
 
+        logger.info("✅ Webhook processed successfully")
         return Response({"detail": "ok"}, status=status.HTTP_200_OK)

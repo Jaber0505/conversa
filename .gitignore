@@ -117,3 +117,7 @@ media/
 *.bak
 *.orig
 *.backup
+
+# Local AI tooling and nested git dir
+.claude/
+conversa.git/

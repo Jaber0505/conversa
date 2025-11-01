@@ -112,9 +112,21 @@ class PartnerViewSet(viewsets.ModelViewSet):
         return [IsAuthenticatedAndActive()]
 
     def get_queryset(self):
-        """Filter queryset based on action."""
+        """Filter queryset based on action and query parameters."""
         # GET (list/retrieve) → only active partners
         if self.action in ["list", "retrieve"]:
-            return Partner.objects.filter(is_active=True)
+            queryset = Partner.objects.filter(is_active=True)
+
+            # Filter by search query (postal code, city, or name)
+            search = self.request.query_params.get('search', None)
+            if search:
+                from django.db.models import Q
+                queryset = queryset.filter(
+                    Q(postal_code__icontains=search) |
+                    Q(city__icontains=search) |
+                    Q(name__icontains=search)
+                )
+
+            return queryset
         # Other actions → all partners (for admin operations)
         return Partner.objects.all()

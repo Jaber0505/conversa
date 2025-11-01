@@ -51,4 +51,12 @@ export type EventWrite = {
   max_seats: number;
 };
 
+export type EventCreatePayload = {
+  partner: number;
+  language: number;
+  theme: string;
+  difficulty: string;
+  datetime_start: string;
+};
+
 export type EventUpdate = Partial<EventWrite>;

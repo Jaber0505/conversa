@@ -1,0 +1,24 @@
+<div class="empty__inner" role="status" aria-live="polite">
+  <div class="empty__icon">
+    <ng-content select="[icon]"></ng-content>
+    <span *ngIf="icon" aria-hidden="true">{{ icon }}</span>
+  </div>
+
+  <h3 class="empty__title">{{ title }}</h3>
+  <p class="empty__subtitle" *ngIf="subtitle">{{ subtitle }}</p>
+
+  <div class="empty__actions" *ngIf="actionLabel">
+    <shared-button
+      *ngIf="actionLink; else asButton"
+      variant="outline"
+      [routerLink]="actionLink">
+      {{ actionLabel }}
+    </shared-button>
+    <ng-template #asButton>
+      <shared-button variant="outline" (click)="action.emit()">
+        {{ actionLabel }}
+      </shared-button>
+    </ng-template>
+  </div>
+</div>
+

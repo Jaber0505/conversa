@@ -466,6 +466,7 @@
                                      "title":  "Payment confirmed",
                                      "thanks":  "Thank you! Your booking has been successfully validated.",
                                      "for_booking":  "for booking {{id}}",
+                                     "back_to_event":  "Back to event",
                                      "my_bookings":  "My bookings",
                                      "back_to_events":  "Back to events"
                                  },

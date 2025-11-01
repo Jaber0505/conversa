@@ -5,11 +5,15 @@
       <shared-badge variant="accent" tone="soft" class="lang-badge">
         {{ event.language_code.toUpperCase() }}
       </shared-badge>
-      <shared-badge variant="primary" tone="soft" *ngIf="isRecommended" class="recommended-badge">
+      <shared-badge variant="muted" tone="soft" *ngIf="isDraft" class="draft-badge">
+        <span class="badge-icon">📝</span>
+        {{ 'events.draft' | t }}
+      </shared-badge>
+      <shared-badge variant="primary" tone="soft" *ngIf="isRecommended && !isDraft" class="recommended-badge">
         <span class="badge-icon">⭐</span>
         {{ 'events.recommended' | t }}
       </shared-badge>
-      <shared-badge variant="primary" tone="soft" *ngIf="isNearby && !isRecommended" class="nearby-badge">
+      <shared-badge variant="primary" tone="soft" *ngIf="isNearby && !isRecommended && !isDraft" class="nearby-badge">
         <span class="badge-icon">📍</span>
         {{ 'events.nearby' | t }}
       </shared-badge>
@@ -87,7 +91,16 @@
         </shared-button>
 
         <shared-button
-          *ngIf="!event.alreadyBooked"
+          *ngIf="isDraft"
+          type="button"
+          variant="accent"
+          size="sm"
+          (click)="onPayDraft($event)">
+          {{ 'events.pay_to_publish' | t }}
+        </shared-button>
+
+        <shared-button
+          *ngIf="!event.alreadyBooked && !isDraft"
           type="button"
           variant="primary"
           size="sm"

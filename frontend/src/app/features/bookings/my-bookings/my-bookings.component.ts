@@ -9,7 +9,7 @@ import { CurrencyFormatterService, DateFormatterService } from '@app/core/servic
 
 import {
   ContainerComponent, GridComponent, HeadlineBarComponent,
-  CardComponent, BadgeComponent, ButtonComponent
+  CardComponent, BadgeComponent, ButtonComponent, EmptyStateComponent
 } from '@shared';
 
 import { BlockingSpinnerService } from '@app/core/http/services/spinner-service';
@@ -21,8 +21,8 @@ import { BookingDetailModalComponent } from '../components/booking-detail/bookin
   standalone: true,
   imports: [
     CommonModule, TPipe,
-    ContainerComponent, GridComponent, HeadlineBarComponent,
-    CardComponent, BadgeComponent, ButtonComponent,
+  ContainerComponent, GridComponent, HeadlineBarComponent,
+  CardComponent, BadgeComponent, ButtonComponent, EmptyStateComponent,
     BookingDetailModalComponent,
   ],
   templateUrl: './my-bookings.component.html',

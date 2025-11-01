@@ -14,6 +14,7 @@ const preview: Preview = {
       ],
     }),
   ],
+
   parameters: {
     actions: { argTypesRegex: '^on[A-Z].*' },
     controls: {
@@ -24,18 +25,18 @@ const preview: Preview = {
       expanded: true,
     },
     backgrounds: {
-      default: 'light',
-      values: [
-        { name: 'light', value: '#F7F7F7' },
-        { name: 'white', value: '#FFFFFF' },
-        { name: 'dark', value: '#333333' },
-      ],
+      options: {
+        light: { name: 'light', value: '#F7F7F7' },
+        white: { name: 'white', value: '#FFFFFF' },
+        dark: { name: 'dark', value: '#333333' }
+      }
     },
     layout: 'padded',
     docs: {
       toc: true, // Table of contents
     },
   },
+
   globalTypes: {
     locale: {
       name: 'Locale',
@@ -52,6 +53,12 @@ const preview: Preview = {
       },
     },
   },
+
+  initialGlobals: {
+    backgrounds: {
+      value: 'light'
+    }
+  }
 };
 
 export default preview;

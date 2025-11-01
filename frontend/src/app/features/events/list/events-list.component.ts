@@ -14,7 +14,7 @@ import {
 import { Booking, EventDto, langToOptionsSS, Language, Paginated } from '@core/models';
 import { AuthApiService } from '@core/http';
 
-import { ContainerComponent, ButtonComponent, BadgeComponent } from '@shared';
+import { ContainerComponent, BadgeComponent, EmptyStateComponent, HeadlineBarComponent } from '@shared';
 import { BlockingSpinnerService } from '@app/core/http/services/spinner-service';
 import { ConfirmPurchaseComponent } from '@app/shared/components/modals/confirm-purchase/confirm-purchase.component';
 import { SearchBarComponent } from '@app/shared/components/search-bar/search-bar';
@@ -34,11 +34,13 @@ type SearchEvt = { searchInput: string; selectedLangCodes: string[] };
     CommonModule,
     TPipe,
     ContainerComponent,
-    ButtonComponent,
     BadgeComponent,
     ConfirmPurchaseComponent,
     SearchBarComponent,
-    EventCardComponent
+    EventCardComponent,
+    // UI
+    EmptyStateComponent,
+    HeadlineBarComponent
   ],
   templateUrl: './events-list.component.html',
   styleUrls: ['./events-list.component.scss'],
@@ -59,8 +61,13 @@ export class EventsListComponent {
   // État
   readonly scoredEvents = signal<ScoredEvent[]>([]);
   readonly filteredEvents = signal<ScoredEvent[]>([]);
+  readonly myEvents = signal<ScoredEvent[]>([]);        // Événements créés par l'utilisateur
+  readonly publicEvents = signal<ScoredEvent[]>([]);    // Événements publics (pas ceux de l'utilisateur)
   readonly error = signal<string | null>(null);
   readonly isSmartSortActive = signal<boolean>(false);
+
+  // ID de l'utilisateur connecté
+  private currentUserId: number | null = null;
 
   // Données utilisateur pour le tri intelligent
   userCity: string | null = null;
@@ -112,6 +119,7 @@ export class EventsListComponent {
   private loadUserPreferences(): void {
     this.authApi.me().pipe(take(1)).subscribe({
       next: (me) => {
+        this.currentUserId = me.id;
         this.userCity = (me.city || '').trim();
         this.userTargetLangs = me.target_langs || [];
         this.userNativeLangs = me.native_langs || [];
@@ -121,6 +129,7 @@ export class EventsListComponent {
         this.isSmartSortActive.set(hasPreferences);
       },
       error: () => {
+        this.currentUserId = null;
         this.userCity = null;
         this.userTargetLangs = [];
         this.userNativeLangs = [];
@@ -220,6 +229,20 @@ export class EventsListComponent {
     // Filtre par recherche textuelle
     filtered = this.sortingService.filterBySearch(filtered, this.searchInput);
 
+    // Séparer "Mes événements" et "Événements publics"
+    const myEvts: ScoredEvent[] = [];
+    const publicEvts: ScoredEvent[] = [];
+
+    filtered.forEach(se => {
+      if (se.event.organizer_id === this.currentUserId) {
+        myEvts.push(se);
+      } else if (se.event.status === 'PUBLISHED') {
+        publicEvts.push(se);
+      }
+    });
+
+    this.myEvents.set(myEvts);
+    this.publicEvents.set(publicEvts);
     this.filteredEvents.set(filtered);
   }
 
@@ -254,6 +277,26 @@ export class EventsListComponent {
    * Navigation vers la page de détails
    */
   onViewDetails(eventId: number): void {
+    this.router.navigate(['/', this.lang, 'events', eventId]);
+  }
+
+  /**
+   * Navigation vers la page de création d'événement
+   */
+  onCreateEvent(): void {
+    this.router.navigate(['/', this.lang, 'events', 'create']);
+  }
+
+  /**
+   * Payer pour publier un événement brouillon
+   */
+  onPayDraft(eventId: number): void {
+    // L'événement a un booking PENDING pour l'organisateur
+    // On doit créer une session de paiement pour ce booking
+    this.loader.show('Redirection vers le paiement...');
+
+    // Pour l'instant, on redirige vers la page de détail de l'événement
+    // où l'utilisateur pourra payer
     this.router.navigate(['/', this.lang, 'events', eventId]);
   }
 

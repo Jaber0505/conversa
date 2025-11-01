@@ -146,7 +146,7 @@ def validate_stripe_webhook_signature(payload, sig_header, webhook_secret):
             secret=webhook_secret
         )
         return event
-    except stripe.error.SignatureVerificationError:
+    except stripe._error.SignatureVerificationError:
         raise ValidationError("Invalid webhook signature")
     except ValueError:
         raise ValidationError("Invalid webhook payload")

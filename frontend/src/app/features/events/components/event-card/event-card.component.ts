@@ -22,6 +22,11 @@ export class EventCardComponent {
 
   @Output() book = new EventEmitter<number>();
   @Output() viewDetails = new EventEmitter<number>();
+  @Output() payDraft = new EventEmitter<number>();
+
+  get isDraft(): boolean {
+    return this.event.status === 'DRAFT';
+  }
 
   get formattedDate(): string {
     return this.dateFormatter.formatDateTime(this.event.datetime_start);
@@ -51,5 +56,12 @@ export class EventCardComponent {
 
   onCardClick(): void {
     this.viewDetails.emit(this.event.id);
+  }
+
+  onPayDraft(event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+    this.payDraft.emit(this.event.id);
   }
 }

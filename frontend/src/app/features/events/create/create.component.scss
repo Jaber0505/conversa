@@ -1,0 +1,261 @@
+// Stepper (indicateur d'étapes)
+.stepper {
+  display: flex;
+  justify-content: space-between;
+  margin: var(--space-8, 2rem) 0;
+  padding: var(--space-4, 1rem);
+  gap: var(--space-2, 0.5rem);
+
+  .stepper-step {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2, 0.5rem);
+    cursor: pointer;
+    position: relative;
+    padding: var(--space-3, 0.75rem);
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: var(--color-neutral-50, #f9fafb);
+    }
+
+    &.active {
+      .step-number {
+        background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+        color: white;
+        transform: scale(1.1);
+      }
+    }
+
+    &.completed {
+      .step-number {
+        background-color: var(--color-accent, #10b981);
+        color: white;
+      }
+    }
+
+    .step-number {
+      width: 2.5rem;
+      height: 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background-color: var(--color-neutral-200, #e5e7eb);
+      color: var(--color-neutral-600, #6b7280);
+      font-weight: 700;
+      font-size: 1.125rem;
+      transition: all 0.3s ease;
+    }
+
+    .step-label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--color-neutral-600, #6b7280);
+      text-align: center;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .stepper-step {
+      .step-label {
+        display: none;
+      }
+    }
+  }
+}
+
+// Titres et descriptions des étapes
+.step-title {
+  margin: 0 0 var(--space-3, 0.75rem);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-neutral-900, #111827);
+}
+
+.step-description {
+  margin: 0 0 var(--space-6, 1.5rem);
+  font-size: 0.9375rem;
+  color: var(--color-neutral-600, #6b7280);
+}
+
+// Champs de formulaire
+.form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5, 1.25rem);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 0.5rem);
+
+  label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-neutral-700, #374151);
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--color-neutral-300, #d1d5db);
+    border-radius: 8px;
+    background: white;
+    color: var(--color-neutral-900, #111827);
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-accent, #10b981);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    }
+
+    &:disabled {
+      background-color: var(--color-neutral-50, #f9fafb);
+      cursor: not-allowed;
+    }
+  }
+}
+
+.search-field {
+  margin-bottom: var(--space-6, 1.5rem);
+}
+
+// Grille de partners
+.partners-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-4, 1rem);
+  margin-top: var(--space-4, 1rem);
+
+  shared-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+    }
+
+    &.selected {
+      border: 2px solid var(--color-accent, #10b981);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+    }
+  }
+}
+
+.partner-card {
+  padding: var(--space-4, 1rem);
+
+  .partner-name {
+    margin: 0 0 var(--space-2, 0.5rem);
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--color-neutral-900, #111827);
+  }
+
+  .partner-address,
+  .partner-city,
+  .partner-capacity {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--color-neutral-600, #6b7280);
+    line-height: 1.5;
+  }
+
+  .partner-city {
+    font-weight: 600;
+    margin-top: var(--space-2, 0.5rem);
+  }
+
+  .partner-capacity {
+    margin-top: var(--space-2, 0.5rem);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2, 0.5rem);
+
+    .capacity-icon {
+      font-size: 1rem;
+    }
+  }
+
+  shared-badge {
+    margin-top: var(--space-3, 0.75rem);
+  }
+
+  .partner-actions {
+    display: flex;
+    gap: var(--space-2, 0.5rem);
+    margin-top: var(--space-4, 1rem);
+    padding-top: var(--space-3, 0.75rem);
+    border-top: 1px solid var(--color-neutral-100, #f3f4f6);
+  }
+}
+
+// État vide
+.empty-state {
+  padding: var(--space-8, 2rem);
+  text-align: center;
+  color: var(--color-neutral-500, #9ca3af);
+
+  p {
+    margin: 0;
+    font-size: 1rem;
+  }
+}
+
+// Récapitulatif
+.summary {
+  padding: var(--space-4, 1rem);
+
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--space-3, 0.75rem) 0;
+    border-bottom: 1px solid var(--color-neutral-100, #f3f4f6);
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .summary-label {
+      font-weight: 600;
+      color: var(--color-neutral-700, #374151);
+    }
+
+    .summary-value {
+      color: var(--color-neutral-900, #111827);
+      text-align: right;
+    }
+  }
+}
+
+// Navigation entre étapes
+.step-navigation {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3, 0.75rem);
+  margin-top: var(--space-8, 2rem);
+  padding-top: var(--space-6, 1.5rem);
+  border-top: 1px solid var(--color-neutral-200, #e5e7eb);
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .partners-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .step-navigation {
+    flex-direction: column;
+
+    shared-button {
+      width: 100%;
+    }
+  }
+}

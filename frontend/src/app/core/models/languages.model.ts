@@ -1,4 +1,5 @@
 export type Language = {
+  id: number;
   code: string;
   label_fr: string;
   label_en: string;

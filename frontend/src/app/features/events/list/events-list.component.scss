@@ -29,69 +29,7 @@
   }
 }
 
-// Header de la page
-.events-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--space-4, 1rem);
-  margin-top: var(--space-6, 3rem);
-  margin-bottom: var(--space-6, 3rem);
-  padding-bottom: var(--space-5, 2rem);
-  border-bottom: 2px solid #f3f4f6;
-
-  .header-content {
-    flex: 1;
-
-    .events-title {
-      margin: 0;
-      font-size: 2rem;
-      font-weight: 800;
-      color: #111827;
-      letter-spacing: -0.02em;
-      line-height: 1.2;
-      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .events-subtitle {
-      margin: var(--space-2, 0.5rem) 0 0;
-      font-size: 0.9375rem;
-      color: #6b7280;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: var(--space-2, 0.5rem);
-
-      &::before {
-        content: '📍';
-        font-size: 1.125rem;
-      }
-    }
-  }
-
-  .smart-sort-indicator {
-    .smart-badge {
-      display: flex;
-      align-items: center;
-      gap: var(--space-2, 0.5rem);
-      padding: var(--space-2, 0.5rem) var(--space-3, 0.75rem);
-      font-weight: 600;
-      font-size: 0.875rem;
-      animation: pulse 2s ease-in-out infinite;
-      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
-      color: #ffffff;
-      border-radius: 8px;
-
-      .badge-icon {
-        font-size: 1.125rem;
-        animation: sparkle 1.5s ease-in-out infinite;
-      }
-    }
-  }
-}
+// Header remplacé par shared-headline-bar
 
 // États vides et erreurs
 .state-error,
@@ -135,6 +73,31 @@
     font-size: 1rem;
     color: #6b7280;
     max-width: 400px;
+  }
+}
+
+// Sections d'événements
+.my-events-section,
+.public-events-section {
+  margin-bottom: var(--space-8, 4rem);
+
+  .section-title {
+    margin: 0 0 var(--space-5, 2rem);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #111827;
+    padding-bottom: var(--space-3, 0.75rem);
+    border-bottom: 3px solid var(--color-primary);
+    display: inline-block;
+  }
+}
+
+.my-events-section {
+  .section-title {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 }
 
@@ -209,26 +172,5 @@
   .search-section {
     padding: var(--space-4, 1.5rem);
     margin-bottom: var(--space-5, 2rem);
-  }
-
-  .events-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--space-3, 0.75rem);
-
-    .header-content {
-      .events-title {
-        font-size: 1.75rem;
-      }
-    }
-
-    .smart-sort-indicator {
-      align-self: stretch;
-
-      .smart-badge {
-        width: 100%;
-        justify-content: center;
-      }
-    }
   }
 }

@@ -25,6 +25,11 @@ export class InputComponent implements ControlValueAccessor {
   @Input() placeholder = '';
   @Input() disabled = false;
   @Input() errorMessage = false;
+  @Input() autocomplete?: string;
+  @Input() inputmode?: string;
+  @Input() autocapitalize?: string;
+  @Input() autocorrect?: string;
+  @Input() spellcheck?: boolean;
 
   // ✅ RESTAURE en @Input() pour autoriser [value]="..."
   @Input() set value(v: string | number | null | undefined) {

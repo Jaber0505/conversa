@@ -2,7 +2,7 @@
 :host {
   --btn-bg: var(--color-primary);      /* CTA = corail */
   --btn-fg: #fff;
-  --btn-bg-hover: var(--color-primary-600);
+  --btn-bg-hover: color-mix(in oklab, var(--color-primary), black 10%);
 
   display: inline-flex;
   align-items: center;
@@ -36,7 +36,7 @@
 
 :host(.btn--accent) {
   --btn-bg: var(--color-secondary);          /* VIOLET */
-  --btn-bg-hover: var(--color_secondary-600);
+  --btn-bg-hover: color-mix(in oklab, var(--color-secondary), black 10%);
   --btn-fg: #fff;
 }
 

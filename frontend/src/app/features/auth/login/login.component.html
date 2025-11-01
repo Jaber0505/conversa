@@ -1,66 +1,63 @@
-<section class="section register">
-  <div class="hero">
-    <div class="hero__copy">
-      <h1>{{ 'auth.login' | t }}</h1>
-      <p class="muted">{{ 'auth.login_subtitle' | t }}</p>
-    </div>
-  </div>
+<app-landing-header [spacer]="true"></app-landing-header>
 
-  <div class="container grid">
-    <div class="card">
+<section class="login-hero">
+  <shared-container>
+    <div class="login-card">
+      <header class="header">
+        <h1 class="title">{{ 'auth.login' | t }}</h1>
+        <p class="subtitle">{{ 'auth.login_subtitle' | t }}</p>
+      </header>
+
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
-        <div class="auth-error" *ngIf="apiError" role="alert" aria-live="polite">
-          {{ apiError | t }}
-        </div>
+        <div class="auth-error" *ngIf="apiError" role="alert" aria-live="polite">{{ apiError | t }}</div>
 
         <div class="form-field">
-          <shared-input
-            id="email"
-            name="email"
-            type="email"
-            label="{{ 'auth.email' | t }}"
-            placeholder="{{ 'auth.email_placeholder' | t }}"
-            [formControl]="emailControl">
+          <shared-input id="email" name="email" type="email"
+                        label="{{ 'auth.email' | t }}"
+                        placeholder="{{ 'auth.email_placeholder' | t }}"
+                        autocomplete="username email"
+                        inputmode="email"
+                        autocapitalize="off"
+                        autocorrect="off"
+                        [spellcheck]="false"
+                        [formControl]="emailControl">
           </shared-input>
-          <span class="field-error" *ngIf="emailErrors" role="alert">
-            {{ emailErrors | t }}
-          </span>
+          <span class="field-error" *ngIf="emailErrors" role="alert">{{ emailErrors | t }}</span>
         </div>
 
         <div class="password-field">
           <div class="form-field">
-            <shared-input
-              id="password"
-              name="password"
-              [type]="showPassword ? 'text' : 'password'"
-              label="{{ 'auth.password' | t }}"
-              placeholder="{{ 'auth.password_placeholder' | t }}"
-              [formControl]="passwordControl">
+            <shared-input id="password" name="password"
+                          [type]="showPassword ? 'text' : 'password'"
+                          label="{{ 'auth.password' | t }}"
+                          placeholder="{{ 'auth.password_placeholder' | t }}"
+                          autocomplete="current-password"
+                          autocapitalize="off"
+                          autocorrect="off"
+                          [spellcheck]="false"
+                          [formControl]="passwordControl">
+              <button suffix type="button" class="eye-btn" (click)="togglePassword()"
+                      [attr.aria-label]="(showPassword ? ('auth.hide_password' | t) : ('auth.show_password' | t))">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" *ngIf="!showPassword">
+                  <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" *ngIf="showPassword">
+                  <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a20.77 20.77 0 0 1 5.06-6.06"/>
+                  <path d="M1 1l22 22"/>
+                </svg>
+              </button>
             </shared-input>
-            <span class="field-error" *ngIf="passwordErrors" role="alert">
-              {{ passwordErrors | t }}
-            </span>
+            <span class="field-error" *ngIf="passwordErrors" role="alert">{{ passwordErrors | t }}</span>
           </div>
-          <button type="button" class="eye-btn" (click)="togglePassword()" [attr.aria-label]="(showPassword ? ('auth.hide_password' | t) : ('auth.show_password' | t))">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" *ngIf="!showPassword">
-              <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
-              <circle cx="12" cy="12" r="3"/>
-            </svg>
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" *ngIf="showPassword">
-              <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a20.77 20.77 0 0 1 5.06-6.06"/>
-              <path d="M1 1l22 22"/>
-            </svg>
-          </button>
         </div>
 
         <div class="auth-meta">
-          <span class="muted small"><a class="auth-link" [routerLink]="['/', getLang(), 'auth', 'forgot']">{{ 'auth.forgot_password' | t }}</a></span>
+          <a class="auth-link small" [routerLink]="['/', getLang(), 'auth', 'forgot']">{{ 'auth.forgot_password' | t }}</a>
         </div>
 
         <div class="auth-actions">
-          <shared-button class="btn-main" type="submit" [disabled]="loading || loginForm.invalid">
-            {{ 'auth.login' | t }}
-          </shared-button>
+          <shared-button class="btn-main" type="submit" [disabled]="loading || loginForm.invalid">{{ 'auth.login' | t }}</shared-button>
         </div>
 
         <footer class="auth-footer">
@@ -69,5 +66,5 @@
         </footer>
       </form>
     </div>
-  </div>
+  </shared-container>
 </section>

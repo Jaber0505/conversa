@@ -5,3 +5,4 @@ export * from './languages.model';
 export * from './events.model';
 export * from './bookings.model';
 export * from './payments.model';
+export * from './partners.model';

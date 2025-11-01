@@ -1,9 +1,10 @@
-import { Component, OnInit, inject, signal, Pipe, PipeTransform } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, Pipe, PipeTransform } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { TPipe } from '@core/i18n';
 import { SHARED_IMPORTS } from '@shared';
+import { HeadlineBarComponent } from '@shared/layout/headline-bar/headline-bar.component';
 import { EventDetailDto, Booking } from '@core/models';
 import { EventsApiService, BookingsApiService, AuthTokenService, PaymentsApiService } from '@core/http';
 import { take, finalize } from 'rxjs/operators';
@@ -25,11 +26,11 @@ export class SanitizeUrlPipe implements PipeTransform {
 @Component({
   selector: 'app-event-detail',
   standalone: true,
-  imports: [CommonModule, TPipe, SanitizeUrlPipe, ConfirmPurchaseComponent, ...SHARED_IMPORTS],
+  imports: [CommonModule, TPipe, SanitizeUrlPipe, ConfirmPurchaseComponent, HeadlineBarComponent, ...SHARED_IMPORTS],
   templateUrl: './detail.html',
   styleUrl: './detail.scss'
 })
-export class EventDetailComponent implements OnInit {
+export class EventDetailComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private eventsApi = inject(EventsApiService);
@@ -50,13 +51,43 @@ export class EventDetailComponent implements OnInit {
   readonly MAX_PARTICIPANTS = 6;
   readonly CANCELLATION_DEADLINE_HOURS = 3; // Cohérent avec backend
 
+  // Référence à l'écouteur de visibilité pour le nettoyage
+  private visibilityChangeHandler: (() => void) | null = null;
+
   ngOnInit(): void {
     const eventId = this.route.snapshot.paramMap.get('id');
     if (eventId) {
       this.loadEvent(+eventId);
+
+      // Recharger l'événement quand la page devient visible
+      // (ex: retour après paiement Stripe)
+      this.setupAutoRefresh(+eventId);
     } else {
       this.error.set('events.detail.not_found');
       this.loading.set(false);
+    }
+  }
+
+  /**
+   * Configure le rechargement automatique quand la page devient visible
+   * Utile après un paiement Stripe ou quand l'utilisateur revient sur la page
+   */
+  private setupAutoRefresh(eventId: number): void {
+    this.visibilityChangeHandler = () => {
+      if (document.visibilityState === 'visible') {
+        // Recharger l'événement quand l'utilisateur revient sur la page
+        this.loadEvent(eventId);
+      }
+    };
+
+    // Écouter les changements de visibilité
+    document.addEventListener('visibilitychange', this.visibilityChangeHandler);
+  }
+
+  ngOnDestroy(): void {
+    // Nettoyer l'écouteur pour éviter les fuites de mémoire
+    if (this.visibilityChangeHandler) {
+      document.removeEventListener('visibilitychange', this.visibilityChangeHandler);
     }
   }
 
@@ -133,7 +164,7 @@ export class EventDetailComponent implements OnInit {
   /**
    * Retourne le statut du bouton d'action selon l'état de l'événement et du booking
    */
-  getActionButtonState(): 'book' | 'cancel' | 'starting-soon' | 'full' | 'cancelled' {
+  getActionButtonState(): 'book' | 'pay' | 'cancel' | 'starting-soon' | 'full' | 'cancelled' {
     const evt = this.event();
     const booking = this.userBooking();
 
@@ -142,8 +173,13 @@ export class EventDetailComponent implements OnInit {
     // Événement annulé
     if (evt.is_cancelled) return 'cancelled';
 
-    // Utilisateur a déjà un booking actif
-    if (booking && (booking.status === 'CONFIRMED' || booking.status === 'PENDING')) {
+    // Utilisateur a un booking PENDING (pas encore payé)
+    if (booking && booking.status === 'PENDING') {
+      return 'pay';
+    }
+
+    // Utilisateur a un booking CONFIRMED (déjà payé)
+    if (booking && booking.status === 'CONFIRMED') {
       // Peut annuler si plus de 3h avant événement
       if (this.canCancel()) {
         return 'cancel';
@@ -228,6 +264,31 @@ export class EventDetailComponent implements OnInit {
       error: (err) => {
         console.error('Error creating booking:', err);
         alert('Erreur lors de la création de la réservation');
+      },
+    });
+  }
+
+  onPay(): void {
+    const booking = this.userBooking();
+    if (!booking) return;
+
+    this.loader.show('Redirection vers le paiement...');
+
+    // Créer la session de paiement Stripe pour le booking PENDING existant
+    this.paymentsApi.createCheckoutSession({
+      booking_public_id: booking.public_id,
+      lang: this.getLang(),
+    }).pipe(
+      take(1),
+      finalize(() => this.loader.hide())
+    ).subscribe({
+      next: (res) => {
+        // Rediriger vers Stripe
+        window.location.href = res.url;
+      },
+      error: (err) => {
+        console.error('Error creating checkout session:', err);
+        alert('Erreur lors de la création de la session de paiement');
       },
     });
   }

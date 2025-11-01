@@ -16,20 +16,6 @@ from .base import *  # noqa
 import os
 
 
-def _truthy(v: str) -> bool:
-    """Convert string to boolean."""
-    return str(v).strip().lower() in {"1", "true", "yes", "y", "on"}
-
-
-# Stripe simulator flags (for local testing without real Stripe calls)
-STRIPE_CONFIRM_SIMULATOR_ENABLED = _truthy(
-    os.getenv("STRIPE_CONFIRM_SIMULATOR_ENABLED", os.getenv("SIMULATOR", "1"))
-)
-STRIPE_RAW_CARD_SIM_ENABLED = _truthy(
-    os.getenv("STRIPE_RAW_CARD_SIM_ENABLED", "1")
-)
-STRIPE_PI_ALLOW_REDIRECTS = os.getenv("STRIPE_PI_ALLOW_REDIRECTS", "always")
-
 # =============================================================================
 # DEVELOPMENT OVERRIDES
 # =============================================================================

@@ -180,20 +180,33 @@ class PaymentService(BaseService):
         Returns:
             Payment: Updated payment instance or None if booking not found
         """
+        import logging
+        logger = logging.getLogger("payments.webhook")
+
         from bookings.models import Booking
+
+        logger.info(f"🔍 Looking for booking {booking_public_id}")
 
         try:
             booking = Booking.objects.select_for_update().get(public_id=booking_public_id)
+            logger.info(f"✅ Booking found: ID={booking.id}, Status={booking.status}, Event={booking.event_id}")
         except Booking.DoesNotExist:
+            logger.error(f"❌ Booking {booking_public_id} not found!")
             return None
 
         # Confirm booking if still pending
         if booking.status == BookingStatus.PENDING:
+            logger.info(f"📝 Booking is PENDING, confirming with payment_intent_id={payment_intent_id}")
             booking.mark_confirmed(payment_intent_id=payment_intent_id)
+            logger.info(f"✅ Booking marked as CONFIRMED")
+        else:
+            logger.warning(f"⚠️ Booking status is {booking.status}, not PENDING. Skipping confirmation.")
 
         # Get or create payment
         currency_raw = booking.currency or DEFAULT_PAYMENT_CURRENCY
         currency = str(currency_raw).upper().strip()[:3] if currency_raw else "EUR"
+
+        logger.info(f"💰 Getting or creating payment for booking {booking.id}")
 
         payment, created = Payment.objects.get_or_create(
             booking=booking,
@@ -205,19 +218,30 @@ class PaymentService(BaseService):
             },
         )
 
+        if created:
+            logger.info(f"✨ Created new payment #{payment.id}")
+        else:
+            logger.info(f"📦 Found existing payment #{payment.id}, status={payment.status}")
+
         # Update payment
         if session_id:
             payment.stripe_checkout_session_id = payment.stripe_checkout_session_id or session_id
+            logger.info(f"🎫 Updated session_id: {session_id}")
         if payment_intent_id:
             payment.stripe_payment_intent_id = payment.stripe_payment_intent_id or payment_intent_id
+            logger.info(f"💳 Updated payment_intent_id: {payment_intent_id}")
 
         payment.status = STATUS_SUCCEEDED
         payment.raw_event = raw_event
         payment.save()
 
+        logger.info(f"✅ Payment #{payment.id} marked as SUCCEEDED and saved")
+
         # Log success
         from audit.services import AuditService
         AuditService.log_payment_succeeded(payment, booking.user)
+
+        logger.info(f"🎉 Payment confirmation complete for booking {booking_public_id}")
 
         return payment
 

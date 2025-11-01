@@ -1,4 +1,27 @@
-.hb { display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:1rem; }
-.hb__title { font-size: var(--fs-2xl); font-weight: 800; }
-.hb__link { font-weight:700; color: var(--color-secondary); }
-.hb__link:hover { color: var(--color_secondary-600); }
+.hb {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+  margin: var(--space-6) 0 var(--space-6);
+  padding-bottom: var(--space-5);
+  border-bottom: 2px solid #f3f4f6;
+}
+.hb--center { justify-content: center; text-align: center; }
+.hb__left { display:flex; flex-direction:column; gap:.375rem; }
+.hb__title {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hb__subtitle {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--color-text-light, #6b7280);
+}
+.hb__link { font-weight:700; color: var(--color-secondary); text-decoration: none; }
+.hb__link:hover { color: color-mix(in oklab, var(--color-secondary), black 10%); text-decoration: underline; }
