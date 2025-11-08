@@ -1,0 +1,75 @@
+<shared-container>
+  <shared-headline-bar [title]="'Audit Logs'" [subtitle]="'Surveillez les erreurs et requêtes (admin)'" [actionLink]="'/'"></shared-headline-bar>
+
+  <form [formGroup]="form" class="filters" (ngSubmit)="fetch()">
+    <input type="text" formControlName="search" placeholder="Recherche (message, action, email)" />
+    <select formControlName="category">
+      <option value="">Catégorie</option>
+      <option>HTTP</option><option>AUTH</option><option>EVENT</option><option>BOOKING</option><option>PAYMENT</option><option>PARTNER</option><option>USER</option><option>ADMIN</option><option>SYSTEM</option>
+    </select>
+    <select formControlName="level">
+      <option value="">Niveau</option>
+      <option>DEBUG</option><option>INFO</option><option>WARNING</option><option>ERROR</option><option>CRITICAL</option>
+    </select>
+    <select formControlName="method">
+      <option value="">Méthode</option>
+      <option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option>
+    </select>
+    <input type="number" formControlName="status_code" placeholder="Status HTTP" />
+    <input type="date" formControlName="created_at__gte" />
+    <input type="date" formControlName="created_at__lte" />
+    <shared-button type="submit" variant="primary" size="sm">Filtrer</shared-button>
+    <shared-button type="button" variant="outline" size="sm" (click)="exportCsv()">Exporter CSV</shared-button>
+    <shared-button type="button" variant="danger" size="sm" (click)="cleanup()">Cleanup</shared-button>
+  </form>
+
+  <div *ngIf="error()" class="state-error"><shared-badge variant="danger" tone="soft">{{ error() }}</shared-badge></div>
+  <div *ngIf="notice()" class="state-notice"><shared-badge variant="accent" tone="soft">{{ notice() }}</shared-badge></div>
+  <div *ngIf="loading()">Chargement…</div>
+
+  <section class="stats" *ngIf="catTotals().length || levelTotals().length">
+    <div class="stats-grid">
+      <div>
+        <h3>Par catégorie</h3>
+        <div class="bars">
+          <ng-container *ngFor="let it of catTotals()">
+            <div class="bar-row">
+              <div class="bar-label">{{ it.key }}</div>
+              <div class="bar-track">
+                <div class="bar-fill" [style.width.%]="(it.count / (maxCat() || 1)) * 100"></div>
+              </div>
+              <div class="bar-count">{{ it.count }}</div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+      <div>
+        <h3>Par niveau</h3>
+        <div class="bars">
+          <ng-container *ngFor="let it of levelTotals()">
+            <div class="bar-row">
+              <div class="bar-label">{{ it.key }}</div>
+              <div class="bar-track">
+                <div class="bar-fill level-{{ it.key | lowercase }}" [style.width.%]="(it.count / (maxLevel() || 1)) * 100"></div>
+              </div>
+              <div class="bar-count">{{ it.count }}</div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="logs-list">
+    <div class="log-row" *ngFor="let it of items()">
+      <div class="col when">{{ it.created_at | date:'short' }}</div>
+      <div class="col level">{{ it.level }}</div>
+      <div class="col cat">{{ it.category }}</div>
+      <div class="col act">{{ it.action }}</div>
+      <div class="col http">{{ it.method }} {{ it.path }} ({{ it.status_code || '-' }})</div>
+      <div class="col msg">{{ it.message }}</div>
+      <div class="col user">{{ it.user_email }}</div>
+    </div>
+  </div>
+</shared-container>
+

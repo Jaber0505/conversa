@@ -8,7 +8,7 @@ export type MeRes = {
   id: number;
   email: string;
   first_name: string;
-  last_name: string;   // ← présent
+  last_name: string;
   username?: string;
   age?: number;
   bio?: string;
@@ -20,6 +20,7 @@ export type MeRes = {
   country?: string;
   latitude?: number | null;
   longitude?: number | null;
+  is_staff?: boolean;
 };
 export type RegisterFormModel = {
   email: string;
@@ -49,13 +50,29 @@ export class AuthApiService {
     target_langs: string[];
     first_name: string;
     email: string;
+    age: number;
+  }) {
+    return this.http.post(`${this.base}/auth/register/`, data);
+  }
 
-    age: number
-  }) { return this.http.post(`${this.base}/auth/register/`, data); }
-  login(data: LoginReq)       { return this.http.post<LoginRes>(`${this.base}/auth/login/`, data); }
-  refresh(refresh: string)    { return this.http.post<RefreshRes>(`${this.base}/auth/refresh/`, { refresh }); }
-  me()                        { return this.http.get<MeRes>(`${this.base}/auth/me/`); }
-  logout(refresh: string)     { return this.http.post(`${this.base}/auth/logout/`, { refresh }); }
-  requestPasswordReset(email: string) { return this.http.post(`${this.base}/auth/password-reset/`, { email }); }
+  login(data: LoginReq) {
+    return this.http.post<LoginRes>(`${this.base}/auth/login/`, data);
+  }
+
+  refresh(refresh: string) {
+    return this.http.post<RefreshRes>(`${this.base}/auth/refresh/`, { refresh });
+  }
+
+  me() {
+    return this.http.get<MeRes>(`${this.base}/auth/me/`);
+  }
+
+  logout(refresh: string) {
+    return this.http.post(`${this.base}/auth/logout/`, { refresh });
+  }
+
+  requestPasswordReset(email: string) {
+    return this.http.post(`${this.base}/auth/password-reset/`, { email });
+  }
 }
 

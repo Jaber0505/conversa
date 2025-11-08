@@ -1,6 +1,6 @@
 import {FaqComponent} from "@shared/components/faq/faq";
 import {About} from "@shared/components/about/about";
-import {authGuard, guestGuard} from "@core/http";
+import {authGuard, guestGuard, adminGuard} from "@core/http";
 import {languageUrlGuard} from "@core/i18n";
 import {homeGuard} from "@app/core/guards/home.guard";
 import {Routes} from "@angular/router";
@@ -17,6 +17,11 @@ export const routes: Routes = [
         path: '',
         component: HomeComponent,
         canActivate: [homeGuard]
+      },
+      {
+        path: 'admin/audit',
+        canActivate: [authGuard, adminGuard],
+        loadComponent: () => import('./features/admin/audit-logs/audit-logs.component').then(m => m.AuditLogsComponent)
       },
 
       {

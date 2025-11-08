@@ -39,6 +39,14 @@
 
       <!-- Connecté : Nom + Avatar + Déconnexion -->
       <ng-container *ngIf="tokens?.access && (me$ | async) as me">
+        <shared-button
+          *ngIf="me?.is_staff"
+          class="btn-auth"
+          variant="outline"
+          size="sm"
+          [routerLink]="['/', langCode(), 'admin', 'audit']">
+          Admin Logs
+        </shared-button>
         <button class="user-profile" type="button" aria-label="Profil utilisateur">
           <span class="user-avatar" aria-hidden="true">👤</span>
           <span class="user-name">{{ me.first_name }}</span>
@@ -64,3 +72,4 @@
   (save)="confirmLang($event)"
   (close)="closeLang()">
 </app-language-popover>
+

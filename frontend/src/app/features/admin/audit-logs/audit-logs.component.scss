@@ -1,0 +1,20 @@
+.filters { display: grid; grid-template-columns: 1fr 140px 140px 120px 120px 1fr 1fr auto auto; gap: 8px; margin-bottom: 12px; }
+.logs-list { display: grid; gap: 6px; }
+.log-row { display: grid; grid-template-columns: 150px 90px 110px 220px 1fr 2fr 200px; gap: 8px; align-items: start; padding: 8px; border: 1px solid var(--border-color,#e5e7eb); border-radius: 8px; }
+.level { font-weight: 600; }
+.cat { color: #555; }
+.msg { color: #333; }
+
+.state-notice { margin: 6px 0; }
+.stats { margin: 12px 0; }
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.bars { display: grid; gap: 6px; }
+.bar-row { display: grid; grid-template-columns: 160px 1fr 60px; gap: 8px; align-items: center; }
+.bar-label { color: #444; }
+.bar-track { background: #f3f4f6; height: 10px; border-radius: 6px; overflow: hidden; }
+.bar-fill { background: #6366f1; height: 100%; border-radius: 6px; }
+.bar-fill.level-error { background: #ef4444; }
+.bar-fill.level-warning { background: #f59e0b; }
+.bar-fill.level-info { background: #3b82f6; }
+.bar-fill.level-debug { background: #10b981; }
+.bar-fill.level-critical { background: #dc2626; }

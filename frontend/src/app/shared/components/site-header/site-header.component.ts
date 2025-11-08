@@ -19,6 +19,7 @@ export type MeRes = {
   native_langs?: string[];
   target_langs?: string[];
   avatar?: string;
+  is_staff?: boolean;
 };
 @Component({
   standalone: true,
