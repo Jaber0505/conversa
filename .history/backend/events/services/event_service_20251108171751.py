@@ -360,7 +360,7 @@ class EventService(BaseService):
 
         if draft_count >= 3:
             raise DRFValidationError({
-                "error": "Limite de 3 événements en préparation atteinte.",
+                "error": "Limite de 3 ÃƒÂ©vÃƒÂ©nements en prÃƒÂ©paration atteinte.",
                 "draft_count": draft_count
             })
 

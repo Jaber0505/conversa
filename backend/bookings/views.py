@@ -27,7 +27,12 @@ class BookingViewSet(mixins.CreateModelMixin,
         Views should NOT contain business logic.
         """
         # Scope to user's bookings only
-        qs = Booking.objects.select_related("event").filter(user=self.request.user)
+        qs = (
+            Booking.objects
+            .select_related("event")
+            .filter(user=self.request.user)
+            .filter(event__isnull=False)  # Securité: exclure références orphelines
+        )
 
         # Optional filter by status
         status_param = self.request.query_params.get("status")

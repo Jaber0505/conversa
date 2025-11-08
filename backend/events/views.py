@@ -166,6 +166,7 @@ class EventViewSet(viewsets.ModelViewSet):
         Visibility:
         - All users: PUBLISHED events
         - Organizers: Own events (any status)
+        - Participants: For retrieve action, allow accessing events they booked (any status)
         - Staff: All events
         """
         qs = super().get_queryset()
@@ -182,7 +183,15 @@ class EventViewSet(viewsets.ModelViewSet):
         # Apply visibility rules
         user = self.request.user
         if not getattr(user, "is_staff", False):
-            qs = qs.filter(Q(status=Event.Status.PUBLISHED) | Q(organizer_id=user.id))
+            # Default visibility for non-staff
+            base_filter = Q(status=Event.Status.PUBLISHED) | Q(organizer_id=user.id)
+
+            # For retrieve action, also allow events the user has booked (history needs details
+            # for CANCELLED/FINISHED events the user participated in)
+            if getattr(self, "action", None) == "retrieve":
+                qs = qs.filter(base_filter | Q(bookings__user_id=user.id)).distinct()
+            else:
+                qs = qs.filter(base_filter)
 
         return qs
 
@@ -241,7 +250,22 @@ class EventViewSet(viewsets.ModelViewSet):
         validated_data = serializer.validated_data
 
         # A2: Validate draft limit using EventService (SINGLE SOURCE OF TRUTH)
-        EventService.validate_draft_limit(self.request.user)
+        # Patch encoding issue by normalizing message if raised here
+        try:
+            EventService.validate_draft_limit(self.request.user)
+        except ValidationError as e:
+            # Normalize French accents in error message for clients
+            try:
+                draft_count = None
+                if hasattr(e, "detail") and isinstance(e.detail, dict):
+                    draft_count = e.detail.get("draft_count")
+                raise ValidationError({
+                    "error": "Limite de 3 événements en préparation atteinte.",
+                    "draft_count": draft_count,
+                })
+            except Exception:
+                # Fallback: re-raise original if unexpected structure
+                raise e
 
         # Validate datetime and partner capacity
         validate_event_datetime(validated_data.get("datetime_start"))

@@ -1,47 +1,87 @@
 <shared-container>
   <shared-headline-bar
     [title]="'bookings.title' | t"
+    [subtitle]="'bookings.subtitle' | t"
     [actionLink]="'/' + lang">
   </shared-headline-bar>
-  <div class="state error" *ngIf="error() as err">
-    <shared-badge variant="danger" tone="soft">{{ err }}</shared-badge>
+
+  <!-- Message d'erreur -->
+  <div class="state-error" *ngIf="error() as err">
+    <shared-badge variant="danger" tone="soft">{{ err | t }}</shared-badge>
   </div>
 
-  <ng-container>
-    <shared-empty-state
-      *ngIf="!loading() && items().length === 0"
-      [icon]="'📭'"
-      [title]="'bookings.empty' | t"
-      [actionLabel]="'events.title' | t"
-      [actionLink]="['/', lang, 'events']">
-    </shared-empty-state>
-    <shared-grid class="bk-grid" *ngIf="items().length > 0">
-      <shared-card *ngFor="let b of items(); trackBy: trackById" class="bk-card">
-        <div media class="thumb" aria-hidden="true"></div>
-        <div header class="bk-head">
-          <h3 class="h6">#{{ b.id }}</h3>
-          <div class="badges">
-            <shared-badge [variant]="badgeVariant(b)" tone="soft">
-              {{ ('bookings.status.' + b.status) | t }}
-            </shared-badge>
+  <!-- État vide -->
+  <shared-empty-state
+    *ngIf="!loading() && items().length === 0 && !error()"
+    [icon]="'📭'"
+    [title]="'bookings.empty' | t"
+    [subtitle]="'bookings.empty_subtitle' | t"
+    [actionLabel]="'events.title' | t"
+    [actionLink]="['/', lang, 'events']">
+  </shared-empty-state>
+
+  <!-- SECTION 1: Réservations en cours (bien visible) -->
+  <section class="current-bookings-section" *ngIf="currentBookings().length > 0">
+    <div class="section-header-highlight">
+      <div class="section-icon">⚡</div>
+      <div>
+        <h2 class="section-title-highlight">{{ 'bookings.current' | t }}</h2>
+        <p class="section-subtitle">{{ currentBookings().length }} réservation(s) en cours</p>
+      </div>
+    </div>
+
+    <div class="bookings-grid highlight-grid">
+      <div *ngFor="let b of getPaginatedBookings('current'); trackBy: trackById" class="booking-card current">
+        <div class="booking-card-header">
+          <div class="booking-status-badge">
+            <span class="status-dot" [class.pending]="b.status === 'PENDING'" [class.confirmed]="b.status === 'CONFIRMED'"></span>
+            <span class="status-text">{{ ('bookings.status.' + b.status) | t }}</span>
           </div>
+          <span class="booking-id">#{{ b.id }}</span>
         </div>
-        <div class="bk-body">
-          <div class="row">
-            <span class="label">{{ 'bookings.when' | t }}</span>
-            <span class="value">{{ dateLabel(b.confirmed_at || b.created_at) }}</span>
+
+        <div class="booking-card-body">
+          <!-- Timer pour événements en cours -->
+          <div class="time-until" *ngIf="b.status === 'CONFIRMED'">
+            <span class="time-badge" [class.live]="isEventLive(b)">
+              {{ isEventLive(b) ? ('bookings.live' | t) : getTimeUntilEvent(b) }}
+            </span>
           </div>
-          <div class="row">
-            <span class="label">{{ 'bookings.event' | t }}</span>
-            <span class="value">#{{ b.event }}</span>
+
+          <div class="booking-info-row">
+            <span class="info-icon">📅</span>
+            <div class="info-content">
+              <span class="info-label">{{ 'bookings.event_date' | t }}</span>
+              <span class="info-value">{{ dateLabel(b.eventObject.datetime_start) }}</span>
+            </div>
           </div>
-          <div class="row">
-            <span class="label">{{ 'bookings.amount' | t }}</span>
-            <span class="value">{{ price(b) }}</span>
+
+          <div class="booking-info-row">
+            <span class="info-icon">🎉</span>
+            <div class="info-content">
+              <span class="info-label">{{ 'bookings.event' | t }}</span>
+              <span class="info-value">{{ b.eventObject.theme }}</span>
+            </div>
+          </div>
+
+          <div class="booking-info-row">
+            <span class="info-icon">📍</span>
+            <div class="info-content">
+              <span class="info-label">{{ 'bookings.location' | t }}</span>
+              <span class="info-value">{{ b.eventObject.partner_name }}</span>
+            </div>
+          </div>
+
+          <div class="booking-info-row price-row">
+            <span class="info-icon">💶</span>
+            <div class="info-content">
+              <span class="info-label">{{ 'bookings.amount' | t }}</span>
+              <span class="info-value price">{{ price(b) }}</span>
+            </div>
           </div>
         </div>
 
-        <div footer class="bk-foot">
+        <div class="booking-card-footer">
           <shared-button
             variant="outline"
             size="sm"
@@ -50,24 +90,274 @@
             {{ 'common.details' | t }}
           </shared-button>
 
-          <shared-button *ngIf="b.status !== 'CANCELLED'"
-                         variant="outline"
-                         size="sm"
-                         type="button"
-                         (click)="cancel(b.public_id)">
-            {{ 'common.cancel' | t }}
+          <!-- Bouton Rejoindre pour événements en cours -->
+          <shared-button
+            *ngIf="b.status === 'CONFIRMED' && isEventLive(b)"
+            variant="primary"
+            size="sm"
+            type="button"
+            (click)="joinEvent(b.eventObject.id)">
+            🎮 {{ 'bookings.join_now' | t }}
           </shared-button>
 
-          <shared-button *ngIf="b.status === 'PENDING'"
-                         size="sm"
-                         type="button"
-                         (click)="pay(b.public_id)">
-            {{ 'common.pay' | t }}
+          <!-- Bouton Payer pour réservations en attente -->
+          <shared-button
+            *ngIf="b.status === 'PENDING'"
+            variant="primary"
+            size="sm"
+            type="button"
+            (click)="pay(b.public_id)">
+            💳 {{ 'common.pay' | t }}
+          </shared-button>
+
+          <shared-button
+            *ngIf="b.status !== 'CANCELLED' && !isEventLive(b)"
+            variant="outline"
+            size="sm"
+            type="button"
+            (click)="cancel(b.public_id)">
+            {{ 'common.cancel' | t }}
           </shared-button>
         </div>
-      </shared-card>
-    </shared-grid>
-  </ng-container>
+      </div>
+    </div>
+
+    <!-- Pagination pour réservations en cours -->
+    <div class="pagination" *ngIf="getTotalPages('current') > 1">
+      <button
+        type="button"
+        class="pagination-button"
+        [disabled]="currentPage() === 1"
+        (click)="changePage('current', currentPage() - 1)">
+        ‹ {{ 'common.previous' | t }}
+      </button>
+
+      <div class="pagination-pages">
+        <button
+          *ngFor="let page of getPageNumbers('current')"
+          type="button"
+          class="pagination-page"
+          [class.active]="currentPage() === page"
+          (click)="changePage('current', page)">
+          {{ page }}
+        </button>
+      </div>
+
+      <button
+        type="button"
+        class="pagination-button"
+        [disabled]="currentPage() === getTotalPages('current')"
+        (click)="changePage('current', currentPage() + 1)">
+        {{ 'common.next' | t }} ›
+      </button>
+    </div>
+  </section>
+
+  <!-- SECTION 2: Réservations futures -->
+  <section class="future-bookings-section" *ngIf="futureBookings().length > 0">
+    <div class="section-header">
+      <div class="section-icon-small">📆</div>
+      <h2 class="section-title">{{ 'bookings.future' | t }}</h2>
+      <span class="section-count">{{ futureBookings().length }}</span>
+    </div>
+
+    <div class="bookings-grid">
+      <div *ngFor="let b of getPaginatedBookings('future'); trackBy: trackById" class="booking-card future">
+        <div class="booking-card-header">
+          <div class="booking-status-badge">
+            <span class="status-dot confirmed"></span>
+            <span class="status-text">{{ ('bookings.status.' + b.status) | t }}</span>
+          </div>
+          <span class="booking-id">#{{ b.id }}</span>
+        </div>
+
+        <div class="booking-card-body">
+          <div class="booking-info-row">
+            <span class="info-icon">📅</span>
+            <div class="info-content">
+              <span class="info-label">{{ 'bookings.event_date' | t }}</span>
+              <span class="info-value">{{ dateLabel(b.eventObject.datetime_start) }}</span>
+            </div>
+          </div>
+
+          <div class="booking-info-row">
+            <span class="info-icon">🎉</span>
+            <div class="info-content">
+              <span class="info-label">{{ 'bookings.event' | t }}</span>
+              <span class="info-value">{{ b.eventObject.theme }}</span>
+            </div>
+          </div>
+
+          <div class="booking-info-row">
+            <span class="info-icon">📍</span>
+            <div class="info-content">
+              <span class="info-label">{{ 'bookings.location' | t }}</span>
+              <span class="info-value">{{ b.eventObject.partner_name }}</span>
+            </div>
+          </div>
+
+          <div class="booking-info-row">
+            <span class="info-icon">💶</span>
+            <div class="info-content">
+              <span class="info-label">{{ 'bookings.amount' | t }}</span>
+              <span class="info-value">{{ price(b) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="booking-card-footer">
+          <shared-button
+            variant="outline"
+            size="sm"
+            type="button"
+            (click)="openDetail(b)">
+            {{ 'common.details' | t }}
+          </shared-button>
+
+          <shared-button
+            *ngIf="b.status !== 'CANCELLED'"
+            variant="outline"
+            size="sm"
+            type="button"
+            (click)="cancel(b.public_id)">
+            {{ 'common.cancel' | t }}
+          </shared-button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination pour réservations futures -->
+    <div class="pagination" *ngIf="getTotalPages('future') > 1">
+      <button
+        type="button"
+        class="pagination-button"
+        [disabled]="futurePage() === 1"
+        (click)="changePage('future', futurePage() - 1)">
+        ‹ {{ 'common.previous' | t }}
+      </button>
+
+      <div class="pagination-pages">
+        <button
+          *ngFor="let page of getPageNumbers('future')"
+          type="button"
+          class="pagination-page"
+          [class.active]="futurePage() === page"
+          (click)="changePage('future', page)">
+          {{ page }}
+        </button>
+      </div>
+
+      <button
+        type="button"
+        class="pagination-button"
+        [disabled]="futurePage() === getTotalPages('future')"
+        (click)="changePage('future', futurePage() + 1)">
+        {{ 'common.next' | t }} ›
+      </button>
+    </div>
+  </section>
+
+  <!-- SECTION 3: Historique (passé) -->
+  <section class="past-bookings-section" *ngIf="pastBookings().length > 0">
+    <div class="section-header">
+      <div class="section-icon-small">📚</div>
+      <h2 class="section-title">{{ 'bookings.history' | t }}</h2>
+      <span class="section-count">{{ pastBookings().length }}</span>
+    </div>
+
+    <div class="bookings-grid">
+      <div *ngFor="let b of getPaginatedBookings('past'); trackBy: trackById" class="booking-card past">
+        <div class="booking-card-header">
+          <div class="booking-status-badge">
+            <span class="status-dot cancelled"></span>
+            <span class="status-text">{{ ('bookings.status.' + b.status) | t }}</span>
+          </div>
+          <div class="history-reason">
+            <shared-badge [variant]="historyBadge(b).variant" tone="soft">
+              {{ historyBadge(b).label }}
+            </shared-badge>
+          </div>
+          <span class="booking-id">#{{ b.id }}</span>
+        </div>
+
+        <div class="booking-card-body">
+          <div class="booking-info-row">
+            <span class="info-icon">📅</span>
+            <div class="info-content">
+              <span class="info-label">{{ 'bookings.event_date' | t }}</span>
+              <span class="info-value">{{ dateLabel(b.eventObject.datetime_start) }}</span>
+            </div>
+          </div>
+
+          <div class="booking-info-row">
+            <span class="info-icon">🎉</span>
+            <div class="info-content">
+              <span class="info-label">{{ 'bookings.event' | t }}</span>
+              <span class="info-value">{{ b.eventObject.theme }}</span>
+            </div>
+          </div>
+
+          <div class="booking-info-row">
+            <span class="info-icon">📍</span>
+            <div class="info-content">
+              <span class="info-label">{{ 'bookings.location' | t }}</span>
+              <span class="info-value">{{ b.eventObject.partner_name }}</span>
+            </div>
+          </div>
+
+          <div class="booking-info-row">
+            <span class="info-icon">💶</span>
+            <div class="info-content">
+              <span class="info-label">{{ 'bookings.amount' | t }}</span>
+              <span class="info-value">{{ price(b) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="booking-card-footer">
+          <shared-button
+            variant="outline"
+            size="sm"
+            type="button"
+            (click)="openDetail(b)">
+            {{ 'common.details' | t }}
+          </shared-button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination pour historique -->
+    <div class="pagination" *ngIf="getTotalPages('past') > 1">
+      <button
+        type="button"
+        class="pagination-button"
+        [disabled]="pastPage() === 1"
+        (click)="changePage('past', pastPage() - 1)">
+        ‹ {{ 'common.previous' | t }}
+      </button>
+
+      <div class="pagination-pages">
+        <button
+          *ngFor="let page of getPageNumbers('past')"
+          type="button"
+          class="pagination-page"
+          [class.active]="pastPage() === page"
+          (click)="changePage('past', page)">
+          {{ page }}
+        </button>
+      </div>
+
+      <button
+        type="button"
+        class="pagination-button"
+        [disabled]="pastPage() === getTotalPages('past')"
+        (click)="changePage('past', pastPage() + 1)">
+        {{ 'common.next' | t }} ›
+      </button>
+    </div>
+  </section>
+
+  <!-- Modal de détails -->
   <app-booking-detail
     *ngIf="showDetail"
     [booking]="selected()!"
