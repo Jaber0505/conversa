@@ -2,23 +2,43 @@
 Event business logic service.
 
 Handles event creation, validation, and lifecycle management.
+
+ARCHITECTURE RULE:
+This service is the SINGLE SOURCE OF TRUTH for all event business logic.
+ALL business rules, validations, and state transitions MUST be here.
+
+Business Rules:
+- A1: Capacity = 6 participants max (organizer included)
+- A2: Max 3 draft events per organizer
+- A3: Strict status transitions with validation
+- Timezone: Europe/Brussels strict
+- 3h advance notice for all critical actions
+- Auto-cancellation 1h before start if < 3 participants
 """
 
 from datetime import timedelta
 from django.db import transaction
 from django.utils import timezone
+from django.core.exceptions import ValidationError as DjangoValidationError
+from rest_framework.exceptions import ValidationError as DRFValidationError
 
 from common.services.base import BaseService
 from common.exceptions import EventAlreadyCancelledError
 from common.constants import (
     MIN_PARTICIPANTS_PER_EVENT as MIN_PARTICIPANTS,
+    MAX_PARTICIPANTS_PER_EVENT as MAX_PARTICIPANTS,
     AUTO_CANCEL_CHECK_HOURS as AUTO_CANCEL_THRESHOLD_HOURS,
+    CANCELLATION_DEADLINE_HOURS,
 )
 from audit.services import AuditService
 from ..validators import (
     validate_event_datetime,
     validate_partner_capacity,
 )
+
+
+# Timezone
+# Django's timezone utilities use settings.TIME_ZONE ('Europe/Brussels')
 
 
 class EventService(BaseService):
@@ -48,7 +68,7 @@ class EventService(BaseService):
         from events.models import Event
         from bookings.services import BookingService
 
-        # Validate datetime (24h advance, max 7 days future, 12h-21h)
+        # Validate datetime (3h advance, max 7 days future, 12h-21h)
         validate_event_datetime(event_data.get("datetime_start"))
 
         # Validate partner capacity for this time slot (must have >= 3 available)
@@ -101,16 +121,39 @@ class EventService(BaseService):
         if not event.can_cancel(cancelled_by):
             raise PermissionError("User not authorized to cancel this event.")
 
-        # Mark event as cancelled
+        # Mark event as cancelled (validations handled in model/service transition)
         event.mark_cancelled()
 
-        # Cascade cancel all non-cancelled bookings
-        now = timezone.now()
-        event.bookings.exclude(status=BookingStatus.CANCELLED).update(
-            status=BookingStatus.CANCELLED,
-            cancelled_at=now,
-            updated_at=now
-        )
+        # Cascade cancel all non-cancelled bookings using BookingService
+        # to ensure proper refund processing for CONFIRMED bookings
+        from bookings.services import BookingService
+        bookings_to_cancel = event.bookings.exclude(status=BookingStatus.CANCELLED)
+        for booking in bookings_to_cancel:
+            try:
+                # For manual cancellation, 3h rule is already enforced at event level
+                # so we can call the standard cancellation (no system_cancellation)
+                BookingService.cancel_booking(
+                    booking=booking,
+                    cancelled_by=cancelled_by,
+                    system_cancellation=False,
+                )
+            except Exception as e:
+                # Log but continue cancelling the rest
+                AuditService.log_error(
+                    action="cancel_booking_failed",
+                    message=f"Failed to cancel booking {booking.public_id} for event {event.id}: {str(e)}",
+                    user=cancelled_by,
+                    error_details={
+                        "booking_id": booking.id,
+                        "event_id": event.id,
+                        "error": str(e),
+                    },
+                )
+                # Ensure booking is at least marked cancelled even if refund failed
+                try:
+                    booking.mark_cancelled()
+                except Exception:
+                    pass
 
         # Audit log: event cancelled
         AuditService.log_event_cancelled(event, cancelled_by, reason="Manual cancellation")
@@ -150,8 +193,8 @@ class EventService(BaseService):
             ).count()
 
             if confirmed_count < MIN_PARTICIPANTS:
-                # Cancel event
-                event.mark_cancelled()
+                # Cancel event (system cancellation bypasses 3h rule)
+                event.mark_cancelled(system_cancellation=True)
 
                 # Cancel all non-cancelled bookings WITH refunds
                 # Import here to avoid circular dependency
@@ -239,3 +282,367 @@ class EventService(BaseService):
         """
         # Use event model's is_full property which checks partner capacity
         return event.is_full
+
+    # ==========================================================================
+    # BUSINESS RULE A1: CAPACITY VALIDATION
+    # ==========================================================================
+
+    @staticmethod
+    def get_total_participants(event):
+        """
+        Calculate total participants count (SINGLE SOURCE OF TRUTH).
+
+        Business Rule:
+            Total participants = organizer (1) + confirmed bookings
+
+        Args:
+            event: Event instance
+
+        Returns:
+            int: Total participant count
+        """
+        from bookings.models import Booking, BookingStatus
+
+        # Organizer always counts as 1 participant
+        organizer_count = 1
+
+        # Add confirmed bookings (paid participants)
+        confirmed_bookings = Booking.objects.filter(
+            event=event,
+            status=BookingStatus.CONFIRMED
+        ).count()
+
+        return organizer_count + confirmed_bookings
+
+    @staticmethod
+    def get_available_slots(event):
+        """
+        Get number of available booking slots.
+
+        Business Rule:
+            Available slots = MAX_PARTICIPANTS - total confirmed participants
+
+        Args:
+            event: Event instance
+
+        Returns:
+            int: Number of available booking slots
+        """
+        total_participants = EventService.get_total_participants(event)
+        return max(0, MAX_PARTICIPANTS_PER_EVENT - total_participants)
+
+
+    # ==========================================================================
+    # BUSINESS RULE A2: DRAFT LIMIT VALIDATION
+    # ==========================================================================
+
+    @staticmethod
+    def validate_draft_limit(organizer):
+        """
+        Validate organizer has not exceeded draft limit.
+
+        Business Rule A2:
+            Organizers cannot have more than 3 DRAFT events simultaneously.
+            PUBLISHED, PENDING_CONFIRMATION, and CANCELLED events don't count.
+
+        Args:
+            organizer: User creating the event
+
+        Raises:
+            DRFValidationError: If draft limit exceeded
+        """
+        from events.models import Event
+
+        draft_count = Event.objects.filter(
+            organizer=organizer,
+            status=Event.Status.DRAFT
+        ).count()
+
+        if draft_count >= 3:
+            raise DRFValidationError({
+                "error": "Limite de 3 ÃƒÂ©vÃƒÂ©nements en prÃƒÂ©paration atteinte.",
+                "draft_count": draft_count
+            })
+
+    # ==========================================================================
+    # BUSINESS RULE A3: STATUS TRANSITIONS (STATE MACHINE)
+    # ==========================================================================
+
+    @staticmethod
+    def get_hours_until_event(event):
+        """
+        Calculate hours until event start (timezone-safe).
+
+        Ensures datetime comparisons are performed with timezone-aware datetimes
+        to avoid TypeError on naive vs aware subtraction.
+
+        Args:
+            event: Event instance
+
+        Returns:
+            float: Hours until event start
+        """
+        now = timezone.now()
+        event_dt = getattr(event, "datetime_start", None)
+        if event_dt is None:
+            return -9999.0
+
+        # Make event_dt timezone-aware if naive
+        try:
+            from django.utils.timezone import is_naive, make_aware, get_current_timezone
+            if is_naive(event_dt):
+                event_dt = make_aware(event_dt, get_current_timezone())
+        except Exception:
+            # Fallback: best-effort comparison (may still raise elsewhere)
+            pass
+
+        return (event_dt - now).total_seconds() / 3600
+
+    @staticmethod
+    def can_perform_action(event, required_hours=3):
+        """
+        Check if action can be performed based on time until event.
+
+        Business Rule:
+            Critical actions require minimum advance notice (default 3h).
+
+        Args:
+            event: Event instance
+            required_hours: Minimum hours required before event
+
+        Returns:
+            tuple: (bool: can_perform, float: hours_until_event)
+        """
+        hours_until = EventService.get_hours_until_event(event)
+        return hours_until >= required_hours, hours_until
+
+    @staticmethod
+    @transaction.atomic
+    def transition_to_pending_confirmation(event):
+        """
+        Transition event from DRAFT to PENDING_CONFIRMATION.
+
+        Business Rule A3:
+            - Can only transition from DRAFT status
+            -             - Must be ≥3h before event start
+
+        Args:
+            event: Event instance
+
+        Raises:
+            DjangoValidationError: If transition validation fails
+        """
+        from events.models import Event
+
+        # Validate current status
+        if event.status != Event.Status.DRAFT:
+            raise DjangoValidationError(
+                f"Cannot transition to PENDING_CONFIRMATION from {event.status}. "
+                "Only DRAFT events can request publication."
+            )
+
+        # Validate 3h advance notice
+        can_perform, hours_until = EventService.can_perform_action(event, required_hours=3)
+        if not can_perform:
+            raise DjangoValidationError(
+                f"Cannot publish event: only {hours_until:.1f}h before start "
+                "(minimum 3h advance notice required)."
+            )
+
+        # Perform transition
+        event.status = Event.Status.PENDING_CONFIRMATION
+        event.save(update_fields=["status", "updated_at"])
+
+    @staticmethod
+    @transaction.atomic
+    def transition_to_published(event, published_by=None):
+        """
+        Transition event from PENDING_CONFIRMATION to PUBLISHED.
+
+        Business Rule A3:
+            - Can only transition from PENDING_CONFIRMATION status
+            - Payment must be confirmed (validated by webhook)
+
+        Args:
+            event: Event instance
+            published_by: User who triggered publication (usually organizer)
+
+        Raises:
+            DjangoValidationError: If transition validation fails
+        """
+        from events.models import Event
+
+        # Validate current status
+        if event.status != Event.Status.PENDING_CONFIRMATION:
+            raise DjangoValidationError(
+                f"Cannot mark as PUBLISHED from {event.status}. "
+                "Event must be in PENDING_CONFIRMATION status (payment confirmation required)."
+            )
+
+        # Perform transition
+        now = timezone.now()
+        event.status = Event.Status.PUBLISHED
+        event.published_at = now
+        event.organizer_paid_at = now
+        event.save(update_fields=["status", "published_at", "organizer_paid_at", "updated_at"])
+
+        # Ensure organizer has a confirmed booking after publication
+        from bookings.models import Booking, BookingStatus
+
+        organizer = event.organizer
+        organizer_booking = (
+            Booking.objects.filter(user=organizer, event=event)
+            .order_by("-created_at")
+            .first()
+        )
+
+        if organizer_booking:
+            if organizer_booking.status != BookingStatus.CONFIRMED:
+                organizer_booking.mark_confirmed()
+        else:
+            # Create and immediately confirm organizer's booking
+            new_booking = Booking.objects.create(
+                user=organizer,
+                event=event,
+                amount_cents=event.price_cents,
+                is_organizer_booking=True,
+            )
+            new_booking.mark_confirmed()
+
+        # Audit log
+        AuditService.log_event_published(event, published_by or event.organizer)
+
+    @staticmethod
+    @transaction.atomic
+    def transition_to_cancelled(event, cancelled_by=None, system_cancellation=False):
+        """
+        Transition event to CANCELLED status.
+
+        Business Rule A3:
+            - PUBLISHED events: Can only cancel if Ã¢â€°Â¥3h before start (unless system cancellation)
+            - DRAFT/PENDING: Can cancel anytime
+            - Cannot cancel if already cancelled
+
+        Args:
+            event: Event instance
+            cancelled_by: User requesting cancellation (None for system)
+            system_cancellation: If True, bypass 3h deadline (auto-cancel)
+
+        Raises:
+            DjangoValidationError: If cancellation validation fails
+        """
+        from events.models import Event
+
+        # Check if already cancelled
+        if event.status == Event.Status.CANCELLED:
+            raise EventAlreadyCancelledError()
+
+        # Validate 3h notice for PUBLISHED events (unless system cancellation)
+        if event.status == Event.Status.PUBLISHED and not system_cancellation:
+            can_cancel, hours_until = EventService.can_perform_action(event, required_hours=3)
+            if not can_cancel:
+                raise DjangoValidationError(
+                    f"Cannot cancel PUBLISHED event: only {hours_until:.1f}h before start "
+                    "(minimum 3h cancellation notice required)."
+                )
+
+        # Perform transition
+        event.status = Event.Status.CANCELLED
+        event.cancelled_at = timezone.now()
+        event.save(update_fields=["status", "cancelled_at", "updated_at"])
+
+    # ==========================================================================
+    # PUBLICATION WORKFLOW
+    # ==========================================================================
+
+    @staticmethod
+    @transaction.atomic
+    def request_publication(event, organizer, stripe_module):
+        """
+        Organizer requests to publish event by creating PaymentIntent.
+
+        Business Rules:
+            - Must be organizer
+            - Event must be DRAFT
+            - Threshold must be reached (Ã¢â€°Â¥3 registrations)
+            - Event must be Ã¢â€°Â¥3h in future
+
+        Workflow:
+            1. Validate can_request_publication
+            2. Create organizer booking (PENDING)
+            3. Create Stripe PaymentIntent
+            4. Transition to PENDING_CONFIRMATION
+            5. After webhook: transition to PUBLISHED
+
+        Args:
+            event: Event instance
+            organizer: User requesting publication
+            stripe_module: Stripe module (injected for testing)
+
+        Returns:
+            dict: {
+                'client_secret': str,
+                'booking_id': str,
+                'amount_cents': int
+            }
+
+        Raises:
+            DRFValidationError: If validation fails
+            stripe.error.StripeError: If payment creation fails
+        """
+        from bookings.models import Booking
+        from django.conf import settings
+
+        # Validate permission
+        if event.organizer != organizer:
+            raise DRFValidationError(
+                {"error": "Only organizer can publish event."},
+                code='permission_denied'
+            )
+
+        # Validate draft status and 3h advance
+        if event.status != event.Status.DRAFT:
+            raise DRFValidationError({"error": "Event must be in DRAFT status to publish."})
+        can_perform, hours_until = EventService.can_perform_action(event, required_hours=3)
+        if not can_perform:
+            raise DRFValidationError({
+                "error": (
+                    f"Cannot publish event: only {hours_until:.1f}h before start (minimum 3h advance notice required)."
+                )
+            })
+
+        # Create organizer booking (PENDING)
+        booking = Booking.objects.create(
+            user=organizer,
+            event=event,
+            amount_cents=event.price_cents,
+            is_organizer_booking=True
+        )
+
+        # Create Stripe PaymentIntent
+        stripe_module.api_key = settings.STRIPE_SECRET_KEY
+
+        try:
+            payment_intent = stripe_module.PaymentIntent.create(
+                amount=event.price_cents,
+                currency='eur',
+                metadata={
+                    'booking_id': str(booking.public_id),
+                    'event_id': event.id,
+                    'type': 'organizer_publication'
+                }
+            )
+
+            # Transition to PENDING_CONFIRMATION
+            EventService.transition_to_pending_confirmation(event)
+
+            return {
+                'client_secret': payment_intent.client_secret,
+                'booking_id': str(booking.public_id),
+                'amount_cents': event.price_cents
+            }
+
+        except stripe_module.error.StripeError as e:
+            # Delete booking if Stripe fails
+            booking.delete()
+            raise

@@ -2,69 +2,79 @@
 
 ## Vue d'ensemble
 
-Gestion des Ã©vÃ©nements d'Ã©change linguistique organisÃ©s dans des lieux partenaires.
+Gestion des événements d’échange linguistique organisés chez des partenaires.
 
-## RÃ¨gles mÃ©tier
+## Règles métier
 
-- **Horaires** : 12h00 - 21h00 uniquement
-- **Avance minimum** : 24h avant l'Ã©vÃ©nement
-- **Avance maximum** : 7 jours dans le futur
-- **DurÃ©e** : 1h (fixe)
-- **CapacitÃ©** : Dynamique selon le partenaire (minimum 3 places disponibles)
-- **CrÃ©ation** : 24/7 (pas de restriction horaire de crÃ©ation)
-- **Prix** : 7,00â‚¬ par participant (fixe)
-- **Statuts** : DRAFT â†’ PUBLISHED â†’ CANCELLED
-- **Auto-annulation** : Si < 3 participants confirmÃ©s 1h avant l'Ã©vÃ©nement
+- Horaires: 12h00 – 21h00 (21:00 inclus)
+- Avance minimum: 3h avant l’événement
+- Avance maximum: 7 jours
+- Durée: 1h (fixe)
+- Capacité: dynamique selon le partenaire (minimum 3 places disponibles)
+- Brouillons: privés (visibles uniquement par l’organisateur et les admins)
+- Publication: après paiement, l’événement devient public et une réservation CONFIRMÉE est créée pour l’organisateur
+- Prix: 7,00 € par participant (fixe)
+- Statuts: DRAFT ? PENDING_CONFIRMATION ? PUBLISHED ? CANCELLED/FINISHED
+- Auto-annulation: si < 3 participants confirmés 1h avant le début
+
+## Nouveau flux (simplifié)
+
+1) Création par l’organisateur ? statut DRAFT (brouillon privé)
+2) Demande de publication ? création d’un Booking PENDING + Stripe PaymentIntent ? PENDING_CONFIRMATION
+3) Webhook Stripe (paiement ok) ? PUBLISHED et réservation organisateur CONFIRMÉE
+4) L’événement est visible par tous; les autres participants réservent directement (bookings)
 
 ## Structure
 
 ```
 events/
-â”œâ”€â”€ models.py              # Event (theme, difficulty, datetime, status)
-â”œâ”€â”€ serializers.py         # EventSerializer, CreateEventSerializer
-â”œâ”€â”€ views.py               # EventViewSet (CRUD + cancel)
-â”œâ”€â”€ services/
-â”‚   â””â”€â”€ event_service.py   # CrÃ©ation, annulation, auto-cancel
-â”œâ”€â”€ validators.py          # Validation datetime, capacitÃ© partenaire
-â”œâ”€â”€ tasks.py               # TÃ¢ches Celery (auto-cancel)
-â”œâ”€â”€ admin.py
-â””â”€â”€ tests/
-    â”œâ”€â”€ test_models.py
-    â”œâ”€â”€ test_services.py
-    â”œâ”€â”€ test_validators.py
-    â””â”€â”€ test_edge_cases.py # Tests 11h59, 21h01, capacitÃ© min, etc.
+  models.py          # Event (theme, difficulty, datetime, status)
+  serializers.py     # EventSerializer, EventDetailSerializer
+  views.py           # EventViewSet (CRUD, cancel, request-publication)
+  services/
+    event_service.py # Création, publication, annulation, auto-cancel
+  validators.py      # Validation datetime, capacité partenaire
+  admin.py
+  tests/
+    test_services.py
+    test_validators.py
+    test_edge_cases.py
 ```
 
 ## Utilisation
 
-### CrÃ©er un Ã©vÃ©nement
+### Créer un événement
 
 ```python
 from events.services import EventService
 
 event, booking = EventService.create_event_with_organizer_booking(
     organizer=user,
-    partner=partner,
-    language=french,
-    theme="Pratique conversation",
-    difficulty="intermediate",
-    datetime_start=datetime_start  # Entre 12h-21h, 24h-7j futur
+    event_data={
+        "partner": partner,
+        "language": language,
+        "theme": "Pratique conversation",
+        "difficulty": "intermediate",
+        "datetime_start": datetime_start,  # 12h–21h, 3h–7j futur
+    }
 )
 ```
 
-### Annuler un Ã©vÃ©nement
+### Demander la publication (paiement)
 
 ```python
-EventService.cancel_event(
-    event=event,
-    cancelled_by=organizer
-)
+result = EventService.request_publication(event=event, organizer=user, stripe_module=stripe)
 ```
 
-### VÃ©rifier et annuler Ã©vÃ©nements sous-peuplÃ©s
+### Annuler un événement
 
 ```python
-# AppelÃ© automatiquement par tÃ¢che Celery 1h avant chaque Ã©vÃ©nement
+EventService.cancel_event(event=event, cancelled_by=organizer)
+```
+
+### Auto-annulation (cron)
+
+```python
 EventService.check_and_cancel_underpopulated_events()
 ```
 
@@ -73,5 +83,3 @@ EventService.check_and_cancel_underpopulated_events()
 ```bash
 python manage.py test events
 ```
-
-**Coverage** : 26 tests (models, services, validators, edge cases)

@@ -1,5 +1,4 @@
 <div class="event-detail-page" *ngIf="!loading() && event() as evt">
-  <!-- Bouton retour -->
   <div class="back-section">
     <shared-container>
       <button class="btn-back" (click)="goBack()">
@@ -10,82 +9,46 @@
   </div>
 
   <shared-container>
-    <shared-headline-bar
-      [title]="evt.title"
-      [subtitle]="formatDate(evt.datetime_start) + ' • ' + (evt.partner_city || '')">
-    </shared-headline-bar>
+    <shared-headline-bar [title]="evt.theme" [subtitle]="formatDate(evt.datetime_start) + ' · ' + (evt.partner_city || '')"></shared-headline-bar>
+
+    <div class="status-badges">
+      <shared-badge *ngIf="evt.status === 'DRAFT'" variant="muted" tone="soft">{{ 'events.draft' | t }}</shared-badge>
+      <shared-badge *ngIf="evt.status === 'PENDING_CONFIRMATION'" variant="accent" tone="soft">En attente de confirmation</shared-badge>
+      <shared-badge *ngIf="evt.status === 'PUBLISHED'" variant="success" tone="solid">Publié</shared-badge>
+      <shared-badge *ngIf="evt.status === 'CANCELLED'" variant="danger" tone="soft">{{ 'events.cancelled' | t }}</shared-badge>
+      <shared-badge *ngIf="evt.status === 'FINISHED'" variant="muted" tone="soft">Terminé</shared-badge>
+      <shared-badge *ngIf="isOrganizer()" variant="accent" tone="soft">Vous êtes l'organisateur</shared-badge>
+    </div>
+
     <div class="detail-grid">
-      <!-- Colonne principale -->
       <div class="main-column">
-        <!-- En-tête de l'événement -->
         <div class="event-header">
           <div class="event-badges">
-            <span class="badge badge-primary">
-              {{ evt.language_name }}
-            </span>
-            <span class="badge badge-secondary">
-              {{ evt.difficulty }}
-            </span>
+            <span class="badge badge-primary">{{ evt.language_name }}</span>
+            <span class="badge badge-secondary">{{ evt.difficulty }}</span>
           </div>
 
           <div class="event-meta">
-            <div class="meta-item">
-              <i class="icon">📅</i>
-              <span>{{ formatDate(evt.datetime_start) }}</span>
-            </div>
-            <div class="meta-item">
-              <i class="icon">🕐</i>
-              <span>{{ formatTime(evt.datetime_start) }}</span>
-            </div>
-            <div class="meta-item">
-              <i class="icon">📍</i>
-              <span>{{ evt.partner_address }}, {{ evt.partner_city }}</span>
-            </div>
+            <div class="meta-item"><span>{{ formatDate(evt.datetime_start) }}</span></div>
+            <div class="meta-item"><span>{{ formatTime(evt.datetime_start) }}</span></div>
+            <div class="meta-item"><span>{{ evt.partner_address }}, {{ evt.partner_city }}</span></div>
           </div>
         </div>
 
-        <!-- Description -->
         <div class="event-section">
           <h2 class="section-title">{{ 'events.detail.about' | t }}</h2>
           <p class="event-description">{{ evt.theme }}</p>
         </div>
 
-        <!-- Carte -->
         <div class="event-section">
           <h2 class="section-title">{{ 'events.detail.location' | t }}</h2>
           <div class="map-container">
-            <iframe
-              [src]="getGoogleMapsUrl(evt.partner_address + ', ' + evt.partner_city) | sanitizeUrl"
-              width="100%"
-              height="400"
-              style="border:0;"
-              allowfullscreen=""
-              loading="lazy"
-              referrerpolicy="no-referrer-when-downgrade">
-            </iframe>
+            <iframe [src]="getGoogleMapsUrl(evt.partner_address + ', ' + evt.partner_city) | sanitizeUrl" width="100%" height="400" style="border:0;" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
           </div>
-          <p class="address-text">
-            <strong>{{ evt.partner_name }}</strong><br>
-            {{ evt.partner_address }}<br>
-            {{ evt.partner_city }}
-          </p>
-        </div>
-
-        <!-- Participants -->
-        <div class="event-section">
-          <h2 class="section-title">
-            {{ 'events.detail.participants' | t }} ({{ evt.participants_count }})
-          </h2>
-          <p class="participants-info" *ngIf="evt.participants_count === 0">
-            {{ 'events.detail.no_participants_yet' | t }}
-          </p>
-          <p class="participants-info" *ngIf="evt.participants_count > 0">
-            {{ evt.participants_count }} {{ evt.participants_count === 1 ? ('events.detail.participant' | t) : ('events.detail.participants_plural' | t) }}
-          </p>
+          <p class="address-text"><strong>{{ evt.partner_name }}</strong><br>{{ evt.partner_address }}<br>{{ evt.partner_city }}</p>
         </div>
       </div>
 
-      <!-- Colonne latérale (sticky) -->
       <div class="sidebar-column">
         <div class="booking-card">
           <div class="price-section">
@@ -98,100 +61,47 @@
             <p class="organizer-name">{{ evt.organizer_first_name }} {{ evt.organizer_last_name }}</p>
           </div>
 
-          <div class="availability-section">
-            <div class="availability-bar">
-              <div
-                class="availability-fill"
-                [style.width.%]="(evt.participants_count / MAX_PARTICIPANTS) * 100">
-              </div>
-            </div>
-            <p class="availability-text">
-              {{ 'events.detail.spots_remaining' | t: { count: MAX_PARTICIPANTS - evt.participants_count } }}
-            </p>
+          <div class="availability-section" *ngIf="evt.status === 'PUBLISHED'">
+            <div class="availability-bar"><div class="availability-fill" [style.width.%]="(evt.participants_count / evt.max_participants) * 100"></div></div>
+            <p class="availability-text">{{ evt.participants_count }} / {{ evt.max_participants }} places</p>
           </div>
 
-          <!-- Bouton selon l'état -->
           <ng-container [ngSwitch]="getActionButtonState()">
-            <!-- Réserver -->
-            <shared-button
-              *ngSwitchCase="'book'"
-              variant="accent"
-              size="lg"
-              class="btn-book"
-              (click)="onBook()">
-              {{ 'events.detail.book_spot' | t }}
-            </shared-button>
+            <div *ngSwitchCase="'organizer-draft-pay'" class="button-group-vertical">
+              <shared-button variant="accent" size="md" (click)="onRequestPublication()">{{ 'events.detail.pay_and_publish' | t }} ({{ formatPrice(evt.price_cents) }})</shared-button>
+              <shared-button variant="danger" size="sm" (click)="onDeleteDraft()">{{ 'events.detail.delete_draft' | t }}</shared-button>
+            </div>
 
-            <!-- Payer (booking PENDING) -->
-            <shared-button
-              *ngSwitchCase="'pay'"
-              variant="accent"
-              size="lg"
-              class="btn-pay"
-              (click)="onPay()">
-              {{ 'events.detail.pay_booking' | t }}
-            </shared-button>
+            <div *ngSwitchCase="'organizer-draft-delete'" class="button-group-vertical">
+              <shared-button variant="outline" size="md" [disabled]="true">Minimum {{ evt.min_participants }} inscriptions requises</shared-button>
+              <shared-button variant="danger" size="sm" (click)="onDeleteDraft()">{{ 'events.detail.delete_draft' | t }}</shared-button>
+            </div>
 
-            <!-- Annuler -->
-            <shared-button
-              *ngSwitchCase="'cancel'"
-              variant="danger"
-              size="lg"
-              class="btn-cancel"
-              (click)="openCancelModal()">
-              {{ 'events.detail.cancel_booking' | t }}
-            </shared-button>
+            <shared-button *ngSwitchCase="'organizer-pending'" variant="outline" size="md" [disabled]="true">{{ 'events.detail.organizer_pending' | t }}</shared-button>
+            <shared-button *ngSwitchCase="'organizer-published-cancel'" variant="danger" size="md" (click)="openCancelEventModal()">{{ 'events.detail.cancel_event' | t }}</shared-button>
+            <ng-container *ngSwitchCase="'organizer-published-soon'"></ng-container>
 
-            <!-- Démarre bientôt (< 3h) -->
-            <shared-button
-              *ngSwitchCase="'starting-soon'"
-              variant="outline"
-              size="lg"
-              class="btn-starting-soon"
-              [disabled]="true">
-              {{ 'events.detail.starting_soon' | t }}
-            </shared-button>
-
-            <!-- Complet -->
-            <shared-button
-              *ngSwitchCase="'full'"
-              variant="outline"
-              size="lg"
-              class="btn-full"
-              [disabled]="true">
-              {{ 'events.detail.event_full' | t }}
-            </shared-button>
-
-            <!-- Annulé -->
-            <shared-button
-              *ngSwitchCase="'cancelled'"
-              variant="outline"
-              size="lg"
-              class="btn-cancelled"
-              [disabled]="true">
-              {{ 'events.detail.event_cancelled' | t }}
-            </shared-button>
+            <shared-button *ngSwitchCase="'user-book'" variant="accent" size="md" (click)="onBook()">{{ 'events.detail.book_spot' | t }}</shared-button>
+            <shared-button *ngSwitchCase="'user-pay'" variant="accent" size="md" (click)="onPay()">{{ 'events.detail.pay_booking' | t }}</shared-button>
+            <shared-button *ngSwitchCase="'user-cancel'" variant="danger" size="md" (click)="openCancelModal()">{{ 'events.detail.cancel_booking' | t }}</shared-button>
+            <ng-container *ngSwitchCase="'user-starting-soon'"></ng-container>
+            <shared-button *ngSwitchCase="'event-full'" variant="outline" size="md" [disabled]="true">{{ 'events.detail.event_full' | t }}</shared-button>
+            <shared-button *ngSwitchCase="'event-cancelled'" variant="outline" size="md" [disabled]="true">{{ 'events.detail.event_cancelled' | t }}</shared-button>
+            <shared-button *ngSwitchCase="'event-finished'" variant="outline" size="md" [disabled]="true">Événement terminé</shared-button>
           </ng-container>
 
-          <p class="booking-notice" *ngIf="getActionButtonState() === 'book'">
-            {{ 'events.detail.booking_notice' | t }}
-          </p>
-          <p class="booking-notice" *ngIf="getActionButtonState() === 'pay'">
-            {{ 'events.detail.pay_notice' | t }}
-          </p>
-          <p class="booking-notice" *ngIf="getActionButtonState() === 'cancel'">
-            {{ 'events.detail.cancel_notice' | t }}
-          </p>
-          <p class="booking-notice" *ngIf="getActionButtonState() === 'starting-soon'">
-            {{ 'events.detail.starting_soon_notice' | t }}
-          </p>
+          <p class="booking-notice" *ngIf="getActionButtonState() === 'organizer-draft-delete'">L'événement sera publié dès que {{ evt.min_participants }} personnes seront inscrites</p>
+          <p class="booking-notice" *ngIf="getActionButtonState() === 'organizer-draft-pay'">Le seuil est atteint ! Confirmez votre paiement pour publier l'événement</p>
+          <p class="booking-notice" *ngIf="getActionButtonState() === 'user-book'">{{ 'events.detail.booking_notice' | t }}</p>
+          <p class="booking-notice" *ngIf="getActionButtonState() === 'user-pay'">{{ 'events.detail.pay_notice' | t }}</p>
+          <p class="booking-notice" *ngIf="getActionButtonState() === 'user-cancel'">{{ 'events.detail.cancel_notice' | t }}</p>
+          <p class="booking-notice" *ngIf="getActionButtonState() === 'user-starting-soon' || getActionButtonState() === 'organizer-published-soon'">{{ 'events.detail.starting_soon_notice' | t }}</p>
         </div>
       </div>
     </div>
   </shared-container>
 </div>
 
-<!-- Loading state -->
 <div class="loading-state" *ngIf="loading()">
   <shared-container>
     <div class="spinner"></div>
@@ -199,7 +109,6 @@
   </shared-container>
 </div>
 
-<!-- Error state -->
 <div class="error-state" *ngIf="error() && !loading()">
   <shared-container>
     <h2>{{ 'events.detail.not_found' | t }}</h2>
@@ -208,15 +117,6 @@
   </shared-container>
 </div>
 
-<!-- Modale de confirmation d'annulation -->
-<app-confirm-purchase
-  *ngIf="showCancelModal()"
-  [asModal]="true"
-  [titleKey]="'events.detail.cancel_modal_title'"
-  [messageKey]="'events.detail.cancel_modal_message'"
-  [cancelKey]="'common.no'"
-  [buyKey]="'events.detail.yes_cancel'"
-  [loading]="cancellingBooking()"
-  (cancel)="closeCancelModal()"
-  (buy)="confirmCancelBooking()">
-</app-confirm-purchase>
+<app-confirm-purchase *ngIf="showCancelModal()" [asModal]="true" [titleKey]="'events.detail.cancel_modal_title'" [messageKey]="'events.detail.cancel_modal_message'" [cancelKey]="'common.no'" [buyKey]="'events.detail.yes_cancel'" [loading]="cancellingBooking()" (cancel)="closeCancelModal()" (buy)="confirmCancelBooking()"></app-confirm-purchase>
+
+<app-confirm-purchase *ngIf="showCancelEventModal()" [asModal]="true" [titleKey]="'events.detail.cancel_event_title'" [messageKey]="'events.detail.cancel_event_message'" [cancelKey]="'common.no'" [buyKey]="'events.detail.yes_cancel_event'" [loading]="cancellingEvent()" (cancel)="closeCancelEventModal()" (buy)="confirmCancelEvent()"></app-confirm-purchase>

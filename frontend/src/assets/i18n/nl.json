@@ -28,6 +28,10 @@
                 "events":  "Evenementen",
                 "booking":  "Mijn boekingen"
             },
+    "navigation":  {
+                "events":  "Evenementen",
+                "my_bookings":  "Mijn boekingen"
+            },
     "auth":  {
                  "email_placeholder":  "bijv. voornaam.achternaam@email.com",
                  "password_placeholder":  "Minstens 9 tekens",
@@ -391,6 +395,20 @@
                         },
                 "no_results":  "Geen vraag gevonden? conversa@hotmail.com"
             },
+    "payment":  {
+                    "publish_event":  "Publiceer uw evenement",
+                    "complete_payment":  "Betaling voltooien",
+                    "publish_question":  "Uw evenement is aangemaakt! Wilt u het nu publiceren?",
+                    "price":  "Prijs",
+                    "pay_now":  "Nu betalen",
+                    "pay_later":  "Later betalen",
+                    "pay_later_info":  "U kunt uw evenement later publiceren vanuit uw evenementenlijst.",
+                    "secure_payment":  "Beveiligde betaling via Stripe",
+                    "amount":  "Bedrag",
+                    "confirm_payment":  "Betaling bevestigen",
+                    "payment_success":  "Betaling geslaagd! Uw evenement is nu gepubliceerd.",
+                    "payment_error":  "Betalingsfout. Probeer het opnieuw."
+                },
     "payments":  {
                      "success":  {
                                      "title":  "Betaling bevestigd",
@@ -439,13 +457,23 @@
                    "empty":  "Nog geen evenementen.",
                    "cancelled":  "Geannuleerd",
                    "address":  "Adres",
+                   "city":  "Stad",
                    "when":  "Wanneer",
                    "theme":  "Thema",
+                   "price":  "Prijs",
                    "free":  "Gratis",
                    "book":  "Boeken",
                    "already_booked":  "Al geboekt",
+                   "my_events":  "Mijn evenementen",
+                   "all_events":  "Alle evenementen",
+                   "add_event":  "Evenement toevoegen",
+                   "draft":  "Concept",
+                   "organizer":  "Organisator",
+                   "reserved":  "Gereserveerd",
+                   "pay_to_publish":  "Betaal om te publiceren",
                    "filters":  {
-                                   "languages_placeholder":  "Doeltalen"
+                                   "languages_placeholder":  "Doeltalen",
+                                   "reset":  "Resetten"
                                },
                    "nearby":  "In de buurt",
                    "near_city":  "Gebaseerd op je stad: {{city}}"
@@ -493,6 +521,40 @@
                                 "subtitle":  "Maak je gratis account aan en sluit je aan bij de volgende sessie bij jou in de buurt."
                             }
                 },
+    "events":  {
+                   "detail":  {
+                                  "back_to_events":  "Terug naar evenementen",
+                                  "about":  "Over dit evenement",
+                                  "location":  "Locatie",
+                                  "price_per_person":  "Prijs per persoon",
+                                  "organized_by":  "Georganiseerd door",
+                                  "book_spot":  "Mijn plek reserveren",
+                                  "pay_booking":  "Reservering betalen",
+                                  "cancel_booking":  "Reservering annuleren",
+                                  "event_full":  "Volzet",
+                                  "event_cancelled":  "Evenement geannuleerd",
+                                  "booking_notice":  "Onmiddellijke bevestiging • Gratis annuleren tot 3u ervoor",
+                                  "pay_notice":  "Uw reservering wacht op betaling. Klik om te voltooien.",
+                                  "cancel_notice":  "U kan annuleren tot 3 uur voor de start",
+                                  "starting_soon":  "Start binnenkort",
+                                  "starting_soon_notice":  "Het evenement start binnen minder dan 3 uur, annuleren niet mogelijk",
+                                  "cancel_modal_title":  "Reservering annuleren?",
+                                  "cancel_modal_message":  "Weet u zeker dat u deze reservering wilt annuleren? Dit is onomkeerbaar.",
+                                  "yes_cancel":  "Ja, annuleren",
+                                  "not_found":  "Evenement niet gevonden",
+                                  "error":  "Er is een fout opgetreden bij het laden",
+                                  "loading":  "Bezig met laden...",
+                                  "pay_and_publish": "Betalen en publiceren",
+                                  "delete_draft": "Concept verwijderen",
+                                  "organizer_pending": "Betaling bezig...",
+                                  "cancel_event": "Evenement annuleren",
+                                  "cancel_event_title": "Dit evenement annuleren?",
+                                  "cancel_event_message": "Deze actie is onomkeerbaar en annuleert alle deelnemers.",
+                                  "yes_cancel_event": "Ja, evenement annuleren",
+                                  "register_free": "Gratis inschrijven",
+                                  "unregister": "Uitschrijven"
+                               }
+               },
     "checkout":  {
                      "title":  "Aankoop bevestigen",
                      "message":  "Wilt u uw aankoop bevestigen?",

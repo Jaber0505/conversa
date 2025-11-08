@@ -91,6 +91,13 @@ class Booking(models.Model):
         help_text="Currency code (ISO 4217)"
     )
 
+    # Booking type (NEW)
+    is_organizer_booking = models.BooleanField(
+        default=False,
+        db_index=True,
+        help_text="True if this is organizer's payment to publish event"
+    )
+
     # Expiration and payment tracking
     expires_at = models.DateTimeField(
         default=default_expiry,

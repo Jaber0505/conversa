@@ -1,23 +1,21 @@
 import { Component, OnInit, OnDestroy, inject, signal, Pipe, PipeTransform } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { TPipe } from '@core/i18n';
-import { SHARED_IMPORTS } from '@shared';
-import { HeadlineBarComponent } from '@shared/layout/headline-bar/headline-bar.component';
-import { EventDetailDto, Booking } from '@core/models';
-import { EventsApiService, BookingsApiService, AuthTokenService, PaymentsApiService } from '@core/http';
 import { take, finalize } from 'rxjs/operators';
+import { TPipe } from '@core/i18n';
+import { EventsApiService, BookingsApiService, PaymentsApiService, AuthApiService } from '@core/http';
 import { BlockingSpinnerService } from '@app/core/http/services/spinner-service';
+import { EventDetailDto } from '@core/models';
 import { ConfirmPurchaseComponent } from '@app/shared/components/modals/confirm-purchase/confirm-purchase.component';
+import { HeadlineBarComponent, SHARED_IMPORTS } from '@shared';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Pipe({
   name: 'sanitizeUrl',
   standalone: true
 })
 export class SanitizeUrlPipe implements PipeTransform {
-  constructor(private sanitizer: DomSanitizer) {}
-
+  private sanitizer = inject(DomSanitizer);
   transform(url: string): SafeResourceUrl {
     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
@@ -35,57 +33,62 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private eventsApi = inject(EventsApiService);
   private bookingsApi = inject(BookingsApiService);
-  private authTokenService = inject(AuthTokenService);
+  private authApi = inject(AuthApiService);
   private paymentsApi = inject(PaymentsApiService);
   private loader = inject(BlockingSpinnerService);
 
   event = signal<EventDetailDto | null>(null);
   loading = signal(true);
   error = signal<string | null>(null);
-  userBooking = signal<Booking | null>(null); // Booking actif de l'utilisateur pour cet événement
-  canCancel = signal(false); // Peut annuler dans les 3h avant événement
-  showCancelModal = signal(false); // Afficher la modale d'annulation
-  cancellingBooking = signal(false); // Annulation en cours
 
-  // Constante pour max participants (cohérent avec backend)
-  readonly MAX_PARTICIPANTS = 6;
-  readonly CANCELLATION_DEADLINE_HOURS = 3; // Cohérent avec backend
+  // Source unique: backend
+  isOrganizer = signal(false);
+  currentUserId = signal<number | null>(null);
 
-  // Référence à l'écouteur de visibilité pour le nettoyage
+  // Modales
+  showCancelModal = signal(false);
+  cancellingBooking = signal(false);
+
+  organizerPaymentLoading = signal(false);
+  showCancelEventModal = signal(false);
+  cancellingEvent = signal(false);
+  deletingDraft = signal(false);
+
+  readonly CANCELLATION_DEADLINE_HOURS = 3;
+
   private visibilityChangeHandler: (() => void) | null = null;
 
   ngOnInit(): void {
+    this.authApi.me().pipe(take(1)).subscribe({
+      next: (me) => {
+        this.currentUserId.set(me?.id ?? null);
+        const evt = this.event();
+        if (evt) this.updateIsOrganizer(evt);
+      },
+      error: () => {}
+    });
+
     const eventId = this.route.snapshot.paramMap.get('id');
     if (eventId) {
-      this.loadEvent(+eventId);
-
-      // Recharger l'événement quand la page devient visible
-      // (ex: retour après paiement Stripe)
-      this.setupAutoRefresh(+eventId);
+      const id = +eventId;
+      this.loadEvent(id);
+      this.setupAutoRefresh(id);
     } else {
       this.error.set('events.detail.not_found');
       this.loading.set(false);
     }
   }
 
-  /**
-   * Configure le rechargement automatique quand la page devient visible
-   * Utile après un paiement Stripe ou quand l'utilisateur revient sur la page
-   */
   private setupAutoRefresh(eventId: number): void {
     this.visibilityChangeHandler = () => {
       if (document.visibilityState === 'visible') {
-        // Recharger l'événement quand l'utilisateur revient sur la page
         this.loadEvent(eventId);
       }
     };
-
-    // Écouter les changements de visibilité
     document.addEventListener('visibilitychange', this.visibilityChangeHandler);
   }
 
   ngOnDestroy(): void {
-    // Nettoyer l'écouteur pour éviter les fuites de mémoire
     if (this.visibilityChangeHandler) {
       document.removeEventListener('visibilitychange', this.visibilityChangeHandler);
     }
@@ -94,133 +97,86 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   private loadEvent(id: number): void {
     this.loading.set(true);
     this.error.set(null);
-
     this.eventsApi.get(id).pipe(
       take(1),
       finalize(() => this.loading.set(false))
     ).subscribe({
       next: (event: any) => {
-        // Backend returns EventDetailDto for single event retrieval
-        const eventDetail = event as EventDetailDto;
-        // Calculer is_cancelled
-        eventDetail.is_cancelled = eventDetail.status === 'CANCELLED' || !!eventDetail.cancelled_at;
-        this.event.set(eventDetail);
-
-        // Charger le booking de l'utilisateur si connecté
-        if (this.authTokenService.hasAccess()) {
-          this.loadUserBooking(id);
-        }
+        const eventData = event as EventDetailDto;
+        this.event.set(eventData);
+        this.updateIsOrganizer(eventData);
       },
       error: (err: any) => {
         console.error('Error loading event:', err);
-        this.error.set('events.detail.error');
-      }
-    });
-  }
-
-  /**
-   * Charge le booking actif de l'utilisateur pour cet événement
-   */
-  private loadUserBooking(eventId: number): void {
-    this.bookingsApi.list().pipe(take(1)).subscribe({
-      next: (response) => {
-        // Trouver un booking CONFIRMED ou PENDING pour cet événement
-        const booking = response.results.find(
-          b => b.event === eventId && (b.status === 'CONFIRMED' || b.status === 'PENDING')
-        );
-
-        if (booking) {
-          this.userBooking.set(booking);
-          // Vérifier si l'utilisateur peut annuler (3h avant événement)
-          this.checkCancellationDeadline();
+        // Rediriger vers la connexion si non authentifié
+        const status = err?.status ?? err?.statusCode;
+        if (status === 401 || status === 403) {
+          this.router.navigate(['/', this.getLang(), 'auth', 'login']);
+          return;
         }
-      },
-      error: (err) => {
-        console.error('Error loading user bookings:', err);
+        // 404 => not found, sinon erreur générique
+        this.error.set(status === 404 ? 'events.detail.not_found' : 'events.detail.error');
       }
     });
   }
 
-  /**
-   * Vérifie si l'utilisateur peut annuler son booking (deadline 3h avant événement)
-   */
-  private checkCancellationDeadline(): void {
-    const evt = this.event();
-    const booking = this.userBooking();
-
-    if (!evt || !booking || booking.status === 'CANCELLED') {
-      this.canCancel.set(false);
-      return;
-    }
-
-    const eventStart = new Date(evt.datetime_start);
-    const now = new Date();
-    const hoursUntilEvent = (eventStart.getTime() - now.getTime()) / (1000 * 60 * 60);
-
-    // Peut annuler si plus de 3h avant événement
-    this.canCancel.set(hoursUntilEvent > this.CANCELLATION_DEADLINE_HOURS);
+  private updateIsOrganizer(eventData: EventDetailDto | null): void {
+    if (!eventData) { this.isOrganizer.set(false); return; }
+    const userId = this.currentUserId();
+    const organizerId = (eventData as any).organizer_id ?? (eventData as any).organizer;
+    this.isOrganizer.set(!!userId && organizerId === userId);
   }
 
-  /**
-   * Retourne le statut du bouton d'action selon l'état de l'événement et du booking
-   */
-  getActionButtonState(): 'book' | 'pay' | 'cancel' | 'starting-soon' | 'full' | 'cancelled' {
+  getActionButtonState():
+    'organizer-draft-pay' | 'organizer-draft-delete' | 'organizer-published-cancel' |
+    'organizer-published-soon' | 'organizer-pending' |
+    'user-book' | 'user-pay' | 'user-cancel' |
+    'user-starting-soon' | 'event-full' | 'event-cancelled' | 'event-finished' | null {
     const evt = this.event();
-    const booking = this.userBooking();
-
-    if (!evt) return 'book';
-
-    // Événement annulé
-    if (evt.is_cancelled) return 'cancelled';
-
-    // Utilisateur a un booking PENDING (pas encore payé)
-    if (booking && booking.status === 'PENDING') {
-      return 'pay';
-    }
-
-    // Utilisateur a un booking CONFIRMED (déjà payé)
-    if (booking && booking.status === 'CONFIRMED') {
-      // Peut annuler si plus de 3h avant événement
-      if (this.canCancel()) {
-        return 'cancel';
-      } else {
-        return 'starting-soon';
+    if (!evt) return null;
+    const status = evt.status;
+    if (status === 'FINISHED') return 'event-finished';
+    if (status === 'CANCELLED') return 'event-cancelled';
+    const links: any = (evt as any)._links || {};
+    const perms: any = (evt as any).permissions || {};
+    const isOrganizer = this.isOrganizer();
+    if (isOrganizer) {
+      if (status === 'DRAFT') {
+        const canPublish = !!(links.request_publication || links.pay_and_publish);
+        if (canPublish) return 'organizer-draft-pay';
+        if (links.delete_draft) return 'organizer-draft-delete';
+        return null;
+      }
+      if (status === 'PENDING_CONFIRMATION') return 'organizer-pending';
+      if (status === 'PUBLISHED') {
+        if (perms.can_cancel_event || links.cancel) return 'organizer-published-cancel';
+        return 'organizer-published-soon';
       }
     }
-
-    // Événement complet
-    if (evt.participants_count >= this.MAX_PARTICIPANTS) {
-      return 'full';
+    if (!isOrganizer && (status === 'DRAFT' || status === 'PENDING_CONFIRMATION')) return null;
+    if (status === 'PUBLISHED') {
+      const myb = (evt as any).my_booking as ({ public_id: string; status: string } | null | undefined);
+      if (myb?.status === 'PENDING') return 'user-pay';
+      if (myb?.status === 'CONFIRMED') return (evt as any).can_cancel_booking ? 'user-cancel' : 'user-starting-soon';
+      if ((evt as any).partner_capacity && (evt as any).participants_count >= (evt as any).partner_capacity) return 'event-full';
+      return perms.can_book ? 'user-book' : null;
     }
-
-    // Peut réserver
-    return 'book';
+    return null;
   }
 
   formatPrice(cents: number): string {
     const amount = cents / 100;
-    return new Intl.NumberFormat('fr-BE', {
-      style: 'currency',
-      currency: 'EUR'
-    }).format(amount);
+    return new Intl.NumberFormat('fr-BE', { style: 'currency', currency: 'EUR' }).format(amount);
   }
 
   formatDate(dateStr: string): string {
     const date = new Date(dateStr);
-    return new Intl.DateTimeFormat('fr-FR', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    }).format(date);
+    return new Intl.DateTimeFormat('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).format(date);
   }
 
   formatTime(dateStr: string): string {
     const date = new Date(dateStr);
-    return new Intl.DateTimeFormat('fr-FR', {
-      hour: '2-digit',
-      minute: '2-digit'
-    }).format(date);
+    return new Intl.DateTimeFormat('fr-FR', { hour: '2-digit', minute: '2-digit' }).format(date);
   }
 
   getGoogleMapsUrl(address: string): string {
@@ -228,112 +184,117 @@ export class EventDetailComponent implements OnInit, OnDestroy {
     return `https://www.google.com/maps?q=${query}&output=embed`;
   }
 
+  onRequestPublication(): void {
+    const evt = this.event();
+    if (!evt || !this.isOrganizer()) return;
+    this.organizerPaymentLoading.set(true);
+    this.loader.show('Préparation du paiement...');
+    this.eventsApi.requestPublication(evt.id, this.getLang()).pipe(
+      take(1),
+      finalize(() => { this.organizerPaymentLoading.set(false); this.loader.hide(); })
+    ).subscribe({
+      next: (response) => {
+        if (response && response.url) {
+          window.location.href = response.url;
+        } else {
+          alert('URL de paiement indisponible');
+        }
+      },
+      error: (err: any) => {
+        console.error('Error requesting publication:', err);
+        alert(err?.error?.error || 'Erreur lors de la demande de publication');
+      }
+    });
+  }
+
   onBook(): void {
     const evt = this.event();
     if (!evt) return;
-
-    // Vérifier si l'utilisateur est connecté
-    if (!this.authTokenService.hasAccess()) {
+    if (!this.currentUserId()) {
       this.router.navigate(['/', this.getLang(), 'auth', 'login']);
       return;
     }
-
     this.loader.show('Création de la réservation...');
-
-    // Créer le booking
     this.bookingsApi.create(evt.id).pipe(
       take(1),
       finalize(() => this.loader.hide())
     ).subscribe({
       next: (booking) => {
-        // Créer la session de paiement Stripe
-        this.paymentsApi.createCheckoutSession({
-          booking_public_id: booking.public_id,
-          lang: this.getLang(),
-        }).pipe(take(1)).subscribe({
-          next: (res) => {
-            // Rediriger vers Stripe
-            window.location.href = res.url;
-          },
-          error: (err) => {
-            console.error('Error creating checkout session:', err);
-            alert('Erreur lors de la création de la session de paiement');
-          },
-        });
+        this.paymentsApi.createCheckoutSession({ booking_public_id: booking.public_id, lang: this.getLang() })
+          .pipe(take(1)).subscribe({
+            next: (res) => { window.location.href = res.url; },
+            error: (err) => { console.error('Error creating checkout session:', err); alert('Erreur lors de la création de la session de paiement'); },
+          });
       },
-      error: (err) => {
-        console.error('Error creating booking:', err);
-        alert('Erreur lors de la création de la réservation');
-      },
+      error: (err) => { console.error('Error creating booking:', err); alert('Erreur lors de la création de la réservation'); }
     });
   }
 
   onPay(): void {
-    const booking = this.userBooking();
-    if (!booking) return;
-
+    const evt = this.event();
+    const myb = (evt as any)?.my_booking as ({ public_id: string; status: string } | null | undefined);
+    if (!evt || !myb || myb.status !== 'PENDING') return;
     this.loader.show('Redirection vers le paiement...');
-
-    // Créer la session de paiement Stripe pour le booking PENDING existant
-    this.paymentsApi.createCheckoutSession({
-      booking_public_id: booking.public_id,
-      lang: this.getLang(),
-    }).pipe(
+    this.paymentsApi.createCheckoutSession({ booking_public_id: myb.public_id, lang: this.getLang() }).pipe(
       take(1),
       finalize(() => this.loader.hide())
     ).subscribe({
-      next: (res) => {
-        // Rediriger vers Stripe
-        window.location.href = res.url;
-      },
-      error: (err) => {
-        console.error('Error creating checkout session:', err);
-        alert('Erreur lors de la création de la session de paiement');
-      },
+      next: (res) => { window.location.href = res.url; },
+      error: (err) => { console.error('Error creating checkout session:', err); alert('Erreur lors de la création de la session de paiement'); },
     });
   }
 
-  openCancelModal(): void {
-    this.showCancelModal.set(true);
-  }
-
-  closeCancelModal(): void {
-    this.showCancelModal.set(false);
-  }
+  openCancelModal(): void { this.showCancelModal.set(true); }
+  closeCancelModal(): void { this.showCancelModal.set(false); }
 
   confirmCancelBooking(): void {
-    const booking = this.userBooking();
-    if (!booking) return;
-
+    const evt = this.event();
+    const myb = (evt as any)?.my_booking as ({ public_id: string; status: string } | null | undefined);
+    if (!evt || !myb || (myb.status !== 'CONFIRMED' && myb.status !== 'PENDING')) return;
     this.cancellingBooking.set(true);
-
-    this.bookingsApi.cancel(booking.public_id).pipe(
+    this.bookingsApi.cancel(myb.public_id).pipe(
       take(1),
-      finalize(() => {
-        this.cancellingBooking.set(false);
-        this.showCancelModal.set(false);
-      })
+      finalize(() => { this.cancellingBooking.set(false); this.showCancelModal.set(false); })
     ).subscribe({
       next: () => {
-        // Réinitialiser les signaux de booking
-        this.userBooking.set(null);
-        this.canCancel.set(false);
-
-        // Recharger l'événement pour mettre à jour participants_count
         const eventId = this.event()?.id;
-        if (eventId) {
-          this.loadEvent(eventId);
-        }
+        if (eventId) this.loadEvent(eventId);
       },
-      error: (err) => {
-        console.error('Error cancelling booking:', err);
-        alert('Erreur lors de l\'annulation de la réservation');
-      }
+      error: (err) => { console.error('Error cancelling booking:', err); alert('Erreur lors de l\'annulation de la réservation'); }
     });
   }
 
-  goBack(): void {
-    this.router.navigate(['/', this.getLang(), 'events']);
+  goBack(): void { this.router.navigate(['/', this.getLang(), 'events']); }
+
+  onDeleteDraft(): void {
+    const evt = this.event();
+    if (!evt || !this.isOrganizer()) return;
+    if (!confirm('Voulez-vous vraiment supprimer ce brouillon ? Cette action est irréversible.')) return;
+    this.deletingDraft.set(true);
+    this.loader.show('Suppression du brouillon...');
+    this.eventsApi.delete(evt.id).pipe(
+      take(1),
+      finalize(() => { this.deletingDraft.set(false); this.loader.hide(); })
+    ).subscribe({
+      next: () => { this.router.navigate(['/', this.getLang(), 'events']); },
+      error: (err) => { console.error('Error deleting draft:', err); alert('Erreur lors de la suppression du brouillon'); }
+    });
+  }
+
+  openCancelEventModal(): void { this.showCancelEventModal.set(true); }
+  closeCancelEventModal(): void { this.showCancelEventModal.set(false); }
+
+  confirmCancelEvent(): void {
+    const evt = this.event();
+    if (!evt || !this.isOrganizer()) return;
+    this.cancellingEvent.set(true);
+    this.eventsApi.cancel(evt.id).pipe(
+      take(1),
+      finalize(() => { this.cancellingEvent.set(false); this.showCancelEventModal.set(false); })
+    ).subscribe({
+      next: () => { this.router.navigate(['/', this.getLang(), 'events']); },
+      error: (err) => { console.error('Error cancelling event:', err); alert('Erreur lors de l\'annulation de l\'événement'); }
+    });
   }
 
   private getLang(): string {

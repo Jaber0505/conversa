@@ -137,6 +137,7 @@ class AuditLog(models.Model):
     )
 
     class Meta:
+        app_label = "audit"
         verbose_name = "Audit Log"
         verbose_name_plural = "Audit Logs"
         ordering = ["-created_at"]

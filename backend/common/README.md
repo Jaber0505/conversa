@@ -56,7 +56,7 @@ if user.age < MINIMUM_USER_AGE:
 ```python
 DEFAULT_EVENT_PRICE_CENTS = 700  # 7,00 EUR (prix fixe)
 DEFAULT_EVENT_DURATION_HOURS = 1  # Tous les événements durent 1h
-MIN_ADVANCE_BOOKING_HOURS = 24   # Création minimum 24h à l'avance
+MIN_ADVANCE_BOOKING_HOURS = 3    # Création minimum 3h à l'avance
 MAX_FUTURE_BOOKING_DAYS = 7      # Maximum 7 jours dans le futur
 MIN_PARTICIPANTS_PER_EVENT = 3   # Annulation auto si < 3 participants
 ```

@@ -21,7 +21,7 @@ MIN_PARTICIPANTS_PER_EVENT = 3
 DEFAULT_EVENT_DURATION_HOURS = 1  # All events are exactly 1 hour long
 
 # Event scheduling constraints
-MIN_ADVANCE_BOOKING_HOURS = 24  # Events must be created at least 24h in advance (no same-day events)
+MIN_ADVANCE_BOOKING_HOURS = 3  # Events must be created at least 3h in advance
 MAX_FUTURE_BOOKING_DAYS = 7  # Events cannot be scheduled more than 1 week in advance
 
 # ==============================================================================

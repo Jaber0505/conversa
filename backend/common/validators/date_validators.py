@@ -20,8 +20,7 @@ def validate_future_datetime(value):
     Validate that datetime is in the future with minimum advance notice.
 
     Business Rules:
-    - Event must be at least MIN_ADVANCE_BOOKING_HOURS (24h) in advance
-    - No same-day event creation allowed
+    - Event must be at least MIN_ADVANCE_BOOKING_HOURS (3h) in advance
 
     Args:
         value: DateTime to validate
@@ -34,12 +33,11 @@ def validate_future_datetime(value):
     if value <= now:
         raise ValidationError("Event datetime must be in the future.")
 
-    # Require minimum advance notice (24 hours = no same-day events)
+    # Require minimum advance notice (3 hours)
     min_notice = now + timedelta(hours=MIN_ADVANCE_BOOKING_HOURS)
     if value < min_notice:
         raise ValidationError(
-            f"Events must be scheduled at least {MIN_ADVANCE_BOOKING_HOURS} hours in advance. "
-            "Same-day events are not allowed."
+            f"Impossible de créer : délai inférieur à {MIN_ADVANCE_BOOKING_HOURS} heures."
         )
 
 
@@ -60,8 +58,10 @@ def validate_reasonable_future(value, max_days=None):
     if max_days is None:
         max_days = MAX_FUTURE_BOOKING_DAYS
 
-    max_future = timezone.now() + timedelta(days=max_days)
-    if value > max_future:
+    # Allow any time on the Nth day (inclusive by calendar day)
+    now = timezone.now()
+    max_date = (now + timedelta(days=max_days)).date()
+    if value.date() > max_date:
         raise ValidationError(
             f"Events cannot be scheduled more than {max_days} days in advance."
         )

@@ -50,6 +50,8 @@ class AuditLogViewSet(viewsets.ReadOnlyModelViewSet):
         'resource_id': ['exact'],
         'created_at': ['gte', 'lte', 'date'],
         'status_code': ['exact', 'gte', 'lte'],  # HTTP status code (200, 404, etc.)
+        'method': ['exact'],                     # HTTP method (GET, POST, ...)
+        'path': ['exact', 'icontains'],          # HTTP path
     }
 
     # Text search
@@ -170,7 +172,8 @@ class AuditLogViewSet(viewsets.ReadOnlyModelViewSet):
         writer.writerow([
             'ID', 'Date', 'Category', 'Level', 'Action', 'Message',
             'User', 'Resource Type', 'Resource ID',
-            'IP', 'HTTP Method', 'HTTP Path', 'HTTP Status'
+            'ip_address', 'http_method', 'http_path', 'http_status',
+            'method', 'status_code'
         ])
 
         # Data
@@ -186,9 +189,12 @@ class AuditLogViewSet(viewsets.ReadOnlyModelViewSet):
                 log.resource_type or '',
                 log.resource_id or '',
                 log.ip or '',
-                log.http_method or '',
-                log.http_path or '',
-                log.http_status_code or '',
+                getattr(log, 'method', '') or '',
+                getattr(log, 'path', '') or '',
+                getattr(log, 'status_code', '') or '',
+                # Duplicate columns using model field names for convenience
+                getattr(log, 'method', '') or '',
+                getattr(log, 'status_code', '') or '',
             ])
 
         return response
@@ -237,6 +243,32 @@ class AuditLogViewSet(viewsets.ReadOnlyModelViewSet):
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @extend_schema(
+        summary="Purge audit logs (dev/admin)",
+        description=(
+            "Deletes audit logs matching current filters.\n\n"
+            "Use this in development to purge test logs.\n\n"
+            "Examples:\n"
+            "- Purge TEST actions: POST /api/v1/audit/purge/?action__icontains=TEST\n"
+            "- Purge HTTP logs: POST /api/v1/audit/purge/?category=HTTP\n"
+        ),
+        responses={
+            200: OpenApiResponse(description="Purge completed"),
+        },
+        tags=['Audit'],
+    )
+    @action(detail=False, methods=['post'], url_path='purge')
+    def purge(self, request):
+        """
+        Delete audit logs matching filters (admin-only utility for dev).
+        """
+        qs = self.filter_queryset(self.get_queryset())
+        deleted, _ = qs.delete()
+        return Response({
+            "status": "success",
+            "deleted": deleted
+        })
+
+    @extend_schema(
         summary="Dashboard audit statistics",
         description=(
             "Global statistics for admin dashboard.\n\n"
@@ -272,15 +304,13 @@ class AuditLogViewSet(viewsets.ReadOnlyModelViewSet):
         # Total logs
         total = AuditLog.objects.count()
 
-        # By category
-        by_category = dict(
-            AuditLog.objects.values_list('category').annotate(count=Count('id'))
-        )
+        # By category (list of dicts)
+        by_category_qs = AuditLog.objects.values('category').annotate(count=Count('id'))
+        by_category = list(by_category_qs)
 
-        # By level
-        by_level = dict(
-            AuditLog.objects.values_list('level').annotate(count=Count('id'))
-        )
+        # By level (list of dicts)
+        by_level_qs = AuditLog.objects.values('level').annotate(count=Count('id'))
+        by_level = list(by_level_qs)
 
         # Logs last 24h
         last_24h = timezone.now() - timedelta(hours=24)
@@ -290,5 +320,5 @@ class AuditLogViewSet(viewsets.ReadOnlyModelViewSet):
             'total_logs': total,
             'by_category': by_category,
             'by_level': by_level,
-            'recent_logs_24h': recent_count,
+            'recent_count_24h': recent_count,
         })

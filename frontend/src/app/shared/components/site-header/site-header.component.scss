@@ -11,8 +11,20 @@
   align-items: center;
   column-gap: 1rem;
   min-height: 64px;
-  grid-template-columns: auto 1fr auto auto;
-  grid-template-areas: "logo . lang auth";
+  grid-template-columns: auto auto 1fr auto auto;
+  grid-template-areas: "hamburger logo . lang auth";
+}
+
+.hamburger {
+  grid-area: hamburger;
+}
+
+// On desktop (>= 768px), hide hamburger button and show nav inline
+@media (min-width: 768px) {
+  .header-grid {
+    grid-template-columns: auto auto auto 1fr auto auto;
+    grid-template-areas: "logo hamburger . . lang auth";
+  }
 }
 
 .logo {
@@ -113,12 +125,12 @@
   white-space: nowrap;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .header-grid {
     min-height: 56px;
     column-gap: .75rem;
-    grid-template-columns: auto 1fr auto auto; /* logo | . | lang | auth */
-    grid-template-areas: "logo . lang auth";
+    grid-template-columns: auto auto 1fr auto auto; /* hamburger | logo | . | lang | auth */
+    grid-template-areas: "hamburger logo . lang auth";
   }
 
   .logo {

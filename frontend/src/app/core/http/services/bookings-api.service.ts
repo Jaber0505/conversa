@@ -8,8 +8,9 @@ export class BookingsApiService {
   private http = inject(HttpClient);
   private base = inject(API_URL);
 
-  list(): Observable<Paginated<Booking>> {
+  list(params?: { event?: number }): Observable<Paginated<Booking>> {
     let httpParams = new HttpParams();
+    if (params?.event != null) httpParams = httpParams.set('event', String(params.event));
     return this.http.get<Paginated<Booking>>(`${this.base}/bookings/`, { params: httpParams });
   }
 

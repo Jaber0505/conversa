@@ -3,6 +3,8 @@ Payment API views.
 
 Handles Stripe Checkout session creation and webhook events.
 """
+from __future__ import annotations
+
 import re
 from urllib.parse import urlencode
 
@@ -12,9 +14,7 @@ from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
-from drf_spectacular.utils import (
-    extend_schema, OpenApiResponse, OpenApiExample, OpenApiParameter
-)
+from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiParameter
 
 from rest_framework import status, views
 from rest_framework.response import Response
@@ -27,7 +27,7 @@ from .serializers import (
     APIErrorSerializer,
     WebhookAckSerializer,
 )
-from .services import PaymentService, RefundService
+from .services import PaymentService
 from .validators import validate_stripe_webhook_signature
 from .constants import (
     DEFAULT_SUCCESS_PATH,
@@ -41,59 +41,51 @@ from bookings.models import Booking
 
 # --- Helper Functions -----------------------------------------------------
 
+
 def _with_leading_slash(path: str, default: str) -> str:
     """Ensure path starts with /"""
     path = (path or default).strip()
     return path if path.startswith("/") else "/" + path
 
 
-def _build_return_urls(lang: str, booking_public_id: str, event_id: int, success_override: str | None, cancel_override: str | None):
+def _build_return_urls(
+    lang: str,
+    booking_public_id: str,
+    event_id: int,
+    success_override: str | None,
+    cancel_override: str | None,
+):
     """
-    Build Stripe success/cancel URLs.
-
-    Args:
-        lang: Language code (e.g., "fr", "en")
-        booking_public_id: Booking UUID
-        event_id: Event ID
-        success_override: Custom success URL (optional - must provide both or neither)
-        cancel_override: Custom cancel URL (optional - must provide both or neither)
-
-    Returns:
-        tuple: (success_url, cancel_url)
-
-    Note:
-        Both success_override and cancel_override must be provided together.
-        If only one is provided, both will be ignored and defaults will be used.
+    Build Stripe success/cancel URLs with proper query parameters.
     """
-    # Use overrides only if BOTH are provided (prevents partial override bugs)
     if success_override and cancel_override:
         success_url = success_override
         cancel_url = cancel_override
     else:
         success_path = _with_leading_slash(
             getattr(settings, "STRIPE_SUCCESS_PATH", DEFAULT_SUCCESS_PATH),
-            DEFAULT_SUCCESS_PATH
+            DEFAULT_SUCCESS_PATH,
         )
         cancel_path = _with_leading_slash(
             getattr(settings, "STRIPE_CANCEL_PATH", DEFAULT_CANCEL_PATH),
-            DEFAULT_CANCEL_PATH
+            DEFAULT_CANCEL_PATH,
         )
         base = getattr(settings, "FRONTEND_BASE_URL", "http://localhost:4200").rstrip("/")
         success_url = f"{base}/{lang}{success_path}"
         cancel_url = f"{base}/{lang}{cancel_path}"
 
-    # Add query params (check if URL already has params)
     qs = {"b": str(booking_public_id), "e": str(event_id), "lang": lang}
-    separator = "&" if "?" in success_url else "?"
-    success_url = f"{success_url}{separator}{urlencode(qs)}&cs={{CHECKOUT_SESSION_ID}}"
+    sep = "&" if "?" in success_url else "?"
+    success_url = f"{success_url}{sep}{urlencode(qs)}&cs={{CHECKOUT_SESSION_ID}}"
 
-    separator = "&" if "?" in cancel_url else "?"
-    cancel_url = f"{cancel_url}{separator}{urlencode(qs)}"
+    sep = "&" if "?" in cancel_url else "?"
+    cancel_url = f"{cancel_url}{sep}{urlencode(qs)}"
 
     return success_url, cancel_url
 
 
 # --- API Views -------------------------------------------------------------
+
 
 class CreateCheckoutSessionView(views.APIView):
     """
@@ -106,73 +98,38 @@ class CreateCheckoutSessionView(views.APIView):
         - Maximum 3 payment attempts per booking
         - Zero-amount bookings skip Stripe (direct confirmation)
     """
+
     permission_classes = [AuthPerm]
 
     @extend_schema(
         tags=["Payments"],
         operation_id="payments_create_checkout_session",
         summary="Create Stripe Checkout session (TEST only)",
-        description=(
-            "Creates a Stripe Checkout session for a pending booking.\n\n"
-            "**Business Rules:**\n"
-            "- TEST mode only (sk_test_ keys)\n"
-            "- Booking must be PENDING and not expired\n"
-            "- Maximum 3 payment attempts per booking\n"
-            "- Zero-amount bookings are confirmed directly\n\n"
-            "**Returns:**\n"
-            "Stripe Checkout URL where user should be redirected to complete payment."
-        ),
         request=CreateCheckoutSessionSerializer,
         responses={
             201: OpenApiResponse(CheckoutSessionCreatedSerializer, description="Session created"),
             401: OpenApiResponse(APIErrorSerializer, description="Not authenticated"),
             403: OpenApiResponse(APIErrorSerializer, description="User inactive"),
             404: OpenApiResponse(APIErrorSerializer, description="Booking not found"),
-            409: OpenApiResponse(APIErrorSerializer, description="Booking expired/not payable or retry limit exceeded"),
+            409: OpenApiResponse(
+                APIErrorSerializer, description="Booking expired/not payable or retry limit exceeded"
+            ),
             502: OpenApiResponse(APIErrorSerializer, description="Stripe API error"),
         },
-        examples=[
-            OpenApiExample(
-                "Request",
-                value={"booking_public_id": "11111111-1111-1111-1111-111111111111", "lang": "fr"},
-                request_only=True,
-            ),
-            OpenApiExample(
-                "Response - Success",
-                value={"url": "https://checkout.stripe.com/c/pay/cs_test_abc123", "session_id": "cs_test_abc123"},
-                response_only=True,
-            ),
-            OpenApiExample(
-                "Error - Booking expired",
-                value={"detail": "Booking has expired and was cancelled."},
-                response_only=True,
-                status_codes=["409"],
-            ),
-            OpenApiExample(
-                "Error - Retry limit",
-                value={"detail": "Payment retry limit exceeded (3 attempts). Please contact support."},
-                response_only=True,
-                status_codes=["409"],
-            ),
-        ],
     )
     def post(self, request):
         """Create checkout session using PaymentService."""
-        # Validate serializer
         ser = CreateCheckoutSessionSerializer(data=request.data)
         ser.is_valid(raise_exception=True)
 
-        # Get booking (must belong to user)
         booking = get_object_or_404(
             Booking,
             public_id=ser.validated_data["booking_public_id"],
-            user=request.user
+            user=request.user,
         )
 
-        # Clean language code
         lang = re.sub(r"[^A-Za-z\-]", "", (ser.validated_data.get("lang") or "")).strip() or "fr"
 
-        # Build return URLs
         success_url, cancel_url = _build_return_urls(
             lang=lang,
             booking_public_id=str(booking.public_id),
@@ -182,31 +139,22 @@ class CreateCheckoutSessionView(views.APIView):
         )
 
         try:
-            # Use service to create checkout session
-            stripe_url, session_id, payment = PaymentService.create_checkout_session(
+            stripe_url, session_id, _payment = PaymentService.create_checkout_session(
                 booking=booking,
                 user=request.user,
                 success_url=success_url,
                 cancel_url=cancel_url,
             )
-
-            return Response(
-                {"url": stripe_url, "session_id": session_id},
-                status=status.HTTP_201_CREATED
-            )
-
+            return Response({"url": stripe_url, "session_id": session_id}, status=status.HTTP_201_CREATED)
         except ValidationError as e:
-            # Business rule validation failed
-            return Response(
-                {"detail": str(e)},
-                status=status.HTTP_409_CONFLICT
-            )
-        except Exception as e:
-            # Stripe or other errors
-            return Response(
-                {"detail": str(e)},
-                status=status.HTTP_502_BAD_GATEWAY
-            )
+            # Business conflict (booking not payable, expired, retry limit exceeded)
+            from rest_framework.exceptions import APIException
+
+            class Conflict(APIException):
+                status_code = status.HTTP_409_CONFLICT
+                default_code = "conflict"
+
+            raise Conflict(detail=str(e))
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -218,11 +166,8 @@ class StripeWebhookView(views.APIView):
         - checkout.session.completed → Confirms booking and payment
         - payment_intent.payment_failed → Marks payment as failed
         - checkout.session.expired → Marks session as canceled
-
-    Security:
-        - Public endpoint (no authentication)
-        - Signature verification required (Stripe-Signature header)
     """
+
     authentication_classes = []
     permission_classes = []
 
@@ -230,22 +175,13 @@ class StripeWebhookView(views.APIView):
         tags=["Payments"],
         operation_id="payments_stripe_webhook",
         summary="Stripe webhook - receives payment events",
-        description=(
-            "Public endpoint called by Stripe. Verifies `Stripe-Signature` header.\n\n"
-            "**Events Handled:**\n"
-            "- `checkout.session.completed` → Confirms booking + payment\n"
-            "- `payment_intent.payment_failed` → Marks payment as failed\n"
-            "- `checkout.session.expired` → Marks session as canceled\n\n"
-            "**Security:**\n"
-            "Webhook signature must be valid (configured in settings.STRIPE_WEBHOOK_SECRET)."
-        ),
         parameters=[
             OpenApiParameter(
                 name="Stripe-Signature",
                 type=str,
                 location=OpenApiParameter.HEADER,
                 required=True,
-                description="Stripe webhook signature"
+                description="Stripe webhook signature",
             ),
         ],
         request=None,
@@ -254,118 +190,78 @@ class StripeWebhookView(views.APIView):
             400: OpenApiResponse(APIErrorSerializer, description="Invalid signature/payload"),
             500: OpenApiResponse(APIErrorSerializer, description="Webhook secret missing"),
         },
-        examples=[
-            OpenApiExample(
-                "Event - checkout.session.completed",
-                value={
-                    "type": "checkout.session.completed",
-                    "data": {
-                        "object": {
-                            "id": "cs_test_abc123",
-                            "payment_intent": "pi_3XYZ...",
-                            "client_reference_id": "11111111-1111-1111-1111-111111111111",
-                            "metadata": {"booking_public_id": "11111111-1111-1111-1111-111111111111"}
-                        }
-                    }
-                },
-                request_only=True,
-            ),
-            OpenApiExample(
-                "Response",
-                value={"detail": "ok"},
-                response_only=True,
-            ),
-        ],
     )
     def post(self, request):
         """Handle Stripe webhook events."""
         import logging
+
         logger = logging.getLogger("payments.webhook")
+        logger.info("Webhook received from Stripe")
 
-        logger.info("🔔 Webhook received from Stripe")
-
-        # Check webhook secret
         webhook_secret = getattr(settings, "STRIPE_WEBHOOK_SECRET", "")
         if not webhook_secret:
-            logger.error("❌ Webhook secret missing in settings")
-            return Response(
-                {"detail": "Webhook secret missing"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
+            logger.error("Webhook secret missing in settings")
+            from rest_framework.exceptions import APIException
 
-        logger.info(f"✅ Webhook secret found: {webhook_secret[:20]}...")
+            class ServerError(APIException):
+                status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+                default_code = "server_error"
 
-        # Verify signature
-        sig_header = request.META.get("HTTP_STRIPE_SIGNATURE", "")
-        logger.info(f"🔑 Stripe signature: {sig_header[:50]}...")
+            raise ServerError(detail="Webhook secret missing")
 
+        # Require presence of Stripe-Signature header (tests expect 400 if missing)
+        sig_header = request.META.get("HTTP_STRIPE_SIGNATURE")
+        if not sig_header:
+            from rest_framework.exceptions import ValidationError as DRFValidationError
+            raise DRFValidationError(detail="Missing Stripe-Signature header")
         try:
             event = validate_stripe_webhook_signature(
-                payload=request.body,
-                sig_header=sig_header,
-                webhook_secret=webhook_secret
+                payload=request.body, sig_header=sig_header, webhook_secret=webhook_secret
             )
-            logger.info("✅ Webhook signature verified successfully")
         except ValidationError as e:
-            logger.error(f"❌ Webhook signature validation failed: {str(e)}")
-            return Response(
-                {"detail": str(e)},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            logger.error(f"Webhook signature validation failed: {str(e)}")
+            from rest_framework.exceptions import ValidationError as DRFValidationError
 
-        # Extract event data
+            raise DRFValidationError(detail=str(e))
+
         event_type = event.get("type")
         data = event.get("data", {}).get("object", {})
+        logger.info(f"Event type: {event_type}")
 
-        logger.info(f"📦 Event type: {event_type}")
-
-        # Handle checkout.session.completed
         if event_type == WEBHOOK_EVENT_CHECKOUT_COMPLETED:
-            logger.info("💳 Processing checkout.session.completed event")
-
             booking_public_id = (
-                (data.get("metadata") or {}).get("booking_public_id") or
-                data.get("client_reference_id")
+                (data.get("metadata") or {}).get("booking_public_id") or data.get("client_reference_id")
             )
             session_id = data.get("id")
             payment_intent_id = data.get("payment_intent")
 
-            logger.info(f"📋 Booking ID: {booking_public_id}")
-            logger.info(f"🎫 Session ID: {session_id}")
-            logger.info(f"💰 Payment Intent ID: {payment_intent_id}")
-
             if booking_public_id:
-                logger.info(f"🚀 Calling confirm_payment_from_webhook for booking {booking_public_id}")
-                result = PaymentService.confirm_payment_from_webhook(
+                PaymentService.confirm_payment_from_webhook(
                     booking_public_id=booking_public_id,
                     session_id=session_id,
                     payment_intent_id=payment_intent_id,
                     raw_event=data,
                 )
-                if result:
-                    logger.info(f"✅ Payment confirmed successfully for booking {booking_public_id}")
-                else:
-                    logger.error(f"❌ Failed to confirm payment for booking {booking_public_id}")
             else:
-                logger.warning("⚠️ No booking_public_id found in webhook data")
+                logger.warning("No booking_public_id found in webhook data")
 
-        # Handle payment_intent.payment_failed
         elif event_type == WEBHOOK_EVENT_PAYMENT_FAILED:
-            logger.info("❌ Processing payment_intent.payment_failed event")
             payment_intent_id = data.get("id")
-            if payment_intent_id:
-                logger.info(f"Marking payment {payment_intent_id} as failed")
-                PaymentService.mark_payment_failed(payment_intent_id)
+            session_id = (data.get("metadata") or {}).get("stripe_session_id")
+            reason = (data.get("last_payment_error") or {}).get("message")
+            PaymentService.mark_payment_failed(
+                session_id=session_id,
+                payment_intent_id=payment_intent_id,
+                reason=reason,
+                raw_event=data,
+            )
 
-        # Handle checkout.session.expired
         elif event_type == WEBHOOK_EVENT_SESSION_EXPIRED:
-            logger.info("⏰ Processing checkout.session.expired event")
             session_id = data.get("id")
             if session_id:
-                logger.info(f"Marking session {session_id} as canceled")
                 PaymentService.mark_session_canceled(session_id)
-        else:
-            logger.warning(f"⚠️ Unhandled event type: {event_type}")
 
-        logger.info("✅ Webhook processed successfully")
+        else:
+            logger.info(f"Unhandled event type: {event_type}")
+
         return Response({"detail": "ok"}, status=status.HTTP_200_OK)

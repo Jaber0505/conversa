@@ -49,7 +49,18 @@ class Payment(models.Model):
 
     # Payment details
     amount_cents = models.IntegerField(
-        default=0, help_text="Payment amount in cents"
+        default=0,
+        validators=[
+            validators.MinValueValidator(
+                -1000000,  # Allow negative values for refunds (up to -10,000 EUR)
+                message="Amount cannot be less than -1,000,000 cents (-10,000 EUR)"
+            ),
+            validators.MaxValueValidator(
+                1000000,  # Maximum 10,000 EUR per transaction
+                message="Amount cannot exceed 1,000,000 cents (10,000 EUR)"
+            )
+        ],
+        help_text="Payment amount in cents (negative for refunds)"
     )
     currency = models.CharField(
         max_length=3,
@@ -83,6 +94,7 @@ class Payment(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
+        app_label = "payments"
         ordering = ["-created_at"]
         verbose_name = "Payment"
         verbose_name_plural = "Payments"
@@ -94,3 +106,14 @@ class Payment(models.Model):
 
     def __str__(self):
         return f"Payment#{self.id} {self.status} {self.amount_cents} {self.currency}"
+
+    def __init__(self, *args, **kwargs):
+        """
+        Support legacy kwarg alias `stripe_session_id` for backward compatibility
+        with older tests/usages expecting this name instead of
+        `stripe_checkout_session_id`.
+        """
+        alias = kwargs.pop("stripe_session_id", None)
+        super().__init__(*args, **kwargs)
+        if alias and not getattr(self, "stripe_checkout_session_id", None):
+            self.stripe_checkout_session_id = alias

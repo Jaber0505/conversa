@@ -6,7 +6,6 @@ import { InputComponent, ButtonComponent } from '@shared';
 import { AuthApiService } from '@core/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContainerComponent } from "@shared/layout/container/container.component";
-import { LandingHeaderComponent } from "@shared/components/landing-header/landing-header.component";
 import { ErrorLoggerService } from '@app/core/services';
 import { debounceTime } from 'rxjs/operators';
 import { Subject } from 'rxjs';
@@ -14,7 +13,7 @@ import { Subject } from 'rxjs';
 @Component({
   selector: 'app-auth-forgot',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TPipe, InputComponent, ButtonComponent, ContainerComponent, LandingHeaderComponent],
+  imports: [CommonModule, ReactiveFormsModule, TPipe, InputComponent, ButtonComponent, ContainerComponent],
   templateUrl: './forgot.component.html',
   styleUrls: ['./forgot.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

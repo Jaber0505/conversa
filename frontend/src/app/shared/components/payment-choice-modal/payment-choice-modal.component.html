@@ -1,0 +1,51 @@
+<shared-modal
+  [isOpen]="isOpen"
+  [title]="'PAYMENT.PUBLISH_EVENT' | t"
+  [size]="'sm'"
+  (closeModal)="close()"
+>
+  <!-- Choix : Payer maintenant ou plus tard -->
+  <div class="payment-choice">
+    <p class="payment-choice__description">
+      {{ 'PAYMENT.PUBLISH_QUESTION' | t }}
+    </p>
+
+    <div class="payment-choice__price">
+      <span class="payment-choice__price-label">{{ 'PAYMENT.PRICE' | t }}</span>
+      <span class="payment-choice__price-value">{{ formattedPrice }}€</span>
+    </div>
+
+    <!-- Erreur -->
+    <div *ngIf="error()" class="alert alert--error">
+      {{ error() }}
+    </div>
+
+    <!-- Boutons -->
+    <div class="payment-choice__actions">
+      <shared-button
+        variant="primary"
+        size="lg"
+        [block]="true"
+        [disabled]="loading()"
+        (click)="onPayNow()"
+      >
+        <span *ngIf="!loading()">{{ 'PAYMENT.PAY_NOW' | t }}</span>
+        <span *ngIf="loading()">{{ 'common.loading' | t }}</span>
+      </shared-button>
+
+      <shared-button
+        variant="outline"
+        size="lg"
+        [block]="true"
+        [disabled]="loading()"
+        (click)="onPayLater()"
+      >
+        {{ 'PAYMENT.PAY_LATER' | t }}
+      </shared-button>
+    </div>
+
+    <p class="payment-choice__info">
+      {{ 'PAYMENT.PAY_LATER_INFO' | t }}
+    </p>
+  </div>
+</shared-modal>

@@ -20,4 +20,10 @@ urlpatterns = [
     # POST /api/v1/audit/cleanup/ - Cleanup old logs
     # GET /api/v1/audit/dashboard-stats/ - Dashboard statistics
     path('', include(router.urls)),
+    # Explicit named route for dashboard stats expected by tests
+    path(
+        'dashboard-stats/',
+        AuditLogViewSet.as_view({'get': 'dashboard_stats'}),
+        name='audit-dashboard-stats',
+    ),
 ]

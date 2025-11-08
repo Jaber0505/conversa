@@ -19,6 +19,7 @@ class EventSerializer(serializers.ModelSerializer):
     published_at = serializers.DateTimeField(read_only=True)
     cancelled_at = serializers.DateTimeField(read_only=True)
     photo = serializers.ImageField(required=False, allow_null=True)
+
     _links = serializers.SerializerMethodField()
 
     class Meta:
@@ -34,6 +35,9 @@ class EventSerializer(serializers.ModelSerializer):
             "photo",
             "title", "address",
             "status", "published_at", "cancelled_at",
+            "min_participants", "max_participants",
+            "is_draft_visible",
+            "organizer_paid_at",
             "created_at", "updated_at",
             "_links",
         ]
@@ -41,6 +45,8 @@ class EventSerializer(serializers.ModelSerializer):
             "id", "organizer", "organizer_id",
             "price_cents", "title", "address",
             "status", "published_at", "cancelled_at",
+            "min_participants", "max_participants",
+            "is_draft_visible", "organizer_paid_at",
             "created_at", "updated_at", "_links",
         ]
         extra_kwargs = {
@@ -55,7 +61,7 @@ class EventSerializer(serializers.ModelSerializer):
         """
         Validate event data.
 
-        Note: datetime_start validation (24h advance, max 7 days, business hours)
+        Note: datetime_start validation (â‰¥3h advance, max 7 days, business hours)
         is handled by model validators and EventService, not here.
         """
         theme = attrs.get("theme", getattr(self.instance, "theme", "")).strip()
@@ -76,6 +82,8 @@ class EventSerializer(serializers.ModelSerializer):
             validated_data.pop(field, None)
         return super().update(instance, validated_data)
 
+    # Removed getters for registration fields
+
     def get__links(self, obj):
         request = self.context.get("request")
         links = {
@@ -92,8 +100,28 @@ class EventSerializer(serializers.ModelSerializer):
         can_edit = bool(user and (getattr(user, "is_staff", False) or user.id == obj.organizer_id))
         if can_edit:
             links["update"] = links["self"]
-            links["delete"] = links["self"]
-            links["cancel"] = reverse("event-cancel", args=[obj.pk], request=request)
+            # Exposer delete uniquement pour les DRAFT (delete draft)
+            if obj.status == obj.Status.DRAFT:
+                links["delete_draft"] = links["self"]
+            # Annuler l'événement (uniquement si possible)
+            try:
+                from .services import EventService
+                can_cancel, _ = EventService.can_perform_action(obj, required_hours=3)
+                if obj.status == obj.Status.PUBLISHED and can_cancel:
+                    links["cancel"] = reverse("event-cancel", args=[obj.pk], request=request)
+            except Exception:
+                pass
+
+            # Pay-and-publish link for organizer (new workflow)
+            if obj.can_request_publication:
+                try:
+                    pay_url = reverse("event-pay-and-publish", args=[obj.pk], request=request)
+                    links["pay_and_publish"] = pay_url
+                    # Backward compatibility for front expecting this key
+                    links["request_publication"] = pay_url
+                except Exception:
+                    pass
+
         return links
 
 
@@ -125,6 +153,13 @@ class EventDetailSerializer(EventSerializer):
     available_slots = serializers.SerializerMethodField()
     is_full = serializers.SerializerMethodField()
 
+    # User-specific booking info and permissions
+    my_booking = serializers.SerializerMethodField()
+    can_cancel_booking = serializers.SerializerMethodField()
+    is_starting_soon = serializers.SerializerMethodField()
+    cancellation_deadline_hours = serializers.SerializerMethodField()
+    permissions = serializers.SerializerMethodField()
+
     class Meta(EventSerializer.Meta):
         fields = EventSerializer.Meta.fields + [
             "partner_address",
@@ -135,6 +170,12 @@ class EventDetailSerializer(EventSerializer):
             "participants_count",
             "available_slots",
             "is_full",
+            # user-scoped
+            "my_booking",
+            "can_cancel_booking",
+            "is_starting_soon",
+            "cancellation_deadline_hours",
+            "permissions",
         ]
 
     def get_participants_count(self, obj):
@@ -148,3 +189,120 @@ class EventDetailSerializer(EventSerializer):
     def get_is_full(self, obj):
         """Check if event has reached maximum capacity."""
         return obj.is_full
+
+    # --------------------- User-scoped helpers ---------------------
+    def _get_current_user(self):
+        request = self.context.get("request")
+        return getattr(request, "user", None)
+
+    def get_my_booking(self, obj):
+        """Return current user's booking public_id and status for this event, if any."""
+        user = self._get_current_user()
+        if not user or not getattr(user, "is_authenticated", False):
+            return None
+        try:
+            from bookings.models import Booking
+            booking = (
+                Booking.objects
+                .filter(user_id=user.id, event_id=obj.id)
+                .order_by("-created_at")
+                .first()
+            )
+            if not booking:
+                return None
+            return {"public_id": str(booking.public_id), "status": booking.status}
+        except Exception:
+            return None
+
+    def get_can_cancel_booking(self, obj):
+        user = self._get_current_user()
+        if not user or not getattr(user, "is_authenticated", False):
+            return False
+        try:
+            from bookings.models import Booking, BookingStatus
+            booking = (
+                Booking.objects
+                .filter(user_id=user.id, event_id=obj.id)
+                .order_by("-created_at")
+                .first()
+            )
+            if not booking or booking.status != BookingStatus.CONFIRMED:
+                return False
+            from .services import EventService
+            can_cancel, _ = EventService.can_perform_action(obj, required_hours=3)
+            return can_cancel
+        except Exception:
+            return False
+
+    def get_is_starting_soon(self, obj):
+        try:
+            from .services import EventService
+            can_cancel, _ = EventService.can_perform_action(obj, required_hours=3)
+            return not can_cancel
+        except Exception:
+            return False
+
+    def get_cancellation_deadline_hours(self, obj):
+        try:
+            from common.constants import CANCELLATION_DEADLINE_HOURS
+            return CANCELLATION_DEADLINE_HOURS
+        except Exception:
+            return 3
+
+    def get_permissions(self, obj):
+        """Expose action permissions to drive UI from server."""
+        request = self.context.get("request")
+        user = getattr(request, "user", None)
+        is_auth = bool(user and getattr(user, "is_authenticated", False))
+
+        perms = {
+            "can_request_publication": False,
+            "can_cancel_event": False,
+            "can_book": False,
+            "can_pay_booking": False,
+            "can_cancel_booking": False,
+            "disable_reason_code": None,
+        }
+
+        # Organizer permissions
+        is_organizer = bool(user and (getattr(user, "is_staff", False) or getattr(user, "id", None) == getattr(obj, "organizer_id", None)))
+        try:
+            from .services import EventService
+            can_cancel_event_now, _ = EventService.can_perform_action(obj, required_hours=3)
+        except Exception:
+            can_cancel_event_now = False
+
+        if is_organizer and obj.status == obj.Status.DRAFT and getattr(obj, "can_request_publication", False):
+            perms["can_request_publication"] = True
+
+        if is_organizer and obj.status == obj.Status.PUBLISHED and can_cancel_event_now:
+            perms["can_cancel_event"] = True
+        if obj.status == obj.Status.PUBLISHED and not can_cancel_event_now:
+            perms["disable_reason_code"] = "STARTING_SOON"
+
+        # User booking permissions
+        if is_auth:
+            myb = self.get_my_booking(obj)
+            has_active_booking = False
+            if myb:
+                status = myb.get("status")
+                if status == "PENDING":
+                    perms["can_pay_booking"] = True
+                    has_active_booking = True
+                elif status == "CONFIRMED":
+                    perms["can_cancel_booking"] = self.get_can_cancel_booking(obj)
+                    has_active_booking = True
+                # NOTE: For CANCELLED (or unknown status), treat as no active booking
+
+            # Allow booking if no active booking and capacity available
+            if not has_active_booking:
+                try:
+                    is_published = obj.status == obj.Status.PUBLISHED
+                    capacity = getattr(obj, "partner_capacity", None)
+                    participants = getattr(obj, "participants_count", 0)
+                    not_full = (capacity is None) or (participants < capacity)
+                    perms["can_book"] = bool(is_published and not_full)
+                except Exception:
+                    perms["can_book"] = obj.status == obj.Status.PUBLISHED
+
+        return perms

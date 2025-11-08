@@ -80,15 +80,97 @@
 .my-events-section,
 .public-events-section {
   margin-bottom: var(--space-8, 4rem);
+  position: relative;
+
+  // Animation d'entrée pour les sections
+  animation: fadeInUp 0.6s ease-out;
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-5, 2rem);
+  }
 
   .section-title {
-    margin: 0 0 var(--space-5, 2rem);
-    font-size: 1.5rem;
+    margin: 0 0 var(--space-5, 2rem) 0;
+    font-size: 1.75rem;
     font-weight: 700;
     color: #111827;
     padding-bottom: var(--space-3, 0.75rem);
     border-bottom: 3px solid var(--color-primary);
     display: inline-block;
+    position: relative;
+
+    // Effet de soulignement animé
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 0;
+      width: 0;
+      height: 3px;
+      background: var(--color-secondary);
+      transition: width 0.3s ease;
+    }
+
+    &:hover::after {
+      width: 100%;
+    }
+  }
+
+  .collapse-button {
+    background: transparent;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+    opacity: 0.6;
+
+    &:hover {
+      background: #f3f4f6;
+      border-color: var(--color-primary);
+      opacity: 1;
+      transform: scale(1.05);
+
+      .collapse-icon {
+        color: var(--color-primary);
+      }
+    }
+
+    &:focus {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+    }
+
+    .collapse-icon {
+      color: #6b7280;
+      font-size: 0.75rem;
+      transition: transform 0.3s ease;
+      display: inline-block;
+
+      &.collapsed {
+        transform: rotate(-90deg);
+      }
+    }
+  }
+
+  .section-content {
+    max-height: 10000px;
+    overflow: hidden;
+    transition: max-height 0.5s ease, opacity 0.3s ease;
+    opacity: 1;
+
+    &.collapsed {
+      max-height: 0;
+      opacity: 0;
+    }
   }
 }
 
@@ -98,6 +180,17 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -117,6 +210,67 @@
 
   @media (min-width: 1200px) {
     grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+// Pagination
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-6, 3rem);
+  padding: var(--space-4, 1.5rem) 0;
+
+  .pagination-button {
+    padding: var(--space-2) var(--space-4);
+    background: white;
+    border: 2px solid var(--color-primary);
+    border-radius: 8px;
+    color: var(--color-primary);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover:not(:disabled) {
+      background: var(--color-primary);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+
+  .pagination-pages {
+    display: flex;
+    gap: var(--space-2);
+  }
+
+  .pagination-page {
+    min-width: 40px;
+    height: 40px;
+    padding: var(--space-2);
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    color: #6b7280;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    &.active {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: white;
+    }
   }
 }
 
@@ -172,5 +326,41 @@
   .search-section {
     padding: var(--space-4, 1.5rem);
     margin-bottom: var(--space-5, 2rem);
+  }
+
+  .pagination {
+    flex-wrap: wrap;
+    gap: var(--space-2);
+
+    .pagination-button {
+      padding: var(--space-1) var(--space-3);
+      font-size: 0.875rem;
+    }
+
+    .pagination-pages {
+      gap: var(--space-1);
+    }
+
+    .pagination-page {
+      min-width: 36px;
+      height: 36px;
+      font-size: 0.875rem;
+    }
+  }
+
+  .my-events-section,
+  .public-events-section {
+    .section-header {
+      gap: var(--space-2);
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+    }
+
+    .collapse-button {
+      width: 36px;
+      height: 36px;
+    }
   }
 }

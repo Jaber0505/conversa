@@ -10,6 +10,7 @@ from django.utils import timezone
 
 from common.constants import (
     MIN_PARTICIPANTS_PER_EVENT as MIN_PARTICIPANTS,
+    MAX_PARTICIPANTS_PER_EVENT as MAX_PARTICIPANTS,
     DEFAULT_EVENT_DURATION_HOURS,
 )
 from common.validators.date_validators import (
@@ -24,9 +25,9 @@ def validate_event_datetime(value):
     Comprehensive validation for event datetime.
 
     Business Rules:
-    - Must be at least 24h in advance (no same-day events)
+    - Must be at least 3h in advance
     - Cannot be more than 7 days in future
-    - Event start time within business hours (12pm-9pm / 12h-21h)
+    - Event start time within business hours (12h-21h inclus)
 
     Args:
         value: DateTime to validate
@@ -34,9 +35,20 @@ def validate_event_datetime(value):
     Raises:
         ValidationError: If datetime doesn't meet requirements
     """
-    validate_future_datetime(value)  # 24h minimum advance
+    validate_future_datetime(value)  # 3h minimum advance
     validate_reasonable_future(value)  # Max 7 days in future
-    validate_business_hours(value, start_hour=12, end_hour=21)  # Event starts 12h-21h
+    # Business hours rule: 12:00 through 21:00 inclusive (exact at 21:00)
+    # Accept if:
+    #  - hour in 13..20 (any minutes)
+    #  - hour == 12 (any minutes)
+    #  - hour == 21 only when minutes==seconds==microseconds==0
+    h = value.hour
+    if not (
+        (12 <= h <= 20)
+        or (h == 21 and value.minute == 0 and value.second == 0 and value.microsecond == 0)
+    ):
+        from django.core.exceptions import ValidationError
+        raise ValidationError("Events must be scheduled between 12:00 and 21:00.")
 
 
 # Event creation time window removed - users can create events 24/7
@@ -81,8 +93,12 @@ def validate_partner_capacity(partner, datetime_start, duration_hours=None, excl
 
     datetime_end = datetime_start + timedelta(hours=duration_hours)
 
-    # Calculate available capacity for this time slot
-    available = partner.get_available_capacity(datetime_start, datetime_end)
+    # Calculate available capacity for this time slot based on event reservations
+    # (sum of max_participants across overlapping active events)
+    from partners.services import PartnerService
+    available = PartnerService.get_available_capacity_by_reservations(
+        partner, datetime_start, datetime_end, exclude_event_id=exclude_event_id
+    )
 
     # If updating an existing event, add back its current bookings
     if exclude_event_id:

@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import { EventDto, EventWrite, EventUpdate, EventCreatePayload } from '@app/core/models/events.model';
+import { EventDto, EventWrite, EventUpdate, EventCreatePayload, EventDetailDto } from '@app/core/models/events.model';
+import { CheckoutSessionCreated } from './payments-api.service';
 import { Paginated } from '@app/core/models/common.model';
 import { API_URL } from '@core/http';
 import {Observable} from "rxjs";
@@ -23,7 +24,7 @@ export class EventsApiService {
   }
 
   get(id: number) {
-    return this.http.get<EventDto>(`${this.base}/events/${id}/`);
+    return this.http.get<EventDetailDto>(`${this.base}/events/${id}/`);
   }
 
   create(payload: EventWrite | EventCreatePayload) {
@@ -40,5 +41,23 @@ export class EventsApiService {
 
   delete(id: number) {
     return this.http.delete<void>(`${this.base}/events/${id}/`);
+  }
+
+  /**
+   * Annuler complètement un événement (organisateur)
+   */
+  cancel(id: number) {
+    return this.http.post<EventDto>(`${this.base}/events/${id}/cancel/`, {});
+  }
+
+  /**
+   * Demander la publication (organisateur paie) via alias request-publication.
+   * Retourne l'URL Stripe Checkout (nouveau workflow pay-and-publish).
+   */
+  requestPublication(eventId: number, lang: string): Observable<CheckoutSessionCreated> {
+    return this.http.post<CheckoutSessionCreated>(
+      `${this.base}/events/${eventId}/request-publication/`,
+      { lang }
+    );
   }
 }

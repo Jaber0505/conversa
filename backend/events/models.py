@@ -26,8 +26,8 @@ class Event(models.Model):
     - Organizer must pay when creating event (auto-creates PENDING booking)
     - Max 6 participants (including organizer)
     - Min 3 participants or event auto-cancels 1h before start
-    - Fixed price: 7.00€ per participant
-    - Events must be created at least 2h in advance
+    - Fixed price: 7.00ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ per participant
+    - Events must be created at least 3h in advance
     """
 
     class Difficulty(models.TextChoices):
@@ -39,9 +39,10 @@ class Event(models.Model):
     class Status(models.TextChoices):
         """Event lifecycle status."""
         DRAFT = "DRAFT", "Draft"
-        AWAITING_PAYMENT = "AWAITING_PAYMENT", "Awaiting Payment"
+        PENDING_CONFIRMATION = "PENDING_CONFIRMATION", "Pending Confirmation"
         PUBLISHED = "PUBLISHED", "Published"
         CANCELLED = "CANCELLED", "Cancelled"
+        FINISHED = "FINISHED", "Finished"  # NEW
 
     # Relationships
     organizer = models.ForeignKey(
@@ -81,14 +82,37 @@ class Event(models.Model):
     )
     datetime_start = models.DateTimeField(
         validators=[validate_event_datetime],
-        help_text="Event start date and time (must be at least 2h in future)"
+        help_text="Event start date and time (must be at least 3h in future)"
     )
 
     # Pricing
     price_cents = models.PositiveIntegerField(
         default=DEFAULT_EVENT_PRICE_CENTS,
         editable=False,
-        help_text="Price per participant in cents (7.00€ = 700 cents)"
+        help_text="Price per participant in cents (7.00ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ = 700 cents)"
+    )
+
+    # Participant limits (NEW)
+    min_participants = models.PositiveIntegerField(
+        default=3,
+        help_text="Minimum participants required to confirm event"
+    )
+    max_participants = models.PositiveIntegerField(
+        default=6,
+        help_text="Maximum participants (capacity)"
+    )
+
+    # Draft visibility (NEW)
+    is_draft_visible = models.BooleanField(
+        default=True,
+        help_text="Deprecated: drafts are private (organizer/admin only)"
+    )
+
+    # Organizer payment tracking (NEW)
+    organizer_paid_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="When organizer paid to publish event"
     )
 
     # Optional media
@@ -200,12 +224,26 @@ class Event(models.Model):
             from audit.services import AuditService
             AuditService.log_event_published(self, published_by or self.organizer)
 
-    def mark_cancelled(self):
-        """Mark event as cancelled."""
-        if self.status != self.Status.CANCELLED:
-            self.status = self.Status.CANCELLED
-            self.cancelled_at = timezone.now()
-            self.save(update_fields=["status", "cancelled_at", "updated_at"])
+    def mark_cancelled(self, cancelled_by=None, system_cancellation=False):
+        """
+        Mark event as cancelled.
+
+        ARCHITECTURE RULE:
+        This is a lightweight helper that delegates to EventService.
+        ALL business logic is in EventService.transition_to_cancelled().
+
+        Args:
+            cancelled_by: User requesting cancellation (None for system)
+            system_cancellation: If True, bypass 3h deadline (auto-cancel)
+        """
+        from events.services import EventService
+
+        # Delegate to EventService (SINGLE SOURCE OF TRUTH)
+        EventService.transition_to_cancelled(
+            event=self,
+            cancelled_by=cancelled_by,
+            system_cancellation=system_cancellation
+        )
 
     @property
     def participants_count(self):
@@ -269,6 +307,59 @@ class Event(models.Model):
         from datetime import timedelta
         from common.constants import DEFAULT_EVENT_DURATION_HOURS
         return self.datetime_start + timedelta(hours=DEFAULT_EVENT_DURATION_HOURS)
+
+
+    @property
+    def can_request_publication(self) -> bool:
+        """
+        Check if organizer can request publication.
+
+        Business Rules:
+        - Event must be >= 3h in future
+                - Event must be >= 3h in future
+
+        Returns:
+            bool: True if all conditions met
+        """
+        from datetime import timedelta
+        return (
+            self.status == self.Status.DRAFT and
+            self.datetime_start >= timezone.now() + timedelta(hours=3)
+        )
+
+    def mark_pending_confirmation(self):
+        """
+        Mark event as PENDING_CONFIRMATION (organizer payment pending).
+
+        ARCHITECTURE RULE:
+        This is a lightweight helper that delegates to EventService.
+        ALL business logic is in EventService.transition_to_pending_confirmation().
+        """
+        from events.services import EventService
+
+        # Delegate to EventService (SINGLE SOURCE OF TRUTH)
+        EventService.transition_to_pending_confirmation(event=self)
+
+    def mark_published_by_organizer(self):
+        """
+        Mark event as PUBLISHED after organizer payment.
+
+        This is called by webhook after organizer pays.
+
+        ARCHITECTURE RULE:
+        This is a lightweight helper that delegates to EventService.
+        ALL business logic is in EventService.transition_to_published().
+        """
+        from events.services import EventService
+
+        # Delegate to EventService (SINGLE SOURCE OF TRUTH)
+        EventService.transition_to_published(event=self, published_by=self.organizer)
+
+    def mark_finished(self):
+        """Mark event as FINISHED (after datetime_start passed)."""
+        if self.status != self.Status.FINISHED:
+            self.status = self.Status.FINISHED
+            self.save(update_fields=["status", "updated_at"])
 
     def __str__(self):
         return f"[{self.id}] {self.title} -> {self.datetime_start:%Y-%m-%d %H:%M}"

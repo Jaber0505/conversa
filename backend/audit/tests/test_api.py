@@ -14,10 +14,14 @@ from django.utils import timezone
 import csv
 import io
 
-from audit.models import AuditLog, AuditCategory, AuditLevel
+from audit.models import AuditLog
 from audit.services import AuditService
 
 User = get_user_model()
+
+# Aliases for cleaner code
+AuditCategory = AuditLog.Category
+AuditLevel = AuditLog.Level
 
 
 class AuditLogViewSetTests(TestCase):
@@ -33,19 +37,21 @@ class AuditLogViewSetTests(TestCase):
             password='password123',
             first_name='Admin',
             last_name='User',
-            date_of_birth='1990-01-01',
+            age=30,
+            consent_given=True,
         )
         self.normal_user = User.objects.create_user(
             email='user@test.com',
             password='password123',
             first_name='Normal',
             last_name='User',
-            date_of_birth='1995-01-01',
+            age=25,
+            consent_given=True,
         )
 
         # Create varied logs to test filters
         # LOG 1: User creation (INFO)
-        AuditService.log_user_action(
+        AuditLog.objects.create(
             user=self.admin_user,
             action='USER_CREATED',
             message='User created successfully',
@@ -54,11 +60,11 @@ class AuditLogViewSetTests(TestCase):
             resource_id=self.normal_user.id,
             resource_type='User',
             metadata={'email': self.normal_user.email},
-            ip_address='192.168.1.1',
+            ip='192.168.1.1',
         )
 
         # LOG 2: Event creation (INFO)
-        AuditService.log_event_action(
+        AuditLog.objects.create(
             user=self.normal_user,
             action='EVENT_CREATED',
             message='Event created',
@@ -67,11 +73,11 @@ class AuditLogViewSetTests(TestCase):
             resource_id=1,
             resource_type='Event',
             metadata={'title': 'Test Event'},
-            ip_address='192.168.1.2',
+            ip='192.168.1.2',
         )
 
         # LOG 3: Booking cancelled (WARNING)
-        AuditService.log_booking_action(
+        AuditLog.objects.create(
             user=self.normal_user,
             action='BOOKING_CANCELLED',
             message='Booking cancelled by user',
@@ -80,11 +86,11 @@ class AuditLogViewSetTests(TestCase):
             resource_id=1,
             resource_type='Booking',
             metadata={'reason': 'User request'},
-            ip_address='192.168.1.3',
+            ip='192.168.1.3',
         )
 
         # LOG 4: Payment failed (ERROR)
-        AuditService.log_payment_action(
+        AuditLog.objects.create(
             user=self.normal_user,
             action='PAYMENT_FAILED',
             message='Payment processing failed',
@@ -93,19 +99,20 @@ class AuditLogViewSetTests(TestCase):
             resource_id=1,
             resource_type='Payment',
             metadata={'error_code': 'card_declined'},
-            ip_address='192.168.1.4',
+            ip='192.168.1.4',
         )
 
         # LOG 5: Security event (CRITICAL)
-        AuditService.log_security_event(
+        AuditLog.objects.create(
             user=None,
             action='UNAUTHORIZED_ACCESS',
             message='Unauthorized access attempt',
+            category=AuditCategory.SYSTEM,
             level=AuditLevel.CRITICAL,
             resource_id=None,
             resource_type=None,
             metadata={'path': '/admin/'},
-            ip_address='10.0.0.1',
+            ip='10.0.0.1',
         )
 
         # LOG 6: Old log (for date filter test)
@@ -115,7 +122,7 @@ class AuditLogViewSetTests(TestCase):
             level=AuditLevel.INFO,
             action='OLD_ACTION',
             message='Old log entry',
-            ip_address='127.0.0.1',
+            ip='127.0.0.1',
         )
         old_log.created_at = timezone.now() - timedelta(days=10)
         old_log.save()
@@ -320,7 +327,7 @@ class AuditLogViewSetTests(TestCase):
         self.assertEqual(categories[AuditCategory.EVENT], 1)
         self.assertEqual(categories[AuditCategory.BOOKING], 1)
         self.assertEqual(categories[AuditCategory.PAYMENT], 1)
-        self.assertEqual(categories[AuditCategory.SECURITY], 1)
+        self.assertEqual(categories[AuditCategory.SYSTEM], 1)
 
         # Verify counts by level
         levels = {item['level']: item['count'] for item in stats['by_level']}
@@ -420,19 +427,21 @@ class AuditDashboardStatsViewTests(TestCase):
             password='password123',
             first_name='Admin',
             last_name='User',
-            date_of_birth='1990-01-01',
+            age=30,
+            consent_given=True,
         )
         self.normal_user = User.objects.create_user(
             email='user@test.com',
             password='password123',
             first_name='Normal',
             last_name='User',
-            date_of_birth='1995-01-01',
+            age=25,
+            consent_given=True,
         )
 
         # Create some logs
         for i in range(5):
-            AuditService.log_user_action(
+            AuditLog.objects.create(
                 user=self.admin_user,
                 action=f'ACTION_{i}',
                 message=f'Test message {i}',

@@ -3,6 +3,7 @@ import {ActivatedRoute, Router, RouterLink, UrlSegmentGroup, NavigationEnd} from
 import { filter } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 import { LanguagePopoverComponent, type Lang } from '../language-popover/language-popover.component';
+import { HamburgerMenuComponent } from '../hamburger-menu/hamburger-menu.component';
 import { SHARED_IMPORTS } from '@shared';
 import { TPipe } from '@core/i18n';
 import {AuthApiService, AuthTokenService} from "@core/http";
@@ -28,6 +29,7 @@ export type MeRes = {
     CommonModule,
     RouterLink,
     LanguagePopoverComponent,
+    HamburgerMenuComponent,
     TPipe,
     ...SHARED_IMPORTS,
   ],

@@ -57,8 +57,7 @@ class EventDatetimeEdgeCasesTest(TestCase):
 
         with self.assertRaises(ValidationError) as cm:
             validate_event_datetime(event_time)
-
-        self.assertIn("business hours", str(cm.exception).lower())
+        self.assertIn("12:00 and 21:00", str(cm.exception))
 
     def test_event_after_21h_should_fail(self):
         """Event at 21:01 should fail (after 21:00 business hours)."""
@@ -68,8 +67,7 @@ class EventDatetimeEdgeCasesTest(TestCase):
 
         with self.assertRaises(ValidationError) as cm:
             validate_event_datetime(event_time)
-
-        self.assertIn("business hours", str(cm.exception).lower())
+        self.assertIn("12:00 and 21:00", str(cm.exception))
 
     def test_event_at_12h_exactly_should_pass(self):
         """Event at 12:00 exactly should pass (start of business hours)."""
@@ -89,18 +87,18 @@ class EventDatetimeEdgeCasesTest(TestCase):
         # Should not raise
         validate_event_datetime(event_time)
 
-    def test_event_in_23_hours_should_fail(self):
-        """Event in 23 hours should fail (need 24h minimum advance)."""
-        event_time = timezone.now() + timedelta(hours=23)
+    def test_event_in_2_hours_should_fail(self):
+        """Event in 2 hours should fail (need 3h minimum advance)."""
+        event_time = timezone.now() + timedelta(hours=2)
 
         with self.assertRaises(ValidationError) as cm:
             validate_event_datetime(event_time)
 
-        self.assertIn("24", str(cm.exception))
+        self.assertIn("3", str(cm.exception))
 
-    def test_event_in_24_hours_exactly_should_pass(self):
-        """Event in 24 hours exactly should pass (minimum advance)."""
-        event_time = timezone.now() + timedelta(hours=24, minutes=1)
+    def test_event_in_3_hours_should_pass(self):
+        """Event in 3 hours (or more) should pass (minimum advance)."""
+        event_time = timezone.now() + timedelta(hours=3, minutes=5)
         # Adjust to business hours (12h-21h)
         event_time = event_time.replace(hour=14, minute=0, second=0, microsecond=0)
 
@@ -308,7 +306,7 @@ class EventServiceEdgeCasesTest(TestCase):
     def test_create_event_with_all_boundary_conditions(self):
         """Create event with all validations at boundaries should succeed."""
         # Event at 12:00 (start of business hours)
-        # In exactly 24 hours (minimum advance)
+        # At least 3 hours in advance (minimum advance)
         # Partner capacity = 3 (minimum)
         # In 7 days (maximum future)
 
@@ -324,13 +322,16 @@ class EventServiceEdgeCasesTest(TestCase):
         datetime_start = timezone.now() + timedelta(days=7)
         datetime_start = datetime_start.replace(hour=12, minute=0, second=0, microsecond=0)
 
+        event_data = {
+            "partner": partner_min,
+            "language": self.language,
+            "theme": "Boundary Test Event",
+            "difficulty": "easy",
+            "datetime_start": datetime_start,
+        }
         event, booking = EventService.create_event_with_organizer_booking(
             organizer=self.user,
-            partner=partner_min,
-            language=self.language,
-            theme="Boundary Test Event",
-            difficulty="easy",
-            datetime_start=datetime_start,
+            event_data=event_data,
         )
 
         self.assertIsNotNone(event)
@@ -344,13 +345,16 @@ class EventServiceEdgeCasesTest(TestCase):
         datetime_start = datetime_start.replace(hour=14, minute=0, second=0, microsecond=0)
 
         # Create first event
+        event_data_1 = {
+            "partner": self.partner,
+            "language": self.language,
+            "theme": "Event 1",
+            "difficulty": "easy",
+            "datetime_start": datetime_start,
+        }
         event1, _ = EventService.create_event_with_organizer_booking(
             organizer=self.user,
-            partner=self.partner,
-            language=self.language,
-            theme="Event 1",
-            difficulty="easy",
-            datetime_start=datetime_start,
+            event_data=event_data_1,
         )
 
         # Create 10 confirmed bookings for event1
@@ -381,13 +385,16 @@ class EventServiceEdgeCasesTest(TestCase):
         )
 
         # Create second event at exact same time (should succeed - capacity allows)
+        event_data_2 = {
+            "partner": self.partner,
+            "language": self.language,
+            "theme": "Event 2",
+            "difficulty": "easy",
+            "datetime_start": datetime_start,  # Same time!
+        }
         event2, booking2 = EventService.create_event_with_organizer_booking(
             organizer=organizer2,
-            partner=self.partner,
-            language=self.language,
-            theme="Event 2",
-            difficulty="easy",
-            datetime_start=datetime_start,  # Same time!
+            event_data=event_data_2,
         )
 
         self.assertIsNotNone(event2)

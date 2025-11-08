@@ -20,8 +20,8 @@ class DateValidatorsTestCase(TestCase):
     """Test suite for date validation functions."""
 
     def test_validate_future_datetime_accepts_future_dates(self):
-        """Should accept datetime more than 24 hours in future (event requirement)."""
-        future_dt = timezone.now() + timedelta(hours=25)
+        """Should accept datetime more than 3 hours in future (event requirement)."""
+        future_dt = timezone.now() + timedelta(hours=4)
         try:
             validate_future_datetime(future_dt)
         except ValidationError:
@@ -34,8 +34,8 @@ class DateValidatorsTestCase(TestCase):
             validate_future_datetime(past_dt)
 
     def test_validate_future_datetime_requires_minimum_notice(self):
-        """Should reject datetime less than 24 hours in future."""
-        near_future = timezone.now() + timedelta(hours=1)
+        """Should reject datetime less than 3 hours in future."""
+        near_future = timezone.now() + timedelta(hours=2)
         with self.assertRaises(ValidationError):
             validate_future_datetime(near_future)
 

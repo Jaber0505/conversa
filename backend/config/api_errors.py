@@ -14,6 +14,18 @@ from rest_framework.exceptions import ValidationError as DRFValidationError
 from rest_framework.response import Response
 from rest_framework import status
 
+try:
+    import stripe  # type: ignore
+except Exception:  # pragma: no cover - optional at runtime
+    stripe = None
+
+try:
+    from payments.exceptions import StripeError as PaymentStripeError  # type: ignore
+except Exception:  # pragma: no cover - optional at runtime
+    class PaymentStripeError(Exception):
+        pass
+
+
 logger = logging.getLogger("django.request")
 
 
@@ -81,6 +93,17 @@ def drf_exception_handler(exc, context) -> Response:
                 "message": "Data conflict (uniqueness or integrity constraint violation).",
             }
             return Response(data, status=status.HTTP_409_CONFLICT)
+
+        # Stripe errors → 502 Bad Gateway (downstream provider)
+        stripe_error_mod = getattr(stripe, 'error', None) if stripe else None
+        stripe_error_cls = getattr(stripe_error_mod, 'StripeError', tuple()) if stripe_error_mod else tuple()
+        if isinstance(exc, stripe_error_cls) or isinstance(exc, PaymentStripeError):
+            data = {
+                "status": status.HTTP_502_BAD_GATEWAY,
+                "code": "stripe_error",
+                "message": str(exc),
+            }
+            return Response(data, status=status.HTTP_502_BAD_GATEWAY)
 
         # Generic fallback for unhandled exceptions
         logger.exception("Unhandled server error", exc_info=exc)
@@ -164,3 +187,4 @@ def drf_exception_handler(exc, context) -> Response:
 
     response.data = payload
     return response
+

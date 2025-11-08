@@ -1,101 +1,86 @@
 # Module Audit
 
-## Vue d'ensemble
+Syst�me centralis� de journalisation (audit logging) pour les actions critiques.
 
-Système centralisé de journalisation (audit logging) pour toutes les actions critiques.
+## Cat�gories et niveaux
 
-## Caractéristiques
+- Cat�gories: HTTP, AUTH, EVENT, BOOKING, PAYMENT, PARTNER, USER, ADMIN, SYSTEM
+- Niveaux: DEBUG, INFO, WARNING, ERROR, CRITICAL
 
-- **Catégories** : HTTP, AUTH, EVENT, BOOKING, PAYMENT, PARTNER, USER, ADMIN, SYSTEM
-- **Niveaux** : DEBUG, INFO, WARNING, ERROR, CRITICAL
-- **Métadonnées JSON** : Données contextuelles riches
-- **Contexte HTTP** : IP, user-agent, méthode, path
-- **Recherche optimisée** : Index sur catégorie, niveau, user, action
+## Actions types par module
 
-## Structure
+- AUTH: `login_success`, `login_failed`, `logout`, `token_refreshed`
+- EVENT: `event_created`, `event_published`, `event_cancelled`
+- BOOKING: `booking_created`, `booking_confirmed`, `booking_cancelled`, `booking_expired`
+- PAYMENT: `payment_initiated`, `payment_created`, `payment_success`, `payment_failed`, `payment_refunded`
+- SYSTEM: `api_error`, `stripe_refund_failed`, `refund_data_error`
+
+Voir `audit/services/audit_service.py` pour la liste compl�te et les m�tadonn�es associ�es.
+
+## API REST (admin-only)
+
+- Liste: `GET /api/v1/audit/`
+  - Filtres: `category`, `level`, `action`, `user`, `resource_type`, `resource_id`, `created_at__gte/lte/date`, `status_code`, `method`, `path__icontains`
+  - Recherche: `search` (message, action, email)
+  - Tri: `ordering=created_at|category|level|action`
+
+- D�tail: `GET /api/v1/audit/{id}/`
+
+- Statistiques: `GET /api/v1/audit/stats/`
+
+- Dashboard: `GET /api/v1/audit/dashboard-stats/`
+  - Retourne: `total_logs`, `by_category`, `by_level`, `recent_count_24h`
+
+- Export CSV: `GET /api/v1/audit/export/`
+  - Colonnes: `ID, Date, Category, Level, Action, Message, User, Resource Type, Resource ID, ip_address, http_method, http_path, http_status, method, status_code`
+  - Exemple: `GET /api/v1/audit/export/?category=PAYMENT&created_at__gte=2025-01-01`
+
+- Cleanup (r�tention): `POST /api/v1/audit/cleanup/`
+  - Lance la commande `cleanup_old_audits` et renvoie la sortie.
+
+- Purge (dev): `POST /api/v1/audit/purge/`
+  - Supprime les logs correspondant aux filtres courants. Exemple: `POST /api/v1/audit/purge/?action__icontains=TEST`
+
+## Exemples
+
+### Dashboard stats
+```json
+{
+  "total_logs": 15234,
+  "by_category": [{"category": "PAYMENT", "count": 523}, {"category": "AUTH", "count": 1234}],
+  "by_level": [{"level": "INFO", "count": 12000}, {"level": "ERROR", "count": 234}],
+  "recent_count_24h": 1234
+}
+```
+
+### Export CSV (en-t�tes)
+```
+ID,Date,Category,Level,Action,Message,User,Resource Type,Resource ID,ip_address,http_method,http_path,http_status,method,status_code
+```
+
+## R�tention & purge
+
+- R�tention recommand�e: 90 jours (� adapter).
+- Planification: via GitHub Actions ou cron pour appeler `POST /api/v1/audit/cleanup/`.
+- Purge de d�veloppement: `POST /api/v1/audit/purge/` avec filtres (ex: `action__icontains=TEST`).
+
+## Structure du module
 
 ```
 audit/
-├── models.py                # AuditLog (category, level, action, message)
-├── services/
-│   └── audit_service.py     # Méthodes logging pour tous modules
-├── middleware/
-│   └── audit_middleware.py  # Log automatique requêtes HTTP
-├── admin.py                 # Interface consultation logs
-└── tests/
-    └── test_services.py
-```
-
-## Modèle
-
-### AuditLog
-- `category` : Catégorie d'événement
-- `level` : Niveau de sévérité
-- `action` : Action effectuée (ex: `login_success`, `payment_created`)
-- `message` : Message descriptif
-- `user` : Utilisateur concerné (nullable)
-- `resource_type`, `resource_id` : Ressource impactée
-- `metadata` : Données JSON additionnelles
-- `ip`, `user_agent`, `http_method`, `http_path` : Contexte HTTP
-
-## Utilisation
-
-### Logger une action
-
-```python
-from audit.services import AuditService
-
-# Auth
-AuditService.log_auth_login(user=user, ip="192.168.1.1")
-AuditService.log_auth_login_failed(email="user@ex.com", reason="invalid_credentials")
-
-# Events
-AuditService.log_event_created(event=event, user=organizer)
-AuditService.log_event_cancelled(event=event, cancelled_by=admin, reason="duplicate")
-
-# Bookings
-AuditService.log_booking_created(booking=booking, user=user)
-AuditService.log_booking_confirmed(booking=booking, user=user)
-
-# Payments
-AuditService.log_payment_created(payment=payment, user=user)
-AuditService.log_payment_succeeded(payment=payment, user=user, is_free=False)
-AuditService.log_payment_refunded(payment=refund, cancelled_by=user, refund_id="re_123")
-
-# System
-AuditService.log_error(action="api_error", message="Timeout", error_details={...})
-```
-
-### Middleware automatique
-
-Le middleware `AuditMiddleware` log automatiquement :
-- Toutes les requêtes HTTP (DEBUG)
-- Erreurs 4xx/5xx (WARNING/ERROR)
-
-### Consulter les logs
-
-**Via Django Admin :**
-- Filtres : catégorie, niveau, user, date
-- Recherche : message, action
-- Export CSV disponible
-
-**Via code :**
-```python
-# Logs paiements du jour
-from django.utils import timezone
-from datetime import timedelta
-
-today = timezone.now().date()
-payment_logs = AuditLog.objects.filter(
-    category=AuditLog.Category.PAYMENT,
-    created_at__date=today
-).order_by('-created_at')
++-- models.py                # AuditLog (category, level, action, message, http context)
++-- services/
+�   +-- audit_service.py     # M�thodes de logging par domaine
++-- middleware.py            # Logging HTTP request/response
++-- api_views.py             # ViewSet (list/detail/stats/export/cleanup/dashboard/purge)
++-- urls.py                  # Routage API
++-- README.md
 ```
 
 ## Tests
 
-```bash
+```
 python manage.py test audit
 ```
 
-**Coverage** : 15 tests (service methods)
+Les tests couvrent l�API (list, retrieve, stats, export, dashboard) et v�rifient formats & filtres.

@@ -8,9 +8,15 @@
       <a class="hb__link" [routerLink]="actionLink">{{ actionLabel }}</a>
     </ng-container>
     <ng-template #asButton>
-      <shared-button size="sm" variant="outline" (click)="action.emit()">
-        {{ actionLabel }}
-      </shared-button>
+      <div class="hb__button-wrapper" [title]="actionDisabled && actionTooltip ? actionTooltip : ''">
+        <shared-button
+          size="sm"
+          variant="outline"
+          [disabled]="actionDisabled"
+          (click)="!actionDisabled && action.emit()">
+          {{ actionLabel }}
+        </shared-button>
+      </div>
     </ng-template>
   </div>
 </div>

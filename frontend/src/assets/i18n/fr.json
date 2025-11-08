@@ -1,4 +1,4 @@
-{
+﻿{
     "common":  {
                    "brand":  "Conversa",
                    "lang_change":  "Changer de langue",
@@ -27,6 +27,10 @@
                 "about":  "À propos",
                 "events":  "Événements",
                 "booking":  "Mes réservations"
+            },
+    "navigation":  {
+                "events":  "Événements",
+                "my_bookings":  "Mes réservations"
             },
     "auth":  {
                  "email_placeholder":  "ex. prenom.nom@email.com",
@@ -462,6 +466,20 @@
                         },
                 "no_results":  "Aucune question ne correspond à ta recherche ? conversa@hotmail.com"
             },
+    "payment":  {
+                    "publish_event":  "Publier votre événement",
+                    "complete_payment":  "Finaliser le paiement",
+                    "publish_question":  "Votre événement est créé ! Souhaitez-vous le publier maintenant ?",
+                    "price":  "Prix",
+                    "pay_now":  "Payer maintenant",
+                    "pay_later":  "Payer plus tard",
+                    "pay_later_info":  "Vous pourrez publier votre événement plus tard depuis votre liste d'événements.",
+                    "secure_payment":  "Paiement sécurisé via Stripe",
+                    "amount":  "Montant",
+                    "confirm_payment":  "Confirmer le paiement",
+                    "payment_success":  "Paiement réussi ! Votre événement est maintenant publié.",
+                    "payment_error":  "Erreur lors du paiement. Veuillez réessayer."
+                },
     "payments":  {
                      "success":  {
                                      "title":  "Paiement confirmé",
@@ -542,6 +560,8 @@
                    "all_events":  "Tous les événements",
                    "add_event":  "Ajouter un événement",
                    "draft":  "Brouillon",
+                   "organizer":  "Organisateur",
+                   "reserved":  "Réservé",
                    "pay_to_publish":  "Payer pour publier",
                    "difficulty":  {
                                       "easy":  "Débutant",
@@ -617,7 +637,16 @@
                                   "yes_cancel":  "Oui, annuler",
                                   "not_found":  "Événement introuvable",
                                   "error":  "Une erreur est survenue lors du chargement",
-                                  "loading":  "Chargement..."
+                                  "loading":  "Chargement...",
+                                  "pay_and_publish": "Payer et publier",
+                                  "delete_draft": "Supprimer le brouillon",
+                                  "organizer_pending": "Paiement en cours...",
+                                  "cancel_event": "Annuler mon événement",
+                                  "cancel_event_title": "Annuler cet événement ?",
+                                  "cancel_event_message": "Annuler la création de votre événement",
+                                  "yes_cancel_event": "Oui, annuler l’événement",
+                                  "register_free": "S’inscrire gratuitement",
+                                  "unregister": "Se désinscrire"
                               }
                },
     "checkout":  {

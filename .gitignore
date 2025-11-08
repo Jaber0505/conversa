@@ -121,3 +121,4 @@ media/
 # Local AI tooling and nested git dir
 .claude/
 conversa.git/
+docker/.env.dev

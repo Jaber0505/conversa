@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TPipe } from '@core/i18n';
 import { InputComponent, ButtonComponent } from '@shared';
+import { ContainerComponent } from '@shared/layout/container/container.component';
 import {AuthApiService, AuthTokenService} from "@core/http";
 import { LangUtilsService, ErrorLoggerService, RateLimiterService } from '@app/core/services';
 import { finalize, catchError, debounceTime } from "rxjs/operators";
@@ -19,6 +20,7 @@ import {ActivatedRoute, Router, RouterModule} from "@angular/router";
     InputComponent,
     ButtonComponent,
     RouterModule,
+    ContainerComponent,
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],

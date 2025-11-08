@@ -8,7 +8,7 @@ from datetime import timedelta
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 
-from common.constants import CANCELLATION_DEADLINE_HOURS
+from common.constants import CANCELLATION_DEADLINE_HOURS, MIN_PARTICIPANTS_PER_EVENT, MAX_PARTICIPANTS_PER_EVENT
 from common.exceptions import CancellationDeadlineError
 
 
@@ -59,8 +59,9 @@ def validate_event_capacity(event):
     Validate that event has available capacity for booking.
 
     Business Rules:
-        - Event must have at least 1 available slot
-        - This is checked at booking creation time
+        - Event must have sufficient available slots to remain viable
+          (minimum MIN_PARTICIPANTS_PER_EVENT slots must remain available).
+        - This is checked at booking creation time.
 
     Args:
         event: Event instance to validate
@@ -68,10 +69,18 @@ def validate_event_capacity(event):
     Raises:
         ValidationError: If event is full (no available slots)
     """
-    # Check if event has any available capacity
-    available_slots = event.available_slots
+    # Enforce per-event maximum (6 per event by business rule)
+    from bookings.models import BookingStatus
+    confirmed_count = event.bookings.filter(status=BookingStatus.CONFIRMED).count()
+    per_event_cap = int(getattr(event, 'max_participants', MAX_PARTICIPANTS_PER_EVENT) or MAX_PARTICIPANTS_PER_EVENT)
+    if confirmed_count >= per_event_cap:
+        raise ValidationError(
+            f"Event is full for this time slot (limit {per_event_cap} per event)."
+        )
 
+    # Also ensure partner slot capacity has at least 1 available seat
+    available_slots = event.partner.get_available_capacity(event.datetime_start, event.datetime_end)
     if available_slots <= 0:
         raise ValidationError(
-            f"Event is full. No available seats at '{event.partner.name}'."
+            f"Partner '{event.partner.name}' has no available capacity left for this time slot."
         )

@@ -4,7 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import {
   ContainerComponent as SharedContainer,
-  CardComponent as SharedCard,
   BadgeComponent as SharedBadge,
   ButtonComponent as SharedButton,
 } from '@shared';
@@ -15,7 +14,7 @@ import {TPipe} from "@core/i18n";
   selector: 'app-payment-success',
   imports: [
     CommonModule,
-    SharedContainer, SharedCard, SharedBadge, SharedButton, TPipe
+    SharedContainer, SharedBadge, SharedButton, TPipe
   ],
   templateUrl: './success.component.html',
   styleUrls: ['./success.component.scss'],

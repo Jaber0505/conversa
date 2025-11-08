@@ -18,8 +18,7 @@ import { ButtonComponent } from '@shared/ui/button/button.component';
 import { BadgeComponent } from '@shared/ui/badge/badge.component';
 import { InputComponent } from '@shared/forms/input/input.component';
 import { SelectComponent } from '@shared/forms/select/select.component';
-import { ConfirmPurchaseComponent } from '@app/shared/components/modals/confirm-purchase/confirm-purchase.component';
-
+import { PaymentChoiceModalComponent } from '@shared/components/payment-choice-modal/payment-choice-modal.component';
 @Component({
   selector: 'app-create-event',
   standalone: true,
@@ -35,7 +34,7 @@ import { ConfirmPurchaseComponent } from '@app/shared/components/modals/confirm-
     BadgeComponent,
     InputComponent,
     SelectComponent,
-    ConfirmPurchaseComponent
+    PaymentChoiceModalComponent
   ],
   templateUrl: './create.component.html',
   styleUrls: ['./create.component.scss']
@@ -66,11 +65,11 @@ export class CreateEventComponent implements OnInit {
   selectedPartner = signal<Partner | null>(null);
   postalCode = '';
 
-  // Événement créé (brouillon)
+  // Événement créé
   createdEventId = signal<number | null>(null);
-  createdBookingId = signal<string | null>(null);
+  createdEventPrice = signal<number>(700); // prix par défaut en centimes
 
-  // Modal paiement
+  // Modal de paiement
   showPaymentModal = signal(false);
 
   // Loading states
@@ -85,10 +84,24 @@ export class CreateEventComponent implements OnInit {
     { value: 'advanced', label: '' }
   ];
 
+  // Sélecteur de dates et créneaux (Étape 3)
+  availableDays = signal<DaySlot[]>([]);
+  availableTimeSlots: string[] = [];
+  // Backend-driven availability for the selected day (time -> metadata)
+  private slotAvailability: Record<string, { can_create: boolean; capacity_remaining: number; event_capacity_max: number }> = {};
+
+  selectedDay = signal<DaySlot | null>(null);
+  selectedTimeSlot = signal<string | null>(null);
+
+  // Timezone Europe/Brussels
+  private readonly TIMEZONE = 'Europe/Brussels';
+
   ngOnInit(): void {
     this.initForm();
     this.loadLanguages();
     this.loadPartners();
+    this.generateAvailableDays();
+    this.generateTimeSlots();
   }
 
   private initForm(): void {
@@ -156,6 +169,11 @@ export class CreateEventComponent implements OnInit {
   selectPartner(partner: Partner): void {
     this.selectedPartner.set(partner);
     this.eventForm.patchValue({ partner: partner.id });
+    // Si un jour est déjà sélectionné, recharger l'availability
+    const day = this.selectedDay();
+    if (day) {
+      this.selectDay(day);
+    }
   }
 
   viewPartnerDetails(partnerId: number, event?: Event): void {
@@ -215,7 +233,7 @@ export class CreateEventComponent implements OnInit {
     }
   }
 
-  // Étape 4: Création de l'événement
+  // Étape 4: Création de l'événement avec choix de paiement
   createEvent(): void {
     if (!this.eventForm.valid) {
       this.error.set('Veuillez remplir tous les champs requis');
@@ -258,66 +276,53 @@ export class CreateEventComponent implements OnInit {
     ).subscribe({
       next: (response: any) => {
         // Événement créé en DRAFT
+        console.log('Event created in DRAFT:', response);
         this.createdEventId.set(response.id);
+        this.createdEventPrice.set(response.price_cents || 700);
 
-        // Le backend crée automatiquement un booking pour l'organisateur
-        // On doit récupérer ce booking pour pouvoir payer
-        this.fetchOrganizerBooking(response.id);
+        // Afficher le modal de choix de paiement
+        this.showPaymentModal.set(true);
       },
       error: (err) => {
         console.error('Error creating event:', err);
-        this.error.set('Erreur lors de la création de l\'événement');
+        this.error.set(err?.error?.error || 'Erreur lors de la création de l\'événement');
       }
     });
   }
 
-  private fetchOrganizerBooking(eventId: number): void {
-    // Le booking de l'organisateur est créé automatiquement par le backend
-    // On le récupère via l'API bookings
-    this.eventsApi.get(eventId).pipe(take(1)).subscribe({
-      next: (event: any) => {
-        // Pour simplifier, on affiche directement la modal de paiement
-        // L'utilisateur pourra payer via la liste de ses brouillons
-        this.showPaymentModal.set(true);
-      },
-      error: (err) => {
-        console.error('Error fetching event:', err);
-        // Même en cas d'erreur, on peut rediriger vers la liste
-        this.showPaymentModal.set(true);
-      }
-    });
-  }
-
-  // Modal de paiement
-  payNow(): void {
-    const eventId = this.createdEventId();
-    if (!eventId) return;
-
-    this.loader.show('Redirection vers le paiement...');
-
-    // On doit d'abord récupérer le booking de l'organisateur
-    // puis créer une session de paiement
-    this.eventsApi.get(eventId).pipe(take(1)).subscribe({
-      next: (event: any) => {
-        // Note: Le backend devrait nous retourner le booking_id de l'organisateur
-        // Pour l'instant, on redirige vers la liste des événements
-        // où l'utilisateur pourra payer depuis la section "Mes événements"
-        this.router.navigate(['/', this.getLang(), 'events']);
-      },
-      error: (err) => {
-        console.error('Error:', err);
-        this.loader.hide();
-      }
-    });
-  }
-
-  payLater(): void {
-    // Rediriger vers la liste des événements
-    this.router.navigate(['/', this.getLang(), 'events']);
-  }
-
-  closePaymentModal(): void {
+  /**
+   * Gestion du succès du paiement
+   */
+  onPaymentSuccess(): void {
     this.showPaymentModal.set(false);
+
+    // Rediriger vers la page de détails de l'événement publié
+    const eventId = this.createdEventId();
+    if (eventId) {
+      this.router.navigate(['/', this.getLang(), 'events', eventId]);
+    }
+  }
+
+  /**
+   * Gestion du choix "Payer plus tard"
+   */
+  onPayLater(): void {
+    this.showPaymentModal.set(false);
+
+    // Rediriger vers la page de détails de l'événement en DRAFT
+    const eventId = this.createdEventId();
+    if (eventId) {
+      this.router.navigate(['/', this.getLang(), 'events', eventId]);
+    }
+  }
+
+  /**
+   * Fermeture du modal
+   */
+  onClosePaymentModal(): void {
+    this.showPaymentModal.set(false);
+
+    // Rediriger vers la liste des événements
     this.router.navigate(['/', this.getLang(), 'events']);
   }
 
@@ -358,4 +363,133 @@ export class CreateEventComponent implements OnInit {
   get selectedDifficultyValue(): string | undefined {
     return this.eventForm.get('difficulty')?.value || undefined;
   }
+
+  // ============================================================================
+  // ÉTAPE 3: Sélecteur de dates et créneaux
+  // ============================================================================
+
+  /**
+   * Génère les 7 jours disponibles (J+1 à J+7)
+   */
+  private generateAvailableDays(): void {
+    const days: DaySlot[] = [];
+    const now = new Date();
+
+    for (let i = 1; i <= 7; i++) {
+      const date = new Date(now);
+      date.setDate(now.getDate() + i);
+      date.setHours(0, 0, 0, 0);
+
+      days.push({
+        date: date,
+        formattedDate: this.formatDayDate(date),
+        isTomorrow: i === 1,
+        dateString: this.formatDateForBackend(date)
+      });
+    }
+
+    this.availableDays.set(days);
+  }
+
+  /**
+   * Génère les créneaux horaires disponibles (12h à 21h)
+   */
+  private generateTimeSlots(): void {
+    const slots: string[] = [];
+    // Créneaux de 12h à 21h (dernier créneau = 21h-22h)
+    for (let hour = 12; hour <= 21; hour++) {
+      const timeString = `${hour.toString().padStart(2, '0')}:00`;
+      slots.push(timeString);
+    }
+    this.availableTimeSlots = slots;
+  }
+
+  /**
+   * Formate une date au format "Mardi 5 Novembre"
+   */
+  private formatDayDate(date: Date): string {
+    const options: Intl.DateTimeFormatOptions = {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long'
+    };
+    const formatted = date.toLocaleDateString('fr-FR', options);
+    // Capitaliser le premier caractère
+    return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+  }
+
+  /**
+   * Formate une date au format YYYY-MM-DD pour le backend
+   */
+  private formatDateForBackend(date: Date): string {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  /**
+   * Vérifie si un créneau est disponible (préavis de 3h)
+   */
+  isTimeSlotAvailable(day: DaySlot, timeSlot: string): boolean {
+    const now = new Date();
+    const [hours, minutes] = timeSlot.split(':').map(Number);
+
+    const slotDateTime = new Date(day.date);
+    slotDateTime.setHours(hours, minutes, 0, 0);
+
+    // Calculer la différence en heures
+    const diffInHours = (slotDateTime.getTime() - now.getTime()) / (1000 * 60 * 60);
+
+    // Le créneau est disponible si la différence est >= 3h
+    return diffInHours >= 3;
+  }
+
+  /**
+   * Sélectionne un jour
+   */
+  selectDay(day: DaySlot): void {
+    this.selectedDay.set(day);
+    this.selectedTimeSlot.set(null); // Reset time slot
+    this.eventForm.patchValue({ date: day.dateString, time: '' });
+  }
+
+  /**
+   * Sélectionne un créneau horaire
+   */
+  selectTimeSlot(day: DaySlot, timeSlot: string): void {
+    if (!this.isTimeSlotAvailable(day, timeSlot)) {
+      return; // Ne rien faire si le créneau n'est pas disponible
+    }
+
+    this.selectedDay.set(day);
+    this.selectedTimeSlot.set(timeSlot);
+    this.eventForm.patchValue({
+      date: day.dateString,
+      time: timeSlot
+    });
+  }
+
+  /**
+   * Vérifie si un créneau est sélectionné
+   */
+  isTimeSlotSelected(day: DaySlot, timeSlot: string): boolean {
+    return this.selectedDay()?.dateString === day.dateString &&
+           this.selectedTimeSlot() === timeSlot;
+  }
 }
+
+// ============================================================================
+// INTERFACES
+// ============================================================================
+
+interface DaySlot {
+  date: Date;
+  formattedDate: string;
+  isTomorrow: boolean;
+  dateString: string; // Format YYYY-MM-DD
+}
+
+
+
+

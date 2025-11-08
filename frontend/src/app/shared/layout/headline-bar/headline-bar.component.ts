@@ -17,5 +17,7 @@ export class HeadlineBarComponent {
   @Input() align: 'start' | 'center' = 'start';
   @Input() actionLabel = '';
   @Input() actionLink?: string | any[];
+  @Input() actionDisabled = false;  // NEW: Disable action button
+  @Input() actionTooltip?: string;  // NEW: Tooltip when disabled
   @Output() action = new EventEmitter<void>();
 }

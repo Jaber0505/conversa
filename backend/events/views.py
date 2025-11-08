@@ -9,6 +9,7 @@ from django.db.models import Q
 from rest_framework import viewsets, filters, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError, APIException
 from drf_spectacular.utils import (
     extend_schema,
     extend_schema_view,
@@ -82,7 +83,7 @@ from .services import EventService
             "- Status set to DRAFT\n"
             "- PENDING booking auto-created for organizer\n\n"
             "**Business Rules:**\n"
-            "- Event must be scheduled at least 2 hours in advance\n"
+            "- Event must be scheduled at least 3 hours in advance\n"
             "- Partner venue must have available capacity\n"
             "- No overlapping events at same partner venue\n"
             "- Price fixed at 7.00€ per participant"
@@ -185,22 +186,106 @@ class EventViewSet(viewsets.ModelViewSet):
 
         return qs
 
-    def perform_create(self, serializer):
-        """
-        Create event and auto-create organizer booking.
+    def destroy(self, request, *args, **kwargs):
+        """Safely delete events.
 
-        Uses EventService to handle business logic:
-        - Validates datetime, partner availability, capacity
-        - Creates event in DRAFT status
-        - Auto-creates PENDING booking for organizer
+        Business rule:
+        - Allow hard delete only for DRAFT events.
+        - For DRAFT, proactively delete related bookings (if any) to avoid
+          on_delete=PROTECT conflicts, then delete the event.
+        - For non‑DRAFT events, guide clients to use the cancel endpoint.
         """
-        # Use service layer for business logic
-        event, booking = EventService.create_event_with_organizer_booking(
-            organizer=self.request.user,
-            event_data=serializer.validated_data,
+        from django.db import IntegrityError
+        event = self.get_object()
+        from .models import Event
+        if event.status == Event.Status.DRAFT:
+            try:
+                # Best effort: delete any related bookings before deleting the event
+                related = getattr(event, 'bookings', None)
+                if related is not None:
+                    related.all().delete()
+                return super().destroy(request, *args, **kwargs)
+            except IntegrityError as e:
+                return Response(
+                    {
+                        "error": "Cannot delete draft event due to linked data.",
+                        "code": "conflict",
+                    },
+                    status=status.HTTP_409_CONFLICT,
+                )
+        # Non‑draft: prefer cancellation to keep auditability and refunds
+        return Response(
+            {
+                "error": "Cannot hard delete a non-draft event. Use the cancel endpoint.",
+                "code": "business_rule_violation",
+            },
+            status=status.HTTP_409_CONFLICT,
         )
 
-        # Assign created event to serializer instance for proper response
+    def perform_create(self, serializer):
+        """
+        Create event in DRAFT status (NO payment required).
+
+        NEW WORKFLOW:
+        - Creates event in DRAFT status
+        - Event visible to organizer/admin only)"
+        - NO booking created yet (organizer pays later)
+
+        ALL BUSINESS LOGIC delegated to EventService:
+        - A2: Draft limit validation (max 3 drafts)
+        - Datetime validation
+        - Partner capacity validation
+        """
+        from .validators import validate_event_datetime, validate_partner_capacity
+
+        validated_data = serializer.validated_data
+
+        # A2: Validate draft limit using EventService (SINGLE SOURCE OF TRUTH)
+        EventService.validate_draft_limit(self.request.user)
+
+        # Validate datetime and partner capacity
+        validate_event_datetime(validated_data.get("datetime_start"))
+        validate_partner_capacity(
+            partner=validated_data.get("partner"),
+            datetime_start=validated_data.get("datetime_start")
+        )
+
+        # Compute allowed per-event capacity based on partner availability for this slot
+        from partners.services import PartnerService
+        from common.constants import MIN_PARTICIPANTS_PER_EVENT as MIN_PAX, MAX_PARTICIPANTS_PER_EVENT as MAX_PAX
+
+        dt_start = validated_data.get("datetime_start")
+        # End based on default duration (validators already enforce exact 1h)
+        from datetime import timedelta
+        from common.constants import DEFAULT_EVENT_DURATION_HOURS
+        dt_end = dt_start + timedelta(hours=DEFAULT_EVENT_DURATION_HOURS)
+
+        available_for_slot = PartnerService.get_available_capacity_by_reservations(
+            partner=validated_data.get("partner"),
+            datetime_start=dt_start,
+            datetime_end=dt_end,
+        )
+
+        # Per-event capacity is capped by MAX_PAX (6) and slot availability
+        per_event_cap = min(MAX_PAX, max(0, int(available_for_slot)))
+        if per_event_cap < MIN_PAX:
+            # Safety: should be caught by validate_partner_capacity, but double-check
+            raise ValidationError({"capacity": f"Insufficient capacity to create event (available {available_for_slot}, minimum {MIN_PAX})."})
+
+        # Create event in DRAFT status (no payment) with computed max_participants
+        event = Event.objects.create(
+            organizer=self.request.user,
+            status=Event.Status.DRAFT,
+            is_draft_visible=True,
+            max_participants=per_event_cap,
+            **validated_data
+        )
+
+        # Audit log
+        from audit.services import AuditService
+        AuditService.log_event_created(event, self.request.user)
+
+        # Assign to serializer
         serializer.instance = event
 
     def get_throttles(self):
@@ -215,11 +300,11 @@ class EventViewSet(viewsets.ModelViewSet):
         summary="Cancel event",
         description=(
             "Cancel event and all associated bookings.\n\n"
-            "**Actions:**\n"
+            "Actions:\n"
             "- Mark event as CANCELLED\n"
             "- Cancel all bookings (PENDING and CONFIRMED)\n\n"
-            "**Permissions:** Organizer or admin only\n\n"
-            "**Note:** Refunds must be processed separately"
+            "Permissions: Organizer or admin only\n\n"
+            "Refunds: Automatic refunds are processed for confirmed bookings"
         ),
         responses={
             200: EventSerializer,
@@ -230,16 +315,131 @@ class EventViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["POST"], url_path="cancel", url_name="cancel")
     def cancel(self, request, pk=None):
         """Cancel event using EventService."""
-        event = self.get_object()  # Permission already checked by IsOrganizerOrAdmin
-
+        event = self.get_object()
         try:
-            # Use service layer for business logic
             EventService.cancel_event(event=event, cancelled_by=request.user)
-
             serializer = self.get_serializer(event)
             return Response(serializer.data, status=status.HTTP_200_OK)
-
         except EventAlreadyCancelledError:
-            # Event already cancelled - return current state
-            serializer = self.get_serializer(event)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            # Raise a DRF API exception so the global handler formats the envelope
+            class Conflict(APIException):
+                status_code = status.HTTP_409_CONFLICT
+                default_code = "conflict"
+
+            raise Conflict(detail="Event already cancelled")
+
+    @extend_schema(
+        tags=["Events"],
+        summary="Pay and publish event (organizer only)",
+        description=(
+            "Organizer pays to publish event - creates booking and Stripe checkout session.\n\n"
+            "**Workflow:**\n"
+            "1. Validate event is DRAFT\n"
+            "2. Create organizer booking (PENDING)\n"
+            "3. Create Stripe Checkout Session\n"
+            "4. Return Stripe URL for payment\n"
+            "5. After webhook: Event → PUBLISHED, Booking → CONFIRMED\n\n"
+            "**Business Rules:**\n"
+            "- Must be organizer\n"
+            "- Event must be DRAFT\n"
+            "- Event ≥3h in future"
+        ),
+        responses={
+            200: OpenApiResponse(description="Stripe checkout URL created"),
+            400: OpenApiResponse(description="Cannot publish"),
+            403: OpenApiResponse(description="Not organizer"),
+        },
+    )
+    @action(detail=True, methods=["POST"], url_path="pay-and-publish", url_name="pay-and-publish")
+    def pay_and_publish(self, request, pk=None):
+        """
+        Create booking and Stripe checkout session for organizer to pay and publish event.
+
+        Simplified flow: DRAFT → pay → PUBLISHED (no intermediate status)
+        """
+        import re
+        from urllib.parse import urlencode
+        from django.conf import settings
+        from bookings.models import Booking
+        from payments.services import PaymentService
+        from rest_framework.exceptions import PermissionDenied
+
+        event = self.get_object()
+
+        # Validate organizer
+        if event.organizer != request.user:
+            raise PermissionDenied("Only organizer can publish event.")
+
+        # Validate event status
+        if event.status != Event.Status.DRAFT:
+            raise ValidationError({"error": "Event must be in DRAFT status to publish."})
+
+        # Validate 3h advance
+        can_perform, hours_until = EventService.can_perform_action(event, required_hours=3)
+        if not can_perform:
+            raise ValidationError({
+                "error": f"Cannot publish event: only {hours_until:.1f}h before start (minimum 3h advance notice required)."
+            })
+
+        # Get or create organizer booking (PENDING)
+        # Reuse existing PENDING booking if user came back from Stripe without paying
+        from bookings.models import BookingStatus
+        booking, created = Booking.objects.get_or_create(
+            user=request.user,
+            event=event,
+            status=BookingStatus.PENDING,
+            defaults={
+                'amount_cents': event.price_cents,
+                'is_organizer_booking': True
+            }
+        )
+
+        # Get lang from request
+        lang = re.sub(r"[^A-Za-z\-]", "", request.data.get("lang", "fr")).strip() or "fr"
+
+        # Build return URLs
+        base = getattr(settings, "FRONTEND_BASE_URL", "http://localhost:4200").rstrip("/")
+        success_path = f"/{lang}/stripe/success"
+        cancel_path = f"/{lang}/stripe/cancel"
+
+        qs = {"b": str(booking.public_id), "e": str(event.id), "lang": lang}
+        success_url = f"{base}{success_path}?{urlencode(qs)}&cs={{CHECKOUT_SESSION_ID}}"
+        cancel_url = f"{base}{cancel_path}?{urlencode(qs)}"
+
+        # Create Stripe Checkout Session
+        try:
+            stripe_url, session_id, _payment = PaymentService.create_checkout_session(
+                booking=booking,
+                user=request.user,
+                success_url=success_url,
+                cancel_url=cancel_url,
+            )
+
+            return Response({
+                "url": stripe_url,
+                "session_id": session_id,
+                "booking_id": str(booking.public_id)
+            }, status=status.HTTP_200_OK)
+
+        except ValidationError as e:
+            # Delete booking if checkout session creation fails
+            booking.delete()
+            raise e
+
+    @extend_schema(
+        tags=["Events"],
+        summary="[Legacy] Request publication (alias)",
+        description=(
+            "Alias rétro-compatibilité. Redirige la logique vers pay-and-publish.\n\n"
+            "Fronts anciens peuvent encore appeler /request-publication/."
+        ),
+        responses={
+            200: OpenApiResponse(description="Stripe checkout URL created"),
+            400: OpenApiResponse(description="Cannot publish"),
+            403: OpenApiResponse(description="Not organizer"),
+        },
+    )
+    @action(detail=True, methods=["POST"], url_path="request-publication", url_name="request-publication")
+    def request_publication(self, request, pk=None):
+        """Alias pour compat: utilise pay_and_publish sous le capot."""
+        return self.pay_and_publish(request, pk)

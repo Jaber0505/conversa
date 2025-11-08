@@ -1,0 +1,48 @@
+  } else if (isPending) {
+        return 'organizer-pending';
+      } else if (isPublished) {
+        if (this.isStartingSoonLock()) {
+          return 'organizer-published-soon';
+        }
+        return 'organizer-published-cancel';
+      }
+    }
+
+    // DRAFT/PENDING pour non-organisateur: aucun bouton
+    if (!this.isOrganizer() && (isDraft || isPending)) {
+      return null;
+    }
+
+    // PARTICIPANT ACTIONS (uniquement pour PUBLISHED)
+
+    if (isPublished) {
+      const myb = (evt as any).my_booking as ({ public_id: string; status: string } | null | undefined);
+      if (myb && myb.status === 'PENDING') return 'user-pay';
+      if (myb && myb.status === 'CONFIRMED') return (evt as any).can_cancel_booking ? 'user-cancel' : 'user-starting-soon';
+
+      // Utilisateur a un booking PENDING (pas encore payé)
+      if (false) {
+        return 'user-pay';
+      }
+
+      // Utilisateur a un booking CONFIRMED (déjà payé)
+      if (false) {
+        // Peut annuler si plus de 3h avant événement
+        if (!this.isStartingSoonLock()) {
+          return 'user-cancel';
+        } else {
+          return 'user-starting-soon';
+        }
+      }
+
+      // Événement complet
+      if ((evt as any).partner_capacity && (evt as any).participants_count >= (evt as any).partner_capacity) {
+        return 'event-full';
+      }
+
+      // Peut réserver
+      return 'user-book';
+    }
+
+    return null;
+  }

@@ -126,26 +126,44 @@
     <!-- Étape 3: Date et heure -->
     <shared-section *ngIf="currentStep() === 3" spacing="md">
       <h2 class="step-title">{{ 'events.create.step3_heading' | t }}</h2>
-      <p class="step-description">{{ 'events.create.step3_description' | t }}</p>
+      <p class="step-description ux-text">
+        Organise une petite session d'1h entre 12h et 21h.<br>
+        Jusqu'à 7 jours à l'avance — juste pense à t'y prendre au moins 3 heures avant 😉
+      </p>
 
-      <div class="form-fields">
-        <div class="form-group">
-          <label for="date">{{ 'events.create.date' | t }}</label>
-          <input
-            id="date"
-            type="date"
-            class="form-control"
-            formControlName="date">
-        </div>
+      <!-- Sélecteur de jours -->
+      <div class="days-selector">
+        <div
+          *ngFor="let day of availableDays()"
+          class="day-card"
+          [class.selected]="selectedDay()?.dateString === day.dateString"
+          (click)="selectDay(day)">
+          <div class="day-header">
+            <span class="day-date">{{ day.formattedDate }}</span>
+            <shared-badge variant="accent" tone="soft" *ngIf="day.isTomorrow">
+              Demain
+            </shared-badge>
+          </div>
 
-        <div class="form-group">
-          <label for="time">{{ 'events.create.time' | t }}</label>
-          <input
-            id="time"
-            type="time"
-            class="form-control"
-            formControlName="time">
+          <!-- Créneaux horaires pour ce jour -->
+          <div class="time-slots">
+            <button
+              *ngFor="let slot of availableTimeSlots"
+              type="button"
+              class="time-slot-btn"
+              [class.disabled]="!isTimeSlotAvailable(day, slot)"
+              [class.active]="isTimeSlotSelected(day, slot)"
+              [disabled]="!isTimeSlotAvailable(day, slot)"
+              (click)="selectTimeSlot(day, slot); $event.stopPropagation()">
+              {{ slot }}
+            </button>
+          </div>
         </div>
+      </div>
+
+      <!-- Message d'erreur si aucun créneau sélectionné -->
+      <div *ngIf="!selectedTimeSlot() && eventForm.get('time')?.touched" class="error-message">
+        Veuillez sélectionner un créneau horaire
       </div>
     </shared-section>
 
@@ -216,15 +234,12 @@
   </form>
 </shared-container>
 
-<!-- Modal de paiement -->
-<app-confirm-purchase
-  *ngIf="showPaymentModal()"
-  [titleKey]="'events.create.payment_title'"
-  [messageKey]="'events.create.payment_message'"
-  [buyKey]="'events.create.pay_now'"
-  [cancelKey]="'events.create.pay_later'"
-  [priceCents]="500"
-  [asModal]="true"
-  (cancel)="payLater()"
-  (buy)="payNow()">
-</app-confirm-purchase>
+<!-- Modal de choix de paiement -->
+<app-payment-choice-modal
+  [isOpen]="showPaymentModal()"
+  [eventId]="createdEventId()"
+  [eventPrice]="createdEventPrice()"
+  (closeModal)="onClosePaymentModal()"
+  (paymentSuccess)="onPaymentSuccess()"
+  (payLater)="onPayLater()">
+</app-payment-choice-modal>

@@ -1,5 +1,8 @@
 <header class="site-header tone-tokens" role="banner">
   <shared-container class="header-grid">
+    <!-- Hamburger Menu (Mobile + Desktop Navigation) - Only shown if logged in -->
+    <shared-hamburger-menu *ngIf="tokens?.access" class="hamburger"></shared-hamburger-menu>
+
     <div class="logo">
       <a class="brand" [routerLink]="['/', langCode(), '']">{{ 'common.brand' | t }}</a>
     </div>

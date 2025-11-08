@@ -63,7 +63,8 @@ def validate_payment_retry_limit(booking):
     Validate that booking hasn't exceeded payment retry limit.
 
     Business Rule:
-        Maximum MAX_PAYMENT_RETRIES payment attempts per booking.
+        Maximum MAX_PAYMENT_RETRIES distinct payment sessions per booking.
+        Note: We exclude PENDING sessions to allow retry with same session.
 
     Args:
         booking: Booking instance
@@ -72,8 +73,11 @@ def validate_payment_retry_limit(booking):
         ValidationError: If retry limit exceeded
     """
     from .models import Payment
+    from .constants import STATUS_PENDING
 
-    payment_count = Payment.objects.filter(booking=booking).count()
+    # Count only non-pending payments (completed attempts)
+    # PENDING sessions can be reused, so they don't count as new attempts
+    payment_count = Payment.objects.filter(booking=booking).exclude(status=STATUS_PENDING).count()
 
     if payment_count >= MAX_PAYMENT_RETRIES:
         raise ValidationError(
@@ -143,10 +147,10 @@ def validate_stripe_webhook_signature(payload, sig_header, webhook_secret):
         event = stripe.Webhook.construct_event(
             payload=payload,
             sig_header=sig_header,
-            secret=webhook_secret
+            secret=webhook_secret,
         )
         return event
-    except stripe._error.SignatureVerificationError:
+    except stripe.error.SignatureVerificationError:
         raise ValidationError("Invalid webhook signature")
     except ValueError:
         raise ValidationError("Invalid webhook payload")

@@ -259,3 +259,142 @@
     }
   }
 }
+
+// =============================================================================
+// ÉTAPE 3: Sélecteur de dates et créneaux
+// =============================================================================
+
+// Texte UX personnalisé
+.ux-text {
+  font-size: 0.9375rem;
+  color: var(--color-neutral-700, #374151);
+  line-height: 1.6;
+  margin-bottom: var(--space-6, 1.5rem);
+}
+
+// Conteneur des cartes de jours
+.days-selector {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--space-5, 1.25rem);
+  margin-bottom: var(--space-6, 1.5rem);
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Carte de jour
+.day-card {
+  padding: var(--space-4, 1rem);
+  border: 2px solid var(--color-neutral-200, #e5e7eb);
+  border-radius: 12px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: var(--color-primary, #3b82f6);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+    transform: translateY(-2px);
+  }
+
+  &.selected {
+    border-color: var(--color-accent, #10b981);
+    background-color: rgba(16, 185, 129, 0.02);
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.15);
+  }
+}
+
+// En-tête de la carte (date + badge)
+.day-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-4, 1rem);
+  padding-bottom: var(--space-3, 0.75rem);
+  border-bottom: 1px solid var(--color-neutral-100, #f3f4f6);
+
+  .day-date {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-neutral-900, #111827);
+  }
+}
+
+// Grille de créneaux horaires
+.time-slots {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+  gap: var(--space-2, 0.5rem);
+}
+
+// Bouton de créneau horaire
+.time-slot-btn {
+  padding: var(--space-2, 0.5rem) var(--space-3, 0.75rem);
+  border: 1px solid var(--color-neutral-300, #d1d5db);
+  border-radius: 8px;
+  background: white;
+  color: var(--color-neutral-700, #374151);
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+
+  // État normal (activable)
+  &:not(.disabled):not(.active) {
+    &:hover {
+      border-color: var(--color-primary, #3b82f6);
+      background-color: var(--color-primary, #3b82f6);
+      color: white;
+      transform: scale(1.02);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+
+  // État désactivé
+  &.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background-color: var(--color-neutral-50, #f9fafb);
+    color: var(--color-neutral-400, #9ca3af);
+    border-color: var(--color-neutral-200, #e5e7eb);
+
+    &:hover {
+      transform: none;
+      background-color: var(--color-neutral-50, #f9fafb);
+      border-color: var(--color-neutral-200, #e5e7eb);
+    }
+  }
+
+  // État actif (sélectionné)
+  &.active {
+    background: linear-gradient(135deg, var(--color-primary, #3b82f6) 0%, var(--color-accent, #10b981) 100%);
+    color: white;
+    border-color: var(--color-accent, #10b981);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+    transform: scale(1.02);
+    font-weight: 700;
+
+    &:hover {
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+    }
+  }
+}
+
+// Message d'erreur
+.error-message {
+  padding: var(--space-3, 0.75rem) var(--space-4, 1rem);
+  background-color: rgba(239, 68, 68, 0.1);
+  border-left: 4px solid var(--color-danger, #ef4444);
+  border-radius: 8px;
+  color: var(--color-danger, #ef4444);
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-top: var(--space-4, 1rem);
+}

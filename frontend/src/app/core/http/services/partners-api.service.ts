@@ -21,4 +21,12 @@ export class PartnersApiService {
   get(id: number): Observable<Partner> {
     return this.http.get<Partner>(`${this.base}/partners/${id}/`);
   }
+
+  availability(partnerId: number, date: string): Observable<{ date: string; partner: number; slots: Array<{ time: string; capacity_remaining: number; event_capacity_max: number; can_create: boolean }> }>{
+    const params = new HttpParams().set('date', date);
+    return this.http.get<{ date: string; partner: number; slots: Array<{ time: string; capacity_remaining: number; event_capacity_max: number; can_create: boolean }> }>(
+      `${this.base}/partners/${partnerId}/availability/`,
+      { params }
+    );
+  }
 }

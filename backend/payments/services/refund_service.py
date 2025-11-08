@@ -139,7 +139,7 @@ class RefundService(BaseService):
                     "booking_public_id": str(booking.public_id),
                     "cancelled_by_user_id": str(cancelled_by.id),
                     "reason": "booking_cancelled",
-                }
+                },
             )
 
             # Ensure currency is valid 3-letter code
@@ -155,39 +155,23 @@ class RefundService(BaseService):
                 stripe_payment_intent_id=payment_intent_id,
                 raw_event={
                     "type": "refund",
-                    "refund_id": str(refund.id),  # Convert to string for JSON serialization
-                    "amount": int(refund.amount) if hasattr(refund.amount, '__int__') else str(refund.amount),
-                    "status": str(refund.status),
+                    "refund_id": str(refund.id),
+                    "amount": int(getattr(refund, "amount", 0)) if hasattr(refund, "amount") else 0,
+                    "status": str(getattr(refund, "status", "")),
                 },
             )
 
             # Log refund
             from audit.services import AuditService
+
             AuditService.log_payment_refunded(
                 refund_payment,
                 cancelled_by,
                 amount_cents=payment.amount_cents,
-                refund_id=refund.id
+                refund_id=refund.id,
             )
 
             return True, f"Refund processed: {refund.id}", refund_payment
-
-        except stripe.error.StripeError as e:
-            # Handle Stripe API errors
-            from audit.services import AuditService
-            AuditService.log_error(
-                action="stripe_refund_failed",
-                message=f"Stripe API error during refund for booking {booking.public_id}: {str(e)}",
-                user=cancelled_by,
-                error_details={
-                    "booking_id": booking.id,
-                    "payment_id": payment.id,
-                    "payment_intent_id": payment_intent_id,
-                    "stripe_error_type": type(e).__name__,
-                    "error": str(e),
-                }
-            )
-            raise PaymentStripeError(f"Stripe refund failed: {str(e)}") from e
 
         except (ValueError, TypeError) as e:
             # Handle data serialization errors (JSON, type conversion, etc.)

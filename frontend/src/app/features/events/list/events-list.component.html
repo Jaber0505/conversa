@@ -3,6 +3,8 @@
     [title]="'events.title' | t"
     [subtitle]="userCity ? ('events.near_city' | t:{ city: userCity }) : ''"
     [actionLabel]="'events.add_event' | t"
+    [actionDisabled]="!canCreateEvent()"
+    [actionTooltip]="createButtonTooltip()"
     (action)="onCreateEvent()">
   </shared-headline-bar>
 
@@ -35,17 +37,63 @@
 
   <!-- Section "Mes événements" -->
   <section class="my-events-section" *ngIf="myEvents().length > 0">
-    <h2 class="section-title">{{ 'events.my_events' | t }}</h2>
-    <div class="events-grid">
-      <app-event-card
-        *ngFor="let scoredEvent of myEvents(); trackBy: trackById"
-        [event]="scoredEvent.event"
-        [isNearby]="scoredEvent.isNearby"
-        [isRecommended]="scoredEvent.isRecommended"
-        (book)="onBookEvent($event)"
-        (viewDetails)="onViewDetails($event)"
-        (payDraft)="onPayDraft($event)">
-      </app-event-card>
+    <div class="section-header">
+      <h2 class="section-title">{{ 'events.my_events' | t }}</h2>
+      <button
+        type="button"
+        class="collapse-button"
+        (click)="toggleMyEventsSection()"
+        [attr.aria-expanded]="!isMyEventsSectionCollapsed()"
+        [attr.aria-label]="isMyEventsSectionCollapsed() ? 'Afficher mes événements' : 'Masquer mes événements'">
+        <span class="collapse-icon" [class.collapsed]="isMyEventsSectionCollapsed()">▼</span>
+      </button>
+    </div>
+
+    <div class="section-content" [class.collapsed]="isMyEventsSectionCollapsed()">
+      <div class="events-grid">
+        <app-event-card
+          *ngFor="let scoredEvent of getPaginatedEvents(myEvents(), 'my'); trackBy: trackById"
+          [event]="scoredEvent.event"
+          [isNearby]="false"
+          [isRecommended]="false"
+          [isOrganizer]="true"
+          [showBookButton]="false"
+          [isPaymentLoading]="paymentLoadingEventId() === scoredEvent.event.id"
+          (book)="onBookEvent($event)"
+          (viewDetails)="onViewDetails($event)"
+          (payDraft)="onPayDraftNow($event)">
+        </app-event-card>
+      </div>
+
+      <!-- Pagination for "Mes événements" -->
+      <div class="pagination" *ngIf="getTotalPages(myEvents()) > 1">
+        <button
+          type="button"
+          class="pagination-button"
+          [disabled]="myEventsCurrentPage() === 1"
+          (click)="goToPage(myEventsCurrentPage() - 1, 'my', myEvents().length)">
+          ‹ Précédent
+        </button>
+
+        <div class="pagination-pages">
+          <button
+            *ngFor="let page of getPageNumbers(myEvents(), 'my')"
+            type="button"
+            class="pagination-page"
+            [class.active]="myEventsCurrentPage() === page"
+            (click)="goToPage(page, 'my', myEvents().length)">
+            {{ page }}
+          </button>
+        </div>
+
+        <button
+          type="button"
+          class="pagination-button"
+          [disabled]="myEventsCurrentPage() === getTotalPages(myEvents())"
+          (click)="goToPage(myEventsCurrentPage() + 1, 'my', myEvents().length)">
+          Suivant ›
+        </button>
+      </div>
     </div>
   </section>
 
@@ -54,13 +102,46 @@
     <h2 class="section-title">{{ 'events.all_events' | t }}</h2>
     <div class="events-grid">
       <app-event-card
-        *ngFor="let scoredEvent of publicEvents(); trackBy: trackById"
+        *ngFor="let scoredEvent of getPaginatedEvents(publicEvents(), 'public'); trackBy: trackById"
         [event]="scoredEvent.event"
         [isNearby]="scoredEvent.isNearby"
         [isRecommended]="scoredEvent.isRecommended"
+        [isOrganizer]="false"
+        [reserved]="scoredEvent.event.alreadyBooked === true"
+        [showBookButton]="false"
         (book)="onBookEvent($event)"
         (viewDetails)="onViewDetails($event)">
       </app-event-card>
+    </div>
+
+    <!-- Pagination for "Tous les événements" -->
+    <div class="pagination" *ngIf="getTotalPages(publicEvents()) > 1">
+      <button
+        type="button"
+        class="pagination-button"
+        [disabled]="publicEventsCurrentPage() === 1"
+        (click)="goToPage(publicEventsCurrentPage() - 1, 'public', publicEvents().length)">
+        ‹ Précédent
+      </button>
+
+      <div class="pagination-pages">
+        <button
+          *ngFor="let page of getPageNumbers(publicEvents(), 'public')"
+          type="button"
+          class="pagination-page"
+          [class.active]="publicEventsCurrentPage() === page"
+          (click)="goToPage(page, 'public', publicEvents().length)">
+          {{ page }}
+        </button>
+      </div>
+
+      <button
+        type="button"
+        class="pagination-button"
+        [disabled]="publicEventsCurrentPage() === getTotalPages(publicEvents())"
+        (click)="goToPage(publicEventsCurrentPage() + 1, 'public', publicEvents().length)">
+        Suivant ›
+      </button>
     </div>
   </section>
 

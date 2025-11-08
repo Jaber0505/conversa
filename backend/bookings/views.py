@@ -19,20 +19,23 @@ class BookingViewSet(mixins.CreateModelMixin,
     lookup_value_regex = r"[0-9a-fA-F-]{36}"
 
     def get_queryset(self):
-        # Portée utilisateur + expiration automatique des PENDING échues
-        qs = Booking.objects.select_related("event").filter(user=self.request.user)
-        now = timezone.now()
-        expired = qs.filter(status=BookingStatus.PENDING, expires_at__lte=now)
-        if expired.exists():
-            expired.update(status=BookingStatus.CANCELLED, cancelled_at=now, updated_at=now)
+        """
+        Get user's bookings with optional filtering.
 
-        # Filtre optionnel par statut
+        ARCHITECTURE RULE:
+        Auto-expiration is handled by background task (celery).
+        Views should NOT contain business logic.
+        """
+        # Scope to user's bookings only
+        qs = Booking.objects.select_related("event").filter(user=self.request.user)
+
+        # Optional filter by status
         status_param = self.request.query_params.get("status")
         valid_status = {c for c, _ in BookingStatus.choices}
         if status_param in valid_status:
             qs = qs.filter(status=status_param)
 
-        # Filtre optionnel par événement
+        # Optional filter by event
         event_id = self.request.query_params.get("event")
         if event_id:
             qs = qs.filter(event_id=event_id)
@@ -80,11 +83,29 @@ class BookingViewSet(mixins.CreateModelMixin,
         tags=["Bookings"],
     )
     def destroy(self, request, *args, **kwargs):
+        """
+        Cancel booking via DELETE.
+
+        ARCHITECTURE RULE:
+        Delegates to BookingService for business logic validation.
+        """
+        from .services import BookingService
+        from common.exceptions import CancellationDeadlineError
+
         booking = get_object_or_404(self.get_queryset(), public_id=kwargs.get(self.lookup_field))
-        if booking.status == BookingStatus.CONFIRMED:
-            return Response({"detail": "Réservation déjà confirmée."}, status=409)
-        booking.mark_cancelled()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+
+        # Delegate to BookingService (SINGLE SOURCE OF TRUTH)
+        if not BookingService.can_cancel_booking(booking):
+            return Response(
+                {"detail": "Réservation déjà confirmée ou impossible à annuler."},
+                status=status.HTTP_409_CONFLICT
+            )
+
+        try:
+            BookingService.cancel_booking(booking, cancelled_by=request.user)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except CancellationDeadlineError as e:
+            return Response({"detail": str(e)}, status=status.HTTP_409_CONFLICT)
 
     @extend_schema(
         responses={200: BookingSerializer, 409: OpenApiResponse(description="Impossible d'annuler")},

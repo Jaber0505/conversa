@@ -28,6 +28,10 @@
                 "events":  "Events",
                 "booking":  "My bookings"
             },
+    "navigation":  {
+                "events":  "Events",
+                "my_bookings":  "My bookings"
+            },
     "auth":  {
                  "email_placeholder":  "e.g. firstname.lastname@email.com",
                  "password_placeholder":  "At least 9 characters",
@@ -461,6 +465,20 @@
                         },
                 "no_results":  "No question matches your search? conversa@hotmail.com"
             },
+    "payment":  {
+                    "publish_event":  "Publish your event",
+                    "complete_payment":  "Complete payment",
+                    "publish_question":  "Your event is created! Would you like to publish it now?",
+                    "price":  "Price",
+                    "pay_now":  "Pay now",
+                    "pay_later":  "Pay later",
+                    "pay_later_info":  "You can publish your event later from your events list.",
+                    "secure_payment":  "Secure payment via Stripe",
+                    "amount":  "Amount",
+                    "confirm_payment":  "Confirm payment",
+                    "payment_success":  "Payment successful! Your event is now published.",
+                    "payment_error":  "Payment error. Please try again."
+                },
     "payments":  {
                      "success":  {
                                      "title":  "Payment confirmed",
@@ -509,16 +527,58 @@
                    "empty":  "No events yet.",
                    "cancelled":  "Cancelled",
                    "address":  "Address",
+                   "city":  "City",
                    "when":  "When",
                    "theme":  "Theme",
+                   "price":  "Price",
                    "free":  "Free",
                    "book":  "Book",
                    "already_booked":  "Already booked",
+                   "my_events":  "My events",
+                   "all_events":  "All events",
+                   "add_event":  "Add event",
+                   "draft":  "Draft",
+                   "organizer":  "Organizer",
+                   "reserved":  "Reserved",
+                   "pay_to_publish":  "Pay to publish",
                    "filters":  {
-                                   "languages_placeholder":  "Target languages"
+                                   "languages_placeholder":  "Target languages",
+                                   "reset":  "Reset"
                                },
                    "nearby":  "Nearby",
-                   "near_city":  "Based on your city: {{city}}"
+                   "near_city":  "Based on your city: {{city}}",
+                   "detail":  {
+                                   "back_to_events":  "Back to events",
+                                   "about":  "About this event",
+                                   "location":  "Location",
+                                   "price_per_person":  "Price per person",
+                                   "organized_by":  "Organized by",
+                                   "book_spot":  "Book my spot",
+                                   "pay_booking":  "Pay my booking",
+                                   "cancel_booking":  "Cancel my booking",
+                                   "event_full":  "Full",
+                                   "event_cancelled":  "Event cancelled",
+                                   "booking_notice":  "Instant confirmation • Free cancellation until 3h before",
+                                   "pay_notice":  "Your booking is pending payment. Click to complete.",
+                                   "cancel_notice":  "You can cancel your booking up to 3 hours before start",
+                                   "starting_soon":  "Starting soon",
+                                   "starting_soon_notice":  "The event starts in less than 3 hours, cancellation not possible",
+                                   "cancel_modal_title":  "Cancel the booking?",
+                                   "cancel_modal_message":  "Are you sure you want to cancel your booking? This action is irreversible.",
+                                   "yes_cancel":  "Yes, cancel",
+                                   "not_found":  "Event not found",
+                                   "error":  "An error occurred while loading",
+                                   "loading":  "Loading...",
+                                   "pay_and_publish": "Pay and publish",
+                                   "delete_draft": "Delete draft",
+                                   "organizer_pending": "Payment in progress...",
+                                   "cancel_event": "Cancel event",
+                                   "cancel_event_title": "Cancel this event?",
+                                   "cancel_event_message": "This action is irreversible and will cancel all participants.",
+                                   "yes_cancel_event": "Yes, cancel event",
+                                   "register_free": "Register for free",
+                                   "unregister": "Unregister"
+                               },
                },
     "checkout":  {
                      "title":  "Confirm purchase",

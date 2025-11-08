@@ -19,6 +19,10 @@ export class EventCardComponent {
   @Input({ required: true }) event!: EventDto;
   @Input() isNearby = false;
   @Input() isRecommended = false;
+  @Input() isOrganizer = false;
+  @Input() reserved = false; // for non-organizer view
+  @Input() showBookButton = false; // control visibility of book button (user list)
+  @Input() isPaymentLoading = false; // loading state for payment button
 
   @Output() book = new EventEmitter<number>();
   @Output() viewDetails = new EventEmitter<number>();
@@ -26,6 +30,10 @@ export class EventCardComponent {
 
   get isDraft(): boolean {
     return this.event.status === 'DRAFT';
+  }
+
+  get isPublished(): boolean {
+    return this.event.status === 'PUBLISHED';
   }
 
   get formattedDate(): string {

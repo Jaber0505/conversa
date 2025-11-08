@@ -1,34 +1,77 @@
-<shared-container>
-  <shared-card class="success-card">
-    <div class="icon success">✅</div>
+<shared-container class="success-container">
+  <!-- Animated success icon -->
+  <div class="success-animation">
+    <div class="success-circle">
+      <div class="checkmark-wrapper">
+        <svg class="checkmark" viewBox="0 0 52 52">
+          <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+          <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+        </svg>
+      </div>
+    </div>
+  </div>
 
-    <h2 class="title">{{ 'payments.success.title' | t }}</h2>
+  <!-- Main content -->
+  <div class="success-content">
+    <h1 class="success-title">{{ 'payments.success.title' | t }}</h1>
 
-    <p class="muted">
+    <p class="success-message">
       {{ 'payments.success.thanks' | t }}
-      <ng-container *ngIf="bookingPublicId">
-        {{ 'payments.success.for_booking' | t : { id: bookingPublicId } }}
-      </ng-container>
     </p>
 
-    <div class="info">
-      <shared-badge variant="success" tone="soft">
-        {{ 'payments.badge.success' | t }}
-      </shared-badge>
+    <!-- Booking info card -->
+    <div class="info-card" *ngIf="bookingPublicId || sessionId">
+      <div class="info-header">
+        <span class="info-icon">📋</span>
+        <h3 class="info-title">Détails de votre réservation</h3>
+      </div>
+
+      <div class="info-details">
+        <div class="info-row" *ngIf="bookingPublicId">
+          <span class="info-label">{{ 'payments.meta.booking' | t }}</span>
+          <span class="info-value">{{ bookingPublicId }}</span>
+        </div>
+      </div>
+
+      <div class="success-badge-wrapper">
+        <shared-badge variant="success" tone="solid">
+          {{ 'payments.badge.success' | t }}
+        </shared-badge>
+      </div>
     </div>
 
-    <div class="actions">
-      <shared-button type="button" *ngIf="eventId" (click)="goToEvent()">
+    <!-- Action buttons -->
+    <div class="action-buttons">
+      <shared-button
+        type="button"
+        variant="primary"
+        size="lg"
+        *ngIf="eventId"
+        (click)="goToEvent()"
+        class="primary-action">
+        <span class="button-icon">🎉</span>
         {{ 'payments.success.back_to_event' | t }}
       </shared-button>
 
-      <shared-button type="button" [variant]="eventId ? 'outline' : 'primary'" (click)="goToMyBookings()">
+      <shared-button
+        type="button"
+        [variant]="eventId ? 'accent' : 'primary'"
+        size="lg"
+        (click)="goToMyBookings()"
+        [class.primary-action]="!eventId">
+        <span class="button-icon">📅</span>
         {{ 'payments.success.my_bookings' | t }}
       </shared-button>
 
-      <shared-button type="button" variant="outline" (click)="goToEvents()">
+      <shared-button
+        type="button"
+        variant="outline"
+        size="md"
+        (click)="goToEvents()"
+        class="secondary-action">
         {{ 'payments.success.back_to_events' | t }}
       </shared-button>
     </div>
-  </shared-card>
+
+  </div>
 </shared-container>

@@ -23,15 +23,16 @@ User = get_user_model()
 class EventDatetimeValidatorTests(TestCase):
     """Test event datetime validation rules."""
 
-    def test_event_must_be_24h_in_advance(self):
-        """Event must be scheduled at least 24 hours in advance."""
-        # 23 hours from now (too soon)
-        too_soon = timezone.now() + timedelta(hours=23)
+    def test_event_must_be_3h_in_advance(self):
+        """Event must be scheduled at least 3 hours in advance."""
+        # 2 hours from now (too soon)
+        too_soon = timezone.now() + timedelta(hours=2)
 
         with self.assertRaises(ValidationError) as ctx:
             validate_event_datetime(too_soon)
 
-        self.assertIn("24 hours", str(ctx.exception))
+        # Error message mentions a 3-hour minimum
+        self.assertIn("3", str(ctx.exception))
 
     def test_event_cannot_be_more_than_7_days_ahead(self):
         """Event cannot be scheduled more than 7 days in advance."""
@@ -44,7 +45,7 @@ class EventDatetimeValidatorTests(TestCase):
         self.assertIn("7 days", str(ctx.exception))
 
     def test_event_must_be_in_business_hours(self):
-        """Event must start between 12pm and 9pm (12h-21h)."""
+        """Event must start between 12pm and 9pm (12h-21h inclusive)."""
         # 2 days from now at 10 AM (outside business hours - too early)
         two_days_10am = (timezone.now() + timedelta(days=2)).replace(
             hour=10, minute=0, second=0, microsecond=0
@@ -52,11 +53,10 @@ class EventDatetimeValidatorTests(TestCase):
 
         with self.assertRaises(ValidationError) as ctx:
             validate_event_datetime(two_days_10am)
-
         self.assertIn("between 12:00 and 21:00", str(ctx.exception))
 
     def test_event_after_9pm_not_allowed(self):
-        """Event cannot start at or after 9pm."""
+        """Event cannot start after 9pm (21:00 inclusive)."""
         # 2 days from now at 10 PM (outside business hours - too late)
         two_days_10pm = (timezone.now() + timedelta(days=2)).replace(
             hour=22, minute=0, second=0, microsecond=0
@@ -64,11 +64,10 @@ class EventDatetimeValidatorTests(TestCase):
 
         with self.assertRaises(ValidationError) as ctx:
             validate_event_datetime(two_days_10pm)
-
         self.assertIn("between 12:00 and 21:00", str(ctx.exception))
 
     def test_valid_event_datetime_passes(self):
-        """Valid event datetime (24h+, <7 days, business hours) should pass."""
+        """Valid event datetime (≥3h, <7 days, business hours) should pass."""
         # 2 days from now at 14:00 (2 PM) - definitely valid
         two_days_2pm = (timezone.now() + timedelta(days=2)).replace(
             hour=14, minute=0, second=0, microsecond=0
@@ -79,6 +78,17 @@ class EventDatetimeValidatorTests(TestCase):
             validate_event_datetime(two_days_2pm)
         except ValidationError as e:
             self.fail(f"Valid datetime raised ValidationError: {e}")
+
+    def test_event_at_21_is_allowed(self):
+        """Event starting exactly at 21:00 should be allowed (inclusive)."""
+        two_days_9pm = (timezone.now() + timedelta(days=2)).replace(
+            hour=21, minute=0, second=0, microsecond=0
+        )
+
+        try:
+            validate_event_datetime(two_days_9pm)
+        except ValidationError as e:
+            self.fail(f"21:00 should be valid but raised: {e}")
 
 
 class PartnerCapacityValidatorTests(TestCase):

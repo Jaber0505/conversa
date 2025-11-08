@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { TPipe } from '@core/i18n';
 import {
@@ -21,7 +22,8 @@ import { SearchBarComponent } from '@app/shared/components/search-bar/search-bar
 import { EventCardComponent } from '../components/event-card/event-card.component';
 import { EventsSortingService, ScoredEvent } from '../services/events-sorting.service';
 
-import { map, take, finalize } from 'rxjs/operators';
+import { map, take, finalize, debounceTime } from 'rxjs/operators';
+import { fromEvent } from 'rxjs';
 import { SelectOption } from '@shared/forms/select/select.component';
 
 // Local type for search event payload
@@ -57,6 +59,7 @@ export class EventsListComponent {
   private readonly paymentsApiService = inject(PaymentsApiService);
   private readonly loader = inject(BlockingSpinnerService);
   private readonly sortingService = inject(EventsSortingService);
+  private readonly destroyRef = inject(DestroyRef);
 
   // État
   readonly scoredEvents = signal<ScoredEvent[]>([]);
@@ -65,6 +68,20 @@ export class EventsListComponent {
   readonly publicEvents = signal<ScoredEvent[]>([]);    // Événements publics (pas ceux de l'utilisateur)
   readonly error = signal<string | null>(null);
   readonly isSmartSortActive = signal<boolean>(false);
+
+  // B1: Draft limit tracking
+  readonly draftCount = signal<number>(0);              // Nombre de drafts de l'utilisateur
+  readonly canCreateEvent = signal<boolean>(true);      // Peut créer un événement (< 3 drafts)
+  readonly createButtonTooltip = signal<string | undefined>(undefined);  // Tooltip si limité
+
+  // Collapse/Expand state for "Mes événements" section
+  readonly isMyEventsSectionCollapsed = signal<boolean>(false);
+
+  // Pagination - separate for each section
+  readonly myEventsCurrentPage = signal<number>(1);
+  readonly publicEventsCurrentPage = signal<number>(1);
+  readonly itemsPerPage = signal<number>(9); // Will be updated based on screen size
+  readonly isMobile = signal<boolean>(false);
 
   // ID de l'utilisateur connecté
   private currentUserId: number | null = null;
@@ -84,12 +101,45 @@ export class EventsListComponent {
   confirmPopup = false;
   private selectedEventId?: number;
 
+  // Payment loading state
+  readonly paymentLoadingEventId = signal<number | null>(null);
+
   get lang(): string {
     return this.route.snapshot.paramMap.get('lang') ?? 'fr';
   }
 
   constructor() {
     this.loadData();
+    this.detectScreenSize();
+
+    // Listen to window resize for responsive pagination using RxJS
+    // This automatically unsubscribes when component is destroyed
+    if (typeof window !== 'undefined') {
+      fromEvent(window, 'resize')
+        .pipe(
+          debounceTime(150), // Debounce to avoid too many calls
+          takeUntilDestroyed(this.destroyRef)
+        )
+        .subscribe(() => this.detectScreenSize());
+    }
+  }
+
+  /**
+   * Détecte la taille de l'écran et ajuste itemsPerPage
+   */
+  private detectScreenSize(): void {
+    if (typeof window === 'undefined') return;
+
+    const isMobile = window.innerWidth <= 768;
+    this.isMobile.set(isMobile);
+    this.itemsPerPage.set(isMobile ? 6 : 9);
+  }
+
+  /**
+   * Toggle collapse/expand for "Mes événements" section
+   */
+  toggleMyEventsSection(): void {
+    this.isMyEventsSectionCollapsed.set(!this.isMyEventsSectionCollapsed());
   }
 
   /**
@@ -99,7 +149,10 @@ export class EventsListComponent {
     this.loader.show('loading');
 
     // Charger les langues disponibles
-    this.languagesApiService.list().pipe(take(1)).subscribe(paginatedLanguage => {
+    this.languagesApiService.list().pipe(
+      take(1),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(paginatedLanguage => {
       this.allLanguages = paginatedLanguage.results;
       this.langOptions.set(langToOptionsSS(this.allLanguages, this.lang));
     });
@@ -117,7 +170,10 @@ export class EventsListComponent {
    * Charge les préférences utilisateur pour le tri intelligent
    */
   private loadUserPreferences(): void {
-    this.authApi.me().pipe(take(1)).subscribe({
+    this.authApi.me().pipe(
+      take(1),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
       next: (me) => {
         this.currentUserId = me.id;
         this.userCity = (me.city || '').trim();
@@ -146,7 +202,8 @@ export class EventsListComponent {
     this.eventsApi.list(params).pipe(
       take(1),
       map(res => res.results),
-      finalize(() => this.loader.hide())
+      finalize(() => this.loader.hide()),
+      takeUntilDestroyed(this.destroyRef)
     ).subscribe({
       next: (events) => {
         // Calculer is_cancelled pour chaque événement
@@ -171,8 +228,18 @@ export class EventsListComponent {
    * Marque les événements déjà réservés par l'utilisateur
    */
   private markAlreadyBooked(events: EventDto[]): void {
-    this.bookingsApiService.list().pipe(take(1)).subscribe({
+    if (!events || events.length === 0) {
+      this.applySmartSort(events);
+      return;
+    }
+
+    this.bookingsApiService.list().pipe(
+      take(1),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
       next: (bookings: Paginated<Booking>) => {
+        if (!events) return; // Safety check in case component is destroyed
+
         bookings.results.forEach(booking => {
           if (booking.status !== 'CANCELLED') {
             const event = events.find(e => e.id === booking.event);
@@ -185,7 +252,9 @@ export class EventsListComponent {
       },
       error: () => {
         // En cas d'erreur, continuer sans marquer les réservations
-        this.applySmartSort(events);
+        if (events) {
+          this.applySmartSort(events);
+        }
       }
     });
   }
@@ -234,9 +303,15 @@ export class EventsListComponent {
     const publicEvts: ScoredEvent[] = [];
 
     filtered.forEach(se => {
+      const status = se.event.status;
+      const isCancelled = status === 'CANCELLED' || !!se.event.cancelled_at;
+      if (isCancelled) return; // Ne pas afficher les événements annulés
+
       if (se.event.organizer_id === this.currentUserId) {
+        // Mes événements: inclure DRAFT / PENDING_CONFIRMATION / PUBLISHED, exclure CANCELLED
         myEvts.push(se);
-      } else if (se.event.status === 'PUBLISHED') {
+      } else if (status === 'PUBLISHED') {
+        // Public uniquement les publiés
         publicEvts.push(se);
       }
     });
@@ -244,6 +319,33 @@ export class EventsListComponent {
     this.myEvents.set(myEvts);
     this.publicEvents.set(publicEvts);
     this.filteredEvents.set(filtered);
+
+    // B1: Update draft count and create button state
+    this.updateDraftCount();
+  }
+
+  /**
+   * B1: Update draft count and create button availability.
+   *
+   * Business Rule: Max 3 drafts per organizer.
+   */
+  private updateDraftCount(): void {
+    // Count DRAFT events in myEvents
+    const drafts = this.myEvents().filter(se => se.event.status === 'DRAFT');
+    const count = drafts.length;
+
+    this.draftCount.set(count);
+
+    // Can create if < 3 drafts
+    const canCreate = count < 3;
+    this.canCreateEvent.set(canCreate);
+
+    // Set tooltip if disabled
+    if (!canCreate) {
+      this.createButtonTooltip.set('Vous avez atteint la limite de 3 événements en préparation.');
+    } else {
+      this.createButtonTooltip.set(undefined);
+    }
   }
 
   /**
@@ -304,6 +406,35 @@ export class EventsListComponent {
     this.confirmPopup = false;
   }
 
+  /**
+   * Paiement (Checkout) pour publier un brouillon via l'alias request-publication
+   */
+  onPayDraftNow(eventId: number): void {
+    this.paymentLoadingEventId.set(eventId);
+    this.loader.show('Redirection vers le paiement...');
+    this.eventsApi.requestPublication(eventId, this.lang)
+      .pipe(
+        take(1),
+        finalize(() => {
+          this.loader.hide();
+          this.paymentLoadingEventId.set(null);
+        }),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe({
+        next: (res) => {
+          if (res && res.url) {
+            window.location.href = res.url;
+          } else {
+            this.error.set('URL de paiement introuvable.');
+          }
+        },
+        error: () => {
+          this.error.set("Impossible de demander la publication.");
+        }
+      });
+  }
+
   performPurchase(): void {
     const evId = this.selectedEventId;
     if (!evId) return;
@@ -312,13 +443,17 @@ export class EventsListComponent {
 
     this.bookingsApiService.create(evId).pipe(
       take(1),
-      finalize(() => this.loader.hide())
+      finalize(() => this.loader.hide()),
+      takeUntilDestroyed(this.destroyRef)
     ).subscribe({
       next: (booking) => {
         this.paymentsApiService.createCheckoutSession({
           booking_public_id: booking.public_id,
           lang: this.lang,
-        }).pipe(take(1)).subscribe({
+        }).pipe(
+          take(1),
+          takeUntilDestroyed(this.destroyRef)
+        ).subscribe({
           next: (res) => {
             window.location.href = res.url;
           },
@@ -357,6 +492,67 @@ export class EventsListComponent {
       .filter(Boolean);
 
     return { searchInput: search.trim(), selectedLangCodes: langs };
+  }
+
+  /**
+   * Obtient les événements paginés pour l'affichage
+   */
+  getPaginatedEvents(events: ScoredEvent[], section: 'my' | 'public'): ScoredEvent[] {
+    const currentPage = section === 'my' ? this.myEventsCurrentPage() : this.publicEventsCurrentPage();
+    const startIndex = (currentPage - 1) * this.itemsPerPage();
+    const endIndex = startIndex + this.itemsPerPage();
+    return events.slice(startIndex, endIndex);
+  }
+
+  /**
+   * Calcule le nombre total de pages
+   */
+  getTotalPages(events: ScoredEvent[]): number {
+    return Math.ceil(events.length / this.itemsPerPage());
+  }
+
+  /**
+   * Change de page
+   */
+  goToPage(page: number, section: 'my' | 'public', totalEvents: number): void {
+    const totalPages = Math.ceil(totalEvents / this.itemsPerPage());
+    if (page >= 1 && page <= totalPages) {
+      if (section === 'my') {
+        this.myEventsCurrentPage.set(page);
+      } else {
+        this.publicEventsCurrentPage.set(page);
+      }
+      // Scroll to top of events section
+      if (typeof window !== 'undefined') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+  }
+
+  /**
+   * Génère un tableau de numéros de pages pour l'affichage
+   */
+  getPageNumbers(events: ScoredEvent[], section: 'my' | 'public'): number[] {
+    const totalPages = this.getTotalPages(events);
+    const current = section === 'my' ? this.myEventsCurrentPage() : this.publicEventsCurrentPage();
+    const pages: number[] = [];
+
+    // Always show first page
+    pages.push(1);
+
+    // Show pages around current page
+    for (let i = Math.max(2, current - 1); i <= Math.min(totalPages - 1, current + 1); i++) {
+      if (!pages.includes(i)) {
+        pages.push(i);
+      }
+    }
+
+    // Always show last page
+    if (totalPages > 1 && !pages.includes(totalPages)) {
+      pages.push(totalPages);
+    }
+
+    return pages.sort((a, b) => a - b);
   }
 
   trackById = (_: number, se: ScoredEvent) => se.event.id;

@@ -60,7 +60,9 @@ class Partner(models.Model):
         """
         Calculate available capacity for a given time slot.
 
-        Optimized to avoid N+1 queries using prefetch_related.
+        ARCHITECTURE RULE:
+        This is a lightweight helper that delegates to PartnerService.
+        ALL business logic is in PartnerService.get_available_capacity().
 
         Args:
             datetime_start: Start datetime of the time slot
@@ -69,46 +71,20 @@ class Partner(models.Model):
         Returns:
             int: Number of available seats during this time slot
 
-        Note:
-            Events are exactly 1 hour long. This method checks all overlapping
-            events and calculates remaining capacity.
-
         Example:
             >>> partner = Partner.objects.get(id=1)
             >>> partner.capacity  # 50 seats
-            >>> # 5 events from 18:00-19:00 (6 people each = 30 seats used)
-            >>> partner.get_available_capacity('2025-10-10 18:00', '2025-10-10 19:00')
-            20  # 50 - 30 = 20 available
+            >>> partner.get_available_capacity(datetime_start, datetime_end)
+            20  # Available capacity
         """
-        from django.db.models import Prefetch
-        from events.models import Event
-        from bookings.models import Booking, BookingStatus
-        from common.constants import DEFAULT_EVENT_DURATION_HOURS
+        from partners.services import PartnerService
 
-        # Get all potentially overlapping events at this partner
-        # Use prefetch_related to avoid N+1 queries on bookings
-        potential_events = Event.objects.filter(
+        # Delegate to PartnerService (SINGLE SOURCE OF TRUTH)
+        return PartnerService.get_available_capacity(
             partner=self,
-            status__in=['PUBLISHED', 'AWAITING_PAYMENT']  # Only count active events
-        ).prefetch_related(
-            Prefetch(
-                'bookings',
-                queryset=Booking.objects.filter(status=BookingStatus.CONFIRMED),
-                to_attr='confirmed_bookings'
-            )
+            datetime_start=datetime_start,
+            datetime_end=datetime_end
         )
-
-        # Filter to only truly overlapping events and count bookings
-        total_reserved = 0
-        for event in potential_events:
-            event_end = event.datetime_start + timedelta(hours=DEFAULT_EVENT_DURATION_HOURS)
-            # Check if event overlaps with requested time slot
-            if event.datetime_start < datetime_end and event_end > datetime_start:
-                # Use prefetched confirmed_bookings (no additional query)
-                confirmed_count = len(event.confirmed_bookings)
-                total_reserved += confirmed_count
-
-        return max(0, self.capacity - total_reserved)
 
     def __str__(self):
         status = "[active]" if self.is_active else "[inactive]"
