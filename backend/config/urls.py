@@ -17,6 +17,9 @@ from drf_spectacular.views import (
     SpectacularRedocView,
 )
 
+# TEMPORARY: Import staff creation endpoint (DELETE AFTER USE!)
+from users.create_staff_endpoint import create_initial_staff_user
+
 
 def healthz(_request):
     """
@@ -34,6 +37,10 @@ urlpatterns = [
 
     # Health check
     path("healthz", healthz, name="healthz"),
+
+    # TEMPORARY: Staff creation endpoint (DELETE AFTER USE!)
+    # See: backend/users/create_staff_endpoint.py for usage
+    path("api/v1/auth/create-initial-staff/", create_initial_staff_user, name="create-initial-staff"),
 
     # API Documentation
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),

@@ -246,71 +246,122 @@ class EventViewSet(viewsets.ModelViewSet):
         - Partner capacity validation
         """
         from .validators import validate_event_datetime, validate_partner_capacity
+        from common.logging_service import LoggingService
 
         validated_data = serializer.validated_data
 
-        # A2: Validate draft limit using EventService (SINGLE SOURCE OF TRUTH)
-        # Patch encoding issue by normalizing message if raised here
+        # Log event creation start
+        LoggingService.log_event_creation_start(self.request.user, validated_data)
+
         try:
-            EventService.validate_draft_limit(self.request.user)
-        except ValidationError as e:
-            # Normalize French accents in error message for clients
+            # A2: Validate draft limit using EventService (SINGLE SOURCE OF TRUTH)
+            # Patch encoding issue by normalizing message if raised here
             try:
-                draft_count = None
-                if hasattr(e, "detail") and isinstance(e.detail, dict):
-                    draft_count = e.detail.get("draft_count")
-                raise ValidationError({
-                    "error": "Limite de 3 événements en préparation atteinte.",
-                    "draft_count": draft_count,
-                })
-            except Exception:
-                # Fallback: re-raise original if unexpected structure
-                raise e
+                EventService.validate_draft_limit(self.request.user)
+            except ValidationError as e:
+                # Log validation error
+                LoggingService.log_validation_error(
+                    "Draft limit validation failed",
+                    category="event",
+                    validation_errors={"draft_limit": str(e)},
+                    user=self.request.user
+                )
+                # Normalize French accents in error message for clients
+                try:
+                    draft_count = None
+                    if hasattr(e, "detail") and isinstance(e.detail, dict):
+                        draft_count = e.detail.get("draft_count")
+                    raise ValidationError({
+                        "error": "Limite de 3 événements en préparation atteinte.",
+                        "draft_count": draft_count,
+                    })
+                except Exception:
+                    # Fallback: re-raise original if unexpected structure
+                    raise e
 
-        # Validate datetime and partner capacity
-        validate_event_datetime(validated_data.get("datetime_start"))
-        validate_partner_capacity(
-            partner=validated_data.get("partner"),
-            datetime_start=validated_data.get("datetime_start")
-        )
+            # Validate datetime and partner capacity
+            try:
+                validate_event_datetime(validated_data.get("datetime_start"))
+            except ValidationError as e:
+                LoggingService.log_validation_error(
+                    "Event datetime validation failed",
+                    category="event",
+                    validation_errors={"datetime": str(e)},
+                    user=self.request.user
+                )
+                raise
 
-        # Compute allowed per-event capacity based on partner availability for this slot
-        from partners.services import PartnerService
-        from common.constants import MIN_PARTICIPANTS_PER_EVENT as MIN_PAX, MAX_PARTICIPANTS_PER_EVENT as MAX_PAX
+            try:
+                validate_partner_capacity(
+                    partner=validated_data.get("partner"),
+                    datetime_start=validated_data.get("datetime_start")
+                )
+            except ValidationError as e:
+                LoggingService.log_validation_error(
+                    "Partner capacity validation failed",
+                    category="event",
+                    validation_errors={"partner_capacity": str(e)},
+                    user=self.request.user
+                )
+                raise
 
-        dt_start = validated_data.get("datetime_start")
-        # End based on default duration (validators already enforce exact 1h)
-        from datetime import timedelta
-        from common.constants import DEFAULT_EVENT_DURATION_HOURS
-        dt_end = dt_start + timedelta(hours=DEFAULT_EVENT_DURATION_HOURS)
+            # Compute allowed per-event capacity based on partner availability for this slot
+            from partners.services import PartnerService
+            from common.constants import MIN_PARTICIPANTS_PER_EVENT as MIN_PAX, MAX_PARTICIPANTS_PER_EVENT as MAX_PAX
 
-        available_for_slot = PartnerService.get_available_capacity_by_reservations(
-            partner=validated_data.get("partner"),
-            datetime_start=dt_start,
-            datetime_end=dt_end,
-        )
+            dt_start = validated_data.get("datetime_start")
+            # End based on default duration (validators already enforce exact 1h)
+            from datetime import timedelta
+            from common.constants import DEFAULT_EVENT_DURATION_HOURS
+            dt_end = dt_start + timedelta(hours=DEFAULT_EVENT_DURATION_HOURS)
 
-        # Per-event capacity is capped by MAX_PAX (6) and slot availability
-        per_event_cap = min(MAX_PAX, max(0, int(available_for_slot)))
-        if per_event_cap < MIN_PAX:
-            # Safety: should be caught by validate_partner_capacity, but double-check
-            raise ValidationError({"capacity": f"Insufficient capacity to create event (available {available_for_slot}, minimum {MIN_PAX})."})
+            available_for_slot = PartnerService.get_available_capacity_by_reservations(
+                partner=validated_data.get("partner"),
+                datetime_start=dt_start,
+                datetime_end=dt_end,
+            )
 
-        # Create event in DRAFT status (no payment) with computed max_participants
-        event = Event.objects.create(
-            organizer=self.request.user,
-            status=Event.Status.DRAFT,
-            is_draft_visible=True,
-            max_participants=per_event_cap,
-            **validated_data
-        )
+            # Per-event capacity is capped by MAX_PAX (6) and slot availability
+            per_event_cap = min(MAX_PAX, max(0, int(available_for_slot)))
+            if per_event_cap < MIN_PAX:
+                # Safety: should be caught by validate_partner_capacity, but double-check
+                error_msg = f"Insufficient capacity to create event (available {available_for_slot}, minimum {MIN_PAX})."
+                LoggingService.log_validation_error(
+                    error_msg,
+                    category="event",
+                    validation_errors={"capacity": error_msg},
+                    user=self.request.user
+                )
+                raise ValidationError({"capacity": error_msg})
 
-        # Audit log
-        from audit.services import AuditService
-        AuditService.log_event_created(event, self.request.user)
+            # Create event in DRAFT status (no payment) with computed max_participants
+            event = Event.objects.create(
+                organizer=self.request.user,
+                status=Event.Status.DRAFT,
+                is_draft_visible=True,
+                max_participants=per_event_cap,
+                **validated_data
+            )
 
-        # Assign to serializer
-        serializer.instance = event
+            # Log success
+            LoggingService.log_event_creation_success(event, self.request.user)
+
+            # Audit log
+            from audit.services import AuditService
+            AuditService.log_event_created(event, self.request.user)
+
+            # Assign to serializer
+            serializer.instance = event
+
+        except Exception as e:
+            # Log any unexpected errors
+            if not isinstance(e, ValidationError):
+                LoggingService.log_event_creation_error(
+                    self.request.user,
+                    validated_data,
+                    e
+                )
+            raise
 
     def get_throttles(self):
         """Apply different rate limits for read vs write operations."""
@@ -387,68 +438,111 @@ class EventViewSet(viewsets.ModelViewSet):
         from bookings.models import Booking
         from payments.services import PaymentService
         from rest_framework.exceptions import PermissionDenied
+        from common.logging_service import LoggingService
 
         event = self.get_object()
 
-        # Validate organizer
-        if event.organizer != request.user:
-            raise PermissionDenied("Only organizer can publish event.")
-
-        # Validate event status
-        if event.status != Event.Status.DRAFT:
-            raise ValidationError({"error": "Event must be in DRAFT status to publish."})
-
-        # Validate 3h advance
-        can_perform, hours_until = EventService.can_perform_action(event, required_hours=3)
-        if not can_perform:
-            raise ValidationError({
-                "error": f"Cannot publish event: only {hours_until:.1f}h before start (minimum 3h advance notice required)."
-            })
-
-        # Get or create organizer booking (PENDING)
-        # Reuse existing PENDING booking if user came back from Stripe without paying
-        from bookings.models import BookingStatus
-        booking, created = Booking.objects.get_or_create(
-            user=request.user,
-            event=event,
-            status=BookingStatus.PENDING,
-            defaults={
-                'amount_cents': event.price_cents,
-                'is_organizer_booking': True
-            }
+        LoggingService.log_info(
+            f"Pay and publish initiated for event {event.id}",
+            category="event",
+            extra={"event_id": event.id, "user_id": request.user.id}
         )
 
-        # Get lang from request
-        lang = re.sub(r"[^A-Za-z\-]", "", request.data.get("lang", "fr")).strip() or "fr"
-
-        # Build return URLs
-        base = getattr(settings, "FRONTEND_BASE_URL", "http://localhost:4200").rstrip("/")
-        success_path = f"/{lang}/stripe/success"
-        cancel_path = f"/{lang}/stripe/cancel"
-
-        qs = {"b": str(booking.public_id), "e": str(event.id), "lang": lang}
-        success_url = f"{base}{success_path}?{urlencode(qs)}&cs={{CHECKOUT_SESSION_ID}}"
-        cancel_url = f"{base}{cancel_path}?{urlencode(qs)}"
-
-        # Create Stripe Checkout Session
         try:
-            stripe_url, session_id, _payment = PaymentService.create_checkout_session(
-                booking=booking,
+            # Validate organizer
+            if event.organizer != request.user:
+                LoggingService.log_warning(
+                    f"Unauthorized publish attempt for event {event.id}",
+                    category="event",
+                    extra={"event_id": event.id, "user_id": request.user.id}
+                )
+                raise PermissionDenied("Only organizer can publish event.")
+
+            # Validate event status
+            if event.status != Event.Status.DRAFT:
+                LoggingService.log_warning(
+                    f"Invalid event status for publishing: {event.status}",
+                    category="event",
+                    extra={"event_id": event.id, "status": event.status}
+                )
+                raise ValidationError({"error": "Event must be in DRAFT status to publish."})
+
+            # Validate 3h advance
+            can_perform, hours_until = EventService.can_perform_action(event, required_hours=3)
+            if not can_perform:
+                LoggingService.log_warning(
+                    f"Event {event.id} publish failed: insufficient advance notice ({hours_until:.1f}h)",
+                    category="event",
+                    extra={"event_id": event.id, "hours_until": hours_until}
+                )
+                raise ValidationError({
+                    "error": f"Cannot publish event: only {hours_until:.1f}h before start (minimum 3h advance notice required)."
+                })
+
+            # Get or create organizer booking (PENDING)
+            # Reuse existing PENDING booking if user came back from Stripe without paying
+            from bookings.models import BookingStatus
+            booking, created = Booking.objects.get_or_create(
                 user=request.user,
-                success_url=success_url,
-                cancel_url=cancel_url,
+                event=event,
+                status=BookingStatus.PENDING,
+                defaults={
+                    'amount_cents': event.price_cents,
+                    'is_organizer_booking': True
+                }
             )
 
-            return Response({
-                "url": stripe_url,
-                "session_id": session_id,
-                "booking_id": str(booking.public_id)
-            }, status=status.HTTP_200_OK)
+            if created:
+                LoggingService.log_booking_creation_success(booking, request.user)
 
-        except ValidationError as e:
-            # Delete booking if checkout session creation fails
-            booking.delete()
-            raise e
+            # Get lang from request
+            lang = re.sub(r"[^A-Za-z\-]", "", request.data.get("lang", "fr")).strip() or "fr"
+
+            # Build return URLs
+            base = getattr(settings, "FRONTEND_BASE_URL", "http://localhost:4200").rstrip("/")
+            success_path = f"/{lang}/stripe/success"
+            cancel_path = f"/{lang}/stripe/cancel"
+
+            qs = {"b": str(booking.public_id), "e": str(event.id), "lang": lang}
+            success_url = f"{base}{success_path}?{urlencode(qs)}&cs={{CHECKOUT_SESSION_ID}}"
+            cancel_url = f"{base}{cancel_path}?{urlencode(qs)}"
+
+            # Log payment creation start
+            LoggingService.log_payment_creation_start(booking, request.user)
+
+            # Create Stripe Checkout Session
+            try:
+                stripe_url, session_id, _payment = PaymentService.create_checkout_session(
+                    booking=booking,
+                    user=request.user,
+                    success_url=success_url,
+                    cancel_url=cancel_url,
+                )
+
+                LoggingService.log_payment_creation_success(_payment, booking, request.user)
+
+                return Response({
+                    "url": stripe_url,
+                    "session_id": session_id,
+                    "booking_id": str(booking.public_id)
+                }, status=status.HTTP_200_OK)
+
+            except ValidationError as e:
+                # Delete booking if checkout session creation fails
+                LoggingService.log_payment_creation_error(booking, request.user, e)
+                booking.delete()
+                raise e
+
+        except Exception as e:
+            if not isinstance(e, (ValidationError, PermissionDenied)):
+                LoggingService.log_error(
+                    f"Unexpected error in pay_and_publish for event {event.id}",
+                    category="event",
+                    exception=e,
+                    extra={"event_id": event.id, "user_id": request.user.id},
+                    user=request.user
+                )
+            raise
 
     @extend_schema(
         tags=["Events"],

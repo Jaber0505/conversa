@@ -298,6 +298,10 @@ SPECTACULAR_SETTINGS.update({
 # Booking expiration time in minutes
 BOOKING_TTL_MINUTES = int(os.getenv("DJANGO_BOOKING_TTL_MINUTES", "15"))
 
+# TEMPORARY: Initial staff creation secret (DELETE AFTER CREATING STAFF USER!)
+# Set via: DJANGO_INITIAL_STAFF_SECRET environment variable
+INITIAL_STAFF_SECRET = os.getenv("DJANGO_INITIAL_STAFF_SECRET", "")
+
 # =============================================================================
 # SCHEDULED TASKS CONFIGURATION
 # =============================================================================
@@ -315,10 +319,17 @@ LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
+        "verbose": {
+            "format": "%(asctime)s [%(levelname)s] %(name)s (%(filename)s:%(lineno)d) - %(message)s",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+        },
         "simple": {"format": "%(asctime)s [%(levelname)s] %(name)s: %(message)s"},
     },
     "handlers": {
-        "console": {"class": "logging.StreamHandler", "formatter": "simple"},
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
     },
     "root": {"handlers": ["console"], "level": "INFO"},
     "loggers": {
@@ -329,6 +340,32 @@ LOGGING = {
         },
         "http": {"handlers": ["console"], "level": "INFO", "propagate": False},
         "payments.webhook": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        # Application loggers
+        "event": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "booking": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "payment": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "stripe": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "conversa": {
             "handlers": ["console"],
             "level": "INFO",
             "propagate": False,
