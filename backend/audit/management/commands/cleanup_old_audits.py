@@ -42,10 +42,53 @@ class Command(BaseCommand):
             action="store_true",
             help="Show detailed statistics for each category",
         )
+        parser.add_argument(
+            "--all",
+            action="store_true",
+            help="Delete ALL audit logs (complete reset). Use with caution!",
+        )
 
     def handle(self, *args, **options):
         dry_run = options["dry_run"]
         verbose = options["verbose"]
+        delete_all = options["all"]
+
+        # Handle --all flag (delete everything)
+        if delete_all:
+            total_count = AuditLog.objects.count()
+
+            self.stdout.write(
+                self.style.ERROR("⚠️  DELETE ALL AUDIT LOGS")
+            )
+            self.stdout.write(
+                self.style.WARNING(f"   This will delete {total_count:,} audit logs!")
+            )
+
+            if dry_run:
+                self.stdout.write(
+                    self.style.NOTICE("\n  ℹ️  This is a dry run. No logs would be deleted.")
+                )
+                return
+
+            # Confirmation in production
+            self.stdout.write("")
+            confirm = input("Are you sure? Type 'DELETE ALL' to confirm: ")
+
+            if confirm != "DELETE ALL":
+                self.stdout.write(
+                    self.style.ERROR("\n  ❌ Operation cancelled")
+                )
+                return
+
+            self.stdout.write("\n  🗑️  Deleting all audit logs...")
+            deleted_count, _ = AuditLog.objects.all().delete()
+
+            self.stdout.write(
+                self.style.SUCCESS(
+                    f"\n  ✅ Successfully deleted {deleted_count:,} audit logs"
+                )
+            )
+            return
 
         now = timezone.now()
 

@@ -250,6 +250,7 @@ class AuditLogViewSet(viewsets.ReadOnlyModelViewSet):
             "Examples:\n"
             "- Purge TEST actions: POST /api/v1/audit/purge/?action__icontains=TEST\n"
             "- Purge HTTP logs: POST /api/v1/audit/purge/?category=HTTP\n"
+            "- Delete ALL logs: POST /api/v1/audit/purge/?all=true (use with caution!)\n"
         ),
         responses={
             200: OpenApiResponse(description="Purge completed"),
@@ -260,7 +261,24 @@ class AuditLogViewSet(viewsets.ReadOnlyModelViewSet):
     def purge(self, request):
         """
         Delete audit logs matching filters (admin-only utility for dev).
+
+        Special parameter: ?all=true to delete ALL logs (no filters applied).
         """
+        # Check if user wants to delete ALL logs
+        delete_all = request.query_params.get('all', '').lower() == 'true'
+
+        if delete_all:
+            # Delete everything
+            total_count = AuditLog.objects.count()
+            deleted, _ = AuditLog.objects.all().delete()
+            return Response({
+                "status": "success",
+                "deleted": deleted,
+                "message": f"All {deleted:,} audit logs have been deleted",
+                "warning": "Complete reset performed"
+            })
+
+        # Otherwise, delete only filtered logs
         qs = self.filter_queryset(self.get_queryset())
         deleted, _ = qs.delete()
         return Response({

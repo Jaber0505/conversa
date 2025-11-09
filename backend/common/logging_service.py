@@ -95,12 +95,15 @@ class LoggingService:
     @staticmethod
     def log_event_creation_start(user: User, event_data: Dict[str, Any]):
         """Log when event creation starts."""
+        partner_name = getattr(event_data.get("partner"), "name", "Unknown")
+        datetime_str = str(event_data.get("datetime_start"))
+
         LoggingService.log_info(
-            f"Event creation started by user {user.email}",
+            f"🎯 Tentative de création d'événement par {user.email} - Lieu: {partner_name}, Date: {datetime_str}",
             category="event",
             extra={
                 "user_id": user.id,
-                "datetime_start": str(event_data.get("datetime_start")),
+                "datetime_start": datetime_str,
                 "partner_id": event_data.get("partner", {}).id if hasattr(event_data.get("partner"), "id") else event_data.get("partner"),
                 "language": event_data.get("language", {}).code if hasattr(event_data.get("language"), "code") else event_data.get("language"),
             }
@@ -110,7 +113,7 @@ class LoggingService:
     def log_event_creation_success(event, user: User):
         """Log successful event creation."""
         LoggingService.log_info(
-            f"Event {event.id} created successfully by user {user.email}",
+            f"✅ Événement #{event.id} créé avec succès par {user.email} - Statut: {event.status}",
             category="event",
             extra={
                 "event_id": event.id,
@@ -123,14 +126,16 @@ class LoggingService:
     @staticmethod
     def log_event_creation_error(user: User, event_data: Dict[str, Any], exception: Exception):
         """Log event creation failure."""
+        error_msg = str(exception)
         LoggingService.log_error(
-            f"Event creation failed for user {user.email}",
+            f"❌ ÉCHEC création événement pour {user.email} - Raison: {error_msg}",
             category="event",
             exception=exception,
             extra={
                 "user_id": user.id,
                 "event_data": event_data,
                 "error_type": type(exception).__name__,
+                "error_message": error_msg,
             },
             user=user,
         )
@@ -221,8 +226,11 @@ class LoggingService:
     @staticmethod
     def log_validation_error(message: str, category: str, validation_errors: Dict[str, Any], user: Optional[User] = None):
         """Log validation errors."""
+        user_email = user.email if user else "Anonymous"
+        errors_str = ", ".join([f"{k}: {v}" for k, v in validation_errors.items()])
+
         LoggingService.log_warning(
-            message,
+            f"⚠️ Validation échouée pour {user_email} - {message} | Détails: {errors_str}",
             category=category,
             extra={
                 "validation_errors": validation_errors,

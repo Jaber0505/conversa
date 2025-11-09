@@ -121,14 +121,14 @@ class PartnerViewSet(viewsets.ModelViewSet):
         if self.action in ["list", "retrieve"]:
             queryset = Partner.objects.filter(is_active=True)
 
-            # Filter by search query (postal code, city, or name)
+            # Filter by search query (city, name, or address)
             search = self.request.query_params.get('search', None)
             if search:
                 from django.db.models import Q
                 queryset = queryset.filter(
-                    Q(postal_code__icontains=search) |
                     Q(city__icontains=search) |
-                    Q(name__icontains=search)
+                    Q(name__icontains=search) |
+                    Q(address__icontains=search)
                 )
 
             return queryset

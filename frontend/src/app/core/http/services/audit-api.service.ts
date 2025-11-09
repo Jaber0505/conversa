@@ -58,4 +58,8 @@ export class AuditApiService {
   cleanup() {
     return this.http.post<{ status: string; message?: string; output?: string }>(`${this.base}/audit/cleanup/`, {});
   }
+
+  purgeAll() {
+    return this.http.post<{ status: string; deleted: number; message?: string }>(`${this.base}/audit/purge/?all=true`, {});
+  }
 }

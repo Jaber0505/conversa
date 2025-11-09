@@ -78,7 +78,7 @@ export class AuditLogsComponent {
   }
 
   cleanup() {
-    if (!confirm('Confirmer le nettoyage des anciens logs ?')) return;
+    if (!confirm('Confirmer le nettoyage des anciens logs (selon politique de rétention) ?')) return;
     this.loading.set(true);
     this.notice.set(null);
     this.api.cleanup().subscribe({
@@ -90,6 +90,38 @@ export class AuditLogsComponent {
       },
       error: (e) => {
         this.error.set('Echec du nettoyage');
+        this.loading.set(false);
+      }
+    });
+  }
+
+  cleanupAll() {
+    const confirmed = confirm(
+      '⚠️ ATTENTION : Supprimer TOUS les logs d\'audit ?\n\n' +
+      'Cette action est IRRÉVERSIBLE et supprimera tous les logs sans exception.\n\n' +
+      'Cliquez sur OK pour continuer ou Annuler pour annuler.'
+    );
+    if (!confirmed) return;
+
+    // Double confirmation
+    const doubleConfirm = confirm(
+      '⚠️ DERNIÈRE CONFIRMATION ⚠️\n\n' +
+      'Vous êtes sur le point de SUPPRIMER TOUS LES LOGS.\n\n' +
+      'Êtes-vous absolument sûr ?'
+    );
+    if (!doubleConfirm) return;
+
+    this.loading.set(true);
+    this.notice.set(null);
+    this.api.purgeAll().subscribe({
+      next: (res) => {
+        this.notice.set(`✅ ${res?.deleted || 0} logs supprimés (reset complet)`);
+        this.loading.set(false);
+        this.fetch();
+        this.loadStats();
+      },
+      error: (e) => {
+        this.error.set('Echec de la suppression');
         this.loading.set(false);
       }
     });

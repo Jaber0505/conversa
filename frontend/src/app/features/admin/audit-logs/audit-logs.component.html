@@ -21,6 +21,7 @@
     <shared-button type="submit" variant="primary" size="sm">Filtrer</shared-button>
     <shared-button type="button" variant="outline" size="sm" (click)="exportCsv()">Exporter CSV</shared-button>
     <shared-button type="button" variant="danger" size="sm" (click)="cleanup()">Cleanup</shared-button>
+    <shared-button type="button" variant="danger" size="sm" (click)="cleanupAll()">Cleanup ALL ⚠️</shared-button>
   </form>
 
   <div *ngIf="error()" class="state-error"><shared-badge variant="danger" tone="soft">{{ error() }}</shared-badge></div>
