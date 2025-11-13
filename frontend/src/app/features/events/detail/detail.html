@@ -48,19 +48,37 @@
           <p class="address-text"><strong>{{ evt.partner_name }}</strong><br>{{ evt.partner_address }}<br>{{ evt.partner_city }}</p>
         </div>
 
-        <!-- Game info section - Just display configured game info -->
-        <div class="event-section" *ngIf="evt.game_type">
-          <h2 class="section-title">{{ 'events.detail.game_info_title' | t }}</h2>
-          <div class="game-info-card">
-            <div class="game-info-row">
-              <span class="game-info-label">{{ 'events.create.game_type' | t }}:</span>
-              <span class="game-info-value">{{ 'GAMES.TYPES.' + evt.game_type.toUpperCase() | t }}</span>
+        <div class="event-section participants-section">
+          <h2 class="section-title">{{ 'events.detail.participants' | t }}</h2>
+
+          <ng-container *ngIf="participantsLoading(); else participantsContent">
+            <p class="participants-message">{{ 'events.detail.participants_loading' | t }}</p>
+          </ng-container>
+
+          <ng-template #participantsContent>
+            <p class="participants-message" *ngIf="participantsError()">{{ participantsError()! | t }}</p>
+            <p class="participants-message" *ngIf="!participantsError() && !participants().length">
+              {{ 'events.detail.no_participants_yet' | t }}
+            </p>
+
+            <div class="participants-list" *ngIf="!participantsError() && participants().length">
+              <div class="participant-card" *ngFor="let participant of participants()">
+                <div class="participant-name">
+                  {{ participant.first_name }} {{ participant.last_name }}
+                </div>
+                <div class="participant-languages">
+                  <div class="language-group" *ngIf="participant.native_languages?.length">
+                    <span class="language-label">{{ 'events.detail.native_languages' | t }}</span>
+                    <span class="language-values">{{ formatLanguages(participant.native_languages) }}</span>
+                  </div>
+                  <div class="language-group" *ngIf="participant.target_languages?.length">
+                    <span class="language-label">{{ 'events.detail.target_languages' | t }}</span>
+                    <span class="language-values">{{ formatLanguages(participant.target_languages) }}</span>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="game-info-row">
-              <span class="game-info-label">{{ 'events.create.game_difficulty' | t }}:</span>
-              <span class="game-info-value">{{ 'GAMES.DIFFICULTY.' + (evt.game_difficulty || 'MEDIUM').toUpperCase() | t }}</span>
-            </div>
-          </div>
+          </ng-template>
         </div>
       </div>
 

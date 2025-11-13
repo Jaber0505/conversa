@@ -91,7 +91,7 @@ export class LandingHeaderComponent implements OnInit, AfterViewInit, OnDestroy 
   openLang() { this.showLang = true; }
   closeLang() { this.showLang = false; }
   onLangSave(next: Lang) {
-    this.langSvc.set(next); // met à jour l'URL via LangService
+    this.langSvc.set(next, { reload: true }); // reload pour forcer la mise à jour globale
     this.currentLang = next;
     this.closeLang();
   }

@@ -1,11 +1,11 @@
-<!-- Contrôle -->
+﻿<!-- ContrÃ´le -->
 <div class="sel-control" (click)="toggleOpen($event)" [class.is-disabled]="disabled" role="button" tabindex="0">
   <div class="sel-value">
     <ng-container *ngIf="selectedOption(); else ph">
       {{ selectedOption()?.label }}
     </ng-container>
     <ng-template #ph>
-      <span class="sel-placeholder">{{ placeholder }}</span>
+      <span class="sel-placeholder">{{ placeholder || defaultPlaceholder() }}</span>
     </ng-template>
   </div>
 
@@ -14,10 +14,10 @@
       *ngIf="selectedOption()"
       type="button"
       class="sel-clear"
-      aria-label="Effacer"
+      [attr.aria-label]="clearLabel()"
       (click)="clear($event)"
-    >×</button>
-    <span class="sel-caret" aria-hidden="true">▾</span>
+    >Ã—</button>
+    <span class="sel-caret" aria-hidden="true">â–¾</span>
   </div>
 </div>
 
@@ -27,7 +27,7 @@
     <input
       type="text"
       class="sel-input"
-      placeholder="Rechercher…"
+      [placeholder]="searchPlaceholder()"
       (input)="onSearch($event)"
       (keydown.escape)="close()"
     />
@@ -46,7 +46,12 @@
     </button>
 
     <div class="sel-empty" *ngIf="(searchable ? filtered() : options).length === 0">
-      Aucun résultat
+      {{ noResultsLabel() }}
     </div>
   </div>
 </div>
+
+
+
+
+

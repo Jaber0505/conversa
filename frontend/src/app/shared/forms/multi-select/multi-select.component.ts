@@ -1,9 +1,11 @@
-import {
+﻿import {
   Component, Input, Output, EventEmitter, ChangeDetectionStrategy,
   HostListener, ElementRef, inject, signal, computed
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BadgeComponent } from '@shared/ui/badge/badge.component';
+import { I18nService, LangService } from '@core/i18n';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 export type SelectOption = { value: string; label: string };
 
@@ -17,9 +19,32 @@ export type SelectOption = { value: string; label: string };
 })
 export class MultiSelectComponent {
   private host = inject(ElementRef<HTMLElement>);
+  private readonly i18n = inject(I18nService);
+  private readonly lang = inject(LangService);
+  private readonly currentLang = toSignal(this.lang.lang$, { initialValue: this.lang.current });
+
+  readonly defaultPlaceholder = computed(() => {
+    this.currentLang();
+    return this.i18n.t('common.select.placeholder');
+  });
+
+  readonly searchPlaceholder = computed(() => {
+    this.currentLang();
+    return this.i18n.t('common.select.search_placeholder');
+  });
+
+  readonly noResultsLabel = computed(() => {
+    this.currentLang();
+    return this.i18n.t('common.select.no_results');
+  });
+
+  readonly removeLabel = computed(() => {
+    this.currentLang();
+    return this.i18n.t('common.select.remove');
+  });
 
   /* API */
-  @Input() placeholder = 'Sélectionner…';
+  @Input() placeholder = '';
   @Input() options: SelectOption[] = [];
   @Input() disabled = false;
   @Input() error = false;
@@ -51,7 +76,7 @@ export class MultiSelectComponent {
     return this.options.filter(o => o.label.toLowerCase().includes(q));
   });
 
-  /* Helpers sélection */
+  /* Helpers sÃ©lection */
   isChecked(val: string) { return this._value().includes(val); }
 
   private emitBoth() {
@@ -102,7 +127,7 @@ export class MultiSelectComponent {
     this.query.set('');
   }
 
-  /* Fermer au clic extérieur + Esc */
+  /* Fermer au clic extÃ©rieur + Esc */
   @HostListener('document:click', ['$event'])
   onDocumentClick(ev: MouseEvent) {
     if (!this.isOpen) return;
@@ -115,3 +140,5 @@ export class MultiSelectComponent {
     if (this.isOpen) this.close();
   }
 }
+
+

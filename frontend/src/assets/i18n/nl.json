@@ -21,6 +21,13 @@
         "searchInput": "Zoeken",
         "LanguageSearch": "Doeltalen",
         "loading": "Laden...",
+        "select": {
+            "placeholder": "Selecteer...",
+            "search_placeholder": "Zoeken...",
+            "no_results": "Geen resultaten",
+            "clear": "Wissen",
+            "remove": "Verwijderen"
+        },
         "nav": {
             "menu": "Hoofdmenu"
         }
@@ -433,10 +440,65 @@
         }
     },
     "events": {
+        "filters": {
+            "languages_placeholder": "Doeltalen",
+            "search_placeholder": "Zoeken op titel, thema, adres...",
+            "all_languages": "Alle talen",
+            "reset": "Resetten",
+            "show_filters": "Filters tonen",
+            "hide_filters": "Filters verbergen",
+            "active_filters": "Actieve filters",
+            "languages": "Talen",
+            "select_languages": "Selecteer talen",
+            "difficulty_label": "Moeilijkheid",
+            "all_difficulties": "Alle niveaus",
+            "date_from": "Vanaf datum",
+            "date_to": "Tot datum",
+            "price_label": "Prijs",
+            "availability_label": "Beschikbaarheid",
+            "difficulty": {
+                "beginner": "Beginner",
+                "intermediate": "Gemiddeld",
+                "advanced": "Gevorderd"
+            },
+            "price": {
+                "all": "Alle prijzen",
+                "free": "Gratis",
+                "paid": "Betaald"
+            },
+            "availability": {
+                "all": "Alle",
+                "available": "Beschikbare plaatsen",
+                "almost_full": "Bijna vol"
+            }
+        },
+        "my_events": "Mijn evenementen",
+        "show_my_events": "Mijn evenementen tonen",
+        "hide_my_events": "Mijn evenementen verbergen",
+        "all_events": "Alle evenementen",
+        "add_event": "Evenement toevoegen",
+        "draft": "Concept",
+        "empty": "Geen evenementen gevonden",
+        "empty_subtitle": "Probeer je filters aan te passen of kom later terug",
+        "results_count": "{{count}} evenement{{count > 1 ? 'en' : ''}} gevonden",
+        "badges": {
+            "recommended": "Aanbevolen",
+            "full": "Volzet",
+            "cancelled": "Geannuleerd"
+        },
         "detail": {
             "back_to_events": "Terug naar evenementen",
             "about": "Over dit evenement",
             "location": "Locatie",
+            "participants": "Deelnemers",
+            "participant": "deelnemer",
+            "participants_plural": "deelnemers",
+            "no_participants_yet": "Nog geen inschrijvingen",
+            "participants_loading": "Deelnemers worden geladen...",
+            "participants_error": "Kan de deelnemers nu niet laden.",
+            "participants_forbidden": "Alleen organisatoren of gepubliceerde evenementen kunnen deelnemers tonen.",
+            "native_languages": "Moedertalen",
+            "target_languages": "Doeltalen",
             "price_per_person": "Prijs per persoon",
             "organized_by": "Georganiseerd door",
             "book_spot": "Mijn plek reserveren",
@@ -567,6 +629,7 @@
             "VOTE_DISTRIBUTION": "Stemverdeling",
             "ORGANIZER_CONTROLS": "Organisator controles",
             "REVEAL_ANSWER": "Controleer antwoord",
+            "LANGUAGE_BADGE": "Taal:",
             "REVEALING": "Controleren...",
             "REVEAL_HINT": "Klik om te onthullen of het team correct heeft geantwoord",
             "NEXT_QUESTION": "Volgende vraag",

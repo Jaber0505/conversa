@@ -114,6 +114,60 @@
   gap: var(--space-4);
 }
 
+.participants-section {
+  .participants-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .participants-message {
+    margin: 0;
+    font-size: 0.9375rem;
+    color: var(--color-text-muted);
+  }
+
+  .participant-card {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    background: var(--surface-0);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .participant-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  .participant-languages {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+  }
+
+  .language-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .language-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+  }
+
+  .language-values {
+    font-size: 0.9375rem;
+    color: var(--color-text);
+  }
+}
+
 .section-title {
   font-size: 1.5rem;
   font-weight: 700;

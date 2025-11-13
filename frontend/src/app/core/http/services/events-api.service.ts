@@ -1,6 +1,13 @@
 import { Injectable, inject } from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import { EventDto, EventWrite, EventUpdate, EventCreatePayload, EventDetailDto } from '@app/core/models/events.model';
+import {
+  EventDto,
+  EventWrite,
+  EventUpdate,
+  EventCreatePayload,
+  EventDetailDto,
+  EventParticipantsResponse
+} from '@app/core/models/events.model';
 import { CheckoutSessionCreated } from './payments-api.service';
 import { Paginated } from '@app/core/models/common.model';
 import { API_URL } from '@core/http';
@@ -29,6 +36,10 @@ export class EventsApiService {
 
   get(id: number) {
     return this.http.get<EventDetailDto>(`${this.base}/events/${id}/`);
+  }
+
+  getParticipants(id: number) {
+    return this.http.get<EventParticipantsResponse>(`${this.base}/events/${id}/participants/`);
   }
 
   create(payload: EventWrite | EventCreatePayload) {

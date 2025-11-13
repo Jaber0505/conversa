@@ -23,6 +23,11 @@ NUM_ORGANIZERS = 30
 NUM_PARTICIPANTS = NUM_USERS - NUM_ORGANIZERS
 TARGET_NUM_EVENTS = 100
 
+# Languages that currently have game content (matching fixtures/games/*_<code>.json)
+# IDs correspond to backend/fixtures/01_languages.json
+SUPPORTED_LANGUAGE_IDS = [1, 2, 4]  # fr, en, nl
+SUPPORTED_LANGUAGE_CODES = {"fr", "en", "nl"}
+
 # Password hash for "password123" (same as existing fixtures)
 PASSWORD_HASH = "pbkdf2_sha256$600000$fixturesalt$3co5kYNgw2jX+vtNl2uThvUopcuX/aIYa24sBV7KXPU="
 
@@ -315,8 +320,8 @@ def generate_events(
                 minute = random.choice([0, 15, 30, 45])
                 event_datetime = event_date.replace(hour=hour, minute=minute)
 
-                # Random language, difficulty, theme
-                language = random.randint(1, 4)
+                # Random language (limited to those having game content), difficulty, theme
+                language = random.choice(SUPPORTED_LANGUAGE_IDS)
                 difficulty = random.choice(["easy", "medium", "hard"])
                 theme = random.choice(EVENT_THEMES)
 
@@ -352,7 +357,6 @@ def generate_events(
                         "game_type": random.choice(
                             ["picture_description", "word_association"]
                         ),
-                        "game_difficulty": difficulty,
                         "game_started": False,
                     },
                 }

@@ -173,6 +173,9 @@
           (click)="selectDay(day)">
           <div class="day-header">
             <span class="day-date">{{ day.formattedDate }}</span>
+          <shared-badge variant="accent" tone="soft" *ngIf="day.isToday">
+            {{ 'events.create.day.today' | t }}
+          </shared-badge>
           <shared-badge variant="accent" tone="soft" *ngIf="day.isTomorrow">
             {{ 'events.create.day.tomorrow' | t }}
           </shared-badge>
@@ -253,13 +256,7 @@
           <div class="summary-row">
             <span class="summary-label">{{ 'events.create.summary_game_type' | t }}:</span>
             <span class="summary-value">
-              {{ 'GAMES.TYPES.' + eventForm.get('gameType')?.value?.toUpperCase() | t }}
-            </span>
-          </div>
-          <div class="summary-row">
-            <span class="summary-label">{{ 'events.create.summary_game_difficulty' | t }}:</span>
-            <span class="summary-value">
-              {{ 'GAMES.DIFFICULTY.' + eventForm.get('gameDifficulty')?.value?.toUpperCase() | t }}
+              {{ 'games.types.' + eventForm.get('gameType')?.value | t }}
             </span>
           </div>
         </div>

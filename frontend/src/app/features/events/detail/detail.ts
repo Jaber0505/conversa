@@ -5,7 +5,7 @@ import { take, finalize } from 'rxjs/operators';
 import { TPipe } from '@core/i18n';
 import { EventsApiService, BookingsApiService, PaymentsApiService, AuthApiService, GamesApiService } from '@core/http';
 import { BlockingSpinnerService } from '@app/core/http/services/spinner-service';
-import { EventDetailDto } from '@core/models';
+import { EventDetailDto, EventParticipantDto, EventParticipantsResponse } from '@core/models';
 import { ConfirmPurchaseComponent } from '@app/shared/components/modals/confirm-purchase/confirm-purchase.component';
 import { HeadlineBarComponent, SHARED_IMPORTS } from '@shared';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -63,6 +63,10 @@ export class EventDetailComponent implements OnInit, OnDestroy {
     'user-book' | 'user-pay' | 'user-cancel' |
     'user-starting-soon' | 'event-full' | 'event-cancelled' | 'event-finished' | null>(null);
 
+  participants = signal<EventParticipantDto[]>([]);
+  participantsLoading = signal(false);
+  participantsError = signal<string | null>(null);
+
   readonly CANCELLATION_DEADLINE_HOURS = 3;
 
   private visibilityChangeHandler: (() => void) | null = null;
@@ -113,6 +117,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
       next: (event: any) => {
         const eventData = event as EventDetailDto;
         this.event.set(eventData);
+        this.loadParticipants(id);
         this.updateIsOrganizer(eventData);
         this.updateActionButtonState();
       },
@@ -126,6 +131,31 @@ export class EventDetailComponent implements OnInit, OnDestroy {
         }
         // 404 => not found, sinon erreur générique
         this.error.set(status === 404 ? 'events.detail.not_found' : 'events.detail.error');
+      }
+    });
+  }
+
+  private loadParticipants(eventId: number): void {
+    if (!eventId) return;
+    this.participantsLoading.set(true);
+    this.participantsError.set(null);
+    this.participants.set([]);
+    this.eventsApi.getParticipants(eventId).pipe(
+      take(1),
+      finalize(() => this.participantsLoading.set(false))
+    ).subscribe({
+      next: (response: EventParticipantsResponse) => {
+        this.participants.set(response?.participants ?? []);
+      },
+      error: (err) => {
+        console.error('Error loading participants:', err);
+        const status = err?.status ?? err?.statusCode;
+        if (status === 403) {
+          this.participantsError.set('events.detail.participants_forbidden');
+        } else {
+          this.participantsError.set('events.detail.participants_error');
+        }
+        this.participants.set([]);
       }
     });
   }
@@ -245,6 +275,14 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   formatTime(dateStr: string): string {
     const date = new Date(dateStr);
     return new Intl.DateTimeFormat('fr-FR', { hour: '2-digit', minute: '2-digit' }).format(date);
+  }
+
+  formatLanguages(codes?: string[] | null): string {
+    if (!codes?.length) return '';
+    return codes
+      .filter((code) => !!code)
+      .map((code) => code!.toUpperCase())
+      .join(', ');
   }
 
   getGoogleMapsUrl(address: string): string {

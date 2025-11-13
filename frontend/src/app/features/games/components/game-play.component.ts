@@ -29,6 +29,9 @@ import { switchMap, takeWhile, take } from 'rxjs/operators';
             <div class="game-meta">
               <span class="game-type">{{ 'GAMES.TYPES.' + game()!.game_type.toUpperCase() | t }}</span>
               <span class="difficulty">{{ 'GAMES.DIFFICULTY.' + game()!.difficulty.toUpperCase() | t }}</span>
+              <span class="language-badge">
+                {{ 'GAMES.PLAY.LANGUAGE_BADGE' | t }} {{ (game()!.language_code || '').toUpperCase() }}
+              </span>
             </div>
           </div>
 
@@ -253,7 +256,7 @@ import { switchMap, takeWhile, take } from 'rxjs/operators';
       gap: 12px;
     }
 
-    .game-type, .difficulty {
+    .game-type, .difficulty, .language-badge {
       padding: 4px 12px;
       border-radius: 12px;
       font-size: 12px;
@@ -269,6 +272,11 @@ import { switchMap, takeWhile, take } from 'rxjs/operators';
     .difficulty {
       background-color: #f3e5f5;
       color: #7b1fa2;
+    }
+
+    .language-badge {
+      background-color: #fff3e0;
+      color: #f57c00;
     }
 
     .question-section {

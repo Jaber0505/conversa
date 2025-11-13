@@ -92,3 +92,15 @@ export type EventCreatePayload = {
 };
 
 export type EventUpdate = Partial<EventWrite>;
+
+export type EventParticipantDto = {
+  id: number;
+  first_name: string;
+  last_name: string;
+  native_languages: string[];
+  target_languages: string[];
+};
+
+export type EventParticipantsResponse = {
+  participants: EventParticipantDto[];
+};

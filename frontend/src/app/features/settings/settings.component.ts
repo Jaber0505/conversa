@@ -22,5 +22,5 @@ export class SettingsComponent {
   readonly price = 1234.5;
 
   get currentLang(): Lang { return this.lang.current; }
-  set(code: Lang) { this.lang.set(code); }
+  set(code: Lang) { this.lang.set(code, { reload: true }); }
 }

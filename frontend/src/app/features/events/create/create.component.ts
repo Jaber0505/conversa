@@ -107,7 +107,6 @@ export class CreateEventComponent implements OnInit {
   private partnerPendingPage: number | null = null;
   private partnersAutoPrefetchNext = false;
   private partnersLoadedIds = new Set<number>();
-
   constructor() {
     if (typeof window !== 'undefined') {
       this.detectScreenSize();
@@ -116,12 +115,12 @@ export class CreateEventComponent implements OnInit {
         .subscribe(() => this.detectScreenSize());
     }
 
-    // Subscribe to language changes to update translations
-    this.langService.lang$
+    // Rafraîchit les labels uniquement lorsque la nouvelle langue est prête côté i18n
+    this.i18n.changed$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.updateTranslatedOptions();
-        this.generateAvailableDays(); // Regenerate days with new language
+        this.generateAvailableDays(); // reformate les dates selon la locale courante
       });
   }
 
@@ -132,6 +131,8 @@ export class CreateEventComponent implements OnInit {
     this.updateTranslatedOptions();
     this.generateAvailableDays();
     this.generateTimeSlots();
+    this.restoreFormState();
+    this.setupFormAutoSave();
   }
 
   private updateTranslatedOptions(): void {
@@ -192,8 +193,11 @@ export class CreateEventComponent implements OnInit {
   private loadLanguages(): void {
     this.languagesApi.list().pipe(take(1)).subscribe({
       next: (response) => {
-        this.languages.set(response.results);
-        this.languageOptions.set(this.buildLanguageOptions(response.results));
+        const supported = response.results.filter(lang =>
+          SUPPORTED_GAME_LANGUAGE_CODES.has(lang.code)
+        );
+        this.languages.set(supported);
+        this.languageOptions.set(this.buildLanguageOptions(supported));
       },
       error: (err) => {
         console.error('Error loading languages:', err);
@@ -202,10 +206,12 @@ export class CreateEventComponent implements OnInit {
   }
 
   private buildLanguageOptions(list: Language[]): { value: string; label: string }[] {
-    return list.map(lang => ({
-      value: lang.id.toString(),
-      label: this.getLanguageLabel(lang)
-    }));
+    return list
+      .filter(lang => SUPPORTED_GAME_LANGUAGE_CODES.has(lang.code))
+      .map(lang => ({
+        value: lang.id.toString(),
+        label: this.getLanguageLabel(lang)
+      }));
   }
 
   private loadPartners(reset = false): void {
@@ -395,18 +401,21 @@ export class CreateEventComponent implements OnInit {
   nextStep(): void {
     if (this.canGoNext() && this.currentStep() < this.totalSteps) {
       this.currentStep.update(s => s + 1);
+      this.saveFormState();
     }
   }
 
   prevStep(): void {
     if (this.currentStep() > 1) {
       this.currentStep.update(s => s - 1);
+      this.saveFormState();
     }
   }
 
   goToStep(step: number): void {
     if (step <= this.currentStep() || this.canGoNext()) {
       this.currentStep.set(step);
+      this.saveFormState();
     }
   }
 
@@ -457,6 +466,11 @@ export class CreateEventComponent implements OnInit {
         console.log('Event created in DRAFT:', response);
         this.createdEventId.set(response.id);
         this.createdEventPrice.set(response.price_cents || 700);
+
+        // Clear saved state after successful creation
+        if (typeof window !== 'undefined') {
+          sessionStorage.removeItem('eventCreateFormState');
+        }
 
         // Afficher le modal de choix de paiement
         this.showPaymentModal.set(true);
@@ -510,7 +524,77 @@ export class CreateEventComponent implements OnInit {
   }
 
   goBack(): void {
+    // Clear saved state when going back
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem('eventCreateFormState');
+    }
     this.router.navigate(['/', this.getLang(), 'events']);
+  }
+
+  // Form state persistence
+  private setupFormAutoSave(): void {
+    if (typeof window === 'undefined') return;
+
+    // Save form state on every change
+    this.eventForm.valueChanges
+      .pipe(debounceTime(500), takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.saveFormState();
+      });
+  }
+
+  private saveFormState(): void {
+    if (typeof window === 'undefined') return;
+
+    const state = {
+      currentStep: this.currentStep(),
+      formValue: this.eventForm.value,
+      selectedPartner: this.selectedPartner(),
+      selectedDay: this.selectedDay(),
+      selectedTimeSlot: this.selectedTimeSlot()
+    };
+
+    sessionStorage.setItem('eventCreateFormState', JSON.stringify(state));
+  }
+
+  private restoreFormState(): void {
+    if (typeof window === 'undefined') return;
+
+    const savedState = sessionStorage.getItem('eventCreateFormState');
+    if (!savedState) return;
+
+    try {
+      const state = JSON.parse(savedState);
+
+      // Restore form values
+      if (state.formValue) {
+        this.eventForm.patchValue(state.formValue, { emitEvent: false });
+      }
+
+      // Restore selected partner
+      if (state.selectedPartner) {
+        this.selectedPartner.set(state.selectedPartner);
+      }
+
+      // Restore selected day and time
+      if (state.selectedDay) {
+        const day = this.availableDays().find(d => d.dateString === state.selectedDay.dateString);
+        if (day) {
+          this.selectedDay.set(day);
+        }
+      }
+      if (state.selectedTimeSlot) {
+        this.selectedTimeSlot.set(state.selectedTimeSlot);
+      }
+
+      // Restore current step
+      if (state.currentStep) {
+        this.currentStep.set(state.currentStep);
+      }
+    } catch (error) {
+      console.error('Failed to restore form state:', error);
+      sessionStorage.removeItem('eventCreateFormState');
+    }
   }
 
   // Getters pour le template
@@ -561,13 +645,14 @@ export class CreateEventComponent implements OnInit {
   // ============================================================================
 
   /**
-   * Génère les 7 jours disponibles (J+1 à J+7)
+   * Génère les 8 jours disponibles (J+0 à J+7)
+   * J+0 = aujourd'hui (si des créneaux sont disponibles avec préavis de 3h)
    */
   private generateAvailableDays(): void {
     const days: DaySlot[] = [];
     const now = new Date();
 
-    for (let i = 1; i <= 7; i++) {
+    for (let i = 0; i <= 7; i++) {
       const date = new Date(now);
       date.setDate(now.getDate() + i);
       date.setHours(0, 0, 0, 0);
@@ -575,6 +660,7 @@ export class CreateEventComponent implements OnInit {
       days.push({
         date: date,
         formattedDate: this.formatDayDate(date),
+        isToday: i === 0,
         isTomorrow: i === 1,
         dateString: this.formatDateForBackend(date)
       });
@@ -605,10 +691,7 @@ export class CreateEventComponent implements OnInit {
       day: 'numeric',
       month: 'long'
     };
-    // Use current language from LangService
-    const currentLang = this.langService.current;
-    const locale = currentLang === 'fr' ? 'fr-FR' : currentLang === 'nl' ? 'nl-NL' : 'en-GB';
-    const formatted = date.toLocaleDateString(locale, options);
+    const formatted = date.toLocaleDateString(this.getCurrentLocale(), options);
     // Capitaliser le premier caractère
     return formatted.charAt(0).toUpperCase() + formatted.slice(1);
   }
@@ -672,6 +755,18 @@ export class CreateEventComponent implements OnInit {
     return this.selectedDay()?.dateString === day.dateString &&
            this.selectedTimeSlot() === timeSlot;
   }
+
+  private getCurrentLocale(): string {
+    const lang = this.langService.current;
+    switch (lang) {
+      case 'en':
+        return 'en-GB';
+      case 'nl':
+        return 'nl-BE';
+      default:
+        return 'fr-BE';
+    }
+  }
 }
 
 // ============================================================================
@@ -681,6 +776,7 @@ export class CreateEventComponent implements OnInit {
 interface DaySlot {
   date: Date;
   formattedDate: string;
+  isToday: boolean;
   isTomorrow: boolean;
   dateString: string; // Format YYYY-MM-DD
 }
@@ -688,3 +784,4 @@ interface DaySlot {
 
 
 
+const SUPPORTED_GAME_LANGUAGE_CODES = new Set<string>(['fr', 'en', 'nl']);

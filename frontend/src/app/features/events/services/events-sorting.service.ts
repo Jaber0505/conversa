@@ -17,10 +17,7 @@ export interface ScoredEvent {
 }
 
 export type PriorityBadge =
-  | 'bidirectional'
-  | 'target_language'
-  | 'support'
-  | 'almost_full'
+  | 'recommended'
   | 'full'
   | 'cancelled';
 
@@ -35,14 +32,45 @@ export type PriorityBadge =
 export class EventsSortingService {
   /**
    * Trie les événements selon les critères de l'utilisateur
+   * Limite les événements recommandés à un maximum de 5
    */
   sortEvents(events: EventDto[], criteria: SortingCriteria): ScoredEvent[] {
     const scored = events.map(event => this.scoreEvent(event, criteria));
-    return scored.sort((a, b) => b.score - a.score);
+    const sorted = scored.sort((a, b) => b.score - a.score);
+
+    // Limiter les recommandations à 5 événements maximum
+    let recommendedCount = 0;
+    const maxRecommendations = 5;
+
+    return sorted.map(scoredEvent => {
+      // Si l'événement était recommandé mais qu'on a atteint la limite
+      if (scoredEvent.isRecommended &&
+          scoredEvent.badgeReason === 'recommended' &&
+          recommendedCount >= maxRecommendations) {
+        // Retirer le statut recommandé et le badge
+        return {
+          ...scoredEvent,
+          isRecommended: false,
+          badgeReason: null
+        };
+      }
+
+      // Compter les événements recommandés
+      if (scoredEvent.isRecommended && scoredEvent.badgeReason === 'recommended') {
+        recommendedCount++;
+      }
+
+      return scoredEvent;
+    });
   }
 
   /**
    * Calcule le score d'un événement basé sur les critères utilisateur
+   *
+   * Nouveau système de recommandation simplifié :
+   * - +++ (300 pts) : Bidirectionnel - l'utilisateur parle la langue de l'événement ET les participants parlent la langue cible de l'utilisateur
+   * - ++ (200 pts) : L'utilisateur parle la langue de l'événement (peut participer activement)
+   * - + (100 pts) : L'utilisateur peut apporter une aide à l'événement
    */
   private scoreEvent(event: EventDto, criteria: SortingCriteria): ScoredEvent {
     let score = 0;
@@ -54,39 +82,51 @@ export class EventsSortingService {
     const userNative = (criteria.userNativeLangs ?? []).map((l) => l.toLowerCase());
     const userTargets = (criteria.userTargetLangs ?? []).map((l) => l.toLowerCase());
     const eventLang = (event.language_code || '').toLowerCase();
+
+    // L'utilisateur parle la langue de l'événement
     const userSpeaksEventLang = userNative.includes(eventLang);
+
+    // L'utilisateur apprend la langue de l'événement
     const userLearningEventLang = userTargets.includes(eventLang);
+
+    // Bidirectionnel : l'utilisateur parle la langue de l'événement ET apprend cette langue aussi
+    // (implique un échange mutuel possible)
+    const bidirectional = userSpeaksEventLang && userLearningEventLang;
+
+    // L'utilisateur peut apporter une aide (parle la langue de l'événement et peut aider avec d'autres langues)
     const canSupport =
       userSpeaksEventLang &&
       ((userNative.filter((l) => l !== eventLang).length > 0) ||
         userTargets.filter((l) => l !== eventLang).length > 0);
-    const bidirectional = userSpeaksEventLang && userLearningEventLang;
+
+    // === SCORING PRINCIPAL (langue uniquement) ===
+
+    if (bidirectional) {
+      // +++ : Échange bidirectionnel possible
+      score += 300;
+      isRecommended = true;
+      badge = 'recommended';
+      reasons.push('events.sort_reason.bidirectional');
+    } else if (userSpeaksEventLang) {
+      // ++ : Peut participer activement à l'événement
+      score += 200;
+      isRecommended = true;
+      badge = 'recommended';
+      reasons.push('events.sort_reason.native_language');
+    } else if (canSupport) {
+      // + : Peut apporter une aide à l'événement
+      score += 100;
+      isRecommended = true;
+      badge = 'recommended';
+      reasons.push('events.sort_reason.support');
+    }
+
+    // === BONUS DE TRI (ne changent pas le statut "recommandé") ===
 
     if (criteria.userCity && this.isNearby(event, criteria.userCity)) {
       score += 40;
       isNearby = true;
       reasons.push('events.sort_reason.nearby');
-    }
-
-    if (bidirectional) {
-      score += 200;
-      isRecommended = true;
-      badge = 'bidirectional';
-      reasons.push('events.sort_reason.bidirectional');
-    } else if (userLearningEventLang) {
-      score += 130;
-      isRecommended = true;
-      if (!badge) badge = 'target_language';
-      reasons.push('events.sort_reason.target_language');
-    } else if (userSpeaksEventLang) {
-      score += 90;
-      reasons.push('events.sort_reason.native_language');
-    }
-
-    if (canSupport) {
-      score += 60;
-      if (!badge) badge = 'support';
-      reasons.push('events.sort_reason.support');
     }
 
     if (event.price_cents === 0) {
@@ -102,10 +142,11 @@ export class EventsSortingService {
     const occupancy = this.getOccupancyRatio(event);
     const isAlmostFull = occupancy >= 0.8 && occupancy < 1 && !event.is_full;
     if (isAlmostFull) {
-      score += 70;
-      if (!badge) badge = 'almost_full';
+      score += 5;
       reasons.push('events.sort_reason.almost_full');
     }
+
+    // === PÉNALITÉS (garde la même logique) ===
 
     if (event.alreadyBooked) {
       score -= 300;
@@ -115,13 +156,16 @@ export class EventsSortingService {
     if (event.is_full) {
       score -= 1200;
       badge = 'full';
+      isRecommended = false;
     }
     if (event.is_cancelled) {
       score -= 1300;
       badge = 'cancelled';
+      isRecommended = false;
     }
     if (this.isPast(event)) {
       score -= 1500;
+      isRecommended = false;
     }
 
     return {

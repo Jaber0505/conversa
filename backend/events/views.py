@@ -405,6 +405,77 @@ class EventViewSet(viewsets.ModelViewSet):
 
     @extend_schema(
         tags=["Events"],
+        summary="Get event participants",
+        description=(
+            "Get list of confirmed participants for an event with their language information.\n\n"
+            "**Access:**\n"
+            "- Anyone can view participants of PUBLISHED events\n"
+            "- Organizers can view participants of their own events (any status)"
+        ),
+        responses={
+            200: OpenApiResponse(
+                description="List of participants with their languages",
+                response={
+                    "type": "object",
+                    "properties": {
+                        "participants": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {"type": "integer"},
+                                    "first_name": {"type": "string"},
+                                    "last_name": {"type": "string"},
+                                    "native_languages": {
+                                        "type": "array",
+                                        "items": {"type": "string"}
+                                    },
+                                    "target_languages": {
+                                        "type": "array",
+                                        "items": {"type": "string"}
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ),
+            403: OpenApiResponse(description="Permission denied"),
+            404: OpenApiResponse(description="Event not found"),
+        },
+    )
+    @action(detail=True, methods=["GET"], url_path="participants", url_name="participants")
+    def participants(self, request, pk=None):
+        """Get confirmed participants for an event with their language information."""
+        from bookings.models import Booking, BookingStatus
+
+        event = self.get_object()
+
+        # Get all confirmed bookings for this event
+        confirmed_bookings = Booking.objects.filter(
+            event=event,
+            status=BookingStatus.CONFIRMED
+        ).select_related('user').prefetch_related(
+            'user__native_langs',
+            'user__target_langs'
+        )
+
+        # Build participants list with language information
+        participants = []
+        for booking in confirmed_bookings:
+            user = booking.user
+            participants.append({
+                "id": user.id,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "native_languages": [lang.code for lang in user.native_langs.all()],
+                "target_languages": [lang.code for lang in user.target_langs.all()],
+            })
+
+        return Response({"participants": participants}, status=status.HTTP_200_OK)
+
+    @extend_schema(
+        tags=["Events"],
         summary="Pay and publish event (organizer only)",
         description=(
             "Organizer pays to publish event - creates booking and Stripe checkout session.\n\n"

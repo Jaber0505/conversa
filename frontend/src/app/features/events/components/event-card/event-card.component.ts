@@ -107,14 +107,8 @@ export class EventCardComponent {
 
   get priorityBadgeLabel(): string | null {
     switch (this.priorityBadge) {
-      case 'bidirectional':
-        return 'events.badges.match_bidirectional';
-      case 'target_language':
-        return 'events.badges.target_language';
-      case 'support':
-        return 'events.badges.support';
-      case 'almost_full':
-        return 'events.badges.almost_full';
+      case 'recommended':
+        return 'events.badges.recommended';
       case 'full':
         return 'events.badges.full';
       case 'cancelled':
@@ -126,14 +120,8 @@ export class EventCardComponent {
 
   get priorityBadgeVariant(): 'accent' | 'primary' | 'success' | 'muted' | 'danger' | 'secondary' | 'tertiary' {
     switch (this.priorityBadge) {
-      case 'bidirectional':
+      case 'recommended':
         return 'accent';
-      case 'target_language':
-        return 'primary';
-      case 'support':
-        return 'success';
-      case 'almost_full':
-        return 'secondary';
       case 'full':
       case 'cancelled':
         return 'danger';

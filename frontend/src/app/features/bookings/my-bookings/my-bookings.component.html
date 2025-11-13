@@ -86,7 +86,7 @@
             variant="outline"
             size="sm"
             type="button"
-            (click)="openDetail(b)">
+            (click)="viewEventDetails(b.eventObject.id)">
             {{ 'common.details' | t }}
           </shared-button>
 
@@ -210,7 +210,7 @@
             variant="outline"
             size="sm"
             type="button"
-            (click)="openDetail(b)">
+            (click)="viewEventDetails(b.eventObject.id)">
             {{ 'common.details' | t }}
           </shared-button>
 
@@ -319,7 +319,7 @@
             variant="outline"
             size="sm"
             type="button"
-            (click)="openDetail(b)">
+            (click)="viewEventDetails(b.eventObject.id)">
             {{ 'common.details' | t }}
           </shared-button>
         </div>

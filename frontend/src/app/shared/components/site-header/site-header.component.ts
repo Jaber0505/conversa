@@ -81,6 +81,9 @@ export class SiteHeaderComponent implements OnInit {
       queryParams: tree.queryParams,
       fragment: tree.fragment ?? undefined,
       replaceUrl: true,
+    }).then(() => {
+      // Refresh the page to reload all translations and data
+      window.location.reload();
     });
 
     this._showLang = false;

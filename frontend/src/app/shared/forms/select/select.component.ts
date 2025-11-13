@@ -1,8 +1,10 @@
-import {
+﻿import {
   Component, Input, Output, EventEmitter, ChangeDetectionStrategy,
   HostListener, ElementRef, inject, signal, computed
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { I18nService, LangService } from '@core/i18n';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 export type SelectOption = { value: string; label: string };
 
@@ -16,9 +18,32 @@ export type SelectOption = { value: string; label: string };
 })
 export class SelectComponent {
   private host = inject(ElementRef<HTMLElement>);
+  private readonly i18n = inject(I18nService);
+  private readonly lang = inject(LangService);
+  private readonly currentLang = toSignal(this.lang.lang$, { initialValue: this.lang.current });
+
+  readonly defaultPlaceholder = computed(() => {
+    this.currentLang();
+    return this.i18n.t('common.select.placeholder');
+  });
+
+  readonly searchPlaceholder = computed(() => {
+    this.currentLang();
+    return this.i18n.t('common.select.search_placeholder');
+  });
+
+  readonly clearLabel = computed(() => {
+    this.currentLang();
+    return this.i18n.t('common.select.clear');
+  });
+
+  readonly noResultsLabel = computed(() => {
+    this.currentLang();
+    return this.i18n.t('common.select.no_results');
+  });
 
   @Input() id?: string;
-  @Input() placeholder = 'Sélectionner…';
+  @Input() placeholder = '';
   @Input() options: SelectOption[] = [];
   @Input() disabled = false;
   @Input() searchable = true;
@@ -86,3 +111,5 @@ export class SelectComponent {
   @HostListener('document:keydown.escape')
   onEsc() { if (this.isOpen) this.close(); }
 }
+
+

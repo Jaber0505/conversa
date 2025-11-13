@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { TPipe } from '@core/i18n';
 import {Booking, EventDto} from '@core/models';
-import {BookingsApiService, EventsApiService, PaymentsApiService} from '@core/http';
+import {BookingsApiService, EventsApiService, PaymentsApiService, GamesApiService} from '@core/http';
 import { CurrencyFormatterService, DateFormatterService } from '@app/core/services';
 
 import {
@@ -39,6 +39,7 @@ export class MyBookingsComponent {
   private readonly bookingsApi = inject(BookingsApiService);
   private readonly eventsApiService = inject(EventsApiService);
   private readonly paymentsApi = inject(PaymentsApiService);
+  private readonly gamesApi = inject(GamesApiService);
   private readonly loader = inject(BlockingSpinnerService);
   private readonly currencyFormatter = inject(CurrencyFormatterService);
   private readonly dateFormatter = inject(DateFormatterService);
@@ -371,9 +372,39 @@ export class MyBookingsComponent {
   }
 
   /**
-   * Rejoindre l'événement en cours
+   * Lancer/rejoindre le jeu de l'événement en cours
    */
   joinEvent(eventId: number) {
+    const booking = this.currentBookings().find(b => b.eventObject.id === eventId);
+    if (!booking || !booking.eventObject.game_type) {
+      // Pas de jeu configuré, rediriger vers les détails de l'événement
+      this.router.navigate(['/', this.lang, 'events', eventId]);
+      return;
+    }
+
+    this.loader.show('Vérification du jeu...');
+
+    // Vérifier s'il existe un jeu actif
+    this.gamesApi.getActiveGame(eventId).pipe(
+      take(1),
+      finalize(() => this.loader.hide())
+    ).subscribe({
+      next: (activeGame) => {
+        // Un jeu actif existe, le rejoindre
+        this.router.navigate(['/', this.lang, 'games', activeGame.id]);
+      },
+      error: (err) => {
+        console.error('Error getting active game:', err);
+        // Pas de jeu actif ou erreur, rediriger vers les détails de l'événement
+        this.router.navigate(['/', this.lang, 'events', eventId]);
+      }
+    });
+  }
+
+  /**
+   * Voir les détails de l'événement
+   */
+  viewEventDetails(eventId: number) {
     this.router.navigate(['/', this.lang, 'events', eventId]);
   }
 }

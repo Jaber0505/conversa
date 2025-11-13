@@ -1,8 +1,10 @@
-import { Component, output, signal, effect, input } from '@angular/core';
+﻿import { Component, output, signal, effect, input, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TPipe } from '@core/i18n';
 import { ButtonComponent, InputComponent, SelectComponent, MultiSelectComponent, FormFieldComponent } from '@shared';
+import { I18nService, LangService } from '@core/i18n';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 export interface EventFilters {
   searchQuery: string;
@@ -41,6 +43,9 @@ export class EventFiltersComponent {
   filtersChanged = output<EventFilters>();
 
   showAdvancedFilters = signal(false);
+  private readonly i18n = inject(I18nService);
+  private readonly lang = inject(LangService);
+  private readonly langSignal = toSignal(this.lang.lang$, { initialValue: this.lang.current });
 
   // Filtres
   searchQuery = signal('');
@@ -51,26 +56,35 @@ export class EventFiltersComponent {
   priceType = signal<'all' | 'free' | 'paid'>('all');
   availability = signal<'all' | 'available' | 'almost_full'>('all');
 
-  difficultyOptions = signal([
-    { value: 'beginner', label: 'Débutant' },
-    { value: 'intermediate', label: 'Intermédiaire' },
-    { value: 'advanced', label: 'Avancé' }
-  ]);
+  difficultyOptions = computed(() => {
+    this.langSignal();
+    return [
+      { value: 'beginner', label: this.i18n.t('events.filters.difficulty.beginner') },
+      { value: 'intermediate', label: this.i18n.t('events.filters.difficulty.intermediate') },
+      { value: 'advanced', label: this.i18n.t('events.filters.difficulty.advanced') }
+    ];
+  });
 
-  priceOptions = signal([
-    { value: 'all', label: 'Tous les prix' },
-    { value: 'free', label: 'Gratuit' },
-    { value: 'paid', label: 'Payant' }
-  ]);
+  priceOptions = computed(() => {
+    this.langSignal();
+    return [
+      { value: 'all', label: this.i18n.t('events.filters.price.all') },
+      { value: 'free', label: this.i18n.t('events.filters.price.free') },
+      { value: 'paid', label: this.i18n.t('events.filters.price.paid') }
+    ];
+  });
 
-  availabilityOptions = signal([
-    { value: 'all', label: 'Tous' },
-    { value: 'available', label: 'Places disponibles' },
-    { value: 'almost_full', label: 'Presque complet' }
-  ]);
+  availabilityOptions = computed(() => {
+    this.langSignal();
+    return [
+      { value: 'all', label: this.i18n.t('events.filters.availability.all') },
+      { value: 'available', label: this.i18n.t('events.filters.availability.available') },
+      { value: 'almost_full', label: this.i18n.t('events.filters.availability.almost_full') }
+    ];
+  });
 
   constructor() {
-    // Émettre les filtres à chaque changement
+    // Ã‰mettre les filtres Ã  chaque changement
     effect(() => {
       this.emitFilters();
     });
@@ -144,3 +158,4 @@ export class EventFiltersComponent {
     });
   }
 }
+

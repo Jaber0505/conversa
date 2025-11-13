@@ -20,6 +20,13 @@
         "searchInput": "Rechercher",
         "LanguageSearch": "Langues cibles",
         "loading": "Chargement...",
+        "select": {
+            "placeholder": "Sélectionner...",
+            "search_placeholder": "Rechercher...",
+            "no_results": "Aucun résultat",
+            "clear": "Effacer",
+            "remove": "Retirer"
+        },
         "nav": {
             "menu": "Navigation principale"
         }
@@ -551,10 +558,7 @@
             "publication_request_failed": "Impossible de demander la publication"
         },
         "badges": {
-            "match_bidirectional": "Langues compatibles",
-            "target_language": "Ma langue cible",
-            "support": "Je peux aider",
-            "almost_full": "Quasi complet",
+            "recommended": "Recommandé",
             "full": "Complet",
             "cancelled": "Annulé"
         },
@@ -609,9 +613,14 @@
             "subtitle": "Les événements sont triés selon vos préférences"
         },
         "my_events": "Mes événements",
+        "show_my_events": "Afficher mes événements",
+        "hide_my_events": "Masquer mes événements",
         "all_events": "Tous les événements",
         "add_event": "Ajouter un événement",
         "draft": "Brouillon",
+        "empty": "Aucun événement trouvé",
+        "empty_subtitle": "Essayez d'ajuster vos filtres ou revenez plus tard",
+        "results_count": "{{count}} événement{{count > 1 ? 's' : ''}} trouvé{{count > 1 ? 's' : ''}}",
         "organizer": "Organisateur",
         "reserved": "Réservé",
         "pay_to_publish": "Payer pour publier",
@@ -702,6 +711,11 @@
             "participant": "participant",
             "participants_plural": "participants",
             "no_participants_yet": "Aucun participant inscrit pour le moment",
+            "participants_loading": "Chargement des participants...",
+            "participants_error": "Impossible de charger les participants pour le moment.",
+            "participants_forbidden": "Seuls l'organisateur ou les événements publiés peuvent afficher les participants.",
+            "native_languages": "Langues parlées",
+            "target_languages": "Langues apprises",
             "price_per_person": "Prix par personne",
             "organized_by": "Organisé par",
             "spots_remaining": "{{count}} places restantes",
@@ -737,6 +751,90 @@
         "title": "Confirmer l'achat",
         "message": "Voulez-vous confirmer votre achat ?",
         "buy": "Payer"
+    },
+    "GAMES": {
+        "LOADING": "Chargement du jeu...",
+        "BACK": "Retour",
+        "NO_GAME": {
+            "ORGANIZER_TITLE": "Aucun jeu actif",
+            "ORGANIZER_MESSAGE": "Lancez un jeu collaboratif pour dynamiser votre événement et engager les participants",
+            "CREATE_GAME": "Créer un jeu",
+            "PARTICIPANT_TITLE": "Aucun jeu en cours",
+            "PARTICIPANT_MESSAGE": "L'organisateur peut lancer un jeu pour animer la session"
+        },
+        "CREATE": {
+            "TITLE": "Créer un nouveau jeu",
+            "LOADING": "Chargement...",
+            "ERROR": "Erreur",
+            "TYPE": "Type de jeu",
+            "SELECT_TYPE": "Choisir un type",
+            "DIFFICULTY": "Difficulté",
+            "SELECT_DIFFICULTY": "Choisir une difficulté",
+            "TIMEOUT": "Durée maximale",
+            "MINUTES": "minutes",
+            "START_GAME": "Démarrer le jeu"
+        },
+        "TYPES": {
+            "PICTURE_DESCRIPTION": "Description d'image",
+            "WORD_ASSOCIATION": "Association de mots",
+            "DEBATE": "Débat",
+            "ROLE_PLAY": "Jeu de rôle"
+        },
+        "DIFFICULTY": {
+            "EASY": "Facile",
+            "MEDIUM": "Intermédiaire",
+            "HARD": "Difficile"
+        },
+        "STATUS": {
+            "ACTIVE": "Actif",
+            "SHOWING_RESULTS": "Affichage des résultats",
+            "COMPLETED": "Terminé"
+        },
+        "PLAY": {
+            "TITLE": "Jeu en cours",
+            "LOADING": "Chargement du jeu...",
+            "ERROR": "Erreur",
+            "IMAGE_ALT": "Illustration du jeu",
+            "QUESTION": "Question",
+            "SELECT_ANSWER": "Choisissez votre réponse",
+            "YOUR_ANSWER": "Votre réponse",
+            "ANSWER_PLACEHOLDER": "Écrivez votre réponse...",
+            "SUBMIT_VOTE": "Envoyer",
+            "SUBMITTING": "Envoi...",
+            "VOTE_SUBMITTED": "Vote enregistré !",
+            "YOUR_VOTE": "Votre réponse",
+            "STATS_TITLE": "Statistiques",
+            "TOTAL_VOTES": "Votes",
+            "VOTES_REMAINING": "Votes restants",
+            "VOTE_DISTRIBUTION": "Répartition des votes",
+            "ORGANIZER_CONTROLS": "Contrôles organisateur",
+            "REVEAL_ANSWER": "Vérifier la réponse",
+            "LANGUAGE_BADGE": "Langue :",
+            "REVEALING": "Vérification...",
+            "REVEAL_HINT": "Cliquez pour révéler si l'équipe a répondu correctement",
+            "NEXT_QUESTION": "Question suivante",
+            "MOVING_NEXT": "Chargement...",
+            "NEXT_HINT": "Passez à la question suivante ou terminez la partie",
+            "CORRECT": "Bonne réponse !",
+            "INCORRECT": "Mauvaise réponse",
+            "TEAM_ANSWER": "Réponse de l'équipe",
+            "CORRECT_ANSWER": "Bonne réponse",
+            "EXPLANATION": "Explication",
+            "NO_VOTES": "Aucun vote",
+            "WAITING_ORGANIZER": "En attente que l'organisateur passe à la question suivante..."
+        },
+        "DETAILED_RESULTS": {
+            "TITLE": "Résultats détaillés",
+            "LOADING": "Chargement des résultats...",
+            "ERROR": "Erreur",
+            "IMAGE_ALT": "Image de la question",
+            "CORRECT": "Bonne réponse !",
+            "INCORRECT": "Mauvaise réponse",
+            "TEAM_ANSWER": "Réponse de l'équipe",
+            "CORRECT_ANSWER": "Bonne réponse",
+            "NO_ANSWER": "Pas de réponse",
+            "EXPLANATION": "Explication"
+        }
     },
     "games": {
         "types": {

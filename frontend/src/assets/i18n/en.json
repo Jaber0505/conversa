@@ -20,6 +20,13 @@
         "searchInput": "Search",
         "LanguageSearch": "Target languages",
         "loading": "Loading...",
+        "select": {
+            "placeholder": "Select...",
+            "search_placeholder": "Search...",
+            "no_results": "No results found",
+            "clear": "Clear",
+            "remove": "Remove"
+        },
         "nav": {
             "menu": "Main navigation"
         }
@@ -119,10 +126,7 @@
             "tip_keywords": "Tip: \"coffee\", \"beginner\", \"afterwork\"â€¦ try some keywords."
         },
         "badges": {
-            "match_bidirectional": "Language match",
-            "target_language": "My target language",
-            "support": "I can help",
-            "almost_full": "Almost full",
+            "recommended": "Recommended",
             "full": "Full",
             "cancelled": "Cancelled"
         },
@@ -538,15 +542,48 @@
         "book": "Book",
         "already_booked": "Already booked",
         "my_events": "My events",
+        "show_my_events": "Show my events",
+        "hide_my_events": "Hide my events",
         "all_events": "All events",
         "add_event": "Add event",
         "draft": "Draft",
+        "empty": "No events found",
+        "empty_subtitle": "Try adjusting your filters or come back later",
+        "results_count": "{{count}} event{{count > 1 ? 's' : ''}} found",
         "organizer": "Organizer",
         "reserved": "Reserved",
         "pay_to_publish": "Pay to publish",
         "filters": {
             "languages_placeholder": "Target languages",
-            "reset": "Reset"
+            "search_placeholder": "Search by title, theme, address...",
+            "all_languages": "All languages",
+            "reset": "Reset",
+            "show_filters": "Show filters",
+            "hide_filters": "Hide filters",
+            "active_filters": "Active filters",
+            "languages": "Languages",
+            "select_languages": "Select languages",
+            "difficulty_label": "Difficulty",
+            "all_difficulties": "All difficulties",
+            "date_from": "From date",
+            "date_to": "To date",
+            "price_label": "Price",
+            "availability_label": "Availability",
+            "difficulty": {
+                "beginner": "Beginner",
+                "intermediate": "Intermediate",
+                "advanced": "Advanced"
+            },
+            "price": {
+                "all": "All prices",
+                "free": "Free",
+                "paid": "Paid"
+            },
+            "availability": {
+                "all": "All",
+                "available": "Available spots",
+                "almost_full": "Almost full"
+            }
         },
         "nearby": "Nearby",
         "near_city": "Based on your city: {{city}}",
@@ -628,6 +665,15 @@
             "back_to_events": "Back to events",
             "about": "About this event",
             "location": "Location",
+            "participants": "Participants",
+            "participant": "participant",
+            "participants_plural": "participants",
+            "no_participants_yet": "No one has registered yet",
+            "participants_loading": "Loading participants...",
+            "participants_error": "Unable to load participants right now.",
+            "participants_forbidden": "Only organizers or published events can show participants.",
+            "native_languages": "Native languages",
+            "target_languages": "Learning languages",
             "price_per_person": "Price per person",
             "organized_by": "Organized by",
             "book_spot": "Book my spot",
@@ -715,6 +761,7 @@
             "VOTE_DISTRIBUTION": "Vote distribution",
             "ORGANIZER_CONTROLS": "Organizer Controls",
             "REVEAL_ANSWER": "Check Answer",
+            "LANGUAGE_BADGE": "Language:",
             "REVEALING": "Checking...",
             "REVEAL_HINT": "Click to reveal if the team answered correctly",
             "NEXT_QUESTION": "Next Question",

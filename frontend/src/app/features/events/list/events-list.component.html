@@ -24,7 +24,7 @@
     *ngIf="myEvents().length === 0 && publicEvents().length === 0 && !error()"
     [icon]="'🔎'"
     [title]="'events.empty' | t"
-    [subtitle]="'Essayez d\'ajuster vos filtres ou revenez plus tard'"
+    [subtitle]="'events.empty_subtitle' | t"
     [actionLabel]="(searchInput || selectedLangCodes.length > 0) ? ('events.filters.reset' | t) : null"
     (action)="resetSearch()">
   </shared-empty-state>
@@ -38,7 +38,7 @@
         class="collapse-button"
         (click)="toggleMyEventsSection()"
         [attr.aria-expanded]="!isMyEventsSectionCollapsed()"
-        [attr.aria-label]="isMyEventsSectionCollapsed() ? 'Afficher mes événements' : 'Masquer mes événements'">
+        [attr.aria-label]="isMyEventsSectionCollapsed() ? ('events.show_my_events' | t) : ('events.hide_my_events' | t)">
         <span class="collapse-icon" [class.collapsed]="isMyEventsSectionCollapsed()">▼</span>
       </button>
     </div>
@@ -68,7 +68,7 @@
           class="pagination-button"
           [disabled]="myEventsCurrentPage() === 1"
           (click)="goToPage(myEventsCurrentPage() - 1, 'my', myEvents().length)">
-          ‹ Précédent
+          ‹ {{ 'common.previous' | t }}
         </button>
 
       <div class="pagination-pages">
@@ -92,7 +92,7 @@
           class="pagination-button"
           [disabled]="myEventsCurrentPage() === getTotalPages(myEvents())"
           (click)="goToPage(myEventsCurrentPage() + 1, 'my', myEvents().length)">
-          Suivant ›
+          {{ 'common.next' | t }} ›
         </button>
       </div>
     </div>
@@ -124,7 +124,7 @@
         class="pagination-button"
         [disabled]="publicEventsCurrentPage() === 1"
         (click)="goToPage(publicEventsCurrentPage() - 1, 'public', publicEvents().length)">
-        ‹ Précédent
+        ‹ {{ 'common.previous' | t }}
       </button>
 
       <div class="pagination-pages">
@@ -148,7 +148,7 @@
         class="pagination-button"
         [disabled]="publicEventsCurrentPage() === getTotalPages(publicEvents())"
         (click)="goToPage(publicEventsCurrentPage() + 1, 'public', publicEvents().length)">
-        Suivant ›
+        {{ 'common.next' | t }} ›
       </button>
     </div>
   </section>
@@ -156,7 +156,7 @@
   <!-- Compteur de résultats -->
   <div class="results-count" *ngIf="myEvents().length > 0 || publicEvents().length > 0">
     <p class="count-text">
-      {{ myEvents().length + publicEvents().length }} événement{{ (myEvents().length + publicEvents().length) > 1 ? 's' : '' }} trouvé{{ (myEvents().length + publicEvents().length) > 1 ? 's' : '' }}
+      {{ 'events.results_count' | t:{ count: myEvents().length + publicEvents().length } }}
     </p>
   </div>
 </shared-container>

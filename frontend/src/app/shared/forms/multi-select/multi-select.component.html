@@ -1,4 +1,4 @@
-<div class="ms-control"
+﻿<div class="ms-control"
      [class.ms--disabled]="disabled"
      [class.ms--error]="error"
      (click)="toggleOpen($event)"
@@ -13,12 +13,12 @@
       class="chip"
     >
       <span class="chip__text">{{ s.label }}</span>
-      <button type="button" class="chip__close" aria-label="Retirer" (click)="removeOne(s.value, $event)">&times;</button>
+      <button type="button" class="chip__close" [attr.aria-label]="removeLabel()" (click)="removeOne(s.value, $event)">&times;</button>
     </shared-badge>
   </div>
 
   <ng-template #placeholderTpl>
-    <span class="ms-control__placeholder">{{ placeholder }}</span>
+    <span class="ms-control__placeholder">{{ placeholder || defaultPlaceholder() }}</span>
   </ng-template>
 
   <div class="ms-control__caret" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
@@ -29,7 +29,7 @@
     <input
       type="text"
       class="ms-input"
-      placeholder="Rechercher…"
+      [placeholder]="searchPlaceholder()"
       (input)="onSearch($event)"
       (keydown.escape)="close()"
     />
@@ -47,9 +47,15 @@
       <span class="ms-option__label">{{ o.label }}</span>
     </label>
 
-    <div class="ms-panel__empty" *ngIf="!filtered().length">Aucun résultat</div>
+    <div class="ms-panel__empty" *ngIf="!filtered().length">
+      {{ noResultsLabel() }}
+    </div>
   </div>
 </div>
+
+
+
+
 
 
 

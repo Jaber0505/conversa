@@ -18,13 +18,23 @@ export class LangService {
   get current(): Lang { return this._lang$.value; }
 
   /** API unique : change la langue (+ URL par défaut) */
-  set(lang: Lang, opts: { persist?: boolean; navigate?: boolean } = { persist: true, navigate: true }) {
-    this.apply(lang, { persist: opts.persist ?? true });
-    if (opts.navigate ?? true) this.updateUrlPrefix();
+  set(lang: Lang, opts: { persist?: boolean; navigate?: boolean; reload?: boolean } = {}) {
+    const persist = opts.persist ?? true;
+    const navigate = opts.navigate ?? true;
+    const reload = opts.reload ?? false;
+
+    this.apply(lang, { persist });
+
+    if (navigate) {
+      this.updateUrlPrefix()
+        .finally(() => this.reloadIfNeeded(reload));
+    } else {
+      this.reloadIfNeeded(reload);
+    }
   }
 
   // --- interne ---
-  private updateUrlPrefix() {
+  private updateUrlPrefix(): Promise<boolean> {
     const url = this.router.url;
     const [pathAndQuery, fragment] = url.split('#');
     const [path, query] = pathAndQuery.split('?');
@@ -37,7 +47,7 @@ export class LangService {
     if (query) newUrl += `?${query}`;
     if (fragment) newUrl += `#${fragment}`;
 
-    void this.router.navigateByUrl(newUrl, { replaceUrl: true });
+    return this.router.navigateByUrl(newUrl, { replaceUrl: true });
   }
 
   private apply(code: Lang, opts: { persist: boolean }) {
@@ -45,6 +55,12 @@ export class LangService {
     this._lang$.next(safe);
     this.doc.documentElement.setAttribute('lang', safe);
     if (opts.persist) { try { localStorage.setItem(STORAGE_KEY, safe); } catch {} }
+  }
+
+  private reloadIfNeeded(reload: boolean): void {
+    if (!reload || typeof window === 'undefined') return;
+    // Laisser Angular mettre à jour l'URL avant de recharger
+    setTimeout(() => window.location.reload(), 50);
   }
 
   private resolveInitialLang(): Lang {
