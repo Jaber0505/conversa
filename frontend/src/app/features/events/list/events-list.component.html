@@ -156,7 +156,7 @@
   <!-- Compteur de résultats -->
   <div class="results-count" *ngIf="myEvents().length > 0 || publicEvents().length > 0">
     <p class="count-text">
-      {{ 'events.results_count' | t:{ count: myEvents().length + publicEvents().length } }}
+      {{ resultsCountTranslationKey | t:{ count: totalEventsCount } }}
     </p>
   </div>
 </shared-container>

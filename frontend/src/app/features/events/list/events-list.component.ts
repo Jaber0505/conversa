@@ -660,6 +660,16 @@ export class EventsListComponent {
     return buildPaginationItems(current, totalPages);
   }
 
+  get totalEventsCount(): number {
+    return this.myEvents().length + this.publicEvents().length;
+  }
+
+  get resultsCountTranslationKey(): string {
+    return this.totalEventsCount > 1
+      ? 'events.results_count.plural'
+      : 'events.results_count.singular';
+  }
+
   private findEventById(eventId: number): EventDto | undefined {
     const scored = this.scoredEvents().find(se => se.event.id === eventId);
     if (scored) return scored.event;

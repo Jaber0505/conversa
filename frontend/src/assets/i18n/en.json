@@ -549,7 +549,10 @@
         "draft": "Draft",
         "empty": "No events found",
         "empty_subtitle": "Try adjusting your filters or come back later",
-        "results_count": "{{count}} event{{count > 1 ? 's' : ''}} found",
+        "results_count": {
+            "singular": "{{count}} event found",
+            "plural": "{{count}} events found"
+        },
         "organizer": "Organizer",
         "reserved": "Reserved",
         "pay_to_publish": "Pay to publish",
@@ -650,6 +653,7 @@
                 "next": "Next"
             },
             "day": {
+                "today": "Today",
                 "tomorrow": "Tomorrow"
             },
             "errors": {

@@ -480,7 +480,10 @@
         "draft": "Concept",
         "empty": "Geen evenementen gevonden",
         "empty_subtitle": "Probeer je filters aan te passen of kom later terug",
-        "results_count": "{{count}} evenement{{count > 1 ? 'en' : ''}} gevonden",
+        "results_count": {
+            "singular": "{{count}} evenement gevonden",
+            "plural": "{{count}} evenementen gevonden"
+        },
         "badges": {
             "recommended": "Aanbevolen",
             "full": "Volzet",

@@ -620,7 +620,10 @@
         "draft": "Brouillon",
         "empty": "Aucun événement trouvé",
         "empty_subtitle": "Essayez d'ajuster vos filtres ou revenez plus tard",
-        "results_count": "{{count}} événement{{count > 1 ? 's' : ''}} trouvé{{count > 1 ? 's' : ''}}",
+        "results_count": {
+            "singular": "{{count}} événement trouvé",
+            "plural": "{{count}} événements trouvés"
+        },
         "organizer": "Organisateur",
         "reserved": "Réservé",
         "pay_to_publish": "Payer pour publier",
@@ -692,6 +695,7 @@
                 "next": "Suivant"
             },
             "day": {
+                "today": "Aujourd'hui",
                 "tomorrow": "Demain"
             },
             "errors": {

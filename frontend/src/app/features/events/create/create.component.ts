@@ -381,7 +381,11 @@ export class CreateEventComponent implements OnInit {
 
   // Navigation entre étapes
   canGoNext(): boolean {
-    switch (this.currentStep()) {
+    return this.isStepValid(this.currentStep());
+  }
+
+  private isStepValid(step: number): boolean {
+    switch (step) {
       case 1:
         return !!this.selectedPartner();
       case 2:
@@ -396,6 +400,20 @@ export class CreateEventComponent implements OnInit {
       default:
         return false;
     }
+  }
+
+  private hasCompletedSteps(targetStep: number): boolean {
+    if (targetStep <= 1) {
+      return true;
+    }
+
+    for (let step = 1; step < targetStep; step++) {
+      if (!this.isStepValid(step)) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   nextStep(): void {
@@ -413,7 +431,17 @@ export class CreateEventComponent implements OnInit {
   }
 
   goToStep(step: number): void {
-    if (step <= this.currentStep() || this.canGoNext()) {
+    if (step < 1 || step > this.totalSteps || step === this.currentStep()) {
+      return;
+    }
+
+    if (step < this.currentStep()) {
+      this.currentStep.set(step);
+      this.saveFormState();
+      return;
+    }
+
+    if (this.hasCompletedSteps(step)) {
       this.currentStep.set(step);
       this.saveFormState();
     }

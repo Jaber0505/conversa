@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { TPipe } from '@core/i18n';
+import { TPipe, I18nService } from '@core/i18n';
 import {Booking, EventDto} from '@core/models';
 import {BookingsApiService, EventsApiService, PaymentsApiService, GamesApiService} from '@core/http';
 import { CurrencyFormatterService, DateFormatterService } from '@app/core/services';
@@ -43,6 +43,7 @@ export class MyBookingsComponent {
   private readonly loader = inject(BlockingSpinnerService);
   private readonly currencyFormatter = inject(CurrencyFormatterService);
   private readonly dateFormatter = inject(DateFormatterService);
+  private readonly i18n = inject(I18nService);
 
   readonly items = signal<BookingWithEvent[]>([]);
   readonly error = signal<string | null>(null);
@@ -104,13 +105,13 @@ export class MyBookingsComponent {
 
     if (bookingStatus === 'CANCELLED') {
       if (eventStatus === 'CANCELLED') {
-        return { label: "Annulé par l'organisateur", variant: 'danger' };
+        return { label: this.i18n.t('bookings.cancelled_by_organizer'), variant: 'danger' };
       }
-      return { label: "Annulé par vous", variant: 'danger' };
+      return { label: this.i18n.t('bookings.cancelled_by_you'), variant: 'danger' };
     }
 
     if (eventStatus === 'FINISHED' || isPast) {
-      return { label: 'Finalisé', variant: 'neutral' };
+      return { label: this.i18n.t('bookings.finished'), variant: 'neutral' };
     }
 
     return { label: '', variant: 'neutral' };
@@ -118,7 +119,7 @@ export class MyBookingsComponent {
 
   fetch() {
     this.loading.set(true);
-    this.loader.show('Chargement…');
+    this.loader.show(this.i18n.t('common.loading'));
     this.bookingsApi.list().pipe(
       take(1),
       finalize(() => {
@@ -245,13 +246,17 @@ export class MyBookingsComponent {
     const diffMs = eventStart.getTime() - now.getTime();
     const diffMins = Math.floor(diffMs / (1000 * 60));
     const diffHours = Math.floor(diffMins / 60);
+    const remainingMins = diffMins % 60;
 
     if (diffHours > 0) {
-      return `Dans ${diffHours}h${diffMins % 60 > 0 ? ' ' + (diffMins % 60) + 'min' : ''}`;
+      if (remainingMins > 0) {
+        return this.i18n.t('bookings.time_until_hours_mins', { hours: diffHours, minutes: remainingMins });
+      }
+      return this.i18n.t('bookings.time_until_hours', { hours: diffHours });
     } else if (diffMins > 0) {
-      return `Dans ${diffMins} minutes`;
+      return this.i18n.t('bookings.time_until_minutes', { minutes: diffMins });
     } else {
-      return 'En cours';
+      return this.i18n.t('bookings.live');
     }
   }
 

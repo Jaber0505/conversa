@@ -1,4 +1,4 @@
-﻿<!-- ContrÃ´le -->
+﻿<!-- Contrôle -->
 <div class="sel-control" (click)="toggleOpen($event)" [class.is-disabled]="disabled" role="button" tabindex="0">
   <div class="sel-value">
     <ng-container *ngIf="selectedOption(); else ph">
@@ -16,8 +16,8 @@
       class="sel-clear"
       [attr.aria-label]="clearLabel()"
       (click)="clear($event)"
-    >Ã—</button>
-    <span class="sel-caret" aria-hidden="true">â–¾</span>
+    >&times;</button>
+    <span class="sel-caret" aria-hidden="true">▾</span>
   </div>
 </div>
 
@@ -50,8 +50,3 @@
     </div>
   </div>
 </div>
-
-
-
-
-
