@@ -247,6 +247,7 @@
   .pagination-pages {
     display: flex;
     gap: var(--space-2);
+    align-items: center;
   }
 
   .pagination-page {
@@ -271,6 +272,16 @@
       border-color: var(--color-primary);
       color: white;
     }
+  }
+
+  .pagination-ellipsis {
+    min-width: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #9ca3af;
+    font-weight: 600;
+    letter-spacing: 2px;
   }
 }
 

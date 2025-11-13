@@ -169,12 +169,12 @@ class EventAPIListTestCase(TestCase):
         self.assertIn('id', event_data)
         self.assertIn('theme', event_data)
         self.assertIn('partner_name', event_data)
+        self.assertIn('partner_address', event_data)
 
         # Should NOT have detail-only fields (performance optimization)
         self.assertNotIn('participants_count', event_data)
         self.assertNotIn('available_slots', event_data)
         self.assertNotIn('is_full', event_data)
-        self.assertNotIn('partner_address', event_data)
         self.assertNotIn('language_name', event_data)
         self.assertNotIn('organizer_first_name', event_data)
 

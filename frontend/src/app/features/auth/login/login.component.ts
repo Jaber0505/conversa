@@ -30,6 +30,7 @@ export class AuthLoginComponent {
   loginForm: FormGroup;
   loading = false;
   apiError: string | null = null;
+  successMessage: string | null = null;
   showPassword = false;
   private _disabled = false;
   private submitSubject = new Subject<void>();
@@ -58,10 +59,11 @@ export class AuthLoginComponent {
       debounceTime(300)
     ).subscribe(() => this.performLogin());
 
-    // Clear error when form changes
+    // Clear error and success message when form changes
     this.loginForm.valueChanges.subscribe(() => {
-      if (this.apiError) {
+      if (this.apiError || this.successMessage) {
         this.apiError = null;
+        this.successMessage = null;
         this.cdr.markForCheck();
       }
     });
@@ -119,6 +121,7 @@ export class AuthLoginComponent {
   private performLogin() {
     this.loading = true;
     this.apiError = null;
+    this.successMessage = null;
     this.cdr.markForCheck();
 
     const { email, password } = this.loginForm.value;
@@ -149,8 +152,20 @@ export class AuthLoginComponent {
         next: (res) => {
           this.errorLogger.logInfo('Login successful', { email: email.trim().toLowerCase() });
           this.rateLimiter.reset('login'); // Reset on successful login
-          this.userCache.save(res.access, res.refresh);
-          this.router.navigate(['/', this.getLang(), '']);
+
+          // Check if account was reactivated
+          if (res.message) {
+            this.successMessage = 'auth.account_reactivated';
+            this.cdr.markForCheck();
+            // Wait 2 seconds before redirecting to let user see the message
+            setTimeout(() => {
+              this.userCache.save(res.access, res.refresh);
+              this.router.navigate(['/', this.getLang(), '']);
+            }, 2000);
+          } else {
+            this.userCache.save(res.access, res.refresh);
+            this.router.navigate(['/', this.getLang(), '']);
+          }
         },
       });
   }

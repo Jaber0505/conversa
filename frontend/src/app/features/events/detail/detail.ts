@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { take, finalize } from 'rxjs/operators';
 import { TPipe } from '@core/i18n';
-import { EventsApiService, BookingsApiService, PaymentsApiService, AuthApiService } from '@core/http';
+import { EventsApiService, BookingsApiService, PaymentsApiService, AuthApiService, GamesApiService } from '@core/http';
 import { BlockingSpinnerService } from '@app/core/http/services/spinner-service';
 import { EventDetailDto } from '@core/models';
 import { ConfirmPurchaseComponent } from '@app/shared/components/modals/confirm-purchase/confirm-purchase.component';
@@ -35,6 +35,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   private bookingsApi = inject(BookingsApiService);
   private authApi = inject(AuthApiService);
   private paymentsApi = inject(PaymentsApiService);
+  private gamesApi = inject(GamesApiService);
   private loader = inject(BlockingSpinnerService);
 
   event = signal<EventDetailDto | null>(null);
@@ -53,6 +54,14 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   showCancelEventModal = signal(false);
   cancellingEvent = signal(false);
   deletingDraft = signal(false);
+  startingGame = signal(false);
+
+  // Cached button state to avoid infinite recalculation
+  actionButtonState = signal<'organizer-draft-pay' | 'organizer-draft-delete' | 'organizer-published-cancel' |
+    'organizer-published-soon' | 'organizer-pending' |
+    'organizer-play' | 'user-play' |
+    'user-book' | 'user-pay' | 'user-cancel' |
+    'user-starting-soon' | 'event-full' | 'event-cancelled' | 'event-finished' | null>(null);
 
   readonly CANCELLATION_DEADLINE_HOURS = 3;
 
@@ -105,6 +114,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
         const eventData = event as EventDetailDto;
         this.event.set(eventData);
         this.updateIsOrganizer(eventData);
+        this.updateActionButtonState();
       },
       error: (err: any) => {
         console.error('Error loading event:', err);
@@ -127,41 +137,99 @@ export class EventDetailComponent implements OnInit, OnDestroy {
     this.isOrganizer.set(!!userId && organizerId === userId);
   }
 
-  getActionButtonState():
-    'organizer-draft-pay' | 'organizer-draft-delete' | 'organizer-published-cancel' |
-    'organizer-published-soon' | 'organizer-pending' |
-    'user-book' | 'user-pay' | 'user-cancel' |
-    'user-starting-soon' | 'event-full' | 'event-cancelled' | 'event-finished' | null {
+  private updateActionButtonState(): void {
     const evt = this.event();
-    if (!evt) return null;
+    if (!evt) {
+      this.actionButtonState.set(null);
+      return;
+    }
+
     const status = evt.status;
-    if (status === 'FINISHED') return 'event-finished';
-    if (status === 'CANCELLED') return 'event-cancelled';
+    if (status === 'FINISHED') {
+      this.actionButtonState.set('event-finished');
+      return;
+    }
+    if (status === 'CANCELLED') {
+      this.actionButtonState.set('event-cancelled');
+      return;
+    }
+
+    // Vérifier si l'événement a commencé et si un jeu est configuré
+    const now = new Date();
+    const eventStart = new Date(evt.datetime_start);
+    // TEMPORAIRE : Permet de jouer même si l'événement n'a pas commencé (pour tests)
+    const hasStarted = true; // now >= eventStart;
+    const hasGameConfigured = !!(evt.game_type);
+
     const links: any = (evt as any)._links || {};
     const perms: any = (evt as any).permissions || {};
     const isOrganizer = this.isOrganizer();
+
     if (isOrganizer) {
       if (status === 'DRAFT') {
         const canPublish = !!(links.request_publication || links.pay_and_publish);
-        if (canPublish) return 'organizer-draft-pay';
-        if (links.delete_draft) return 'organizer-draft-delete';
-        return null;
+        if (canPublish) {
+          this.actionButtonState.set('organizer-draft-pay');
+          return;
+        }
+        if (links.delete_draft) {
+          this.actionButtonState.set('organizer-draft-delete');
+          return;
+        }
+        this.actionButtonState.set(null);
+        return;
       }
-      if (status === 'PENDING_CONFIRMATION') return 'organizer-pending';
+      if (status === 'PENDING_CONFIRMATION') {
+        this.actionButtonState.set('organizer-pending');
+        return;
+      }
       if (status === 'PUBLISHED') {
-        if (perms.can_cancel_event || links.cancel) return 'organizer-published-cancel';
-        return 'organizer-published-soon';
+        // Si l'événement a commencé et qu'un jeu est configuré
+        if (hasStarted && hasGameConfigured) {
+          // Afficher bouton pour lancer ou rejoindre le jeu
+          this.actionButtonState.set('organizer-play');
+          return;
+        }
+        if (perms.can_cancel_event || links.cancel) {
+          this.actionButtonState.set('organizer-published-cancel');
+          return;
+        }
+        this.actionButtonState.set('organizer-published-soon');
+        return;
       }
     }
-    if (!isOrganizer && (status === 'DRAFT' || status === 'PENDING_CONFIRMATION')) return null;
+
+    if (!isOrganizer && (status === 'DRAFT' || status === 'PENDING_CONFIRMATION')) {
+      this.actionButtonState.set(null);
+      return;
+    }
+
     if (status === 'PUBLISHED') {
       const myb = (evt as any).my_booking as ({ public_id: string; status: string } | null | undefined);
-      if (myb?.status === 'PENDING') return 'user-pay';
-      if (myb?.status === 'CONFIRMED') return (evt as any).can_cancel_booking ? 'user-cancel' : 'user-starting-soon';
-      if ((evt as any).partner_capacity && (evt as any).participants_count >= (evt as any).partner_capacity) return 'event-full';
-      return perms.can_book ? 'user-book' : null;
+
+      // Si l'événement a commencé, le jeu est configuré et démarré, et l'utilisateur a une réservation confirmée
+      if (hasStarted && hasGameConfigured && evt.game_started && myb?.status === 'CONFIRMED') {
+        this.actionButtonState.set('user-play');
+        return;
+      }
+
+      if (myb?.status === 'PENDING') {
+        this.actionButtonState.set('user-pay');
+        return;
+      }
+      if (myb?.status === 'CONFIRMED') {
+        this.actionButtonState.set((evt as any).can_cancel_booking ? 'user-cancel' : 'user-starting-soon');
+        return;
+      }
+      if (this.isEventFull(evt as EventDetailDto)) {
+        this.actionButtonState.set('event-full');
+        return;
+      }
+      this.actionButtonState.set(perms.can_book ? 'user-book' : null);
+      return;
     }
-    return null;
+
+    this.actionButtonState.set(null);
   }
 
   formatPrice(cents: number): string {
@@ -182,6 +250,23 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   getGoogleMapsUrl(address: string): string {
     const query = encodeURIComponent(address);
     return `https://www.google.com/maps?q=${query}&output=embed`;
+  }
+
+  public getAvailabilityPercent(evt: EventDetailDto): number {
+    const max = evt.max_participants || evt.partner_capacity || 0;
+    if (!max) return 0;
+    const current = evt.booked_seats ?? evt.participants_count ?? 0;
+    return Math.min(100, Math.round((current / max) * 100));
+  }
+
+  public isEventFull(evt: EventDetailDto): boolean {
+    if (typeof evt.is_full === 'boolean') {
+      return evt.is_full;
+    }
+    const max = evt.max_participants || evt.partner_capacity || 0;
+    if (!max) return false;
+    const current = evt.booked_seats ?? evt.participants_count ?? 0;
+    return current >= max;
   }
 
   onRequestPublication(): void {
@@ -210,6 +295,10 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   onBook(): void {
     const evt = this.event();
     if (!evt) return;
+    if (this.isEventFull(evt)) {
+      this.actionButtonState.set('event-full');
+      return;
+    }
     if (!this.currentUserId()) {
       this.router.navigate(['/', this.getLang(), 'auth', 'login']);
       return;
@@ -283,6 +372,100 @@ export class EventDetailComponent implements OnInit, OnDestroy {
 
   openCancelEventModal(): void { this.showCancelEventModal.set(true); }
   closeCancelEventModal(): void { this.showCancelEventModal.set(false); }
+
+  onPlayGame(): void {
+    const evt = this.event();
+    if (!evt || !evt.game_type) return;
+
+    const isOrganizer = this.isOrganizer();
+
+    this.startingGame.set(true);
+    this.loader.show('Vérification du jeu...');
+
+    // Toujours vérifier d'abord s'il existe un jeu actif
+    this.gamesApi.getActiveGame(evt.id).pipe(
+      take(1),
+      finalize(() => { this.startingGame.set(false); this.loader.hide(); })
+    ).subscribe({
+      next: (activeGame) => {
+        // Un jeu actif existe, rejoindre IMMÉDIATEMENT
+        console.log('Jeu actif trouvé:', activeGame);
+        this.router.navigate(['/', this.getLang(), 'games', activeGame.id]);
+      },
+      error: (err) => {
+        console.log('Erreur getActiveGame:', err.status, err);
+
+        // Pas de jeu actif (404) - normal
+        if (err.status === 404) {
+          console.log('Aucun jeu actif, tentative de création...');
+          // Si organisateur, créer un nouveau jeu
+          if (isOrganizer) {
+            this.createNewGame(evt);
+          } else {
+            alert('Aucun jeu actif. L\'organisateur doit lancer le jeu.');
+          }
+        }
+        // Erreur de permission (403) ou autre erreur serveur
+        else if (err.status === 403) {
+          alert('Vous n\'avez pas accès à ce jeu. Assurez-vous d\'être inscrit à l\'événement.');
+        }
+        // Autres erreurs
+        else {
+          console.error('Error finding game:', err);
+          alert(`Erreur lors de la recherche du jeu (${err.status}). Réessayez.`);
+        }
+      }
+    });
+  }
+
+  private createNewGame(evt: any): void {
+    this.startingGame.set(true);
+    this.loader.show('Lancement du jeu...');
+
+    this.gamesApi.create({
+      event_id: evt.id,
+      game_type: evt.game_type as any
+    }).pipe(
+      take(1),
+      finalize(() => { this.startingGame.set(false); this.loader.hide(); })
+    ).subscribe({
+      next: (game) => {
+        console.log('Jeu créé avec succès:', game);
+        // Recharger l'événement pour mettre à jour game_started
+        this.loadEvent(evt.id);
+        // Rediriger vers la page du jeu
+        this.router.navigate(['/', this.getLang(), 'games', game.id]);
+      },
+      error: (err) => {
+        console.error('Error creating game:', err);
+
+        // Si l'erreur dit qu'un jeu actif existe déjà, essayer de le récupérer
+        const errorMsg = err?.error?.error || err?.error?.detail || err?.error?.event;
+        if (errorMsg && errorMsg.includes('already has an active game')) {
+          console.log('Un jeu actif existe déjà, tentative de récupération...');
+          // Réessayer de récupérer le jeu actif
+          this.startingGame.set(true);
+          this.loader.show('Récupération du jeu...');
+
+          this.gamesApi.getActiveGame(evt.id).pipe(
+            take(1),
+            finalize(() => { this.startingGame.set(false); this.loader.hide(); })
+          ).subscribe({
+            next: (activeGame) => {
+              console.log('Jeu actif récupéré:', activeGame);
+              this.router.navigate(['/', this.getLang(), 'games', activeGame.id]);
+            },
+            error: (getErr) => {
+              console.error('Impossible de récupérer le jeu actif:', getErr);
+              alert('Un jeu existe déjà mais impossible de le rejoindre. Contactez le support.');
+            }
+          });
+        } else {
+          alert(errorMsg || 'Erreur lors du lancement du jeu');
+        }
+      }
+    });
+  }
 
   confirmCancelEvent(): void {
     const evt = this.event();

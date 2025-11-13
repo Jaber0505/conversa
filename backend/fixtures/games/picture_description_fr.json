@@ -1,0 +1,83 @@
+[
+  {
+    "id": "pd_fr_easy_01",
+    "difficulty": "easy",
+    "question": "Décrivez cette image : Qu'est-ce que vous voyez ?",
+    "image_url": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4",
+    "correct_answer": "montagne",
+    "options": ["montagne", "plage", "ville", "forêt"],
+    "context": "Une belle montagne avec de la neige au sommet"
+  },
+  {
+    "id": "pd_fr_easy_02",
+    "difficulty": "easy",
+    "question": "Que voyez-vous sur cette photo ?",
+    "image_url": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308",
+    "correct_answer": "plage",
+    "options": ["plage", "désert", "lac", "rivière"],
+    "context": "Une plage avec du sable et l'océan"
+  },
+  {
+    "id": "pd_fr_easy_03",
+    "difficulty": "easy",
+    "question": "Les efforts que je déploie finiront-ils par me conduire à la réussite de mon TFE ?",
+    "image_url": "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05",
+    "correct_answer": "Oui",
+    "options": ["Oui", "Non", "Peut-être", "Si mon seigneur est de bonne hummeur"],
+    "context": "C'est un seigneur avisé"
+  },
+  {
+    "id": "pd_fr_medium_01",
+    "difficulty": "medium",
+    "question": "Décrivez l'ambiance de cette scène urbaine",
+    "image_url": "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df",
+    "correct_answer": "animée et moderne",
+    "options": ["animée et moderne", "calme et ancienne", "industrielle", "rurale"],
+    "context": "Une ville moderne avec des gratte-ciels"
+  },
+  {
+    "id": "pd_fr_medium_02",
+    "difficulty": "medium",
+    "question": "Quel type d'architecture voyez-vous principalement ?",
+    "image_url": "https://images.unsplash.com/photo-1499856871958-5b9627545d1a",
+    "correct_answer": "contemporaine",
+    "options": ["contemporaine", "gothique", "baroque", "classique"],
+    "context": "Des bâtiments modernes en verre et acier"
+  },
+  {
+    "id": "pd_fr_medium_03",
+    "difficulty": "medium",
+    "question": "Quelle saison est représentée dans cette image ?",
+    "image_url": "https://images.unsplash.com/photo-1476820865390-c52aeebb9891",
+    "correct_answer": "automne",
+    "options": ["automne", "printemps", "été", "hiver"],
+    "context": "Des arbres avec des feuilles oranges et rouges"
+  },
+  {
+    "id": "pd_fr_hard_01",
+    "difficulty": "hard",
+    "question": "Analysez la composition artistique : quelle technique photographique est utilisée ici ?",
+    "image_url": "https://images.unsplash.com/photo-1501594907352-04cda38ebc29",
+    "correct_answer": "profondeur de champ réduite",
+    "options": ["profondeur de champ réduite", "panorama", "longue exposition", "contre-jour"],
+    "context": "Photo avec un sujet net et arrière-plan flou"
+  },
+  {
+    "id": "pd_fr_hard_02",
+    "difficulty": "hard",
+    "question": "Quelle émotion ou atmosphère domine dans cette photographie ?",
+    "image_url": "https://images.unsplash.com/photo-1511576661531-b34d7da5d0bb",
+    "correct_answer": "mélancolie contemplative",
+    "options": ["mélancolie contemplative", "joie exubérante", "tension dramatique", "sérénité absolue"],
+    "context": "Une personne seule regardant un paysage au coucher du soleil"
+  },
+  {
+    "id": "pd_fr_hard_03",
+    "difficulty": "hard",
+    "question": "Identifiez le courant artistique ou style visuel de cette image",
+    "image_url": "https://images.unsplash.com/photo-1482164565953-04b62dcac1cd",
+    "correct_answer": "minimalisme",
+    "options": ["minimalisme", "expressionnisme", "surréalisme", "réalisme"],
+    "context": "Composition simple avec peu d'éléments et beaucoup d'espace négatif"
+  }
+]

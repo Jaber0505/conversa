@@ -47,7 +47,11 @@
           [routerLink]="['/', langCode(), 'admin', 'audit']">
           Admin Logs
         </shared-button>
-        <button class="user-profile" type="button" aria-label="Profil utilisateur">
+        <button
+          class="user-profile"
+          type="button"
+          aria-label="Profil utilisateur"
+          [routerLink]="['/', langCode(), 'profile']">
           <span class="user-avatar" aria-hidden="true">👤</span>
           <span class="user-name">{{ me.first_name }}</span>
         </button>

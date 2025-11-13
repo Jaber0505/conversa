@@ -1,0 +1,106 @@
+<div class="event-filters">
+  <!-- Barre de recherche principale -->
+  <div class="filters-main">
+    <div class="search-input-wrapper">
+      <shared-input
+        [placeholder]="'events.filters.search_placeholder' | t"
+        [value]="searchQuery()"
+        (valueChange)="onSearchQueryChange($event)"
+        class="search-input">
+      </shared-input>
+    </div>
+
+    <div class="filters-actions">
+      <shared-button
+        variant="outline"
+        size="md"
+        type="button"
+        (click)="toggleAdvancedFilters()"
+        class="toggle-filters-btn">
+        <span class="filter-icon">{{ showAdvancedFilters() ? '▲' : '▼' }}</span>
+        {{ (showAdvancedFilters() ? 'events.filters.hide_filters' : 'events.filters.show_filters') | t }}
+      </shared-button>
+
+      <shared-button
+        *ngIf="hasActiveFilters()"
+        variant="outline"
+        size="md"
+        type="button"
+        (click)="resetFilters()"
+        class="reset-btn">
+        {{ 'events.filters.reset' | t }}
+      </shared-button>
+    </div>
+  </div>
+
+  <!-- Filtres avancés -->
+  <div
+    class="filters-advanced"
+    *ngIf="showAdvancedFilters()">
+    <div class="filters-grid">
+      <!-- Filtre langues -->
+      <shared-form-field [label]="'events.filters.languages' | t" class="filter-field">
+        <shared-multi-select
+          [options]="languageOptions()"
+          [value]="selectedLanguages()"
+          [placeholder]="'events.filters.select_languages' | t"
+          (valueChange)="onLanguagesChange($event)">
+        </shared-multi-select>
+      </shared-form-field>
+
+      <!-- Filtre difficulté -->
+      <shared-form-field [label]="'events.filters.difficulty_label' | t" class="filter-field">
+        <shared-select
+          [options]="difficultyOptions()"
+          [value]="selectedDifficulty() || undefined"
+          [placeholder]="'events.filters.all_difficulties' | t"
+          (valueChange)="onDifficultyChange($event)">
+        </shared-select>
+      </shared-form-field>
+
+      <!-- Filtre date début -->
+      <shared-form-field [label]="'events.filters.date_from' | t" class="filter-field">
+        <input
+          type="date"
+          class="date-input"
+          [value]="dateFrom() || ''"
+          (change)="onDateFromChange($event)" />
+      </shared-form-field>
+
+      <!-- Filtre date fin -->
+      <shared-form-field [label]="'events.filters.date_to' | t" class="filter-field">
+        <input
+          type="date"
+          class="date-input"
+          [value]="dateTo() || ''"
+          (change)="onDateToChange($event)" />
+      </shared-form-field>
+
+      <!-- Filtre prix -->
+      <shared-form-field [label]="'events.filters.price_label' | t" class="filter-field">
+        <shared-select
+          [options]="priceOptions()"
+          [value]="priceType()"
+          [placeholder]="'events.filters.price.all' | t"
+          (valueChange)="onPriceTypeChange($event)">
+        </shared-select>
+      </shared-form-field>
+
+      <!-- Filtre disponibilité -->
+      <shared-form-field [label]="'events.filters.availability_label' | t" class="filter-field">
+        <shared-select
+          [options]="availabilityOptions()"
+          [value]="availability()"
+          [placeholder]="'events.filters.availability.all' | t"
+          (valueChange)="onAvailabilityChange($event)">
+        </shared-select>
+      </shared-form-field>
+    </div>
+  </div>
+
+  <!-- Indicateur de filtres actifs -->
+  <div class="active-filters-indicator" *ngIf="hasActiveFilters() && !showAdvancedFilters()">
+    <span class="indicator-dot"></span>
+    <span class="indicator-text">{{ 'events.filters.active_filters' | t }}</span>
+  </div>
+</div>

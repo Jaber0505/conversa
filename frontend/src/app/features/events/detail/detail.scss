@@ -52,7 +52,7 @@
   gap: var(--space-8);
 }
 
-/* En-t�te �v�nement */
+/* En-tÃƒÆ’Ã‚Âªte ÃƒÆ’Ã‚Â©vÃƒÆ’Ã‚Â©nement */
 .event-header {
   display: flex;
   flex-direction: column;
@@ -207,7 +207,7 @@
   text-overflow: ellipsis;
 }
 
-/* Sidebar (carte de r�servation) */
+/* Sidebar (carte de rÃƒÆ’Ã‚Â©servation) */
 .sidebar-column {
   @media (min-width: $bp-md) {
     position: sticky;
@@ -294,7 +294,13 @@
   font-size: 0.875rem;
   color: var(--color-text-muted);
   font-weight: 500;
+
+  &.full {
+    color: var(--color-danger);
+    font-weight: 600;
+  }
 }
+
 
 .btn-book {
   width: 100%;

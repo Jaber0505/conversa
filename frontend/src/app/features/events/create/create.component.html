@@ -1,4 +1,4 @@
-<shared-container>
+﻿<shared-container>
   <!-- En-tête avec bouton retour -->
   <shared-headline-bar
     [title]="'events.create.title' | t"
@@ -8,7 +8,7 @@
 
   <!-- Indicateur d'étape -->
   <div class="stepper">
-    <div *ngFor="let step of [1, 2, 3, 4]"
+    <div *ngFor="let step of [1, 2, 3, 4, 5]"
          class="stepper-step"
          [class.active]="currentStep() === step"
          [class.completed]="currentStep() > step"
@@ -38,9 +38,9 @@
       </div>
 
       <!-- Grille de partners -->
-      <div class="partners-grid" *ngIf="filteredPartners().length > 0">
+      <div class="partners-grid" *ngIf="partners().length > 0">
         <shared-card
-          *ngFor="let partner of filteredPartners()"
+          *ngFor="let partner of getPaginatedPartners()"
           [class.selected]="selectedPartner()?.id === partner.id">
           <div class="partner-card">
             <h3 class="partner-name">{{ partner.name }}</h3>
@@ -52,7 +52,7 @@
             </p>
 
             <shared-badge variant="accent" tone="soft" *ngIf="selectedPartner()?.id === partner.id">
-              ✓ {{ 'common.selected' | t }}
+              {{ 'common.selected' | t }}
             </shared-badge>
 
             <div class="partner-actions">
@@ -73,7 +73,45 @@
         </shared-card>
       </div>
 
-      <div *ngIf="filteredPartners().length === 0" class="empty-state">
+      <div class="partners-pagination" *ngIf="getPartnerTotalPages() > 1">
+        <button
+          type="button"
+          class="pagination-button"
+          [disabled]="partnersCurrentPage() === 1"
+          (click)="goToPartnerPage(partnersCurrentPage() - 1)">
+          ← {{ 'events.create.pagination.previous' | t }}
+        </button>
+
+        <div class="pagination-pages">
+          <ng-container *ngFor="let item of getPartnerPaginationItems()">
+            <button
+              *ngIf="item.type === 'page'"
+              type="button"
+              class="pagination-page"
+              [class.active]="partnersCurrentPage() === item.value"
+              (click)="goToPartnerPage(item.value)">
+              {{ item.value }}
+            </button>
+            <span
+              *ngIf="item.type === 'ellipsis'"
+              class="pagination-ellipsis">…</span>
+          </ng-container>
+        </div>
+
+        <button
+          type="button"
+          class="pagination-button"
+          [disabled]="partnersCurrentPage() === getPartnerTotalPages()"
+          (click)="goToPartnerPage(partnersCurrentPage() + 1)">
+          {{ 'events.create.pagination.next' | t }} →
+        </button>
+      </div>
+
+      <div *ngIf="partnersLoading()" class="partners-loading">
+        {{ 'common.loading' | t }}
+      </div>
+
+      <div *ngIf="partners().length === 0 && !partnersLoading()" class="empty-state">
         <p>{{ 'events.create.no_partners' | t }}</p>
       </div>
     </shared-section>
@@ -111,11 +149,7 @@
           <label>{{ 'events.create.difficulty' | t }}</label>
           <shared-select
             [placeholder]="'events.create.select_difficulty' | t"
-            [options]="[
-              { value: 'beginner', label: ('events.difficulty.beginner' | t) },
-              { value: 'medium', label: ('events.difficulty.medium' | t) },
-              { value: 'advanced', label: ('events.difficulty.advanced' | t) }
-            ]"
+            [options]="difficultyOptions()"
             [value]="selectedDifficultyValue"
             (valueChange)="onDifficultyChange($event)">
           </shared-select>
@@ -127,8 +161,7 @@
     <shared-section *ngIf="currentStep() === 3" spacing="md">
       <h2 class="step-title">{{ 'events.create.step3_heading' | t }}</h2>
       <p class="step-description ux-text">
-        Organise une petite session d'1h entre 12h et 21h.<br>
-        Jusqu'à 7 jours à l'avance — juste pense à t'y prendre au moins 3 heures avant 😉
+        {{ 'events.create.step3_description_full' | t }}
       </p>
 
       <!-- Sélecteur de jours -->
@@ -140,9 +173,9 @@
           (click)="selectDay(day)">
           <div class="day-header">
             <span class="day-date">{{ day.formattedDate }}</span>
-            <shared-badge variant="accent" tone="soft" *ngIf="day.isTomorrow">
-              Demain
-            </shared-badge>
+          <shared-badge variant="accent" tone="soft" *ngIf="day.isTomorrow">
+            {{ 'events.create.day.tomorrow' | t }}
+          </shared-badge>
           </div>
 
           <!-- Créneaux horaires pour ce jour -->
@@ -163,14 +196,33 @@
 
       <!-- Message d'erreur si aucun créneau sélectionné -->
       <div *ngIf="!selectedTimeSlot() && eventForm.get('time')?.touched" class="error-message">
-        Veuillez sélectionner un créneau horaire
+        {{ 'events.create.errors.slot_required' | t }}
       </div>
     </shared-section>
 
-    <!-- Étape 4: Récapitulatif -->
+    <!-- Étape 4: Configuration du jeu -->
     <shared-section *ngIf="currentStep() === 4" spacing="md">
       <h2 class="step-title">{{ 'events.create.step4_heading' | t }}</h2>
       <p class="step-description">{{ 'events.create.step4_description' | t }}</p>
+
+      <div class="form-fields">
+        <!-- Type de jeu -->
+        <div class="form-group">
+          <label>{{ 'events.create.game_type' | t }}</label>
+          <shared-select
+            [placeholder]="'events.create.select_game_type' | t"
+            [options]="gameTypeOptions()"
+            [value]="selectedGameTypeValue"
+            (valueChange)="onGameTypeChange($event)">
+          </shared-select>
+        </div>
+      </div>
+    </shared-section>
+
+    <!-- Étape 5: Récapitulatif -->
+    <shared-section *ngIf="currentStep() === 5" spacing="md">
+      <h2 class="step-title">{{ 'events.create.step5_heading' | t }}</h2>
+      <p class="step-description">{{ 'events.create.step5_description' | t }}</p>
 
       <shared-card>
         <div class="summary">
@@ -198,11 +250,23 @@
               {{ eventForm.get('date')?.value }} {{ 'common.at' | t }} {{ eventForm.get('time')?.value }}
             </span>
           </div>
+          <div class="summary-row">
+            <span class="summary-label">{{ 'events.create.summary_game_type' | t }}:</span>
+            <span class="summary-value">
+              {{ 'GAMES.TYPES.' + eventForm.get('gameType')?.value?.toUpperCase() | t }}
+            </span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">{{ 'events.create.summary_game_difficulty' | t }}:</span>
+            <span class="summary-value">
+              {{ 'GAMES.DIFFICULTY.' + eventForm.get('gameDifficulty')?.value?.toUpperCase() | t }}
+            </span>
+          </div>
         </div>
       </shared-card>
 
-      <shared-badge variant="danger" tone="soft" *ngIf="error()">
-        {{ error() }}
+      <shared-badge variant="danger" tone="soft" *ngIf="error() as err">
+        {{ err | t }}
       </shared-badge>
     </shared-section>
 
@@ -243,3 +307,7 @@
   (paymentSuccess)="onPaymentSuccess()"
   (payLater)="onPayLater()">
 </app-payment-choice-modal>
+
+
+
+

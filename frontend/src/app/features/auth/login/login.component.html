@@ -8,6 +8,7 @@
 
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
         <div class="auth-error" *ngIf="apiError" role="alert" aria-live="polite">{{ apiError | t }}</div>
+        <div class="auth-success" *ngIf="successMessage" role="alert" aria-live="polite">{{ successMessage | t }}</div>
 
         <div class="form-field">
           <shared-input id="email" name="email" type="email"

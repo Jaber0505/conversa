@@ -197,6 +197,100 @@
   }
 }
 
+.partners-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-3, 1rem);
+  margin-top: var(--space-5, 2rem);
+
+  .pagination-button {
+    padding: var(--space-2) var(--space-4);
+    border-radius: 8px;
+    border: 2px solid var(--color-primary);
+    background: white;
+    color: var(--color-primary);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover:not(:disabled) {
+      background: var(--color-primary);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+
+  .pagination-pages {
+    display: flex;
+    gap: var(--space-2, 0.5rem);
+    align-items: center;
+  }
+
+  .pagination-page {
+    min-width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    border: 2px solid #e5e7eb;
+    background: white;
+    color: #6b7280;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    &.active {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: white;
+    }
+  }
+
+  .pagination-ellipsis {
+    min-width: 28px;
+    display: flex;
+    justify-content: center;
+    color: #9ca3af;
+    font-weight: 600;
+    letter-spacing: 2px;
+  }
+}
+
+.partners-loading {
+  text-align: center;
+  margin-top: var(--space-4, 1rem);
+  font-weight: 600;
+  color: var(--color-neutral-600, #6b7280);
+}
+
+@media (max-width: 768px) {
+  .partners-pagination {
+    flex-wrap: wrap;
+    gap: var(--space-2, 0.5rem);
+
+    .pagination-button {
+      flex: 1 1 calc(50% - var(--space-2));
+      min-width: calc(50% - var(--space-2));
+      justify-content: center;
+      display: flex;
+    }
+
+    .pagination-pages {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}
+
 // État vide
 .empty-state {
   padding: var(--space-8, 2rem);

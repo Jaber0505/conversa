@@ -1,10 +1,12 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { take, finalize } from 'rxjs/operators';
+import { take, finalize, debounceTime } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { fromEvent } from 'rxjs';
 
-import { TPipe } from '@core/i18n';
+import { I18nService, LangService, TPipe } from '@core/i18n';
 import { EventsApiService, PartnersApiService, LanguagesApiService, PaymentsApiService } from '@core/http';
 import { BlockingSpinnerService } from '@app/core/http/services/spinner-service';
 import { Partner, Language, EventCreatePayload } from '@core/models';
@@ -19,6 +21,7 @@ import { BadgeComponent } from '@shared/ui/badge/badge.component';
 import { InputComponent } from '@shared/forms/input/input.component';
 import { SelectComponent } from '@shared/forms/select/select.component';
 import { PaymentChoiceModalComponent } from '@shared/components/payment-choice-modal/payment-choice-modal.component';
+import { buildPaginationItems, PaginationItem } from '@shared/utils/pagination';
 @Component({
   selector: 'app-create-event',
   standalone: true,
@@ -48,10 +51,13 @@ export class CreateEventComponent implements OnInit {
   private readonly languagesApi = inject(LanguagesApiService);
   private readonly paymentsApi = inject(PaymentsApiService);
   private readonly loader = inject(BlockingSpinnerService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly i18n = inject(I18nService);
+  private readonly langService = inject(LangService);
 
   // Étapes
   currentStep = signal(1);
-  totalSteps = 4;
+  totalSteps = 5;
 
   // Données du formulaire
   eventForm!: FormGroup;
@@ -59,11 +65,13 @@ export class CreateEventComponent implements OnInit {
   // Données chargées
   partners = signal<Partner[]>([]);
   languages = signal<Language[]>([]);
-  filteredPartners = signal<Partner[]>([]);
+  partnersLoading = signal(false);
 
   // Étape 1: Partner sélectionné
   selectedPartner = signal<Partner | null>(null);
   postalCode = '';
+  partnersCurrentPage = signal(1);
+  partnersItemsPerPage = signal(9);
 
   // Événement créé
   createdEventId = signal<number | null>(null);
@@ -78,11 +86,8 @@ export class CreateEventComponent implements OnInit {
 
   // Options pour les selects
   languageOptions = signal<{ value: string; label: string }[]>([]);
-  difficultyOptions: { value: string; label: string }[] = [
-    { value: 'beginner', label: '' }, // sera traduit dans le template
-    { value: 'medium', label: '' },
-    { value: 'advanced', label: '' }
-  ];
+  difficultyOptions = signal<{ value: string; label: string }[]>([]);
+  gameTypeOptions = signal<{ value: string; label: string }[]>([]);
 
   // Sélecteur de dates et créneaux (Étape 3)
   availableDays = signal<DaySlot[]>([]);
@@ -95,13 +100,73 @@ export class CreateEventComponent implements OnInit {
 
   // Timezone Europe/Brussels
   private readonly TIMEZONE = 'Europe/Brussels';
+  private readonly partnersBackendPageSize = 20;
+  private partnersNextPage: number | null = 1;
+  private isLoadingPartnersPage = false;
+  private partnerSearchTerm = '';
+  private partnerPendingPage: number | null = null;
+  private partnersAutoPrefetchNext = false;
+  private partnersLoadedIds = new Set<number>();
+
+  constructor() {
+    if (typeof window !== 'undefined') {
+      this.detectScreenSize();
+      fromEvent(window, 'resize')
+        .pipe(debounceTime(150), takeUntilDestroyed(this.destroyRef))
+        .subscribe(() => this.detectScreenSize());
+    }
+
+    // Subscribe to language changes to update translations
+    this.langService.lang$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.updateTranslatedOptions();
+        this.generateAvailableDays(); // Regenerate days with new language
+      });
+  }
 
   ngOnInit(): void {
     this.initForm();
     this.loadLanguages();
-    this.loadPartners();
+    this.loadPartners(true);
+    this.updateTranslatedOptions();
     this.generateAvailableDays();
     this.generateTimeSlots();
+  }
+
+  private updateTranslatedOptions(): void {
+    // Update difficulty options
+    this.difficultyOptions.set([
+      { value: 'easy', label: this.i18n.t('events.difficulty.easy') },
+      { value: 'medium', label: this.i18n.t('events.difficulty.medium') },
+      { value: 'hard', label: this.i18n.t('events.difficulty.hard') }
+    ]);
+
+    // Update game type options
+    this.gameTypeOptions.set([
+      { value: 'picture_description', label: this.i18n.t('games.types.picture_description') },
+      { value: 'word_association', label: this.i18n.t('games.types.word_association') },
+      { value: 'debate', label: this.i18n.t('games.types.debate') },
+      { value: 'role_play', label: this.i18n.t('games.types.role_play') }
+    ]);
+
+    // Update language options with current language labels
+    if (this.languages().length > 0) {
+      this.languageOptions.set(this.buildLanguageOptions(this.languages()));
+    }
+  }
+
+  private detectScreenSize(): void {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    const isMobile = window.innerWidth <= 768;
+    const nextItemsPerPage = isMobile ? 6 : 9;
+    if (this.partnersItemsPerPage() !== nextItemsPerPage) {
+      this.partnersItemsPerPage.set(nextItemsPerPage);
+      this.partnersCurrentPage.set(1);
+    }
+    this.resolvePartnerPendingNavigation();
   }
 
   private initForm(): void {
@@ -117,6 +182,10 @@ export class CreateEventComponent implements OnInit {
       // Étape 3: Date et heure
       date: ['', Validators.required],
       time: ['', Validators.required],
+
+      // Étape 4: Configuration du jeu
+      gameType: ['picture_description', Validators.required],
+      gameDifficulty: ['medium', Validators.required],
     });
   }
 
@@ -124,13 +193,7 @@ export class CreateEventComponent implements OnInit {
     this.languagesApi.list().pipe(take(1)).subscribe({
       next: (response) => {
         this.languages.set(response.results);
-
-        // Créer les options pour le select
-        const options = response.results.map(lang => ({
-          value: lang.id.toString(),
-          label: this.getLanguageLabel(lang)
-        }));
-        this.languageOptions.set(options);
+        this.languageOptions.set(this.buildLanguageOptions(response.results));
       },
       error: (err) => {
         console.error('Error loading languages:', err);
@@ -138,11 +201,67 @@ export class CreateEventComponent implements OnInit {
     });
   }
 
-  private loadPartners(): void {
-    this.partnersApi.list().pipe(take(1)).subscribe({
+  private buildLanguageOptions(list: Language[]): { value: string; label: string }[] {
+    return list.map(lang => ({
+      value: lang.id.toString(),
+      label: this.getLanguageLabel(lang)
+    }));
+  }
+
+  private loadPartners(reset = false): void {
+    if (reset) {
+      this.resetPartnerPagination();
+    }
+    this.fetchNextPartnersPage();
+  }
+
+  // Étape 1: Filtrer par code postal via l'API
+  onPostalCodeChange(postalCode: string): void {
+    this.postalCode = postalCode.trim();
+    this.partnerSearchTerm = this.postalCode;
+    this.loadPartners(true);
+  }
+
+  private resetPartnerPagination(): void {
+    this.partners.set([]);
+    this.partnersLoadedIds.clear();
+    this.partnersNextPage = 1;
+    this.partnerPendingPage = null;
+    this.partnersAutoPrefetchNext = false;
+    this.isLoadingPartnersPage = false;
+    this.partnersCurrentPage.set(1);
+  }
+
+  private fetchNextPartnersPage(): void {
+    if (this.partnersNextPage == null || this.isLoadingPartnersPage) {
+      return;
+    }
+
+    const currentPage = this.partnersNextPage ?? 1;
+    const params = {
+      search: this.partnerSearchTerm || undefined,
+      page: currentPage,
+      page_size: this.partnersBackendPageSize
+    };
+
+    this.isLoadingPartnersPage = true;
+    this.partnersLoading.set(true);
+
+    this.partnersApi.list(params).pipe(
+      take(1),
+      finalize(() => {
+        this.isLoadingPartnersPage = false;
+        this.partnersLoading.set(false);
+        if (this.partnersAutoPrefetchNext) {
+          this.partnersAutoPrefetchNext = false;
+          this.fetchNextPartnersPage();
+        }
+      })
+    ).subscribe({
       next: (response) => {
-        this.partners.set(response.results);
-        this.filteredPartners.set(response.results);
+        this.partnersNextPage = response.next ? currentPage + 1 : null;
+        this.mergePartners(response.results);
+        this.partnersAutoPrefetchNext = !!response.next && this.partnerPendingPage == null;
       },
       error: (err) => {
         console.error('Error loading partners:', err);
@@ -150,20 +269,70 @@ export class CreateEventComponent implements OnInit {
     });
   }
 
-  // Étape 1: Filtrer par code postal via l'API
-  onPostalCodeChange(postalCode: string): void {
-    this.postalCode = postalCode.trim();
+  private mergePartners(newPartners: Partner[]): void {
+    if (!newPartners || newPartners.length === 0) {
+      this.resolvePartnerPendingNavigation();
+      return;
+    }
 
-    // Charger les partners depuis l'API avec le filtre
-    this.partnersApi.list(this.postalCode || undefined).pipe(take(1)).subscribe({
-      next: (response) => {
-        this.partners.set(response.results);
-        this.filteredPartners.set(response.results);
-      },
-      error: (err) => {
-        console.error('Error loading partners:', err);
+    const updated = [...this.partners()];
+    let changed = false;
+
+    newPartners.forEach((partner) => {
+      if (this.partnersLoadedIds.has(partner.id)) {
+        return;
       }
+      this.partnersLoadedIds.add(partner.id);
+      updated.push(partner);
+      changed = true;
     });
+
+    if (changed) {
+      this.partners.set(updated);
+    }
+    this.resolvePartnerPendingNavigation();
+  }
+
+  getPaginatedPartners(): Partner[] {
+    const page = this.partnersCurrentPage();
+    const itemsPerPage = this.partnersItemsPerPage();
+    const startIndex = (page - 1) * itemsPerPage;
+    return this.partners().slice(startIndex, startIndex + itemsPerPage);
+  }
+
+  getPartnerTotalPages(): number {
+    return Math.ceil(this.partners().length / this.partnersItemsPerPage());
+  }
+
+  getPartnerPaginationItems(): PaginationItem[] {
+    return buildPaginationItems(this.partnersCurrentPage(), this.getPartnerTotalPages());
+  }
+
+  goToPartnerPage(page: number): void {
+    if (page < 1) return;
+    this.partnerPendingPage = page;
+    this.resolvePartnerPendingNavigation();
+  }
+
+  private resolvePartnerPendingNavigation(): void {
+    if (this.partnerPendingPage == null) {
+      return;
+    }
+
+    const itemsNeeded = this.partnerPendingPage * this.partnersItemsPerPage();
+    if (this.partners().length >= itemsNeeded || !this.hasMorePartnerPages()) {
+      const totalPages = Math.max(1, this.getPartnerTotalPages());
+      const targetPage = Math.min(Math.max(1, this.partnerPendingPage), totalPages);
+      this.partnersCurrentPage.set(targetPage);
+      this.partnerPendingPage = null;
+      return;
+    }
+
+    this.fetchNextPartnersPage();
+  }
+
+  private hasMorePartnerPages(): boolean {
+    return this.partnersNextPage !== null;
   }
 
   selectPartner(partner: Partner): void {
@@ -198,6 +367,12 @@ export class CreateEventComponent implements OnInit {
     }
   }
 
+  onGameTypeChange(value: string | undefined): void {
+    if (value) {
+      this.eventForm.patchValue({ gameType: value });
+    }
+  }
+
   // Navigation entre étapes
   canGoNext(): boolean {
     switch (this.currentStep()) {
@@ -210,6 +385,8 @@ export class CreateEventComponent implements OnInit {
       case 3:
         return (this.eventForm.get('date')?.valid ?? false) &&
                (this.eventForm.get('time')?.valid ?? false);
+      case 4:
+        return (this.eventForm.get('gameType')?.valid ?? false);
       default:
         return false;
     }
@@ -236,13 +413,13 @@ export class CreateEventComponent implements OnInit {
   // Étape 4: Création de l'événement avec choix de paiement
   createEvent(): void {
     if (!this.eventForm.valid) {
-      this.error.set('Veuillez remplir tous les champs requis');
+      this.error.set('events.create.errors.form_required');
       return;
     }
 
     this.loading.set(true);
     this.error.set(null);
-    this.loader.show('Création de votre événement...');
+    this.loader.show(this.i18n.t('events.create.loader.creating'));
 
     const formValue = this.eventForm.value;
 
@@ -262,7 +439,8 @@ export class CreateEventComponent implements OnInit {
       language: languageId,
       theme: formValue.theme as string,
       difficulty: formValue.difficulty as string,
-      datetime_start: datetime_start
+      datetime_start: datetime_start,
+      game_type: formValue.gameType as string
     };
 
     console.log('Sending event data:', eventData);
@@ -285,7 +463,8 @@ export class CreateEventComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error creating event:', err);
-        this.error.set(err?.error?.error || 'Erreur lors de la création de l\'événement');
+        const apiError = err?.error?.error;
+        this.error.set(apiError || 'events.create.errors.create_failed');
       }
     });
   }
@@ -336,10 +515,19 @@ export class CreateEventComponent implements OnInit {
 
   // Getters pour le template
   getLanguageLabel(lang: Language): string {
-    const uiLang = this.getLang();
-    if (uiLang === 'fr') return lang.label_fr;
-    if (uiLang === 'en') return lang.label_en;
-    return lang.label_nl;
+    const translationKey = `languages.${lang.code}`;
+    const translated = this.i18n.t(translationKey);
+    if (translated && translated !== translationKey) {
+      return translated;
+    }
+
+    const uiLang = this.langService.current;
+    const fallback =
+      uiLang === 'fr' ? lang.label_fr :
+      uiLang === 'en' ? lang.label_en :
+      lang.label_nl;
+
+    return fallback || lang.label_fr || lang.label_en || lang.label_nl || lang.code.toUpperCase();
   }
 
   get selectedLanguageName(): string {
@@ -362,6 +550,10 @@ export class CreateEventComponent implements OnInit {
 
   get selectedDifficultyValue(): string | undefined {
     return this.eventForm.get('difficulty')?.value || undefined;
+  }
+
+  get selectedGameTypeValue(): string | undefined {
+    return this.eventForm.get('gameType')?.value || undefined;
   }
 
   // ============================================================================
@@ -413,7 +605,10 @@ export class CreateEventComponent implements OnInit {
       day: 'numeric',
       month: 'long'
     };
-    const formatted = date.toLocaleDateString('fr-FR', options);
+    // Use current language from LangService
+    const currentLang = this.langService.current;
+    const locale = currentLang === 'fr' ? 'fr-FR' : currentLang === 'nl' ? 'nl-NL' : 'en-GB';
+    const formatted = date.toLocaleDateString(locale, options);
     // Capitaliser le premier caractère
     return formatted.charAt(0).toUpperCase() + formatted.slice(1);
   }

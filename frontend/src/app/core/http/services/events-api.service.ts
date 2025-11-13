@@ -9,6 +9,8 @@ export interface EventsListParams {
   partner?: number;       // ex: ?partner=12
   language?: string;      // ex: ?language=fr
   ordering?: string;      // ex: datetime_start,-datetime_start
+  page?: number;          // ex: page=2
+  page_size?: number;     // ex: page_size=50
 }
 @Injectable({ providedIn: 'root' })
 export class EventsApiService {
@@ -20,6 +22,8 @@ export class EventsApiService {
     if (params?.partner != null)  httpParams = httpParams.set('partner', String(params.partner));
     if (params?.language)         httpParams = httpParams.set('language', params.language);
     if (params?.ordering)         httpParams = httpParams.set('ordering', params.ordering);
+    if (params?.page != null)     httpParams = httpParams.set('page', String(params.page));
+    if (params?.page_size != null) httpParams = httpParams.set('page_size', String(params.page_size));
     return this.http.get<Paginated<EventDto>>(`${this.base}/events/`, { params: httpParams });
   }
 

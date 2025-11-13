@@ -1,0 +1,37 @@
+[
+  {
+    "model": "users.user",
+    "pk": 1,
+    "fields": {
+      "email": "admin@conversa.be",
+      "first_name": "Admin",
+      "last_name": "User",
+      "age": 30,
+      "bio": "Administrator account",
+      "avatar": "",
+      "address": "",
+      "city": "Bruxelles",
+      "country": "BE",
+      "latitude": null,
+      "longitude": null,
+      "consent_given": true,
+      "consent_given_at": "2025-01-01T00:00:00Z",
+      "is_active": true,
+      "is_staff": true,
+      "is_superuser": true,
+      "date_joined": "2025-01-01T00:00:00Z",
+      "password": "pbkdf2_sha256$1000000$kcxKaFhM5yelhdSSjttJtC$gY/F4EDC7LbYzqR7cfGnw3GArbg/d8SE1lCpirKftNs=",
+      "native_langs": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "users.usertargetlanguage",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "language": 2
+    }
+  }
+]

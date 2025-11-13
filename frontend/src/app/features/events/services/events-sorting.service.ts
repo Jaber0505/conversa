@@ -13,7 +13,16 @@ export interface ScoredEvent {
   isRecommended: boolean;
   isNearby: boolean;
   reasons: string[];
+  badgeReason: PriorityBadge | null;
 }
+
+export type PriorityBadge =
+  | 'bidirectional'
+  | 'target_language'
+  | 'support'
+  | 'almost_full'
+  | 'full'
+  | 'cancelled';
 
 /**
  * Service intelligent de tri des événements
@@ -25,13 +34,11 @@ export interface ScoredEvent {
 @Injectable({ providedIn: 'root' })
 export class EventsSortingService {
   /**
-   * Trie les événements de manière intelligente selon les critères utilisateur
-   * Score: Plus le score est élevé, plus l'événement est recommandé
+   * Trie les événements selon les critères de l'utilisateur
    */
   sortEvents(events: EventDto[], criteria: SortingCriteria): ScoredEvent[] {
-    return events
-      .map(event => this.scoreEvent(event, criteria))
-      .sort((a, b) => b.score - a.score);
+    const scored = events.map(event => this.scoreEvent(event, criteria));
+    return scored.sort((a, b) => b.score - a.score);
   }
 
   /**
@@ -42,52 +49,79 @@ export class EventsSortingService {
     const reasons: string[] = [];
     let isRecommended = false;
     let isNearby = false;
+    let badge: PriorityBadge | null = null;
 
-    // Critère 1: Localisation (+50 points)
+    const userNative = (criteria.userNativeLangs ?? []).map((l) => l.toLowerCase());
+    const userTargets = (criteria.userTargetLangs ?? []).map((l) => l.toLowerCase());
+    const eventLang = (event.language_code || '').toLowerCase();
+    const userSpeaksEventLang = userNative.includes(eventLang);
+    const userLearningEventLang = userTargets.includes(eventLang);
+    const canSupport =
+      userSpeaksEventLang &&
+      ((userNative.filter((l) => l !== eventLang).length > 0) ||
+        userTargets.filter((l) => l !== eventLang).length > 0);
+    const bidirectional = userSpeaksEventLang && userLearningEventLang;
+
     if (criteria.userCity && this.isNearby(event, criteria.userCity)) {
-      score += 50;
+      score += 40;
       isNearby = true;
       reasons.push('events.sort_reason.nearby');
     }
 
-    // Critère 2: Langue cible de l'utilisateur (+100 points - TRÈS IMPORTANT)
-    if (criteria.userTargetLangs && criteria.userTargetLangs.length > 0) {
-      if (criteria.userTargetLangs.includes(event.language_code)) {
-        score += 100;
-        isRecommended = true;
-        reasons.push('events.sort_reason.target_language');
-      }
+    if (bidirectional) {
+      score += 200;
+      isRecommended = true;
+      badge = 'bidirectional';
+      reasons.push('events.sort_reason.bidirectional');
+    } else if (userLearningEventLang) {
+      score += 130;
+      isRecommended = true;
+      if (!badge) badge = 'target_language';
+      reasons.push('events.sort_reason.target_language');
+    } else if (userSpeaksEventLang) {
+      score += 90;
+      reasons.push('events.sort_reason.native_language');
     }
 
-    // Critère 3: Langue native (pour pratiquer, +30 points)
-    if (criteria.userNativeLangs && criteria.userNativeLangs.length > 0) {
-      if (criteria.userNativeLangs.includes(event.language_code)) {
-        score += 30;
-        reasons.push('events.sort_reason.native_language');
-      }
+    if (canSupport) {
+      score += 60;
+      if (!badge) badge = 'support';
+      reasons.push('events.sort_reason.support');
     }
 
-    // Critère 4: Événement gratuit (+20 points)
     if (event.price_cents === 0) {
       score += 20;
       reasons.push('events.sort_reason.free');
     }
 
-    // Critère 5: Événement à venir bientôt (+10 points)
     if (this.isComingSoon(event)) {
       score += 10;
       reasons.push('events.sort_reason.coming_soon');
     }
 
-    // Malus: Événement déjà réservé (-500 points) - doit apparaître en dernier
+    const occupancy = this.getOccupancyRatio(event);
+    const isAlmostFull = occupancy >= 0.8 && occupancy < 1 && !event.is_full;
+    if (isAlmostFull) {
+      score += 70;
+      if (!badge) badge = 'almost_full';
+      reasons.push('events.sort_reason.almost_full');
+    }
+
     if (event.alreadyBooked) {
-      score -= 500;
+      score -= 300;
       reasons.push('events.sort_reason.already_booked');
     }
 
-    // Malus: Événement annulé (-1000 points)
+    if (event.is_full) {
+      score -= 1200;
+      badge = 'full';
+    }
     if (event.is_cancelled) {
-      score -= 1000;
+      score -= 1300;
+      badge = 'cancelled';
+    }
+    if (this.isPast(event)) {
+      score -= 1500;
     }
 
     return {
@@ -95,9 +129,11 @@ export class EventsSortingService {
       score,
       isRecommended,
       isNearby,
-      reasons
+      reasons,
+      badgeReason: badge,
     };
   }
+
 
   /**
    * Vérifie si un événement est proche de la ville de l'utilisateur
@@ -137,7 +173,8 @@ export class EventsSortingService {
         event.theme,
         event.address,
         event.partner_city,
-        event.language_code
+        event.language_code,
+        event.partner_address
       ].filter(Boolean);
 
       return searchableFields.some(field =>
@@ -154,5 +191,20 @@ export class EventsSortingService {
       .toLowerCase()
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '');
+  }
+
+  private getOccupancyRatio(event: EventDto): number {
+    const max = event.max_participants || 0;
+    if (!max) return 0;
+    const booked =
+      (event as any).booked_seats ??
+      event.registration_count ??
+      0;
+    return Math.min(1, booked / max);
+  }
+
+  private isPast(event: EventDto): boolean {
+    if (!event.datetime_start) return false;
+    return new Date(event.datetime_start).getTime() < Date.now();
   }
 }

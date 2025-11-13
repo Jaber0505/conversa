@@ -1,587 +1,722 @@
 {
-    "common":  {
-                   "brand":  "Conversa",
-                   "lang_change":  "Taal wijzigen",
-                   "save":  "Opslaan",
-                   "cancel":  "Annuleren",
-                   "close":  "Sluiten",
-                   "clear":  "Wissen",
-                   "add":  "Toevoegen",
-                   "remove":  "Verwijderen",
-                   "next":  "Volgende",
-                   "back":  "Terug",
-                   "register":  "Mijn account aanmaken",
-                   "details":  "Details",
-                   "pay":  "Betalen",
-                   "language":  "Taal",
-                   "search":  "Zoeken",
-                   "searchInput":  "Zoeken",
-                   "LanguageSearch":  "Doeltalen",
-                   "loading":  "Laden...",
-                   "nav":  {
-                               "menu":  "Hoofdmenu"
-                           }
-               },
-    "nav":  {
-                "faq":  "FAQ",
-                "about":  "Over ons",
-                "events":  "Evenementen",
-                "booking":  "Mijn boekingen"
+    "common": {
+        "brand": "Conversa",
+        "lang_change": "Taal wijzigen",
+        "save": "Opslaan",
+        "cancel": "Annuleren",
+        "close": "Sluiten",
+        "clear": "Wissen",
+        "add": "Toevoegen",
+        "remove": "Verwijderen",
+        "next": "Volgende",
+        "previous": "Vorige",
+        "back": "Terug",
+        "selected": "Geselecteerd",
+        "at": "om",
+        "register": "Mijn account aanmaken",
+        "details": "Details",
+        "pay": "Betalen",
+        "language": "Taal",
+        "search": "Zoeken",
+        "searchInput": "Zoeken",
+        "LanguageSearch": "Doeltalen",
+        "loading": "Laden...",
+        "nav": {
+            "menu": "Hoofdmenu"
+        }
+    },
+    "nav": {
+        "faq": "FAQ",
+        "about": "Over ons",
+        "events": "Evenementen",
+        "booking": "Mijn boekingen"
+    },
+    "navigation": {
+        "events": "Evenementen",
+        "my_bookings": "Mijn boekingen"
+    },
+    "auth": {
+        "account_reactivated": "Welkom terug! Uw account is succesvol gereactiveerd."
+    },
+    "register": {
+        "title": "Maak uw account aan",
+        "subtitle": "Voltooi de stappen om uw registratie te voltooien.",
+        "firstTab": {
+            "firstName": "Voornaam",
+            "lastName": "Achternaam",
+            "age": "Leeftijd",
+            "ageError": "Je moet minstens 18 jaar oud zijn",
+            "nativeLangs": "Moedertalen",
+            "targetLangs": "Doeltalen",
+            "selectLang": "Selecteer een taal"
+        },
+        "secondTab": {
+            "bio": "Uw bio",
+            "bioPlaceHolder": "Stel uzelf voor in 2�3 zinnen (ervaring, interesses, doelen). 10 tot 500 tekens.",
+            "limit": "Tussen 10 en 500 tekens"
+        },
+        "thirdTab": {
+            "email": "E-mailadres",
+            "password": "Wachtwoord",
+            "passwordLimit": "Het wachtwoord moet minstens 9 tekens bevatten",
+            "consent": "Ik ga akkoord met het privacybeleid en de gebruiksvoorwaarden.",
+            "consent_required": "U moet akkoord gaan om verder te gaan."
+        }
+    },
+    "languages": {
+        "fr": "Frans",
+        "en": "Engels",
+        "nl": "Nederlands",
+        "es": "Spaans"
+    },
+    "shared": {
+        "common": {
+            "yes": "Ja",
+            "no": "Nee",
+            "yes_no": "Ja / Nee"
+        },
+        "actions": {
+            "see_all": "Alles bekijken",
+            "browse_events": "Evenementen verkennen",
+            "create_account": "Account aanmaken",
+            "create_free_account": "Gratis account aanmaken",
+            "details": "Details"
+        },
+        "search": {
+            "query": "Zoeken",
+            "placeholder_event": "Zoek een evenement�",
+            "input": {
+                "placeholder": "Zoek een evenement..."
             },
-    "navigation":  {
-                "events":  "Evenementen",
-                "my_bookings":  "Mijn boekingen"
+            "submit": "Zoeken",
+            "more_filters": "Meer filters",
+            "hide_filters": "Filters verbergen",
+            "reset": "Resetten",
+            "select_placeholder": "Selecteer�",
+            "tip_keywords": "Tip: \"caf�\", \"beginner\", \"afterwork\"� probeer trefwoorden."
+        },
+        "badges": {
+            "members_1000_plus": "+1000 leden",
+            "partners_20": "20 partnerbars",
+            "fun_100": "100% plezier",
+            "rapid": "Snel",
+            "local": "Lokaal",
+            "effective": "Effectief"
+        },
+        "filters": {
+            "lang": {
+                "label": "Taal",
+                "placeholder": "Alle talen",
+                "options": {
+                    "fr": "Frans",
+                    "en": "Engels",
+                    "es": "Spaans",
+                    "nl": "Nederlands"
+                }
             },
-    "auth":  {
-                 "email_placeholder":  "bijv. voornaam.achternaam@email.com",
-                 "password_placeholder":  "Minstens 9 tekens",
-                 "login":  "Inloggen",
-                 "register":  "Registreren",
-                 "logout":  "Afmelden",
-                 "login_subtitle":  "Log in om evenementen te reserveren en je boekingen te volgen.",
-                 "email":  "E-mail",
-                 "password":  "Wachtwoord",
-                 "forgot_password":  "Wachtwoord vergeten?",
-                 "no_account":  "Nog geen account?",
-                 "create_account":  "Account aanmaken",
-                 "back_to_login":  "Terug naar inloggen",
-                 "show_password":  "Wachtwoord tonen",
-                 "hide_password":  "Wachtwoord verbergen",
-                 "reset":  {
-                               "cta":  "Resetlink verzenden",
-                               "title":  "Wachtwoord opnieuw instellen",
-                               "sent":  "Als dit e-mailadres bestaat, is een resetlink verzonden.",
-                               "subtitle":  "Voer je e-mailadres in. Als er een account bestaat, ontvang je een resetlink."
-                           },
-                 "errors":  {
-                                "generic":  "Er is iets misgegaan",
-                                "bad_credentials":  "Ongeldig e-mail of wachtwoord"
-                            }
-             },
-    "register":  {
-                     "title":  "Maak uw account aan",
-                     "subtitle":  "Voltooi de stappen om uw registratie te voltooien.",
-                     "firstTab":  {
-                                      "firstName":  "Voornaam",
-                                      "lastName":  "Achternaam",
-                                      "age":  "Leeftijd",
-                                      "ageError":  "Je moet minstens 18 jaar oud zijn",
-                                      "nativeLangs":  "Moedertalen",
-                                      "targetLangs":  "Doeltalen",
-                                      "selectLang":  "Selecteer een taal"
-                                  },
-                     "secondTab":  {
-                                       "bio":  "Uw bio",
-                                       "bioPlaceHolder":  "Stel uzelf voor in 2�3 zinnen (ervaring, interesses, doelen). 10 tot 500 tekens.",
-                                       "limit":  "Tussen 10 en 500 tekens"
-                                   },
-                     "thirdTab":  {
-                                      "email":  "E-mailadres",
-                                      "password":  "Wachtwoord",
-                                      "passwordLimit":  "Het wachtwoord moet minstens 9 tekens bevatten",
-                                      "consent":  "Ik ga akkoord met het privacybeleid en de gebruiksvoorwaarden.",
-                                      "consent_required":  "U moet akkoord gaan om verder te gaan."
-                                  }
-                 },
-    "languages":  {
-                      "fr":  "Frans",
-                      "en":  "Engels",
-                      "nl":  "Nederlands",
-                      "es":  "Spaans"
-                  },
-    "shared":  {
-                   "common":  {
-                                  "yes":  "Ja",
-                                  "no":  "Nee",
-                                  "yes_no":  "Ja / Nee"
-                              },
-                   "actions":  {
-                                   "see_all":  "Alles bekijken",
-                                   "browse_events":  "Evenementen verkennen",
-                                   "create_account":  "Account aanmaken",
-                                   "create_free_account":  "Gratis account aanmaken",
-                                   "details":  "Details"
-                               },
-                   "search":  {
-                                  "query":  "Zoeken",
-                                  "placeholder_event":  "Zoek een evenement�",
-                                  "input":  {
-                                                "placeholder":  "Zoek een evenement..."
-                                            },
-                                  "submit":  "Zoeken",
-                                  "more_filters":  "Meer filters",
-                                  "hide_filters":  "Filters verbergen",
-                                  "reset":  "Resetten",
-                                  "select_placeholder":  "Selecteer�",
-                                  "tip_keywords":  "Tip: \"caf�\", \"beginner\", \"afterwork\"� probeer trefwoorden."
-                              },
-                   "badges":  {
-                                  "members_1000_plus":  "+1000 leden",
-                                  "partners_20":  "20 partnerbars",
-                                  "fun_100":  "100% plezier",
-                                  "rapid":  "Snel",
-                                  "local":  "Lokaal",
-                                  "effective":  "Effectief"
-                              },
-                   "filters":  {
-                                   "lang":  {
-                                                "label":  "Taal",
-                                                "placeholder":  "Alle talen",
-                                                "options":  {
-                                                                "fr":  "Frans",
-                                                                "en":  "Engels",
-                                                                "es":  "Spaans",
-                                                                "nl":  "Nederlands"
-                                                            }
-                                            },
-                                   "area":  {
-                                                "label":  "Regio",
-                                                "placeholder":  "Alle regio�s",
-                                                "options":  {
-                                                                "brussels":  "Brussel",
-                                                                "paris":  "Parijs",
-                                                                "liege":  "Luik"
-                                                            }
-                                            },
-                                   "free":  {
-                                                "label":  "Gratis",
-                                                "placeholder":  "Ja / Nee"
-                                            }
-                               }
-               },
-    "i18n":  {
-                 "ui":  "Taal van de interface",
-                 "preferred":  "Voorkeurstalen"
-             },
-    "pages":  {
-                  "home":  {
-                               "hero":  {
-                                            "title":  "Spreek een taal, beleef een ontmoeting",
-                                            "subtitle":  "Sluit je aan bij Conversa, een actieve community dankzij taalmeetups. Immersieve spellen in caf�s in Brussel."
-                                        },
-                               "search":  {
-                                              "title":  "Vind je taalpartners in 2 minuten",
-                                              "desc":  "Voer een trefwoord in, kies je taal en je regio en start de zoekopdracht. We stellen sessies voor bij jou in de buurt."
-                                          },
-                               "howto":  {
-                                             "img_alt":  "Gezellige taalkundige ontmoetingen",
-                                             "title":  "Hoe werkt het?",
-                                             "steps":  {
-                                                           "1":  {
-                                                                     "title":  "Kies je taal en je regio",
-                                                                     "desc":  "Filter met de zoekbalk aan de linkerkant."
-                                                                 },
-                                                           "2":  {
-                                                                     "title":  "Sluit je aan bij een groep",
-                                                                     "desc":  "3+ deelnemers, bevestiging ter plaatse."
-                                                                 },
-                                                           "3":  {
-                                                                     "title":  "Speel \u0026 oefen",
-                                                                     "desc":  "Start het spel, verdien badges, deel je mening."
-                                                                 }
-                                                       }
-                                         },
-                               "upcoming":  {
-                                                "title":  "Komende evenementen"
-                                            },
-                               "categories":  {
-                                                  "title":  "Ontdek per categorie",
-                                                  "items":  {
-                                                                "cafe":  {
-                                                                             "title":  "Conversa Caf�",
-                                                                             "subtitle":  "Informele ontmoetingen"
-                                                                         },
-                                                                "pro":  {
-                                                                            "title":  "Conversa Pro",
-                                                                            "subtitle":  "Professionele uitwisselingen"
-                                                                        },
-                                                                "events":  {
-                                                                               "title":  "Conversa Events",
-                                                                               "subtitle":  "Openbare evenementen"
-                                                                           }
-                                                            }
-                                              },
-                               "cta":  {
-                                           "title":  "Klaar om echt te praten?",
-                                           "subtitle":  "Doe mee aan gezellige sessies bij jou in de buurt en maak deze week al vooruitgang.",
-                                           "benefits":  {
-                                                            "rapid":  {
-                                                                          "desc":  "Inschrijving in 1 minuut, geen betaling vereist"
-                                                                      },
-                                                            "local":  {
-                                                                          "desc":  "Kleinschalige groepen in partnercaf�s"
-                                                                      },
-                                                            "effective":  {
-                                                                              "desc":  "Gespreksgames met begeleiding, feedback van peers"
-                                                                          }
-                                                        },
-                                           "hint":  "Je kunt zonder registratie rondkijken. Sluit je aan wanneer je wilt."
-                                       }
-                           }
-              },
-    "about":  {
-                  "hero":  {
-                               "badge":  "Over ons",
-                               "title":  "Talen leren, mensen ontmoeten",
-                               "subtitle":  "Conversa maakt taalpraktijk eenvoudig en gezellig: kleine groepen, gespreksgames, warme locaties. Geen school, gewoon echte uitwisselingen."
-                           },
-                  "mission":  {
-                                  "title":  "Onze missie",
-                                  "p1":  "Natuurlijke gelegenheden cre�ren om een taal te spreken zonder academische druk. Elke sessie is ontworpen om je te helpen durven, vooruitgang te boeken en je open te stellen voor anderen.",
-                                  "bullets":  [
-                                                  "Echte praktijk, geen klassikaal onderwijs",
-                                                  "Groepen 3�6 personen zodat iedereen aan bod komt",
-                                                  "Gesprekskaarten en spellen om het ijs te breken"
-                                              ]
-                              },
-                  "difference":  {
-                                     "title":  "Wat ons onderscheidt",
-                                     "items":  [
-                                                   {
-                                                       "title":  "Speels",
-                                                       "desc":  "Gespreksgames die het gesprek stimuleren en spontane expressie aanmoedigen."
-                                                   },
-                                                   {
-                                                       "title":  "Sociaal",
-                                                       "desc":  "Je leert door nieuwsgierige mensen te ontmoeten, niet voor een bord."
-                                                   },
-                                                   {
-                                                       "title":  "Flexibel",
-                                                       "desc":  "Korte sessies, na het werk of in het weekend, zonder lange verplichtingen."
-                                                   }
-                                               ]
-                                 },
-                  "values":  {
-                                 "title":  "Onze waarden",
-                                 "list":  [
-                                              {
-                                                  "title":  "Welwillendheid",
-                                                  "desc":  "Een veilige omgeving om te proberen, fouten te maken, opnieuw te proberen."
-                                              },
-                                              {
-                                                  "title":  "Openheid",
-                                                  "desc":  "Alle talen, alle niveaus, alle achtergronden."
-                                              },
-                                              {
-                                                  "title":  "Eenvoud",
-                                                  "desc":  "Inschrijven in enkele klikken, duidelijke regels, geen jargon."
-                                              },
-                                              {
-                                                  "title":  "Kwaliteit",
-                                                  "desc":  "Gestructureerde begeleiding, regelmatige feedback, voortdurende verbetering."
-                                              }
-                                          ]
-                             },
-                  "stats":  {
-                                "title":  "In cijfers",
-                                "sessions":  {
-                                                 "label":  "Sessies uitgevoerd",
-                                                 "value":  "250+"
-                                             },
-                                "learners":  {
-                                                 "label":  "Deelnemers",
-                                                 "value":  "3 000+"
-                                             },
-                                "languages":  {
-                                                  "label":  "Talen geoefend",
-                                                  "value":  "10+"
-                                              },
-                                "partners":  {
-                                                 "label":  "Partnerlocaties",
-                                                 "value":  "20+"
-                                             }
-                            },
-                  "how":  {
-                              "title":  "Hoe werkt het",
-                              "steps":  [
-                                            {
-                                                "title":  "Kies een taal",
-                                                "desc":  "Filter op Engels, Nederlands, Spaans� en jouw buurt."
-                                            },
-                                            {
-                                                "title":  "Reserveer je plaats",
-                                                "desc":  "Beperkte groepen voor echte gesprekken."
-                                            },
-                                            {
-                                                "title":  "Sluit je aan bij de tafel",
-                                                "desc":  "Een host start het spel en begeleidt het tempo."
-                                            }
-                                        ],
-                              "a11y_illustration_alt":  "Illustratie van mensen die rond een tafel praten"
-                          },
-                  "team":  {
-                               "title":  "Het team",
-                               "members":  [
-                                               {
-                                                   "name":  "Ana",
-                                                   "role":  "Animatie \u0026 Pedagogie",
-                                                   "bio":  "Ontwerpt de spellen en zorgt voor de ervaring ter plaatse."
-                                               },
-                                               {
-                                                   "name":  "Bram",
-                                                   "role":  "Partnerschappen",
-                                                   "bio":  "Zoekt warme locaties en co�rdineert de gastheren."
-                                               }
-                                           ]
-                           },
-                  "partners":  {
-                                   "title":  "Onze partners",
-                                   "desc":  "Brusselse caf�s en bars die houden van uitwisseling. Heb je een locatie en wil je een gesprekstafel hosten?"
-                               },
-                  "timeline":  {
-                                   "title":  "Onze geschiedenis",
-                                   "items":  [
-                                                 {
-                                                     "date":  "2023",
-                                                     "text":  "Eerste pilotsessies met polyglotte vrienden."
-                                                 },
-                                                 {
-                                                     "date":  "2024",
-                                                     "text":  "Publieke lancering, eerste partners en eigen spellen."
-                                                 },
-                                                 {
-                                                     "date":  "2025",
-                                                     "text":  "Dagelijkse sessies, nieuwe talen en wijken."
-                                                 }
-                                             ]
-                               },
-                  "testimonials":  {
-                                       "title":  "Ze praten erover",
-                                       "quotes":  [
-                                                      {
-                                                          "author":  "Luc�a",
-                                                          "text":  "Ik durfde al tijdens de eerste sessie te spreken. De spellen helpen echt."
-                                                      },
-                                                      {
-                                                          "author":  "Thomas",
-                                                          "text":  "Je maakt vooruitgang zonder het te merken, en je ontmoet nieuwe mensen."
-                                                      }
-                                                  ]
-                                   },
-                  "cta":  {
-                              "primary_label":  "Sluit je aan bij een sessie",
-                              "secondary_label":  "Word partner",
-                              "aria_primary":  "Reserveringspagina openen",
-                              "aria_secondary":  "Neem contact op met het partnerteam"
-                          },
-                  "contact":  {
-                                  "title":  "Contact opnemen",
-                                  "email_label":  "Stuur een e-mail",
-                                  "email_value":  "conversa@hotmail.com",
-                                  "social_label":  "Volg ons"
-                              },
-                  "meta":  {
-                               "title":  "Over ons � Conversa",
-                               "description":  "Conversa � taalpraktijk in Brussel in kleine groepen, met spellen en gezellige uitwisselingen."
-                           }
-              },
-    "faq":  {
-                "hero":  {
-                             "title":  "Veelgestelde vragen",
-                             "subtitle":  "Alles wat je moet weten om te starten met Conversa.",
-                             "intro":  "Welkom in ons FAQ-centrum. Hier vind je duidelijke antwoorden op de meest gestelde vragen over het gebruik van Conversa. Vind je het antwoord niet? Neem gerust contact met ons op."
-                         },
-                "qna":  {
-                            "what_is_conversa_q":  "Wat is Conversa?",
-                            "what_is_conversa_a":  "Conversa is een platform om op een speelse manier talen te oefenen in kleine groepen, in Brusselse caf�s en bars. Geen klassikaal onderwijs: je praat, speelt en wisselt uit, net als met vrienden, terwijl je nieuwe mensen ontmoet.",
-                            "how_join_event_q":  "Hoe sluit ik me aan bij een evenement?",
-                            "how_join_event_a":  "Vanaf de startpagina kies je een taal die je interesseert, bekijk je de beschikbare sessies en klik je op \"Ik doe mee\". Ter plaatse bevestig je je aanwezigheid via de app en sluit je je aan bij de groep om te starten.",
-                            "cancel_policy_q":  "Kan ik mijn deelname annuleren?",
-                            "cancel_policy_a":  "Ja, zolang het evenement nog niet is begonnen. Je kunt annuleren rechtstreeks vanuit de app. Dit maakt een plaats vrij voor iemand anders en houdt de groepen dynamisch.",
-                            "account_data_q":  "Wat doen jullie met mijn gegevens?",
-                            "account_data_a":  "We verzamelen alleen de informatie die nodig is om sessies te organiseren en de veiligheid van deelnemers te waarborgen. Je gegevens worden nooit verkocht, en je kunt ze op elk moment aanpassen of laten verwijderen.",
-                            "payment_price_q":  "Hoeveel kost het?",
-                            "payment_price_a":  "Een standaardticket kost �7 per sessie, inclusief toegang tot het gespreksgame en het in contact brengen met andere deelnemers. Speciale evenementen of workshops kunnen een ander tarief hebben, dat altijd vooraf wordt aangegeven."
-                        },
-                "no_results":  "Geen vraag gevonden? conversa@hotmail.com"
+            "area": {
+                "label": "Regio",
+                "placeholder": "Alle regio�s",
+                "options": {
+                    "brussels": "Brussel",
+                    "paris": "Parijs",
+                    "liege": "Luik"
+                }
             },
-    "payment":  {
-                    "publish_event":  "Publiceer uw evenement",
-                    "complete_payment":  "Betaling voltooien",
-                    "publish_question":  "Uw evenement is aangemaakt! Wilt u het nu publiceren?",
-                    "price":  "Prijs",
-                    "pay_now":  "Nu betalen",
-                    "pay_later":  "Later betalen",
-                    "pay_later_info":  "U kunt uw evenement later publiceren vanuit uw evenementenlijst.",
-                    "secure_payment":  "Beveiligde betaling via Stripe",
-                    "amount":  "Bedrag",
-                    "confirm_payment":  "Betaling bevestigen",
-                    "payment_success":  "Betaling geslaagd! Uw evenement is nu gepubliceerd.",
-                    "payment_error":  "Betalingsfout. Probeer het opnieuw."
+            "free": {
+                "label": "Gratis",
+                "placeholder": "Ja / Nee"
+            }
+        }
+    },
+    "i18n": {
+        "ui": "Taal van de interface",
+        "preferred": "Voorkeurstalen"
+    },
+    "pages": {
+        "home": {
+            "hero": {
+                "title": "Spreek een taal, beleef een ontmoeting",
+                "subtitle": "Sluit je aan bij Conversa, een actieve community dankzij taalmeetups. Immersieve spellen in caf�s in Brussel."
+            },
+            "search": {
+                "title": "Vind je taalpartners in 2 minuten",
+                "desc": "Voer een trefwoord in, kies je taal en je regio en start de zoekopdracht. We stellen sessies voor bij jou in de buurt."
+            },
+            "howto": {
+                "img_alt": "Gezellige taalkundige ontmoetingen",
+                "title": "Hoe werkt het?",
+                "steps": {
+                    "1": {
+                        "title": "Kies je taal en je regio",
+                        "desc": "Filter met de zoekbalk aan de linkerkant."
+                    },
+                    "2": {
+                        "title": "Sluit je aan bij een groep",
+                        "desc": "3+ deelnemers, bevestiging ter plaatse."
+                    },
+                    "3": {
+                        "title": "Speel & oefen",
+                        "desc": "Start het spel, verdien badges, deel je mening."
+                    }
+                }
+            },
+            "upcoming": {
+                "title": "Komende evenementen"
+            },
+            "categories": {
+                "title": "Ontdek per categorie",
+                "items": {
+                    "cafe": {
+                        "title": "Conversa Caf�",
+                        "subtitle": "Informele ontmoetingen"
+                    },
+                    "pro": {
+                        "title": "Conversa Pro",
+                        "subtitle": "Professionele uitwisselingen"
+                    },
+                    "events": {
+                        "title": "Conversa Events",
+                        "subtitle": "Openbare evenementen"
+                    }
+                }
+            },
+            "cta": {
+                "title": "Klaar om echt te praten?",
+                "subtitle": "Doe mee aan gezellige sessies bij jou in de buurt en maak deze week al vooruitgang.",
+                "benefits": {
+                    "rapid": {
+                        "desc": "Inschrijving in 1 minuut, geen betaling vereist"
+                    },
+                    "local": {
+                        "desc": "Kleinschalige groepen in partnercaf�s"
+                    },
+                    "effective": {
+                        "desc": "Gespreksgames met begeleiding, feedback van peers"
+                    }
                 },
-    "payments":  {
-                     "success":  {
-                                     "title":  "Betaling bevestigd",
-                                     "thanks":  "Dank u! Uw boeking is succesvol gevalideerd.",
-                                     "for_booking":  "voor de boeking {{id}}",
-                                     "back_to_event":  "Terug naar evenement",
-                                     "my_bookings":  "Mijn boekingen",
-                                     "back_to_events":  "Terug naar evenementen"
-                                 },
-                     "cancel":  {
-                                    "title":  "Betaling niet voltooid",
-                                    "line1":  "Uw betaling is geannuleerd",
-                                    "for_booking":  "voor de boeking {{id}}",
-                                    "reassure":  "U kunt het op elk moment opnieuw proberen.",
-                                    "retry":  "Betaling opnieuw proberen",
-                                    "view_booking":  "Mijn boeking bekijken",
-                                    "back_to_events":  "Terug naar evenementen",
-                                    "help":  "Als het probleem aanhoudt, controleer uw verbinding of probeer een andere betaalmethode."
-                                },
-                     "badge":  {
-                                   "interrupted":  "Transactie onderbroken",
-                                   "success":  "Betaling geslaagd"
-                               },
-                     "meta":  {
-                                  "session":  "Sessie",
-                                  "booking":  "Boeking"
-                              }
-                 },
-    "bookings":  {
-                     "title":  "Mijn boekingen",
-                     "empty":  "Nog geen boekingen.",
-                     "when":  "Wanneer",
-                     "amount":  "Bedrag",
-                     "event":  "Evenement",
-                     "status":  {
-                                    "PENDING":  "In afwachting van betaling",
-                                    "CONFIRMED":  "Bevestigd",
-                                    "CANCELLED":  "Geannuleerd",
-                                    "FAILED":  "Mislukt",
-                                    "EXPIRED":  "Verlopen",
-                                    "REFUNDED":  "Terugbetaald"
-                                }
-                 },
-    "events":  {
-                   "title":  "Evenementen",
-                   "empty":  "Nog geen evenementen.",
-                   "cancelled":  "Geannuleerd",
-                   "address":  "Adres",
-                   "city":  "Stad",
-                   "when":  "Wanneer",
-                   "theme":  "Thema",
-                   "price":  "Prijs",
-                   "free":  "Gratis",
-                   "book":  "Boeken",
-                   "already_booked":  "Al geboekt",
-                   "my_events":  "Mijn evenementen",
-                   "all_events":  "Alle evenementen",
-                   "add_event":  "Evenement toevoegen",
-                   "draft":  "Concept",
-                   "organizer":  "Organisator",
-                   "reserved":  "Gereserveerd",
-                   "pay_to_publish":  "Betaal om te publiceren",
-                   "filters":  {
-                                   "languages_placeholder":  "Doeltalen",
-                                   "reset":  "Resetten"
-                               },
-                   "nearby":  "In de buurt",
-                   "near_city":  "Gebaseerd op je stad: {{city}}"
-               },
-    "landing":  {
-                    "featured":  {
-                                     "title":  "Uitgelicht",
-                                     "subtitle":  "Een voorproefje van wat eraan komt"
-                                 },
-                    "hero":  {
-                                 "title":  "Spreek een taal, beleef een ontmoeting",
-                                 "subtitle":  "Sluit je aan bij duizenden leden die talen leren terwijl ze elkaar ontmoeten tijdens gezellige evenementen. Simpel, lokaal en effectief.",
-                                 "nearby":  "Dichtbij",
-                                 "stats":  {
-                                               "members":  "actieve leden",
-                                               "events":  "komende evenementen",
-                                               "languages":  "geoefende talen"
-                                           },
-                                 "img_alt":  "Gezellige taalkundige ontmoetingen"
-                             },
-                    "howto":  {
-                                  "title":  "Hoe werkt het?",
-                                  "subtitle":  "Meedoen met Conversa is eenvoudig en snel. In 3 stappen doe je al mee aan je eerste evenement.",
-                                  "steps":  {
-                                                "1":  {
-                                                          "title":  "Maak je gratis account",
-                                                          "desc":  "Schrijf je in in 2 minuten. Geef je talen en interesses aan."
-                                                      },
-                                                "2":  {
-                                                          "title":  "Reserveer je plaats bij een evenement",
-                                                          "desc":  "Bekijk evenementen bij jou in de buurt en reserveer met ��n klik."
-                                                      },
-                                                "3":  {
-                                                          "title":  "Ontmoet en oefen",
-                                                          "desc":  "Ga naar het evenement, ontmoet mensen en oefen op een natuurlijke manier."
-                                                      }
-                                            }
-                              },
-                    "testimonials":  {
-                                         "title":  "Ze praten erover",
-                                         "subtitle":  "Leden delen hun ervaring."
-                                     },
-                    "cta":  {
-                                "title":  "Klaar om te starten?",
-                                "subtitle":  "Maak je gratis account aan en sluit je aan bij de volgende sessie bij jou in de buurt."
-                            }
+                "hint": "Je kunt zonder registratie rondkijken. Sluit je aan wanneer je wilt."
+            }
+        }
+    },
+    "about": {
+        "hero": {
+            "badge": "Over ons",
+            "title": "Talen leren, mensen ontmoeten",
+            "subtitle": "Conversa maakt taalpraktijk eenvoudig en gezellig: kleine groepen, gespreksgames, warme locaties. Geen school, gewoon echte uitwisselingen."
+        },
+        "mission": {
+            "title": "Onze missie",
+            "p1": "Natuurlijke gelegenheden cre�ren om een taal te spreken zonder academische druk. Elke sessie is ontworpen om je te helpen durven, vooruitgang te boeken en je open te stellen voor anderen.",
+            "bullets": [
+                "Echte praktijk, geen klassikaal onderwijs",
+                "Groepen 3�6 personen zodat iedereen aan bod komt",
+                "Gesprekskaarten en spellen om het ijs te breken"
+            ]
+        },
+        "difference": {
+            "title": "Wat ons onderscheidt",
+            "items": [
+                {
+                    "title": "Speels",
+                    "desc": "Gespreksgames die het gesprek stimuleren en spontane expressie aanmoedigen."
                 },
-    "events":  {
-                   "detail":  {
-                                  "back_to_events":  "Terug naar evenementen",
-                                  "about":  "Over dit evenement",
-                                  "location":  "Locatie",
-                                  "price_per_person":  "Prijs per persoon",
-                                  "organized_by":  "Georganiseerd door",
-                                  "book_spot":  "Mijn plek reserveren",
-                                  "pay_booking":  "Reservering betalen",
-                                  "cancel_booking":  "Reservering annuleren",
-                                  "event_full":  "Volzet",
-                                  "event_cancelled":  "Evenement geannuleerd",
-                                  "booking_notice":  "Onmiddellijke bevestiging • Gratis annuleren tot 3u ervoor",
-                                  "pay_notice":  "Uw reservering wacht op betaling. Klik om te voltooien.",
-                                  "cancel_notice":  "U kan annuleren tot 3 uur voor de start",
-                                  "starting_soon":  "Start binnenkort",
-                                  "starting_soon_notice":  "Het evenement start binnen minder dan 3 uur, annuleren niet mogelijk",
-                                  "cancel_modal_title":  "Reservering annuleren?",
-                                  "cancel_modal_message":  "Weet u zeker dat u deze reservering wilt annuleren? Dit is onomkeerbaar.",
-                                  "yes_cancel":  "Ja, annuleren",
-                                  "not_found":  "Evenement niet gevonden",
-                                  "error":  "Er is een fout opgetreden bij het laden",
-                                  "loading":  "Bezig met laden...",
-                                  "pay_and_publish": "Betalen en publiceren",
-                                  "delete_draft": "Concept verwijderen",
-                                  "organizer_pending": "Betaling bezig...",
-                                  "cancel_event": "Evenement annuleren",
-                                  "cancel_event_title": "Dit evenement annuleren?",
-                                  "cancel_event_message": "Deze actie is onomkeerbaar en annuleert alle deelnemers.",
-                                  "yes_cancel_event": "Ja, evenement annuleren",
-                                  "register_free": "Gratis inschrijven",
-                                  "unregister": "Uitschrijven"
-                               }
-               },
-    "checkout":  {
-                     "title":  "Aankoop bevestigen",
-                     "message":  "Wilt u uw aankoop bevestigen?",
-                     "buy":  "Betalen"
-                 },
-    "footer":  {
-                   "navigation":  {
-                                      "title":  "Navigatie",
-                                      "faq":  "FAQ",
-                                      "events":  "Evenementen",
-                                      "about":  "Over ons"
-                                  },
-                   "brand":  {
-                                 "tagline":  "Talen leren en mensen ontmoeten"
-                             },
-                   "copyright":  "? {{year}} Conversa. Alle rechten voorbehouden.",
-                   "legal":  {
-                                 "title":  "Juridisch",
-                                 "privacy":  "Privacybeleid",
-                                 "terms":  "Gebruiksvoorwaarden",
-                                 "cookies":  "Cookies"
-                             },
-                   "social":  {
-                                  "title":  "Volg ons",
-                                  "instagram":  "Instagram",
-                                  "twitter":  "Twitter",
-                                  "facebook":  "Facebook"
-                              }
-               }
+                {
+                    "title": "Sociaal",
+                    "desc": "Je leert door nieuwsgierige mensen te ontmoeten, niet voor een bord."
+                },
+                {
+                    "title": "Flexibel",
+                    "desc": "Korte sessies, na het werk of in het weekend, zonder lange verplichtingen."
+                }
+            ]
+        },
+        "values": {
+            "title": "Onze waarden",
+            "list": [
+                {
+                    "title": "Welwillendheid",
+                    "desc": "Een veilige omgeving om te proberen, fouten te maken, opnieuw te proberen."
+                },
+                {
+                    "title": "Openheid",
+                    "desc": "Alle talen, alle niveaus, alle achtergronden."
+                },
+                {
+                    "title": "Eenvoud",
+                    "desc": "Inschrijven in enkele klikken, duidelijke regels, geen jargon."
+                },
+                {
+                    "title": "Kwaliteit",
+                    "desc": "Gestructureerde begeleiding, regelmatige feedback, voortdurende verbetering."
+                }
+            ]
+        },
+        "stats": {
+            "title": "In cijfers",
+            "sessions": {
+                "label": "Sessies uitgevoerd",
+                "value": "250+"
+            },
+            "learners": {
+                "label": "Deelnemers",
+                "value": "3 000+"
+            },
+            "languages": {
+                "label": "Talen geoefend",
+                "value": "10+"
+            },
+            "partners": {
+                "label": "Partnerlocaties",
+                "value": "20+"
+            }
+        },
+        "how": {
+            "title": "Hoe werkt het",
+            "steps": [
+                {
+                    "title": "Kies een taal",
+                    "desc": "Filter op Engels, Nederlands, Spaans� en jouw buurt."
+                },
+                {
+                    "title": "Reserveer je plaats",
+                    "desc": "Beperkte groepen voor echte gesprekken."
+                },
+                {
+                    "title": "Sluit je aan bij de tafel",
+                    "desc": "Een host start het spel en begeleidt het tempo."
+                }
+            ],
+            "a11y_illustration_alt": "Illustratie van mensen die rond een tafel praten"
+        },
+        "team": {
+            "title": "Het team",
+            "members": [
+                {
+                    "name": "Ana",
+                    "role": "Animatie & Pedagogie",
+                    "bio": "Ontwerpt de spellen en zorgt voor de ervaring ter plaatse."
+                },
+                {
+                    "name": "Bram",
+                    "role": "Partnerschappen",
+                    "bio": "Zoekt warme locaties en co�rdineert de gastheren."
+                }
+            ]
+        },
+        "partners": {
+            "title": "Onze partners",
+            "desc": "Brusselse caf�s en bars die houden van uitwisseling. Heb je een locatie en wil je een gesprekstafel hosten?"
+        },
+        "timeline": {
+            "title": "Onze geschiedenis",
+            "items": [
+                {
+                    "date": "2023",
+                    "text": "Eerste pilotsessies met polyglotte vrienden."
+                },
+                {
+                    "date": "2024",
+                    "text": "Publieke lancering, eerste partners en eigen spellen."
+                },
+                {
+                    "date": "2025",
+                    "text": "Dagelijkse sessies, nieuwe talen en wijken."
+                }
+            ]
+        },
+        "testimonials": {
+            "title": "Ze praten erover",
+            "quotes": [
+                {
+                    "author": "Luc�a",
+                    "text": "Ik durfde al tijdens de eerste sessie te spreken. De spellen helpen echt."
+                },
+                {
+                    "author": "Thomas",
+                    "text": "Je maakt vooruitgang zonder het te merken, en je ontmoet nieuwe mensen."
+                }
+            ]
+        },
+        "cta": {
+            "primary_label": "Sluit je aan bij een sessie",
+            "secondary_label": "Word partner",
+            "aria_primary": "Reserveringspagina openen",
+            "aria_secondary": "Neem contact op met het partnerteam"
+        },
+        "contact": {
+            "title": "Contact opnemen",
+            "email_label": "Stuur een e-mail",
+            "email_value": "conversa@hotmail.com",
+            "social_label": "Volg ons"
+        },
+        "meta": {
+            "title": "Over ons � Conversa",
+            "description": "Conversa � taalpraktijk in Brussel in kleine groepen, met spellen en gezellige uitwisselingen."
+        }
+    },
+    "faq": {
+        "hero": {
+            "title": "Veelgestelde vragen",
+            "subtitle": "Alles wat je moet weten om te starten met Conversa.",
+            "intro": "Welkom in ons FAQ-centrum. Hier vind je duidelijke antwoorden op de meest gestelde vragen over het gebruik van Conversa. Vind je het antwoord niet? Neem gerust contact met ons op."
+        },
+        "qna": {
+            "what_is_conversa_q": "Wat is Conversa?",
+            "what_is_conversa_a": "Conversa is een platform om op een speelse manier talen te oefenen in kleine groepen, in Brusselse caf�s en bars. Geen klassikaal onderwijs: je praat, speelt en wisselt uit, net als met vrienden, terwijl je nieuwe mensen ontmoet.",
+            "how_join_event_q": "Hoe sluit ik me aan bij een evenement?",
+            "how_join_event_a": "Vanaf de startpagina kies je een taal die je interesseert, bekijk je de beschikbare sessies en klik je op \"Ik doe mee\". Ter plaatse bevestig je je aanwezigheid via de app en sluit je je aan bij de groep om te starten.",
+            "cancel_policy_q": "Kan ik mijn deelname annuleren?",
+            "cancel_policy_a": "Ja, zolang het evenement nog niet is begonnen. Je kunt annuleren rechtstreeks vanuit de app. Dit maakt een plaats vrij voor iemand anders en houdt de groepen dynamisch.",
+            "account_data_q": "Wat doen jullie met mijn gegevens?",
+            "account_data_a": "We verzamelen alleen de informatie die nodig is om sessies te organiseren en de veiligheid van deelnemers te waarborgen. Je gegevens worden nooit verkocht, en je kunt ze op elk moment aanpassen of laten verwijderen.",
+            "payment_price_q": "Hoeveel kost het?",
+            "payment_price_a": "Een standaardticket kost �7 per sessie, inclusief toegang tot het gespreksgame en het in contact brengen met andere deelnemers. Speciale evenementen of workshops kunnen een ander tarief hebben, dat altijd vooraf wordt aangegeven."
+        },
+        "no_results": "Geen vraag gevonden? conversa@hotmail.com"
+    },
+    "payment": {
+        "publish_event": "Publiceer uw evenement",
+        "complete_payment": "Betaling voltooien",
+        "publish_question": "Uw evenement is aangemaakt! Wilt u het nu publiceren?",
+        "price": "Prijs",
+        "pay_now": "Nu betalen",
+        "pay_later": "Later betalen",
+        "pay_later_info": "U kunt uw evenement later publiceren vanuit uw evenementenlijst.",
+        "secure_payment": "Beveiligde betaling via Stripe",
+        "amount": "Bedrag",
+        "confirm_payment": "Betaling bevestigen",
+        "payment_success": "Betaling geslaagd! Uw evenement is nu gepubliceerd.",
+        "payment_error": "Betalingsfout. Probeer het opnieuw."
+    },
+    "payments": {
+        "success": {
+            "title": "Betaling bevestigd",
+            "thanks": "Dank u! Uw boeking is succesvol gevalideerd.",
+            "for_booking": "voor de boeking {{id}}",
+            "back_to_event": "Terug naar evenement",
+            "my_bookings": "Mijn boekingen",
+            "back_to_events": "Terug naar evenementen"
+        },
+        "cancel": {
+            "title": "Betaling niet voltooid",
+            "line1": "Uw betaling is geannuleerd",
+            "for_booking": "voor de boeking {{id}}",
+            "reassure": "U kunt het op elk moment opnieuw proberen.",
+            "retry": "Betaling opnieuw proberen",
+            "view_booking": "Mijn boeking bekijken",
+            "back_to_events": "Terug naar evenementen",
+            "help": "Als het probleem aanhoudt, controleer uw verbinding of probeer een andere betaalmethode."
+        },
+        "badge": {
+            "interrupted": "Transactie onderbroken",
+            "success": "Betaling geslaagd"
+        },
+        "meta": {
+            "session": "Sessie",
+            "booking": "Boeking"
+        }
+    },
+    "bookings": {
+        "title": "Mijn boekingen",
+        "empty": "Nog geen boekingen.",
+        "when": "Wanneer",
+        "amount": "Bedrag",
+        "event": "Evenement",
+        "status": {
+            "PENDING": "In afwachting van betaling",
+            "CONFIRMED": "Bevestigd",
+            "CANCELLED": "Geannuleerd",
+            "FAILED": "Mislukt",
+            "EXPIRED": "Verlopen",
+            "REFUNDED": "Terugbetaald"
+        }
+    },
+    "events": {
+        "detail": {
+            "back_to_events": "Terug naar evenementen",
+            "about": "Over dit evenement",
+            "location": "Locatie",
+            "price_per_person": "Prijs per persoon",
+            "organized_by": "Georganiseerd door",
+            "book_spot": "Mijn plek reserveren",
+            "pay_booking": "Reservering betalen",
+            "cancel_booking": "Reservering annuleren",
+            "event_full": "Volzet",
+            "event_cancelled": "Evenement geannuleerd",
+            "booking_notice": "Onmiddellijke bevestiging �?� Gratis annuleren tot 3u ervoor",
+            "pay_notice": "Uw reservering wacht op betaling. Klik om te voltooien.",
+            "cancel_notice": "U kan annuleren tot 3 uur voor de start",
+            "starting_soon": "Start binnenkort",
+            "starting_soon_notice": "Het evenement start binnen minder dan 3 uur, annuleren niet mogelijk",
+            "cancel_modal_title": "Reservering annuleren?",
+            "cancel_modal_message": "Weet u zeker dat u deze reservering wilt annuleren? Dit is onomkeerbaar.",
+            "yes_cancel": "Ja, annuleren",
+            "not_found": "Evenement niet gevonden",
+            "error": "Er is een fout opgetreden bij het laden",
+            "loading": "Bezig met laden...",
+            "pay_and_publish": "Betalen en publiceren",
+            "delete_draft": "Concept verwijderen",
+            "organizer_pending": "Betaling bezig...",
+            "cancel_event": "Evenement annuleren",
+            "cancel_event_title": "Dit evenement annuleren?",
+            "cancel_event_message": "Deze actie is onomkeerbaar en annuleert alle deelnemers.",
+            "yes_cancel_event": "Ja, evenement annuleren",
+            "register_free": "Gratis inschrijven",
+            "unregister": "Uitschrijven",
+            "games_title": "Samenwerkingsspellen"
+        }
+    },
+    "landing": {
+        "featured": {
+            "title": "Uitgelicht",
+            "subtitle": "Een voorproefje van wat eraan komt"
+        },
+        "hero": {
+            "title": "Spreek een taal, beleef een ontmoeting",
+            "subtitle": "Sluit je aan bij duizenden leden die talen leren terwijl ze elkaar ontmoeten tijdens gezellige evenementen. Simpel, lokaal en effectief.",
+            "nearby": "Dichtbij",
+            "stats": {
+                "members": "actieve leden",
+                "events": "komende evenementen",
+                "languages": "geoefende talen"
+            },
+            "img_alt": "Gezellige taalkundige ontmoetingen"
+        },
+        "howto": {
+            "title": "Hoe werkt het?",
+            "subtitle": "Meedoen met Conversa is eenvoudig en snel. In 3 stappen doe je al mee aan je eerste evenement.",
+            "steps": {
+                "1": {
+                    "title": "Maak je gratis account",
+                    "desc": "Schrijf je in in 2 minuten. Geef je talen en interesses aan."
+                },
+                "2": {
+                    "title": "Reserveer je plaats bij een evenement",
+                    "desc": "Bekijk evenementen bij jou in de buurt en reserveer met ��n klik."
+                },
+                "3": {
+                    "title": "Ontmoet en oefen",
+                    "desc": "Ga naar het evenement, ontmoet mensen en oefen op een natuurlijke manier."
+                }
+            }
+        },
+        "testimonials": {
+            "title": "Ze praten erover",
+            "subtitle": "Leden delen hun ervaring."
+        },
+        "cta": {
+            "title": "Klaar om te starten?",
+            "subtitle": "Maak je gratis account aan en sluit je aan bij de volgende sessie bij jou in de buurt."
+        }
+    },
+    "GAMES": {
+        "LOADING": "Spel laden...",
+        "BACK": "Terug",
+        "NO_GAME": {
+            "ORGANIZER_TITLE": "Geen actief spel",
+            "ORGANIZER_MESSAGE": "Start een samenwerkingsspel om uw evenement te verlevendigen en deelnemers te betrekken",
+            "CREATE_GAME": "Maak een spel",
+            "PARTICIPANT_TITLE": "Geen spel bezig",
+            "PARTICIPANT_MESSAGE": "De organisator kan een spel starten om de sessie te animeren"
+        },
+        "CREATE": {
+            "TITLE": "Maak een nieuw spel",
+            "LOADING": "Laden...",
+            "ERROR": "Fout",
+            "TYPE": "Speltype",
+            "SELECT_TYPE": "Selecteer een type",
+            "DIFFICULTY": "Moeilijkheid",
+            "SELECT_DIFFICULTY": "Selecteer moeilijkheid",
+            "TIMEOUT": "Maximale duur",
+            "MINUTES": "minuten",
+            "START_GAME": "Start spel"
+        },
+        "TYPES": {
+            "PICTURE_DESCRIPTION": "Afbeelding beschrijving",
+            "WORD_ASSOCIATION": "Woordassociatie",
+            "DEBATE": "Debat",
+            "ROLE_PLAY": "Rollenspel"
+        },
+        "DIFFICULTY": {
+            "EASY": "Gemakkelijk",
+            "MEDIUM": "Gemiddeld",
+            "HARD": "Moeilijk"
+        },
+        "STATUS": {
+            "ACTIVE": "Actief",
+            "SHOWING_RESULTS": "Toont resultaten",
+            "COMPLETED": "Voltooid"
+        },
+        "PLAY": {
+            "TITLE": "Spel bezig",
+            "LOADING": "Spel laden...",
+            "ERROR": "Fout",
+            "IMAGE_ALT": "Spelafbeelding",
+            "QUESTION": "Vraag",
+            "SELECT_ANSWER": "Selecteer je antwoord",
+            "YOUR_ANSWER": "Jouw antwoord",
+            "ANSWER_PLACEHOLDER": "Schrijf je antwoord...",
+            "SUBMIT_VOTE": "Verzenden",
+            "SUBMITTING": "Verzenden...",
+            "VOTE_SUBMITTED": "Stem geregistreerd!",
+            "YOUR_VOTE": "Jouw antwoord",
+            "STATS_TITLE": "Statistieken",
+            "TOTAL_VOTES": "Stemmen",
+            "VOTES_REMAINING": "Resterende stemmen",
+            "VOTE_DISTRIBUTION": "Stemverdeling",
+            "ORGANIZER_CONTROLS": "Organisator controles",
+            "REVEAL_ANSWER": "Controleer antwoord",
+            "REVEALING": "Controleren...",
+            "REVEAL_HINT": "Klik om te onthullen of het team correct heeft geantwoord",
+            "NEXT_QUESTION": "Volgende vraag",
+            "MOVING_NEXT": "Laden...",
+            "NEXT_HINT": "Ga naar de volgende vraag of beëindig het spel",
+            "CORRECT": "Correct! Goed gedaan!",
+            "INCORRECT": "Incorrect",
+            "TEAM_ANSWER": "Teamantwoord",
+            "CORRECT_ANSWER": "Correct antwoord",
+            "EXPLANATION": "Uitleg",
+            "NO_VOTES": "Geen stemmen",
+            "WAITING_ORGANIZER": "Wachten op de organisator om naar de volgende vraag te gaan..."
+        },
+        "DETAILED_RESULTS": {
+            "TITLE": "Gedetailleerde Resultaten",
+            "LOADING": "Resultaten laden...",
+            "ERROR": "Fout",
+            "IMAGE_ALT": "Vraagafbeelding",
+            "CORRECT": "Correct!",
+            "INCORRECT": "Incorrect",
+            "TEAM_ANSWER": "Teamantwoord",
+            "CORRECT_ANSWER": "Correct antwoord",
+            "NO_ANSWER": "Geen antwoord",
+            "EXPLANATION": "Uitleg",
+            "VOTES_TITLE": "Deelnemersstemmen",
+            "NO_VOTES": "Geen stemmen geregistreerd",
+            "PREVIOUS": "Vorige",
+            "NEXT_QUESTION": "Volgende vraag",
+            "VIEW_SUMMARY": "Bekijk samenvatting"
+        },
+        "SUMMARY": {
+            "LOADING": "Samenvatting laden...",
+            "ERROR": "Fout",
+            "VICTORY": "Overwinning!",
+            "PARTICIPATION": "Goede poging!",
+            "VICTORY_MESSAGE": "Gefeliciteerd! Je hebt dit spel succesvol voltooid.",
+            "PARTICIPATION_MESSAGE": "Bedankt voor je deelname! Blijf verbeteren.",
+            "SCORE_TITLE": "Eindscore",
+            "CORRECT_ANSWERS": "Correcte antwoorden",
+            "PARTICIPANTS": "Deelnemers"
+        },
+        "RESULTS": {
+            "TITLE": "Resultaten",
+            "LOADING": "Resultaten laden...",
+            "ERROR": "Fout",
+            "IMAGE_ALT": "Spelafbeelding",
+            "SUCCESS_TITLE": "Gefeliciteerd! Correct collectief antwoord!",
+            "FAILURE_TITLE": "Bijna! Je komt dichterbij!",
+            "TIMEOUT_TITLE": "Tijd verstreken",
+            "TIMEOUT_MESSAGE": "De toegewezen tijd is verlopen. Geen meerderheidsantwoord gevonden.",
+            "YOUR_ANSWER": "Groepsantwoord",
+            "CORRECT_ANSWER": "Correct antwoord",
+            "STATISTICS": "Statistieken",
+            "TOTAL_PARTICIPANTS": "Deelnemers",
+            "TOTAL_VOTES": "Totaal stemmen",
+            "PARTICIPATION_RATE": "Deelnamepercentage",
+            "VOTE_BREAKDOWN": "Stemuitsplitsing",
+            "CORRECT": "Correct",
+            "WINNER": "Winnaar",
+            "VOTES": "stemmen",
+            "INDIVIDUAL_VOTES": "Individuele stemmen",
+            "START_NEW_GAME": "Start een nieuw spel"
+        },
+        "HISTORY": {
+            "TITLE": "Spelgeschiedenis",
+            "SUCCESS": "Succes",
+            "FAILURE": "Mislukt",
+            "TIMEOUT": "Tijd verstreken"
+        }
+    },
+    "checkout": {
+        "title": "Aankoop bevestigen",
+        "message": "Wilt u uw aankoop bevestigen?",
+        "buy": "Betalen"
+    },
+    "footer": {
+        "navigation": {
+            "title": "Navigatie",
+            "faq": "FAQ",
+            "events": "Evenementen",
+            "about": "Over ons"
+        },
+        "brand": {
+            "tagline": "Talen leren en mensen ontmoeten"
+        },
+        "copyright": "? {{year}} Conversa. Alle rechten voorbehouden.",
+        "legal": {
+            "title": "Juridisch",
+            "privacy": "Privacybeleid",
+            "terms": "Gebruiksvoorwaarden",
+            "cookies": "Cookies"
+        },
+        "social": {
+            "title": "Volg ons",
+            "instagram": "Instagram",
+            "twitter": "Twitter",
+            "facebook": "Facebook"
+        }
+    },
+    "PROFILE": {
+        "TITLE": "Mijn profiel",
+        "SUBTITLE": "Beheer uw persoonlijke informatie en accountinstellingen",
+        "ACCOUNT_INFO": "Accountinformatie",
+        "EMAIL": "E-mail",
+        "FULL_NAME": "Volledige naam",
+        "AGE": "Leeftijd",
+        "YEARS_OLD": "jaar oud",
+        "MEMBER_SINCE": "Lid sinds",
+        "NATIVE_LANGUAGES": "Moedertalen",
+        "TARGET_LANGUAGES": "Doeltalen",
+        "DANGER_ZONE": "Gevarenzone",
+        "DEACTIVATE_ACCOUNT": "Mijn account deactiveren",
+        "DEACTIVATE_ACCOUNT_WARNING": "Deactiveer uw account tijdelijk. U kunt het reactiveren door opnieuw in te loggen.",
+        "DEACTIVATE_ACCOUNT_BUTTON": "Mijn account deactiveren",
+        "CONFIRM_DEACTIVATE_TITLE": "Account deactiveren",
+        "CONFIRM_DEACTIVATE_MESSAGE": "Uw account wordt tijdelijk gedeactiveerd. U kunt het reactiveren door opnieuw te registreren met hetzelfde e-mailadres.",
+        "DEACTIVATE_CONSEQUENCE_1": "U kunt niet meer inloggen",
+        "DEACTIVATE_CONSEQUENCE_2": "Uw gegevens blijven bewaard",
+        "DEACTIVATE_CONSEQUENCE_3": "U kunt uw account op elk moment reactiveren",
+        "CONFIRM_DEACTIVATE_BUTTON": "Ja, deactiveer mijn account",
+        "DEACTIVATING": "Deactiveren...",
+        "PERMANENT_DELETE_ACCOUNT": "Mijn account permanent verwijderen",
+        "PERMANENT_DELETE_WARNING": "�s�️ WAARSCHUWING: Deze actie is ONOMKEERBAAR. Al uw persoonlijke gegevens worden permanent geanonimiseerd.",
+        "PERMANENT_DELETE_BUTTON": "Permanent verwijderen",
+        "CONFIRM_PERMANENT_DELETE_TITLE": "�s�️ Permanente verwijdering",
+        "CONFIRM_PERMANENT_DELETE_MESSAGE": "WAARSCHUWING: Deze actie is ONOMKEERBAAR! Al uw persoonlijke gegevens worden permanent geanonimiseerd.",
+        "PERMANENT_CONSEQUENCE_1": "Al uw persoonlijke gegevens worden geanonimiseerd",
+        "PERMANENT_CONSEQUENCE_2": "Uw e-mail wordt vervangen door deleted_user_[id]@deleted.local",
+        "PERMANENT_CONSEQUENCE_3": "U kunt dit account NOOIT meer reactiveren",
+        "PERMANENT_CONSEQUENCE_4": "Deze actie is ONOMKEERBAAR",
+        "CONFIRM_PASSWORD_LABEL": "Bevestig uw wachtwoord",
+        "PASSWORD_PLACEHOLDER": "Voer uw wachtwoord in",
+        "CONFIRM_DELETE_BUTTON": "Ja, verwijder mijn account",
+        "DELETING": "Verwijderen...",
+        "PASSWORD_REQUIRED": "Wachtwoord is vereist",
+        "DELETE_ACCOUNT_ERROR": "Fout bij het verwijderen van account",
+        "CANNOT_DELETE_WITH_BOOKINGS": "Kan uw account niet verwijderen: u heeft aankomende bevestigde boekingen. Annuleer ze eerst of wacht tot ze zijn voltooid.",
+        "CANNOT_DELETE_WITH_EVENTS": "Kan uw account niet verwijderen: u organiseert aankomende gepubliceerde evenementen. Annuleer ze eerst."
+    },
+    "games": {
+        "types": {
+            "picture_description": "Beeldbeschrijving",
+            "word_association": "Woordassociatie",
+            "debate": "Debat",
+            "role_play": "Rollenspel"
+        }
+    },
+    "events": {
+        "create": {
+            "step3_description_full": "Organiseer een korte sessie van 1 uur tussen 12u en 21u. Tot 7 dagen van tevoren – denk er alleen aan om minstens 3 uur vooruit te plannen!"
+        }
+    }
 }

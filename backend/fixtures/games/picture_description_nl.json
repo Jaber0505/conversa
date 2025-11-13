@@ -1,0 +1,83 @@
+[
+  {
+    "id": "pd_nl_easy_01",
+    "difficulty": "easy",
+    "question": "Beschrijf deze afbeelding: Wat zie je?",
+    "image_url": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4",
+    "correct_answer": "berg",
+    "options": ["berg", "strand", "stad", "bos"],
+    "context": "Een mooie berg met sneeuw op de top"
+  },
+  {
+    "id": "pd_nl_easy_02",
+    "difficulty": "easy",
+    "question": "Wat zie je op deze foto?",
+    "image_url": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308",
+    "correct_answer": "strand",
+    "options": ["strand", "woestijn", "meer", "rivier"],
+    "context": "Een strand met zand en oceaan"
+  },
+  {
+    "id": "pd_nl_easy_03",
+    "difficulty": "easy",
+    "question": "Wat is de dominante kleur in deze afbeelding?",
+    "image_url": "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05",
+    "correct_answer": "groen",
+    "options": ["groen", "blauw", "rood", "geel"],
+    "context": "Een weelderig groen bos"
+  },
+  {
+    "id": "pd_nl_medium_01",
+    "difficulty": "medium",
+    "question": "Beschrijf de sfeer van deze stedelijke scène",
+    "image_url": "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df",
+    "correct_answer": "druk en modern",
+    "options": ["druk en modern", "rustig en oud", "industrieel", "landelijk"],
+    "context": "Een moderne stad met wolkenkrabbers"
+  },
+  {
+    "id": "pd_nl_medium_02",
+    "difficulty": "medium",
+    "question": "Welk type architectuur zie je voornamelijk?",
+    "image_url": "https://images.unsplash.com/photo-1499856871958-5b9627545d1a",
+    "correct_answer": "hedendaags",
+    "options": ["hedendaags", "gotisch", "barok", "klassiek"],
+    "context": "Moderne gebouwen van glas en staal"
+  },
+  {
+    "id": "pd_nl_medium_03",
+    "difficulty": "medium",
+    "question": "Welk seizoen wordt afgebeeld in deze afbeelding?",
+    "image_url": "https://images.unsplash.com/photo-1476820865390-c52aeebb9891",
+    "correct_answer": "herfst",
+    "options": ["herfst", "lente", "zomer", "winter"],
+    "context": "Bomen met oranje en rode bladeren"
+  },
+  {
+    "id": "pd_nl_hard_01",
+    "difficulty": "hard",
+    "question": "Analyseer de artistieke compositie: welke fotografische techniek wordt hier gebruikt?",
+    "image_url": "https://images.unsplash.com/photo-1501594907352-04cda38ebc29",
+    "correct_answer": "ondiepe scherptediepte",
+    "options": ["ondiepe scherptediepte", "panorama", "lange belichting", "tegenlicht"],
+    "context": "Foto met scherp onderwerp en wazige achtergrond"
+  },
+  {
+    "id": "pd_nl_hard_02",
+    "difficulty": "hard",
+    "question": "Welke emotie of atmosfeer domineert in deze foto?",
+    "image_url": "https://images.unsplash.com/photo-1511576661531-b34d7da5d0bb",
+    "correct_answer": "contemplatieve melancholie",
+    "options": ["contemplatieve melancholie", "uitbundige vreugde", "dramatische spanning", "absolute sereniteit"],
+    "context": "Een persoon alleen kijkend naar een landschap bij zonsondergang"
+  },
+  {
+    "id": "pd_nl_hard_03",
+    "difficulty": "hard",
+    "question": "Identificeer de artistieke stroming of visuele stijl van deze afbeelding",
+    "image_url": "https://images.unsplash.com/photo-1482164565953-04b62dcac1cd",
+    "correct_answer": "minimalisme",
+    "options": ["minimalisme", "expressionisme", "surrealisme", "realisme"],
+    "context": "Eenvoudige compositie met weinig elementen en veel negatieve ruimte"
+  }
+]

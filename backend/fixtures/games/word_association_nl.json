@@ -1,0 +1,74 @@
+[
+  {
+    "id": "wa_nl_easy_01",
+    "difficulty": "easy",
+    "question": "Welk woord associeer je het meest met 'zon'?",
+    "correct_answer": "warmte",
+    "options": ["warmte", "koude", "regen", "sneeuw"],
+    "context": "Directe associatie met de zon"
+  },
+  {
+    "id": "wa_nl_easy_02",
+    "difficulty": "easy",
+    "question": "Welk woord past het best bij 'boek'?",
+    "correct_answer": "lezen",
+    "options": ["lezen", "koken", "sport", "muziek"],
+    "context": "Activiteit gerelateerd aan boeken"
+  },
+  {
+    "id": "wa_nl_easy_03",
+    "difficulty": "easy",
+    "question": "Compleet: 'brood' en ... ?",
+    "correct_answer": "boter",
+    "options": ["boter", "salade", "steak", "ijs"],
+    "context": "Gebruikelijke voedselparing"
+  },
+  {
+    "id": "wa_nl_medium_01",
+    "difficulty": "medium",
+    "question": "Welke uitdrukking komt overeen met 'met je hoofd in de wolken zijn'?",
+    "correct_answer": "dagdromen, afgeleid zijn",
+    "options": ["dagdromen, afgeleid zijn", "boos zijn", "ziek zijn", "moe zijn"],
+    "context": "Nederlandse uitdrukking"
+  },
+  {
+    "id": "wa_nl_medium_02",
+    "difficulty": "medium",
+    "question": "Welk woord maakt 'rood' het beste compleet tot een uitdrukking?",
+    "correct_answer": "haring",
+    "options": ["haring", "appel", "auto", "huis"],
+    "context": "Rode haring = afleidingsmanoeuvre"
+  },
+  {
+    "id": "wa_nl_medium_03",
+    "difficulty": "medium",
+    "question": "Associeer: 'regen' + 'paraplu' = 'zon' + ... ?",
+    "correct_answer": "zonnebril",
+    "options": ["zonnebril", "hoed", "sjaal", "handschoenen"],
+    "context": "Beschermend accessoire tegen de zon"
+  },
+  {
+    "id": "wa_nl_hard_01",
+    "difficulty": "hard",
+    "question": "Tot welk register behoort het woord 'gaaf'?",
+    "correct_answer": "informeel",
+    "options": ["informeel", "formeel", "technisch", "verouderd"],
+    "context": "Taalregisters in het Nederlands"
+  },
+  {
+    "id": "wa_nl_hard_02",
+    "difficulty": "hard",
+    "question": "Compleet deze uitspraak: 'Ik denk, dus ...'",
+    "correct_answer": "ik besta",
+    "options": ["ik besta", "ik leef", "ik praat", "ik werk"],
+    "context": "Filosofische uitspraak van Descartes"
+  },
+  {
+    "id": "wa_nl_hard_03",
+    "difficulty": "hard",
+    "question": "Welk woord heeft dezelfde etymologie als 'automobiel'?",
+    "correct_answer": "autonoom",
+    "options": ["autonoom", "mobiel", "motor", "weg"],
+    "context": "Griekse etymologie: auto = zelf"
+  }
+]

@@ -8,17 +8,11 @@
     (action)="onCreateEvent()">
   </shared-headline-bar>
 
-  <!-- Barre de recherche et filtres -->
-  <div class="search-section">
-    <shared-search-bar
-      [fields]="[
-        { type: 'multiselect', placeholder: ('shared.search.select_placeholder' | t), options: langOptions(), width: '200px' },
-        { type: 'text',        placeholder: ('shared.search.placeholder_event' | t), width: '1fr' }
-      ]"
-      [searchButtonText]="'shared.search.submit' | t"
-      (search)="onSearchBar($event)">
-    </shared-search-bar>
-  </div>
+  <!-- Filtres avancés modernes -->
+  <app-event-filters
+    [languageOptions]="langOptions()"
+    (filtersChanged)="onFiltersChanged($event)">
+  </app-event-filters>
 
   <!-- Message d'erreur -->
   <div class="state-error" *ngIf="error() as err">
@@ -55,13 +49,15 @@
           *ngFor="let scoredEvent of getPaginatedEvents(myEvents(), 'my'); trackBy: trackById"
           [event]="scoredEvent.event"
           [isNearby]="false"
-          [isRecommended]="false"
+          [isRecommended]="scoredEvent.isRecommended"
           [isOrganizer]="true"
           [showBookButton]="false"
+          [priorityBadge]="scoredEvent.badgeReason"
           [isPaymentLoading]="paymentLoadingEventId() === scoredEvent.event.id"
           (book)="onBookEvent($event)"
           (viewDetails)="onViewDetails($event)"
-          (payDraft)="onPayDraftNow($event)">
+          (payDraft)="onPayDraftNow($event)"
+          (playGame)="onPlayGame($event)">
         </app-event-card>
       </div>
 
@@ -75,16 +71,21 @@
           ‹ Précédent
         </button>
 
-        <div class="pagination-pages">
+      <div class="pagination-pages">
+        <ng-container *ngFor="let item of getPaginationItems(myEvents(), 'my')">
           <button
-            *ngFor="let page of getPageNumbers(myEvents(), 'my')"
+            *ngIf="item.type === 'page'"
             type="button"
             class="pagination-page"
-            [class.active]="myEventsCurrentPage() === page"
-            (click)="goToPage(page, 'my', myEvents().length)">
-            {{ page }}
+            [class.active]="myEventsCurrentPage() === item.value"
+            (click)="goToPage(item.value, 'my', myEvents().length)">
+            {{ item.value }}
           </button>
-        </div>
+          <span
+            *ngIf="item.type === 'ellipsis'"
+            class="pagination-ellipsis">…</span>
+        </ng-container>
+      </div>
 
         <button
           type="button"
@@ -106,11 +107,13 @@
         [event]="scoredEvent.event"
         [isNearby]="scoredEvent.isNearby"
         [isRecommended]="scoredEvent.isRecommended"
+        [priorityBadge]="scoredEvent.badgeReason"
         [isOrganizer]="false"
         [reserved]="scoredEvent.event.alreadyBooked === true"
         [showBookButton]="false"
         (book)="onBookEvent($event)"
-        (viewDetails)="onViewDetails($event)">
+        (viewDetails)="onViewDetails($event)"
+        (playGame)="onPlayGame($event)">
       </app-event-card>
     </div>
 
@@ -125,14 +128,19 @@
       </button>
 
       <div class="pagination-pages">
-        <button
-          *ngFor="let page of getPageNumbers(publicEvents(), 'public')"
-          type="button"
-          class="pagination-page"
-          [class.active]="publicEventsCurrentPage() === page"
-          (click)="goToPage(page, 'public', publicEvents().length)">
-          {{ page }}
-        </button>
+        <ng-container *ngFor="let item of getPaginationItems(publicEvents(), 'public')">
+          <button
+            *ngIf="item.type === 'page'"
+            type="button"
+            class="pagination-page"
+            [class.active]="publicEventsCurrentPage() === item.value"
+            (click)="goToPage(item.value, 'public', publicEvents().length)">
+            {{ item.value }}
+          </button>
+          <span
+            *ngIf="item.type === 'ellipsis'"
+            class="pagination-ellipsis">…</span>
+        </ng-container>
       </div>
 
       <button

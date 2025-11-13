@@ -7,3 +7,4 @@ export * from './bookings.model';
 export * from './payments.model';
 export * from './partners.model';
 export * from './registration.model';
+export * from './games.model';

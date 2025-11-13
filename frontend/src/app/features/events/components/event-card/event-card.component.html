@@ -1,72 +1,68 @@
-<shared-card class="event-card" [class.recommended]="isRecommended" [class.nearby]="isNearby" [clickable]="true" (click)="onCardClick()">
-  <div header class="event-header">
-    <!-- Badges en haut de la carte -->
-    <div class="header-badges">
-      <!-- Badge de langue - toujours affiché -->
-      <shared-badge variant="secondary" tone="solid" class="language-badge">
-        🗣️ {{ event.language_code }}
+<shared-card
+  class="event-card"
+  [class.recommended]="isRecommended"
+  [class.nearby]="isNearby"
+  [clickable]="true"
+  (click)="onCardClick()">
+  <div class="event-main">
+    <div class="top-line">
+      <shared-badge variant="secondary" tone="solid" class="language-chip">
+        {{ languageBadgeKey | t }}
       </shared-badge>
 
-      <!-- Badge recommandé -->
-      <shared-badge *ngIf="isRecommended && !event.is_cancelled" variant="accent" tone="solid" class="recommended-badge">
-        ⭐ {{ 'events.recommended' | t }}
-      </shared-badge>
-
-      <!-- Badge à proximité -->
-      <shared-badge *ngIf="isNearby && !isRecommended && !event.is_cancelled" variant="success" tone="solid" class="nearby-badge">
-        📍 {{ 'events.nearby' | t }}
-      </shared-badge>
-
-      <!-- Autres badges -->
-      <shared-badge *ngIf="event.is_cancelled" variant="danger" tone="soft">
-        {{ 'events.cancelled' | t }}
-      </shared-badge>
-      <shared-badge *ngIf="isOrganizer && isDraft && !event.is_cancelled" variant="secondary" tone="soft">
-        {{ 'events.draft' | t }}
-      </shared-badge>
-      <shared-badge *ngIf="isOrganizer && !event.is_cancelled" variant="primary" tone="soft">
-        {{ 'events.organizer' | t }}
-      </shared-badge>
-      <shared-badge *ngIf="!isOrganizer && reserved && !event.is_cancelled" variant="accent" tone="soft">
-        {{ 'events.reserved' | t }}
-      </shared-badge>
+      <div class="status-badges">
+        <shared-badge *ngIf="event.is_cancelled" variant="danger" tone="soft">
+          {{ 'events.cancelled' | t }}
+        </shared-badge>
+        <shared-badge *ngIf="isOrganizer && isDraft && !event.is_cancelled" variant="secondary" tone="soft">
+          {{ 'events.draft' | t }}
+        </shared-badge>
+        <shared-badge *ngIf="isOrganizer && !event.is_cancelled" variant="primary" tone="soft">
+          {{ 'events.organizer' | t }}
+        </shared-badge>
+        <shared-badge *ngIf="!isOrganizer && reserved && !event.is_cancelled" variant="accent" tone="soft">
+          {{ 'events.reserved' | t }}
+        </shared-badge>
+        <shared-badge *ngIf="!event.is_cancelled && isFull" variant="danger" tone="soft">
+          {{ 'events.detail.event_full' | t }}
+        </shared-badge>
+      </div>
     </div>
 
-    <h3 class="event-title">{{ event.title }}</h3>
+    <h3 class="partner-name">{{ event.partner_name || event.title }}</h3>
     <p class="event-theme" *ngIf="event.theme">{{ event.theme }}</p>
-  </div>
 
-  <div class="event-body">
-    <div class="info-row">
-      <div class="info-content">
-        <span class="info-label">{{ 'events.when' | t }}</span>
-        <span class="info-value">{{ formattedDate }}</span>
-      </div>
+    <div class="info-block">
+      <span class="info-title">{{ 'events.detail.location' | t }}</span>
+      <p class="info-text">{{ partnerAddress }}</p>
     </div>
 
-    <div class="info-row">
-      <div class="info-content">
-        <span class="info-label">{{ 'events.address' | t }}</span>
-        <span class="info-value">{{ event.address }}</span>
-      </div>
+    <div class="info-block">
+      <span class="info-title">{{ 'events.when' | t }}</span>
+      <p class="info-text">{{ formattedDate }}</p>
     </div>
 
-    <div class="info-row" *ngIf="event.partner_city">
-      <div class="info-content">
-        <span class="info-label">{{ 'events.city' | t }}</span>
-        <span class="info-value">{{ event.partner_city }}</span>
-      </div>
-    </div>
+    <shared-badge *ngIf="interestBadgeKey && !event.is_cancelled" class="interest-badge" variant="accent" tone="soft">
+      {{ interestBadgeKey | t }}
+    </shared-badge>
   </div>
 
   <div footer class="event-footer">
     <div class="button-group" *ngIf="!event.is_cancelled">
-      <!-- Bouton Détails - toujours affiché -->
       <shared-button type="button" variant="outline" size="sm" (click)="onViewDetails($event)" class="action-button">
         {{ 'common.details' | t }}
       </shared-button>
 
-      <!-- Pour l'organisateur avec événement brouillon : bouton "Payer pour publier" -->
+      <shared-button
+        *ngIf="canPlayGame"
+        type="button"
+        variant="accent"
+        size="sm"
+        (click)="onPlayGame($event)"
+        class="action-button play-button">
+        🎲 Jouer
+      </shared-button>
+
       <shared-button
         *ngIf="isOrganizer && isDraft"
         type="button"
@@ -80,11 +76,9 @@
         <span *ngIf="isPaymentLoading" class="loading-text">{{ 'common.loading' | t }}</span>
       </shared-button>
 
-      <!-- Pour l'organisateur avec événement publié : badge "Réservé" à la place du bouton -->
-      <shared-badge *ngIf="isOrganizer && isPublished" variant="success" tone="soft" class="reserved-badge">
+      <shared-badge *ngIf="isOrganizer && isPublished && !canPlayGame" variant="success" tone="soft" class="reserved-badge">
         {{ 'events.reserved' | t }}
       </shared-badge>
     </div>
   </div>
 </shared-card>
-

@@ -62,10 +62,9 @@ class RegisterView(HateoasOptionsMixin, generics.CreateAPIView):
         refresh, access = AuthService.generate_tokens_for_user(user)
 
         data = serializer.data
-        return Response(
-            {**data, "refresh": refresh, "access": access},
-            status=status.HTTP_201_CREATED,
-        )
+        response_data = {**data, "refresh": refresh, "access": access}
+
+        return Response(response_data, status=status.HTTP_201_CREATED)
 
 
 @extend_schema(
@@ -107,7 +106,7 @@ class EmailLoginView(HateoasOptionsMixin, APIView):
         email = request.data.get("email", "")
         password = request.data.get("password", "")
 
-        user, refresh, access = AuthService.login(email, password)
+        user, refresh, access, was_reactivated = AuthService.login(email, password)
 
         if not user:
             return Response(
@@ -115,7 +114,13 @@ class EmailLoginView(HateoasOptionsMixin, APIView):
                 status=status.HTTP_401_UNAUTHORIZED,
             )
 
-        return Response({"refresh": refresh, "access": access}, status=200)
+        response_data = {"refresh": refresh, "access": access}
+
+        # Add message if account was reactivated
+        if was_reactivated:
+            response_data["message"] = "Your account has been reactivated successfully."
+
+        return Response(response_data, status=200)
 
 
 @extend_schema(
@@ -254,3 +259,125 @@ class MeView(HateoasOptionsMixin, generics.RetrieveAPIView):
     def get_object(self):
         """Return authenticated user."""
         return self.request.user
+
+
+@extend_schema(
+    tags=["Auth"],
+    summary="Deactivate user account",
+    description=(
+        "Temporarily deactivate the authenticated user's account (REVERSIBLE).\n\n"
+        "**Authentication:** Required (Bearer JWT token)\n\n"
+        "**Effect:**\n"
+        "- User account is set to inactive (is_active=False)\n"
+        "- User cannot login anymore\n"
+        "- All user data is preserved\n"
+        "- User can reactivate by registering again with the same email\n\n"
+        "**Business Rules:**\n"
+        "- User cannot have any upcoming confirmed bookings\n"
+        "- User cannot be organizer of any upcoming published events\n\n"
+        "**Returns:** 204 No Content on success"
+    ),
+    request={
+        "application/json": {
+            "password": "string (required - confirm user identity)"
+        }
+    },
+    responses={
+        204: OpenApiResponse(description="Account deactivated successfully"),
+        400: OpenApiResponse(description="Invalid password or business rule violation"),
+        401: OpenApiResponse(description="Not authenticated"),
+    },
+)
+class DeactivateAccountView(HateoasOptionsMixin, APIView):
+    """Deactivate user account endpoint (reversible)."""
+
+    permission_classes = [permissions.IsAuthenticated]
+    metadata_class = HateoasMetadata
+
+    def delete(self, request, *args, **kwargs):
+        """Deactivate user account after password confirmation."""
+        password = request.data.get("password")
+        if not password:
+            return Response(
+                {"detail": "Password required for account deactivation."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Verify password
+        if not request.user.check_password(password):
+            return Response(
+                {"detail": "Invalid password."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Check business rules via service
+        success, error = AuthService.delete_account(request.user)
+
+        if not success:
+            return Response(
+                {"detail": error}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@extend_schema(
+    tags=["Auth"],
+    summary="Permanently delete user account",
+    description=(
+        "Permanently delete the authenticated user's account (IRREVERSIBLE).\n\n"
+        "**Authentication:** Required (Bearer JWT token)\n\n"
+        "**Effect:**\n"
+        "- All personal data is anonymized (GDPR compliant)\n"
+        "- Email becomes: deleted_user_[id]@deleted.local\n"
+        "- Name becomes: 'Deleted User'\n"
+        "- All personal fields cleared (bio, address, languages, etc.)\n"
+        "- Account cannot be reactivated\n"
+        "- User record kept for referential integrity (bookings history)\n\n"
+        "**Business Rules:**\n"
+        "- User cannot have any upcoming confirmed bookings\n"
+        "- User cannot be organizer of any upcoming published events\n\n"
+        "**Returns:** 204 No Content on success"
+    ),
+    request={
+        "application/json": {
+            "password": "string (required - confirm user identity)"
+        }
+    },
+    responses={
+        204: OpenApiResponse(description="Account permanently deleted"),
+        400: OpenApiResponse(description="Invalid password or business rule violation"),
+        401: OpenApiResponse(description="Not authenticated"),
+    },
+)
+class PermanentlyDeleteAccountView(HateoasOptionsMixin, APIView):
+    """Permanently delete user account endpoint (irreversible)."""
+
+    permission_classes = [permissions.IsAuthenticated]
+    metadata_class = HateoasMetadata
+
+    def delete(self, request, *args, **kwargs):
+        """Permanently delete user account after password confirmation."""
+        password = request.data.get("password")
+        if not password:
+            return Response(
+                {"detail": "Password required for permanent account deletion."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Verify password
+        if not request.user.check_password(password):
+            return Response(
+                {"detail": "Invalid password."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Check business rules via service
+        success, error = AuthService.permanently_delete_account(request.user)
+
+        if not success:
+            return Response(
+                {"detail": error}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        return Response(status=status.HTTP_204_NO_CONTENT)

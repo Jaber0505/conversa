@@ -47,6 +47,21 @@
           </div>
           <p class="address-text"><strong>{{ evt.partner_name }}</strong><br>{{ evt.partner_address }}<br>{{ evt.partner_city }}</p>
         </div>
+
+        <!-- Game info section - Just display configured game info -->
+        <div class="event-section" *ngIf="evt.game_type">
+          <h2 class="section-title">{{ 'events.detail.game_info_title' | t }}</h2>
+          <div class="game-info-card">
+            <div class="game-info-row">
+              <span class="game-info-label">{{ 'events.create.game_type' | t }}:</span>
+              <span class="game-info-value">{{ 'GAMES.TYPES.' + evt.game_type.toUpperCase() | t }}</span>
+            </div>
+            <div class="game-info-row">
+              <span class="game-info-label">{{ 'events.create.game_difficulty' | t }}:</span>
+              <span class="game-info-value">{{ 'GAMES.DIFFICULTY.' + (evt.game_difficulty || 'MEDIUM').toUpperCase() | t }}</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="sidebar-column">
@@ -62,11 +77,20 @@
           </div>
 
           <div class="availability-section" *ngIf="evt.status === 'PUBLISHED'">
-            <div class="availability-bar"><div class="availability-fill" [style.width.%]="(evt.participants_count / evt.max_participants) * 100"></div></div>
-            <p class="availability-text">{{ evt.participants_count }} / {{ evt.max_participants }} places</p>
+            <div class="availability-bar">
+              <div class="availability-fill" [style.width.%]="getAvailabilityPercent(evt)"></div>
+            </div>
+            <ng-container *ngIf="!isEventFull(evt); else eventFullLabel">
+              <p class="availability-text">
+                {{ evt.booked_seats || 0 }} / {{ evt.max_participants || evt.partner_capacity }} places
+              </p>
+            </ng-container>
+            <ng-template #eventFullLabel>
+              <p class="availability-text full">{{ 'events.detail.event_full' | t }}</p>
+            </ng-template>
           </div>
 
-          <ng-container [ngSwitch]="getActionButtonState()">
+          <ng-container [ngSwitch]="actionButtonState()">
             <div *ngSwitchCase="'organizer-draft-pay'" class="button-group-vertical">
               <shared-button variant="accent" size="md" (click)="onRequestPublication()">{{ 'events.detail.pay_and_publish' | t }} ({{ formatPrice(evt.price_cents) }})</shared-button>
               <shared-button variant="danger" size="sm" (click)="onDeleteDraft()">{{ 'events.detail.delete_draft' | t }}</shared-button>
@@ -78,9 +102,11 @@
             </div>
 
             <shared-button *ngSwitchCase="'organizer-pending'" variant="outline" size="md" [disabled]="true">{{ 'events.detail.organizer_pending' | t }}</shared-button>
+            <shared-button *ngSwitchCase="'organizer-play'" variant="accent" size="md" (click)="onPlayGame()" [disabled]="startingGame()">{{ startingGame() ? 'Lancement...' : 'Jouer' }}</shared-button>
             <shared-button *ngSwitchCase="'organizer-published-cancel'" variant="danger" size="md" (click)="openCancelEventModal()">{{ 'events.detail.cancel_event' | t }}</shared-button>
             <ng-container *ngSwitchCase="'organizer-published-soon'"></ng-container>
 
+            <shared-button *ngSwitchCase="'user-play'" variant="accent" size="md" (click)="onPlayGame()">Jouer</shared-button>
             <shared-button *ngSwitchCase="'user-book'" variant="accent" size="md" (click)="onBook()">{{ 'events.detail.book_spot' | t }}</shared-button>
             <shared-button *ngSwitchCase="'user-pay'" variant="accent" size="md" (click)="onPay()">{{ 'events.detail.pay_booking' | t }}</shared-button>
             <shared-button *ngSwitchCase="'user-cancel'" variant="danger" size="md" (click)="openCancelModal()">{{ 'events.detail.cancel_booking' | t }}</shared-button>
@@ -90,12 +116,12 @@
             <shared-button *ngSwitchCase="'event-finished'" variant="outline" size="md" [disabled]="true">Événement terminé</shared-button>
           </ng-container>
 
-          <p class="booking-notice" *ngIf="getActionButtonState() === 'organizer-draft-delete'">L'événement sera publié dès que {{ evt.min_participants }} personnes seront inscrites</p>
-          <p class="booking-notice" *ngIf="getActionButtonState() === 'organizer-draft-pay'">Le seuil est atteint ! Confirmez votre paiement pour publier l'événement</p>
-          <p class="booking-notice" *ngIf="getActionButtonState() === 'user-book'">{{ 'events.detail.booking_notice' | t }}</p>
-          <p class="booking-notice" *ngIf="getActionButtonState() === 'user-pay'">{{ 'events.detail.pay_notice' | t }}</p>
-          <p class="booking-notice" *ngIf="getActionButtonState() === 'user-cancel'">{{ 'events.detail.cancel_notice' | t }}</p>
-          <p class="booking-notice" *ngIf="getActionButtonState() === 'user-starting-soon' || getActionButtonState() === 'organizer-published-soon'">{{ 'events.detail.starting_soon_notice' | t }}</p>
+          <p class="booking-notice" *ngIf="actionButtonState() === 'organizer-draft-delete'">L'événement sera publié dès que {{ evt.min_participants }} personnes seront inscrites</p>
+          <p class="booking-notice" *ngIf="actionButtonState() === 'organizer-draft-pay'">Le seuil est atteint ! Confirmez votre paiement pour publier l'événement</p>
+          <p class="booking-notice" *ngIf="actionButtonState() === 'user-book'">{{ 'events.detail.booking_notice' | t }}</p>
+          <p class="booking-notice" *ngIf="actionButtonState() === 'user-pay'">{{ 'events.detail.pay_notice' | t }}</p>
+          <p class="booking-notice" *ngIf="actionButtonState() === 'user-cancel'">{{ 'events.detail.cancel_notice' | t }}</p>
+          <p class="booking-notice" *ngIf="actionButtonState() === 'user-starting-soon' || actionButtonState() === 'organizer-published-soon'">{{ 'events.detail.starting_soon_notice' | t }}</p>
         </div>
       </div>
     </div>

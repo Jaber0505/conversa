@@ -5,6 +5,7 @@ export type EventDto = {
   partner: number;
   partner_name: string;
   partner_city?: string;
+  partner_address?: string;
   language: number;
   language_code: string;
   title: string;
@@ -25,6 +26,12 @@ export type EventDto = {
   registration_count: number;
   threshold_reached: boolean;
   can_request_publication: boolean;
+  is_full?: boolean;
+  booked_seats?: number;
+  // Game configuration
+  game_type?: string | null;
+  game_difficulty?: string | null;
+  game_started?: boolean;
   // Timestamps
   created_at: string;
   updated_at: string;
@@ -47,6 +54,7 @@ export type EventDetailDto = EventDto & {
   // Computed fields
   participants_count: number;
   available_slots: number;
+  booked_seats: number;
   is_full: boolean;
   // User-scoped (optional)
   my_booking?: { public_id: string; status: string } | null;
@@ -80,6 +88,7 @@ export type EventCreatePayload = {
   theme: string;
   difficulty: string;
   datetime_start: string;
+  game_type?: string;
 };
 
 export type EventUpdate = Partial<EventWrite>;

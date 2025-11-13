@@ -8,6 +8,7 @@ class EventSerializer(serializers.ModelSerializer):
     # Read-only practical fields
     partner_name = serializers.CharField(source="partner.name", read_only=True)
     partner_city = serializers.CharField(source="partner.city", read_only=True)
+    partner_address = serializers.CharField(source="partner.address", read_only=True)
     language_code = serializers.CharField(source="language.code", read_only=True)
     organizer_id = serializers.IntegerField(source="organizer.id", read_only=True)
 
@@ -21,13 +22,16 @@ class EventSerializer(serializers.ModelSerializer):
     photo = serializers.ImageField(required=False, allow_null=True)
 
     _links = serializers.SerializerMethodField()
+    is_full = serializers.SerializerMethodField()
+    booked_seats = serializers.SerializerMethodField()
+    is_full = serializers.SerializerMethodField()
 
     class Meta:
         model = Event
         fields = [
             "id",
             "organizer", "organizer_id",
-            "partner", "partner_name", "partner_city",
+            "partner", "partner_name", "partner_city", "partner_address",
             "language", "language_code",
             "theme", "difficulty",
             "datetime_start",
@@ -38,16 +42,23 @@ class EventSerializer(serializers.ModelSerializer):
             "min_participants", "max_participants",
             "is_draft_visible",
             "organizer_paid_at",
+            "game_type", "game_started",
             "created_at", "updated_at",
             "_links",
+            "is_full",
+            "booked_seats",
         ]
         read_only_fields = [
             "id", "organizer", "organizer_id",
+            "partner_name", "partner_city", "partner_address",
             "price_cents", "title", "address",
             "status", "published_at", "cancelled_at",
             "min_participants", "max_participants",
             "is_draft_visible", "organizer_paid_at",
+            "game_started",
             "created_at", "updated_at", "_links",
+            "is_full",
+            "booked_seats",
         ]
         extra_kwargs = {
             "partner": {"required": True},
@@ -55,6 +66,7 @@ class EventSerializer(serializers.ModelSerializer):
             "theme": {"required": True},
             "difficulty": {"required": True},
             "datetime_start": {"required": True},
+            "game_type": {"required": False},
         }
 
     def validate(self, attrs):
@@ -124,6 +136,12 @@ class EventSerializer(serializers.ModelSerializer):
 
         return links
 
+    def get_is_full(self, obj):
+        return obj.is_full
+
+    def get_booked_seats(self, obj):
+        return obj.booked_seats
+
 
 class EventDetailSerializer(EventSerializer):
     """
@@ -151,7 +169,6 @@ class EventDetailSerializer(EventSerializer):
     # Computed fields from model properties
     participants_count = serializers.SerializerMethodField()
     available_slots = serializers.SerializerMethodField()
-    is_full = serializers.SerializerMethodField()
 
     # User-specific booking info and permissions
     my_booking = serializers.SerializerMethodField()
@@ -169,7 +186,6 @@ class EventDetailSerializer(EventSerializer):
             "organizer_last_name",
             "participants_count",
             "available_slots",
-            "is_full",
             # user-scoped
             "my_booking",
             "can_cancel_booking",
@@ -185,10 +201,6 @@ class EventDetailSerializer(EventSerializer):
     def get_available_slots(self, obj):
         """Get available capacity at partner venue for this time slot."""
         return obj.available_slots
-
-    def get_is_full(self, obj):
-        """Check if event has reached maximum capacity."""
-        return obj.is_full
 
     # --------------------- User-scoped helpers ---------------------
     def _get_current_user(self):

@@ -123,6 +123,18 @@ class Event(models.Model):
         help_text="Event cover photo"
     )
 
+    # Game configuration (simplified: only game type, uses event language and difficulty)
+    game_type = models.CharField(
+        max_length=32,
+        null=True,
+        blank=True,
+        help_text="Pre-configured game type (e.g., 'picture_description', 'word_association'). Uses event's language and difficulty."
+    )
+    game_started = models.BooleanField(
+        default=False,
+        help_text="Whether the game has been started by the organizer"
+    )
+
     # Computed fields (auto-generated from partner data)
     title = models.CharField(
         max_length=160,
@@ -175,13 +187,8 @@ class Event(models.Model):
     def _partner_address_str(self):
         """Build full address string from partner data."""
         p = self.partner
-        parts = [
-            getattr(p, "address", None),
-            getattr(p, "postal_code", None),
-            getattr(p, "city", None),
-            getattr(p, "country", None),
-        ]
-        return ", ".join([str(x) for x in parts if x])
+        # Partner.address already contains the complete address
+        return getattr(p, "address", "")
 
     def save(self, *args, **kwargs):
         """
@@ -248,13 +255,25 @@ class Event(models.Model):
     @property
     def participants_count(self):
         """
-        Get count of confirmed participants.
+        Get count of confirmed participants only.
 
         Returns:
             int: Number of confirmed bookings
         """
         from bookings.models import BookingStatus
         return self.bookings.filter(status=BookingStatus.CONFIRMED).count()
+
+    @property
+    def booked_seats(self):
+        """
+        Get count of seats taken (pending + confirmed bookings).
+
+        Returns:
+            int: Number of active bookings consuming a seat
+        """
+        from bookings.models import BookingStatus
+        active_statuses = [BookingStatus.CONFIRMED, BookingStatus.PENDING]
+        return self.bookings.filter(status__in=active_statuses).count()
 
     @property
     def is_full(self):
@@ -268,6 +287,11 @@ class Event(models.Model):
         Returns:
             bool: True if partner capacity exhausted
         """
+        # Respect per-event max participants first
+        if self.max_participants:
+            if self.booked_seats >= self.max_participants:
+                return True
+
         available = self.partner.get_available_capacity(
             self.datetime_start,
             self.datetime_end

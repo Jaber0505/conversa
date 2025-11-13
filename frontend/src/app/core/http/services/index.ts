@@ -7,3 +7,4 @@ export * from './partners-api.service';
 export * from './registrations-api.service';
 export * from './auth-token.service';
 export * from './audit-api.service';
+export * from './games-api.service';

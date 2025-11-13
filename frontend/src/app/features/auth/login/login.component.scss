@@ -33,6 +33,15 @@
   padding: var(--space-3) var(--space-4);
 }
 
+.auth-success {
+  background: color-mix(in oklab, var(--color-success, #22c55e), white 90%);
+  color: var(--color-success, #16a34a);
+  border: 1px solid color-mix(in oklab, var(--color-success, #22c55e), white 70%);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  font-weight: 500;
+}
+
 .auth-meta { display:flex; justify-content: flex-end; align-items:center; margin-top: var(--space-1); }
 .auth-link { color: var(--color-primary); text-decoration: none; font-weight: 600; }
 .auth-link:hover { text-decoration: underline; }

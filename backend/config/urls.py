@@ -58,6 +58,7 @@ urlpatterns = [
     path("api/v1/bookings/", include("bookings.urls")),
     path("api/v1/payments/", include(("payments.urls", "payments"), namespace="payments")),
     path("api/v1/partners/", include("partners.urls")),
+    path("api/v1/", include("games.urls")),  # Games module
     # Registrations removed: draft events are private, no free registrations
     path("api/v1/audit/", include("audit.urls")),  # Audit management (admin only)
 ]

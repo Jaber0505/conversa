@@ -1,0 +1,83 @@
+[
+  {
+    "id": "pd_en_easy_01",
+    "difficulty": "easy",
+    "question": "Describe this image: What do you see?",
+    "image_url": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4",
+    "correct_answer": "mountain",
+    "options": ["mountain", "beach", "city", "forest"],
+    "context": "A beautiful mountain with snow on top"
+  },
+  {
+    "id": "pd_en_easy_02",
+    "difficulty": "easy",
+    "question": "What do you see in this photo?",
+    "image_url": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308",
+    "correct_answer": "beach",
+    "options": ["beach", "desert", "lake", "river"],
+    "context": "A beach with sand and ocean"
+  },
+  {
+    "id": "pd_en_easy_03",
+    "difficulty": "easy",
+    "question": "What is the dominant color in this image?",
+    "image_url": "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05",
+    "correct_answer": "green",
+    "options": ["green", "blue", "red", "yellow"],
+    "context": "A lush green forest"
+  },
+  {
+    "id": "pd_en_medium_01",
+    "difficulty": "medium",
+    "question": "Describe the atmosphere of this urban scene",
+    "image_url": "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df",
+    "correct_answer": "bustling and modern",
+    "options": ["bustling and modern", "quiet and old", "industrial", "rural"],
+    "context": "A modern city with skyscrapers"
+  },
+  {
+    "id": "pd_en_medium_02",
+    "difficulty": "medium",
+    "question": "What type of architecture do you mainly see?",
+    "image_url": "https://images.unsplash.com/photo-1499856871958-5b9627545d1a",
+    "correct_answer": "contemporary",
+    "options": ["contemporary", "gothic", "baroque", "classical"],
+    "context": "Modern buildings made of glass and steel"
+  },
+  {
+    "id": "pd_en_medium_03",
+    "difficulty": "medium",
+    "question": "Which season is depicted in this image?",
+    "image_url": "https://images.unsplash.com/photo-1476820865390-c52aeebb9891",
+    "correct_answer": "autumn",
+    "options": ["autumn", "spring", "summer", "winter"],
+    "context": "Trees with orange and red leaves"
+  },
+  {
+    "id": "pd_en_hard_01",
+    "difficulty": "hard",
+    "question": "Analyze the artistic composition: which photographic technique is used here?",
+    "image_url": "https://images.unsplash.com/photo-1501594907352-04cda38ebc29",
+    "correct_answer": "shallow depth of field",
+    "options": ["shallow depth of field", "panorama", "long exposure", "backlight"],
+    "context": "Photo with sharp subject and blurred background"
+  },
+  {
+    "id": "pd_en_hard_02",
+    "difficulty": "hard",
+    "question": "What emotion or atmosphere dominates in this photograph?",
+    "image_url": "https://images.unsplash.com/photo-1511576661531-b34d7da5d0bb",
+    "correct_answer": "contemplative melancholy",
+    "options": ["contemplative melancholy", "exuberant joy", "dramatic tension", "absolute serenity"],
+    "context": "A person alone looking at a landscape at sunset"
+  },
+  {
+    "id": "pd_en_hard_03",
+    "difficulty": "hard",
+    "question": "Identify the artistic movement or visual style of this image",
+    "image_url": "https://images.unsplash.com/photo-1482164565953-04b62dcac1cd",
+    "correct_answer": "minimalism",
+    "options": ["minimalism", "expressionism", "surrealism", "realism"],
+    "context": "Simple composition with few elements and lots of negative space"
+  }
+]

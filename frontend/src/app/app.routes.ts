@@ -44,6 +44,12 @@ export const routes: Routes = [
       },
 
       {
+        path: 'games/:id',
+        canActivate: [authGuard],
+        loadComponent: () => import('./features/games/games.component').then(m => m.GamesComponent)
+      },
+
+      {
         path: 'auth',
         canActivate: [guestGuard],
         children: [
@@ -67,6 +73,11 @@ export const routes: Routes = [
         path: 'bookings',
         canActivate: [authGuard],
         loadComponent: () => import('./features/bookings/my-bookings/my-bookings.component').then(m => m.MyBookingsComponent)
+      },
+      {
+        path: 'profile',
+        canActivate: [authGuard],
+        loadComponent: () => import('./features/profile/profile.component').then(m => m.ProfileComponent)
       },
       { path: 'faq', component: FaqComponent },
       { path: 'about', component: About },

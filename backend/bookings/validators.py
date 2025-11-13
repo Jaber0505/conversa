@@ -71,9 +71,11 @@ def validate_event_capacity(event):
     """
     # Enforce per-event maximum (6 per event by business rule)
     from bookings.models import BookingStatus
-    confirmed_count = event.bookings.filter(status=BookingStatus.CONFIRMED).count()
+    # Count both pending (awaiting payment) and confirmed seats to avoid overselling.
+    active_statuses = [BookingStatus.CONFIRMED, BookingStatus.PENDING]
+    active_count = event.bookings.filter(status__in=active_statuses).count()
     per_event_cap = int(getattr(event, 'max_participants', MAX_PARTICIPANTS_PER_EVENT) or MAX_PARTICIPANTS_PER_EVENT)
-    if confirmed_count >= per_event_cap:
+    if active_count >= per_event_cap:
         raise ValidationError(
             f"Event is full for this time slot (limit {per_event_cap} per event)."
         )

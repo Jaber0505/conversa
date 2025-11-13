@@ -1,0 +1,74 @@
+[
+  {
+    "id": "wa_en_easy_01",
+    "difficulty": "easy",
+    "question": "Which word do you most associate with 'sun'?",
+    "correct_answer": "warmth",
+    "options": ["warmth", "cold", "rain", "snow"],
+    "context": "Direct association with the sun"
+  },
+  {
+    "id": "wa_en_easy_02",
+    "difficulty": "easy",
+    "question": "Which word goes best with 'book'?",
+    "correct_answer": "reading",
+    "options": ["reading", "cooking", "sports", "music"],
+    "context": "Activity related to books"
+  },
+  {
+    "id": "wa_en_easy_03",
+    "difficulty": "easy",
+    "question": "Complete: 'bread' and ... ?",
+    "correct_answer": "butter",
+    "options": ["butter", "salad", "steak", "ice cream"],
+    "context": "Common food pairing"
+  },
+  {
+    "id": "wa_en_medium_01",
+    "difficulty": "medium",
+    "question": "What expression corresponds to 'to have your head in the clouds'?",
+    "correct_answer": "to daydream, be distracted",
+    "options": ["to daydream, be distracted", "to be angry", "to be sick", "to be tired"],
+    "context": "English idiom"
+  },
+  {
+    "id": "wa_en_medium_02",
+    "difficulty": "medium",
+    "question": "Which word best completes 'red' to form an expression?",
+    "correct_answer": "herring",
+    "options": ["herring", "apple", "car", "house"],
+    "context": "Red herring = misleading clue"
+  },
+  {
+    "id": "wa_en_medium_03",
+    "difficulty": "medium",
+    "question": "Associate: 'rain' + 'umbrella' = 'sun' + ... ?",
+    "correct_answer": "sunglasses",
+    "options": ["sunglasses", "hat", "scarf", "gloves"],
+    "context": "Protective accessory against the sun"
+  },
+  {
+    "id": "wa_en_hard_01",
+    "difficulty": "hard",
+    "question": "What register does the word 'ain't' belong to?",
+    "correct_answer": "colloquial",
+    "options": ["colloquial", "formal", "technical", "archaic"],
+    "context": "Language registers in English"
+  },
+  {
+    "id": "wa_en_hard_02",
+    "difficulty": "hard",
+    "question": "Complete this quote: 'To be or not to be, that is the ...'",
+    "correct_answer": "question",
+    "options": ["question", "answer", "problem", "solution"],
+    "context": "Famous quote from Shakespeare's Hamlet"
+  },
+  {
+    "id": "wa_en_hard_03",
+    "difficulty": "hard",
+    "question": "Which word has the same etymology as 'telephone'?",
+    "correct_answer": "telegraph",
+    "options": ["telegraph", "microphone", "cellphone", "speaker"],
+    "context": "Greek etymology: tele = distant"
+  }
+]

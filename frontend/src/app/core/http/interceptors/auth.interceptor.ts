@@ -57,13 +57,24 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(withAuth).pipe(
     catchError((err: unknown) => {
-      // Log all HTTP errors
+      // Log all HTTP errors, with special handling for expected 404 on /games/active/
       if (err instanceof HttpErrorResponse) {
-        errorLogger.logHttpError(err, {
-          endpoint: req.url,
-          method: req.method,
-          hasAuth: shouldAttach,
-        });
+        const isExpectedActive404 =
+          err.status === 404 && req.method === 'GET' && req.url.includes('/games/active/');
+        if (isExpectedActive404) {
+          // 404 sur /games/active/ est normal quand aucun jeu n'est en cours
+          errorLogger.logInfo('No active game for event (expected 404)', {
+            endpoint: req.url,
+            method: req.method,
+            hasAuth: shouldAttach,
+          });
+        } else {
+          errorLogger.logHttpError(err, {
+            endpoint: req.url,
+            method: req.method,
+            hasAuth: shouldAttach,
+          });
+        }
       }
 
       // Pas un HttpErrorResponse ou pas 401 → remonter l'erreur

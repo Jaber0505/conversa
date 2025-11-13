@@ -1,0 +1,74 @@
+[
+  {
+    "id": "wa_fr_easy_01",
+    "difficulty": "easy",
+    "question": "Quel mot associez-vous le plus à 'soleil' ?",
+    "correct_answer": "chaleur",
+    "options": ["chaleur", "froid", "pluie", "neige"],
+    "context": "Association directe avec le soleil"
+  },
+  {
+    "id": "wa_fr_easy_02",
+    "difficulty": "easy",
+    "question": "Quel mot va le mieux avec 'livre' ?",
+    "correct_answer": "lecture",
+    "options": ["lecture", "cuisine", "sport", "musique"],
+    "context": "Activité liée aux livres"
+  },
+  {
+    "id": "wa_fr_easy_03",
+    "difficulty": "easy",
+    "question": "Complétez : 'café' et ... ?",
+    "correct_answer": "croissant",
+    "options": ["croissant", "salade", "steak", "glace"],
+    "context": "Petit-déjeuner français typique"
+  },
+  {
+    "id": "wa_fr_medium_01",
+    "difficulty": "medium",
+    "question": "Quelle expression correspond à 'être dans la lune' ?",
+    "correct_answer": "rêver, être distrait",
+    "options": ["rêver, être distrait", "être en colère", "être malade", "être fatigué"],
+    "context": "Expression idiomatique française"
+  },
+  {
+    "id": "wa_fr_medium_02",
+    "difficulty": "medium",
+    "question": "Quel mot complète le mieux 'fil' pour former une expression ?",
+    "correct_answer": "rouge",
+    "options": ["rouge", "bleu", "vert", "jaune"],
+    "context": "Le fil rouge = thème conducteur"
+  },
+  {
+    "id": "wa_fr_medium_03",
+    "difficulty": "medium",
+    "question": "Associez : 'pluie' + 'parapluie' = 'soleil' + ... ?",
+    "correct_answer": "lunettes",
+    "options": ["lunettes", "chapeau", "écharpe", "gants"],
+    "context": "Accessoire de protection contre le soleil"
+  },
+  {
+    "id": "wa_fr_hard_01",
+    "difficulty": "hard",
+    "question": "Quel registre de langue correspond à 'bouquin' ?",
+    "correct_answer": "familier",
+    "options": ["familier", "soutenu", "technique", "administratif"],
+    "context": "Niveaux de langue en français"
+  },
+  {
+    "id": "wa_fr_hard_02",
+    "difficulty": "hard",
+    "question": "Complétez cette citation : 'Je pense, donc ...'",
+    "correct_answer": "je suis",
+    "options": ["je suis", "je vis", "j'existe", "je parle"],
+    "context": "Citation philosophique de Descartes"
+  },
+  {
+    "id": "wa_fr_hard_03",
+    "difficulty": "hard",
+    "question": "Quel mot a la même étymologie que 'automobile' ?",
+    "correct_answer": "autonome",
+    "options": ["autonome", "mobile", "moteur", "route"],
+    "context": "Étymologie grecque : auto = soi-même"
+  }
+]

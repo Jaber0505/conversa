@@ -80,12 +80,12 @@
     font-size: 0.875rem;
   }
 
-  .recommended-badge,
-  .nearby-badge {
-    display: flex;
-    align-items: center;
-    gap: var(--space-1);
-    font-weight: 600;
+.recommended-badge,
+.nearby-badge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-weight: 600;
 
     .badge-icon {
       font-size: 1rem;
@@ -119,6 +119,13 @@
     color: #ffffff;
     box-shadow: 0 2px 8px rgba(251, 191, 36, 0.4);
     animation: pulse-gold 2s ease-in-out infinite;
+  }
+
+  .priority-badge {
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
   }
 
   .nearby-badge {
@@ -212,8 +219,93 @@
       font-weight: 500;
       color: var(--color-text);
       word-break: break-word;
+
+      .info-partner-name {
+        display: block;
+        font-weight: 700;
+        color: var(--color-text, #111827);
+      }
+
+      .info-partner-address {
+        display: block;
+        color: color-mix(in oklab, var(--color-text, #111827), white 35%);
+        font-weight: 500;
+      }
     }
   }
+}
+
+.event-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+}
+
+.top-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.language-chip {
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.status-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  justify-content: flex-end;
+}
+
+.partner-name {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.event-theme {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #6b7280;
+}
+
+.info-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+
+  .info-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #9ca3af;
+  }
+
+  .info-text {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #111827;
+    line-height: 1.4;
+  }
+}
+
+.interest-badge {
+  margin-top: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: 0.4px;
 }
 
 // Footer avec actions
@@ -222,8 +314,8 @@
   justify-content: flex-end;
   align-items: center;
   gap: var(--space-3);
-  padding-top: var(--space-3);
-  border-top: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
+  padding: var(--space-4);
+  border-top: 1px solid var(--color-border, rgba(0, 0, 0, 0.08));
 
   .button-group {
     display: flex;

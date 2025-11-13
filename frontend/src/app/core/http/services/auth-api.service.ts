@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { API_URL } from '@core/http';
 
 type LoginReq = { email: string; password: string };
-type LoginRes = { access: string; refresh: string };
+type LoginRes = { access: string; refresh: string; message?: string };
 export type MeRes = {
   id: number;
   email: string;
@@ -73,6 +73,18 @@ export class AuthApiService {
 
   requestPasswordReset(email: string) {
     return this.http.post(`${this.base}/auth/password-reset/`, { email });
+  }
+
+  deactivateAccount(password: string) {
+    return this.http.request('delete', `${this.base}/auth/deactivate-account/`, {
+      body: { password }
+    });
+  }
+
+  permanentlyDeleteAccount(password: string) {
+    return this.http.request('delete', `${this.base}/auth/permanently-delete-account/`, {
+      body: { password }
+    });
   }
 }
 

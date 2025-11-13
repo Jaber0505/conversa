@@ -66,7 +66,7 @@ class UserService(BaseService):
             **extra_fields: Additional user fields (bio, avatar, etc.)
 
         Returns:
-            User: Created user instance
+            User: User instance
 
         Raises:
             ValidationError: If validation fails
