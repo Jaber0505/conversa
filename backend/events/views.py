@@ -164,11 +164,14 @@ class EventViewSet(viewsets.ModelViewSet):
         Filter queryset based on user permissions and query params.
 
         Visibility:
-        - All users: PUBLISHED events
-        - Organizers: Own events (any status)
+        - All users: PUBLISHED events (from today to +7 days)
+        - Organizers: Own events (any status, any date)
         - Participants: For retrieve action, allow accessing events they booked (any status)
         - Staff: All events
         """
+        from django.utils import timezone
+        from datetime import timedelta
+
         qs = super().get_queryset()
 
         # Apply filters from query parameters
@@ -183,7 +186,12 @@ class EventViewSet(viewsets.ModelViewSet):
         # Apply visibility rules
         user = self.request.user
         if not getattr(user, "is_staff", False):
+            # Date range: today to +7 days
+            now = timezone.now()
+            max_date = now + timedelta(days=7)
+
             # Default visibility for non-staff
+            # Only show PUBLISHED events that are not FINISHED
             base_filter = Q(status=Event.Status.PUBLISHED) | Q(organizer_id=user.id)
 
             # For retrieve action, also allow events the user has booked (history needs details
@@ -191,7 +199,14 @@ class EventViewSet(viewsets.ModelViewSet):
             if getattr(self, "action", None) == "retrieve":
                 qs = qs.filter(base_filter | Q(bookings__user_id=user.id)).distinct()
             else:
-                qs = qs.filter(base_filter)
+                # For list action, apply date range filter for public events only
+                # Organizer's own events are not filtered by date
+                qs = qs.filter(base_filter).exclude(
+                    Q(status=Event.Status.FINISHED) & ~Q(organizer_id=user.id)
+                ).filter(
+                    Q(organizer_id=user.id) |  # Own events: no date filter
+                    Q(datetime_start__gte=now, datetime_start__lte=max_date)  # Public events: today to +7 days
+                )
 
         return qs
 

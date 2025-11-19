@@ -13,19 +13,31 @@
 
     <div class="status-badges">
       <shared-badge *ngIf="evt.status === 'DRAFT'" variant="muted" tone="soft">{{ 'events.draft' | t }}</shared-badge>
-      <shared-badge *ngIf="evt.status === 'PENDING_CONFIRMATION'" variant="accent" tone="soft">En attente de confirmation</shared-badge>
-      <shared-badge *ngIf="evt.status === 'PUBLISHED'" variant="success" tone="solid">Publié</shared-badge>
+      <shared-badge *ngIf="evt.status === 'PENDING_CONFIRMATION'" variant="accent" tone="soft">{{ 'events.detail.status.pending_confirmation' | t }}</shared-badge>
+      <shared-badge *ngIf="evt.status === 'PUBLISHED'" variant="success" tone="solid">{{ 'events.detail.status.published' | t }}</shared-badge>
       <shared-badge *ngIf="evt.status === 'CANCELLED'" variant="danger" tone="soft">{{ 'events.cancelled' | t }}</shared-badge>
-      <shared-badge *ngIf="evt.status === 'FINISHED'" variant="muted" tone="soft">Terminé</shared-badge>
-      <shared-badge *ngIf="isOrganizer()" variant="accent" tone="soft">Vous êtes l'organisateur</shared-badge>
+      <shared-badge *ngIf="evt.status === 'FINISHED'" variant="muted" tone="soft">{{ 'events.detail.status.finished' | t }}</shared-badge>
+      <shared-badge *ngIf="isOrganizer()" variant="accent" tone="soft">{{ 'events.detail.status.you_are_organizer' | t }}</shared-badge>
+    </div>
+
+    <!-- Checkbox Mode Test (visible uniquement pour l'organisateur) -->
+    <div class="test-mode-container" *ngIf="isOrganizer() && evt.status === 'PUBLISHED' && evt.game_type">
+      <label class="checkbox-label">
+        <input
+          type="checkbox"
+          [checked]="skipTimeValidation()"
+          (change)="skipTimeValidation.set($any($event.target).checked)"
+        />
+        <span>{{ 'events.detail.test_mode' | t }}</span>
+      </label>
     </div>
 
     <div class="detail-grid">
       <div class="main-column">
         <div class="event-header">
           <div class="event-badges">
-            <span class="badge badge-primary">{{ evt.language_name }}</span>
-            <span class="badge badge-secondary">{{ evt.difficulty }}</span>
+            <span class="badge badge-primary">{{ getLanguageLabel(evt) }}</span>
+            <span class="badge badge-secondary">{{ 'events.difficulty.' + evt.difficulty | t }}</span>
           </div>
 
           <div class="event-meta">
@@ -33,11 +45,6 @@
             <div class="meta-item"><span>{{ formatTime(evt.datetime_start) }}</span></div>
             <div class="meta-item"><span>{{ evt.partner_address }}, {{ evt.partner_city }}</span></div>
           </div>
-        </div>
-
-        <div class="event-section">
-          <h2 class="section-title">{{ 'events.detail.about' | t }}</h2>
-          <p class="event-description">{{ evt.theme }}</p>
         </div>
 
         <div class="event-section">
@@ -108,38 +115,19 @@
             </ng-template>
           </div>
 
-          <ng-container [ngSwitch]="actionButtonState()">
-            <div *ngSwitchCase="'organizer-draft-pay'" class="button-group-vertical">
-              <shared-button variant="accent" size="md" (click)="onRequestPublication()">{{ 'events.detail.pay_and_publish' | t }} ({{ formatPrice(evt.price_cents) }})</shared-button>
-              <shared-button variant="danger" size="sm" (click)="onDeleteDraft()">{{ 'events.detail.delete_draft' | t }}</shared-button>
-            </div>
-
-            <div *ngSwitchCase="'organizer-draft-delete'" class="button-group-vertical">
-              <shared-button variant="outline" size="md" [disabled]="true">Minimum {{ evt.min_participants }} inscriptions requises</shared-button>
-              <shared-button variant="danger" size="sm" (click)="onDeleteDraft()">{{ 'events.detail.delete_draft' | t }}</shared-button>
-            </div>
-
-            <shared-button *ngSwitchCase="'organizer-pending'" variant="outline" size="md" [disabled]="true">{{ 'events.detail.organizer_pending' | t }}</shared-button>
-            <shared-button *ngSwitchCase="'organizer-play'" variant="accent" size="md" (click)="onPlayGame()" [disabled]="startingGame()">{{ startingGame() ? 'Lancement...' : 'Jouer' }}</shared-button>
-            <shared-button *ngSwitchCase="'organizer-published-cancel'" variant="danger" size="md" (click)="openCancelEventModal()">{{ 'events.detail.cancel_event' | t }}</shared-button>
-            <ng-container *ngSwitchCase="'organizer-published-soon'"></ng-container>
-
-            <shared-button *ngSwitchCase="'user-play'" variant="accent" size="md" (click)="onPlayGame()">Jouer</shared-button>
-            <shared-button *ngSwitchCase="'user-book'" variant="accent" size="md" (click)="onBook()">{{ 'events.detail.book_spot' | t }}</shared-button>
-            <shared-button *ngSwitchCase="'user-pay'" variant="accent" size="md" (click)="onPay()">{{ 'events.detail.pay_booking' | t }}</shared-button>
-            <shared-button *ngSwitchCase="'user-cancel'" variant="danger" size="md" (click)="openCancelModal()">{{ 'events.detail.cancel_booking' | t }}</shared-button>
-            <ng-container *ngSwitchCase="'user-starting-soon'"></ng-container>
-            <shared-button *ngSwitchCase="'event-full'" variant="outline" size="md" [disabled]="true">{{ 'events.detail.event_full' | t }}</shared-button>
-            <shared-button *ngSwitchCase="'event-cancelled'" variant="outline" size="md" [disabled]="true">{{ 'events.detail.event_cancelled' | t }}</shared-button>
-            <shared-button *ngSwitchCase="'event-finished'" variant="outline" size="md" [disabled]="true">Événement terminé</shared-button>
-          </ng-container>
-
-          <p class="booking-notice" *ngIf="actionButtonState() === 'organizer-draft-delete'">L'événement sera publié dès que {{ evt.min_participants }} personnes seront inscrites</p>
-          <p class="booking-notice" *ngIf="actionButtonState() === 'organizer-draft-pay'">Le seuil est atteint ! Confirmez votre paiement pour publier l'événement</p>
-          <p class="booking-notice" *ngIf="actionButtonState() === 'user-book'">{{ 'events.detail.booking_notice' | t }}</p>
-          <p class="booking-notice" *ngIf="actionButtonState() === 'user-pay'">{{ 'events.detail.pay_notice' | t }}</p>
-          <p class="booking-notice" *ngIf="actionButtonState() === 'user-cancel'">{{ 'events.detail.cancel_notice' | t }}</p>
-          <p class="booking-notice" *ngIf="actionButtonState() === 'user-starting-soon' || actionButtonState() === 'organizer-published-soon'">{{ 'events.detail.starting_soon_notice' | t }}</p>
+          <!-- Nouveau composant EventActionButton -->
+          <app-event-action-button
+            [event]="evt"
+            [userId]="currentUserId()"
+            [isOrganizer]="isOrganizer()"
+            [showBadge]="true"
+            [primaryOnly]="false"
+            [size]="'lg'"
+            [loading]="startingGame() || cancellingBooking() || organizerPaymentLoading()"
+            [hideViewDetails]="true"
+            [skipTimeValidation]="skipTimeValidation()"
+            (actionTriggered)="handleEventAction($event)"
+          />
         </div>
       </div>
     </div>

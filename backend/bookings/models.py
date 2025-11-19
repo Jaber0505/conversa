@@ -41,12 +41,12 @@ class Booking(models.Model):
     3. CANCELLED - User cancelled or booking expired
 
     Business Rules:
-    - Each user can have only 1 PENDING booking per event
-    - User can have multiple CONFIRMED bookings per event (must pay each separately)
+    - Each user can have only 1 active (PENDING or CONFIRMED) booking per event
+    - User must cancel their current booking before creating a new one
+    - If a PENDING booking exists, it will be reused instead of creating a new one
     - PENDING bookings expire after 15 minutes → auto-cancelled
     - CONFIRMED bookings can be cancelled up to 3h before event start
-    - User must have paid (CONFIRMED) their current booking before creating a new one
-    - Cancelling a booking does not trigger refund (handled externally)
+    - Cancelling a CONFIRMED booking triggers automatic Stripe refund
     """
 
     # Public identifier (UUID for external references)
@@ -143,15 +143,14 @@ class Booking(models.Model):
                 condition=Q(amount_cents__gte=0),
                 name="booking_amount_cents_gte_0"
             ),
-            # Only one PENDING booking per user/event
-            # (User must pay current booking before creating another)
+            # Only one active (non-cancelled) booking per user/event
+            # User cannot have multiple bookings for the same event
+            # They must cancel their current booking before creating a new one
             UniqueConstraint(
                 fields=["user", "event"],
-                condition=Q(status=BookingStatus.PENDING),
-                name="unique_pending_booking_per_user_event",
+                condition=~Q(status=BookingStatus.CANCELLED),
+                name="unique_active_booking_per_user_event",
             ),
-            # NOTE: Multiple CONFIRMED bookings per user/event are ALLOWED
-            # User can book multiple seats for the same event
         ]
         verbose_name = "Booking"
         verbose_name_plural = "Bookings"

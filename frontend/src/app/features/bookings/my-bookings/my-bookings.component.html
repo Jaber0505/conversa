@@ -82,42 +82,16 @@
         </div>
 
         <div class="booking-card-footer">
-          <shared-button
-            variant="outline"
-            size="sm"
-            type="button"
-            (click)="viewEventDetails(b.eventObject.id)">
-            {{ 'common.details' | t }}
-          </shared-button>
-
-          <!-- Bouton Rejoindre pour événements en cours -->
-          <shared-button
-            *ngIf="b.status === 'CONFIRMED' && isEventLive(b)"
-            variant="primary"
-            size="sm"
-            type="button"
-            (click)="joinEvent(b.eventObject.id)">
-            🎮 {{ 'bookings.join_now' | t }}
-          </shared-button>
-
-          <!-- Bouton Payer pour réservations en attente -->
-          <shared-button
-            *ngIf="b.status === 'PENDING'"
-            variant="primary"
-            size="sm"
-            type="button"
-            (click)="pay(b.public_id)">
-            💳 {{ 'common.pay' | t }}
-          </shared-button>
-
-          <shared-button
-            *ngIf="b.status !== 'CANCELLED' && !isEventLive(b)"
-            variant="outline"
-            size="sm"
-            type="button"
-            (click)="cancel(b.public_id)">
-            {{ 'common.cancel' | t }}
-          </shared-button>
+          <app-event-action-button
+            [event]="b.eventObject"
+            [userId]="currentUserId()"
+            [isOrganizer]="false"
+            [size]="'sm'"
+            [primaryOnly]="false"
+            [showBadge]="false"
+            (viewDetails)="viewEventDetails($event)"
+            (actionTriggered)="handleEventAction($event, b)">
+          </app-event-action-button>
         </div>
       </div>
     </div>
@@ -206,22 +180,16 @@
         </div>
 
         <div class="booking-card-footer">
-          <shared-button
-            variant="outline"
-            size="sm"
-            type="button"
-            (click)="viewEventDetails(b.eventObject.id)">
-            {{ 'common.details' | t }}
-          </shared-button>
-
-          <shared-button
-            *ngIf="b.status !== 'CANCELLED'"
-            variant="outline"
-            size="sm"
-            type="button"
-            (click)="cancel(b.public_id)">
-            {{ 'common.cancel' | t }}
-          </shared-button>
+          <app-event-action-button
+            [event]="b.eventObject"
+            [userId]="currentUserId()"
+            [isOrganizer]="false"
+            [size]="'sm'"
+            [primaryOnly]="false"
+            [showBadge]="false"
+            (viewDetails)="viewEventDetails($event)"
+            (actionTriggered)="handleEventAction($event, b)">
+          </app-event-action-button>
         </div>
       </div>
     </div>
@@ -315,13 +283,16 @@
         </div>
 
         <div class="booking-card-footer">
-          <shared-button
-            variant="outline"
-            size="sm"
-            type="button"
-            (click)="viewEventDetails(b.eventObject.id)">
-            {{ 'common.details' | t }}
-          </shared-button>
+          <app-event-action-button
+            [event]="b.eventObject"
+            [userId]="currentUserId()"
+            [isOrganizer]="false"
+            [size]="'sm'"
+            [primaryOnly]="false"
+            [showBadge]="false"
+            (viewDetails)="viewEventDetails($event)"
+            (actionTriggered)="handleEventAction($event, b)">
+          </app-event-action-button>
         </div>
       </div>
     </div>

@@ -16,7 +16,7 @@ from common.exceptions import (
     CancellationDeadlineError,
     EventFullError,
 )
-from ..validators import validate_cancellation_deadline, validate_event_capacity
+from ..validators import validate_cancellation_deadline, validate_event_capacity, validate_event_not_cancelled
 
 
 class BookingService(BaseService):
@@ -26,7 +26,12 @@ class BookingService(BaseService):
     @transaction.atomic
     def create_booking(user, event, amount_cents=None):
         """
-        Create a new booking for a user.
+        Create a new booking for a user, or return existing PENDING booking.
+
+        Business Rules:
+            - If a PENDING booking exists for this user/event, return it (reuse)
+            - If a CONFIRMED booking exists, raise ValidationError (only 1 active booking allowed)
+            - Otherwise, create a new PENDING booking
 
         Args:
             user: User making the booking
@@ -34,15 +39,40 @@ class BookingService(BaseService):
             amount_cents: Booking amount (defaults to event price)
 
         Returns:
-            Booking: Created booking instance
+            Booking: Created or existing booking instance
 
         Raises:
             EventFullError: If event is at capacity
-            ValidationError: If duplicate booking exists
+            ValidationError: If user already has a CONFIRMED booking for this event
         """
-        from bookings.models import Booking
+        from bookings.models import Booking, BookingStatus
+        from django.core.exceptions import ValidationError
 
-        # Validate event capacity
+        # Validate event is not cancelled
+        validate_event_not_cancelled(event)
+
+        # Check if user already has an active booking for this event
+        existing_booking = Booking.objects.filter(
+            user=user,
+            event=event
+        ).exclude(status=BookingStatus.CANCELLED).first()
+
+        if existing_booking:
+            # If PENDING, return it (reuse)
+            if existing_booking.status == BookingStatus.PENDING:
+                # Refresh expiration time
+                existing_booking.expires_at = timezone.now() + timedelta(minutes=BOOKING_TTL_MINUTES)
+                existing_booking.save(update_fields=['expires_at', 'updated_at'])
+                return existing_booking
+
+            # If CONFIRMED, user cannot create another booking
+            elif existing_booking.status == BookingStatus.CONFIRMED:
+                raise ValidationError(
+                    "You already have a confirmed booking for this event. "
+                    "Please cancel it first if you want to create a new one."
+                )
+
+        # Validate event capacity (only for new bookings)
         validate_event_capacity(event)
 
         # Default amount to event price
@@ -168,9 +198,15 @@ class BookingService(BaseService):
         return count
 
     @staticmethod
+    @transaction.atomic
     def confirm_booking(booking, payment_intent_id=None):
         """
         Confirm a booking after successful payment.
+
+        Business Rules:
+            - Validates event capacity before confirmation (prevents overbooking)
+            - Checks if booking has expired
+            - Publishes event if this is organizer's booking
 
         Args:
             booking: Booking to confirm
@@ -178,12 +214,18 @@ class BookingService(BaseService):
 
         Raises:
             BookingExpiredError: If booking has expired
+            ValidationError: If event is full (race condition protection)
         """
         from bookings.models import BookingStatus
+        from django.core.exceptions import ValidationError
 
         # Check if expired
         if booking.status == BookingStatus.PENDING and booking.is_expired:
             raise BookingExpiredError()
+
+        # CRITICAL: Validate capacity before confirmation to prevent overbooking
+        # This protects against race conditions where multiple users pay simultaneously
+        validate_event_capacity(booking.event)
 
         # Mark as confirmed
         late = booking.is_expired

@@ -1,14 +1,16 @@
-import { Component, OnInit, OnDestroy, inject, signal, Pipe, PipeTransform } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, Pipe, PipeTransform, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { take, finalize } from 'rxjs/operators';
-import { TPipe } from '@core/i18n';
+import { TPipe, I18nService, LangService } from '@core/i18n';
 import { EventsApiService, BookingsApiService, PaymentsApiService, AuthApiService, GamesApiService } from '@core/http';
 import { BlockingSpinnerService } from '@app/core/http/services/spinner-service';
 import { EventDetailDto, EventParticipantDto, EventParticipantsResponse } from '@core/models';
 import { ConfirmPurchaseComponent } from '@app/shared/components/modals/confirm-purchase/confirm-purchase.component';
-import { HeadlineBarComponent, SHARED_IMPORTS } from '@shared';
+import { HeadlineBarComponent, SHARED_IMPORTS, EventActionButtonComponent } from '@shared';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { EventAction } from '@app/features/events/services/event-actions.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Pipe({
   name: 'sanitizeUrl',
@@ -24,7 +26,7 @@ export class SanitizeUrlPipe implements PipeTransform {
 @Component({
   selector: 'app-event-detail',
   standalone: true,
-  imports: [CommonModule, TPipe, SanitizeUrlPipe, ConfirmPurchaseComponent, HeadlineBarComponent, ...SHARED_IMPORTS],
+  imports: [CommonModule, TPipe, SanitizeUrlPipe, ConfirmPurchaseComponent, HeadlineBarComponent, EventActionButtonComponent, ...SHARED_IMPORTS],
   templateUrl: './detail.html',
   styleUrl: './detail.scss'
 })
@@ -37,6 +39,9 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   private paymentsApi = inject(PaymentsApiService);
   private gamesApi = inject(GamesApiService);
   private loader = inject(BlockingSpinnerService);
+  private i18n = inject(I18nService);
+  private langService = inject(LangService);
+  private readonly currentLang = toSignal(this.langService.lang$, { initialValue: this.langService.current });
 
   event = signal<EventDetailDto | null>(null);
   loading = signal(true);
@@ -55,6 +60,9 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   cancellingEvent = signal(false);
   deletingDraft = signal(false);
   startingGame = signal(false);
+
+  // Mode test (bypass time validation)
+  skipTimeValidation = signal(false);
 
   // Cached button state to avoid infinite recalculation
   actionButtonState = signal<'organizer-draft-pay' | 'organizer-draft-delete' | 'organizer-published-cancel' |
@@ -263,18 +271,48 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   }
 
   formatPrice(cents: number): string {
+    const currentLang = this.currentLang();
     const amount = cents / 100;
-    return new Intl.NumberFormat('fr-BE', { style: 'currency', currency: 'EUR' }).format(amount);
+
+    // Locale mapping for price formatting
+    const localeMap: Record<string, string> = {
+      'fr': 'fr-BE',
+      'en': 'en-GB',
+      'nl': 'nl-BE'
+    };
+
+    const locale = localeMap[currentLang] || 'fr-BE';
+    return new Intl.NumberFormat(locale, { style: 'currency', currency: 'EUR' }).format(amount);
   }
 
   formatDate(dateStr: string): string {
+    const currentLang = this.currentLang();
     const date = new Date(dateStr);
-    return new Intl.DateTimeFormat('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).format(date);
+
+    // Locale mapping for date formatting
+    const localeMap: Record<string, string> = {
+      'fr': 'fr-FR',
+      'en': 'en-GB',
+      'nl': 'nl-NL'
+    };
+
+    const locale = localeMap[currentLang] || 'fr-FR';
+    return new Intl.DateTimeFormat(locale, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).format(date);
   }
 
   formatTime(dateStr: string): string {
+    const currentLang = this.currentLang();
     const date = new Date(dateStr);
-    return new Intl.DateTimeFormat('fr-FR', { hour: '2-digit', minute: '2-digit' }).format(date);
+
+    // Locale mapping for time formatting
+    const localeMap: Record<string, string> = {
+      'fr': 'fr-FR',
+      'en': 'en-GB',
+      'nl': 'nl-NL'
+    };
+
+    const locale = localeMap[currentLang] || 'fr-FR';
+    return new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit' }).format(date);
   }
 
   formatLanguages(codes?: string[] | null): string {
@@ -311,7 +349,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
     const evt = this.event();
     if (!evt || !this.isOrganizer()) return;
     this.organizerPaymentLoading.set(true);
-    this.loader.show('Préparation du paiement...');
+    this.loader.show(this.i18n.t('events.detail.loader.preparing_payment'));
     this.eventsApi.requestPublication(evt.id, this.getLang()).pipe(
       take(1),
       finalize(() => { this.organizerPaymentLoading.set(false); this.loader.hide(); })
@@ -320,12 +358,12 @@ export class EventDetailComponent implements OnInit, OnDestroy {
         if (response && response.url) {
           window.location.href = response.url;
         } else {
-          alert('URL de paiement indisponible');
+          alert(this.i18n.t('events.detail.errors.payment_url_unavailable'));
         }
       },
       error: (err: any) => {
         console.error('Error requesting publication:', err);
-        alert(err?.error?.error || 'Erreur lors de la demande de publication');
+        alert(err?.error?.error || this.i18n.t('events.detail.errors.publication_request_failed'));
       }
     });
   }
@@ -341,7 +379,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
       this.router.navigate(['/', this.getLang(), 'auth', 'login']);
       return;
     }
-    this.loader.show('Création de la réservation...');
+    this.loader.show(this.i18n.t('events.detail.loader.creating_booking'));
     this.bookingsApi.create(evt.id).pipe(
       take(1),
       finalize(() => this.loader.hide())
@@ -350,10 +388,10 @@ export class EventDetailComponent implements OnInit, OnDestroy {
         this.paymentsApi.createCheckoutSession({ booking_public_id: booking.public_id, lang: this.getLang() })
           .pipe(take(1)).subscribe({
             next: (res) => { window.location.href = res.url; },
-            error: (err) => { console.error('Error creating checkout session:', err); alert('Erreur lors de la création de la session de paiement'); },
+            error: (err) => { console.error('Error creating checkout session:', err); alert(this.i18n.t('events.detail.errors.checkout_session_failed')); },
           });
       },
-      error: (err) => { console.error('Error creating booking:', err); alert('Erreur lors de la création de la réservation'); }
+      error: (err) => { console.error('Error creating booking:', err); alert(this.i18n.t('events.detail.errors.booking_creation_failed')); }
     });
   }
 
@@ -361,13 +399,13 @@ export class EventDetailComponent implements OnInit, OnDestroy {
     const evt = this.event();
     const myb = (evt as any)?.my_booking as ({ public_id: string; status: string } | null | undefined);
     if (!evt || !myb || myb.status !== 'PENDING') return;
-    this.loader.show('Redirection vers le paiement...');
+    this.loader.show(this.i18n.t('events.detail.loader.redirecting_payment'));
     this.paymentsApi.createCheckoutSession({ booking_public_id: myb.public_id, lang: this.getLang() }).pipe(
       take(1),
       finalize(() => this.loader.hide())
     ).subscribe({
       next: (res) => { window.location.href = res.url; },
-      error: (err) => { console.error('Error creating checkout session:', err); alert('Erreur lors de la création de la session de paiement'); },
+      error: (err) => { console.error('Error creating checkout session:', err); alert(this.i18n.t('events.detail.errors.checkout_session_failed')); },
     });
   }
 
@@ -387,7 +425,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
         const eventId = this.event()?.id;
         if (eventId) this.loadEvent(eventId);
       },
-      error: (err) => { console.error('Error cancelling booking:', err); alert('Erreur lors de l\'annulation de la réservation'); }
+      error: (err) => { console.error('Error cancelling booking:', err); alert(this.i18n.t('events.detail.errors.booking_cancellation_failed')); }
     });
   }
 
@@ -396,15 +434,15 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   onDeleteDraft(): void {
     const evt = this.event();
     if (!evt || !this.isOrganizer()) return;
-    if (!confirm('Voulez-vous vraiment supprimer ce brouillon ? Cette action est irréversible.')) return;
+    if (!confirm(this.i18n.t('events.detail.confirm.delete_draft'))) return;
     this.deletingDraft.set(true);
-    this.loader.show('Suppression du brouillon...');
+    this.loader.show(this.i18n.t('events.detail.loader.deleting_draft'));
     this.eventsApi.delete(evt.id).pipe(
       take(1),
       finalize(() => { this.deletingDraft.set(false); this.loader.hide(); })
     ).subscribe({
       next: () => { this.router.navigate(['/', this.getLang(), 'events']); },
-      error: (err) => { console.error('Error deleting draft:', err); alert('Erreur lors de la suppression du brouillon'); }
+      error: (err) => { console.error('Error deleting draft:', err); alert(this.i18n.t('events.detail.errors.draft_deletion_failed')); }
     });
   }
 
@@ -418,7 +456,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
     const isOrganizer = this.isOrganizer();
 
     this.startingGame.set(true);
-    this.loader.show('Vérification du jeu...');
+    this.loader.show(this.i18n.t('events.detail.loader.checking_game'));
 
     // Toujours vérifier d'abord s'il existe un jeu actif
     this.gamesApi.getActiveGame(evt.id).pipe(
@@ -440,17 +478,17 @@ export class EventDetailComponent implements OnInit, OnDestroy {
           if (isOrganizer) {
             this.createNewGame(evt);
           } else {
-            alert('Aucun jeu actif. L\'organisateur doit lancer le jeu.');
+            alert(this.i18n.t('events.detail.errors.no_active_game'));
           }
         }
         // Erreur de permission (403) ou autre erreur serveur
         else if (err.status === 403) {
-          alert('Vous n\'avez pas accès à ce jeu. Assurez-vous d\'être inscrit à l\'événement.');
+          alert(this.i18n.t('events.detail.errors.game_access_denied'));
         }
         // Autres erreurs
         else {
           console.error('Error finding game:', err);
-          alert(`Erreur lors de la recherche du jeu (${err.status}). Réessayez.`);
+          alert(this.i18n.t('events.detail.errors.game_search_failed', { status: err.status }));
         }
       }
     });
@@ -458,11 +496,12 @@ export class EventDetailComponent implements OnInit, OnDestroy {
 
   private createNewGame(evt: any): void {
     this.startingGame.set(true);
-    this.loader.show('Lancement du jeu...');
+    this.loader.show(this.i18n.t('events.detail.loader.starting_game'));
 
     this.gamesApi.create({
       event_id: evt.id,
-      game_type: evt.game_type as any
+      game_type: evt.game_type as any,
+      skip_time_validation: this.skipTimeValidation()
     }).pipe(
       take(1),
       finalize(() => { this.startingGame.set(false); this.loader.hide(); })
@@ -483,7 +522,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
           console.log('Un jeu actif existe déjà, tentative de récupération...');
           // Réessayer de récupérer le jeu actif
           this.startingGame.set(true);
-          this.loader.show('Récupération du jeu...');
+          this.loader.show(this.i18n.t('events.detail.loader.retrieving_game'));
 
           this.gamesApi.getActiveGame(evt.id).pipe(
             take(1),
@@ -495,11 +534,11 @@ export class EventDetailComponent implements OnInit, OnDestroy {
             },
             error: (getErr) => {
               console.error('Impossible de récupérer le jeu actif:', getErr);
-              alert('Un jeu existe déjà mais impossible de le rejoindre. Contactez le support.');
+              alert(this.i18n.t('events.detail.errors.game_retrieval_failed'));
             }
           });
         } else {
-          alert(errorMsg || 'Erreur lors du lancement du jeu');
+          alert(errorMsg || this.i18n.t('events.detail.errors.game_start_failed'));
         }
       }
     });
@@ -514,11 +553,95 @@ export class EventDetailComponent implements OnInit, OnDestroy {
       finalize(() => { this.cancellingEvent.set(false); this.showCancelEventModal.set(false); })
     ).subscribe({
       next: () => { this.router.navigate(['/', this.getLang(), 'events']); },
-      error: (err) => { console.error('Error cancelling event:', err); alert('Erreur lors de l\'annulation de l\'événement'); }
+      error: (err) => { console.error('Error cancelling event:', err); alert(this.i18n.t('events.detail.errors.event_cancellation_failed')); }
     });
   }
 
   private getLang(): string {
     return this.route.snapshot.paramMap.get('lang') || 'fr';
+  }
+
+  /**
+   * Gérer les actions du composant EventActionButton
+   */
+  handleEventAction(action: EventAction): void {
+    const evt = this.event();
+    if (!evt) return;
+
+    switch (action) {
+      // Actions organisateur - DRAFT
+      case 'organizer-pay-and-publish':
+        this.onRequestPublication();
+        break;
+      case 'organizer-delete-draft':
+        this.onDeleteDraft();
+        break;
+
+      // Actions organisateur - PUBLISHED
+      case 'organizer-cancel-event':
+        this.openCancelEventModal();
+        break;
+      case 'organizer-start-game':
+      case 'organizer-join-game':
+        this.onPlayGame();
+        break;
+
+      // Actions utilisateur
+      case 'user-book':
+        this.onBook();
+        break;
+      case 'user-pay-booking':
+        // Rediriger vers paiement
+        if (evt.my_booking) {
+          this.proceedToPayment(evt.my_booking.public_id);
+        }
+        break;
+      case 'user-cancel-booking':
+        this.showCancelModal.set(true);
+        break;
+      case 'user-join-game':
+        this.onPlayGame();
+        break;
+
+      case 'view-details':
+        // Scroll vers la description ou autre action
+        break;
+
+      default:
+        console.warn('Action non gérée:', action);
+    }
+  }
+
+  private proceedToPayment(bookingPublicId: string): void {
+    // Créer session de paiement Stripe pour la réservation
+    this.paymentsApi.createCheckoutSession({
+      booking_public_id: bookingPublicId,
+      lang: this.getLang(),
+      success_url: `${window.location.origin}/${this.getLang()}/bookings/success`,
+      cancel_url: `${window.location.origin}/${this.getLang()}/events/${this.event()?.id}`
+    }).pipe(take(1)).subscribe({
+      next: (session) => {
+        if (session.url) {
+          window.location.href = session.url;
+        }
+      },
+      error: (err) => {
+        console.error('Error creating checkout session:', err);
+        alert(this.i18n.t('events.detail.errors.checkout_session_failed'));
+      }
+    });
+  }
+
+  getLanguageLabel(evt: EventDetailDto | null): string {
+    if (!evt) return '';
+    const code = evt.language_code?.toLowerCase();
+    if (code) {
+      const key = `languages.${code}`;
+      const translated = this.i18n.t(key);
+      if (translated && translated !== key) {
+        return translated;
+      }
+    }
+    return evt.language_name;
   }
 }

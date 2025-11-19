@@ -9,6 +9,9 @@
       <shared-badge variant="secondary" tone="solid" class="language-chip">
         {{ languageBadgeKey | t }}
       </shared-badge>
+      <shared-badge variant="primary" tone="soft" class="difficulty-chip">
+        {{ 'events.difficulty.' + event.difficulty | t }}
+      </shared-badge>
 
       <div class="status-badges">
         <shared-badge *ngIf="event.is_cancelled" variant="danger" tone="soft">
@@ -47,38 +50,17 @@
     </shared-badge>
   </div>
 
-  <div footer class="event-footer">
-    <div class="button-group" *ngIf="!event.is_cancelled">
-      <shared-button type="button" variant="outline" size="sm" (click)="onViewDetails($event)" class="action-button">
-        {{ 'common.details' | t }}
-      </shared-button>
-
-      <shared-button
-        *ngIf="canPlayGame"
-        type="button"
-        variant="accent"
-        size="sm"
-        (click)="onPlayGame($event)"
-        class="action-button play-button">
-        🎲 Jouer
-      </shared-button>
-
-      <shared-button
-        *ngIf="isOrganizer && isDraft"
-        type="button"
-        variant="accent"
-        size="sm"
-        [disabled]="isPaymentLoading"
-        (click)="onPayDraft($event)"
-        class="action-button payment-button"
-        [class.loading]="isPaymentLoading">
-        <span *ngIf="!isPaymentLoading">{{ 'events.pay_to_publish' | t }}</span>
-        <span *ngIf="isPaymentLoading" class="loading-text">{{ 'common.loading' | t }}</span>
-      </shared-button>
-
-      <shared-badge *ngIf="isOrganizer && isPublished && !canPlayGame" variant="success" tone="soft" class="reserved-badge">
-        {{ 'events.reserved' | t }}
-      </shared-badge>
-    </div>
+  <div footer class="event-footer" (click)="$event.stopPropagation()">
+    <app-event-action-button
+      [event]="event"
+      [userId]="userId"
+      [isOrganizer]="isOrganizer"
+      [size]="'sm'"
+      [primaryOnly]="false"
+      [showBadge]="false"
+      [loading]="isPaymentLoading"
+      (viewDetails)="onViewDetails()"
+      (actionTriggered)="handleEventAction($event)">
+    </app-event-action-button>
   </div>
 </shared-card>

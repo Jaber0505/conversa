@@ -215,14 +215,22 @@ class PaymentService(BaseService):
 
         Called from webhook handler when checkout.session.completed is received.
 
+        Business Rules:
+            - Validates event capacity before confirmation (overbooking protection)
+            - If capacity exceeded, triggers automatic refund
+            - Updates payment status accordingly
+
         Returns:
             Payment: Updated payment instance
+
+        Raises:
+            ValidationError: If booking/payment not found
         """
         import logging
 
         logger = logging.getLogger("payments.webhook")
 
-        from bookings.models import Booking
+        from bookings.models import Booking, BookingStatus
 
         logger.info(f"Looking for booking {booking_public_id}")
 
@@ -234,15 +242,6 @@ class PaymentService(BaseService):
         except Booking.DoesNotExist:
             logger.error(f"Booking {booking_public_id} not found")
             raise ValidationError("Booking not found")
-
-        # Confirm booking if still pending (use service to trigger side-effects like event publish)
-        if booking.status == BookingStatus.PENDING:
-            logger.info("Booking is PENDING, confirming via BookingService")
-            from bookings.services import BookingService
-            BookingService.confirm_booking(booking=booking, payment_intent_id=payment_intent_id)
-            logger.info("Booking marked as CONFIRMED (service)")
-        else:
-            logger.info(f"Booking status is {booking.status}, skipping confirmation")
 
         # Find existing payment by session id for this booking
         try:
@@ -256,18 +255,84 @@ class PaymentService(BaseService):
             )
             raise ValidationError("Payment not found")
 
-        # Update payment
+        # Update payment with Stripe info
         if payment_intent_id:
             payment.stripe_payment_intent_id = payment_intent_id
-        payment.status = STATUS_SUCCEEDED
         payment.raw_event = raw_event
-        payment.save()
+
+        # Confirm booking if still pending (use service to trigger side-effects like event publish)
+        if booking.status == BookingStatus.PENDING:
+            logger.info("Booking is PENDING, attempting confirmation via BookingService")
+
+            try:
+                from bookings.services import BookingService
+                BookingService.confirm_booking(booking=booking, payment_intent_id=payment_intent_id)
+
+                # Success: mark payment as succeeded
+                payment.status = STATUS_SUCCEEDED
+                payment.save()
+                logger.info("Booking marked as CONFIRMED (service)")
+
+                # Log success
+                AuditService.log_payment_succeeded(payment, booking.user, is_free=False)
+
+            except ValidationError as e:
+                # Event is full (race condition) - trigger automatic refund
+                logger.warning(f"Confirmation failed (likely overbooking): {str(e)}")
+                logger.info("Triggering automatic refund due to capacity issue")
+
+                # Mark payment as succeeded first (money was received)
+                payment.status = STATUS_SUCCEEDED
+                payment.save()
+
+                # Process automatic EMERGENCY refund (bypasses normal validation)
+                from .refund_service import RefundService
+                try:
+                    success, message, refund_payment = RefundService.process_emergency_refund(
+                        booking=booking,
+                        payment_intent_id=payment_intent_id,
+                        reason="Event capacity exceeded (overbooking)"
+                    )
+
+                    if success:
+                        logger.info(f"Automatic refund processed: {message}")
+                        # Cancel the booking
+                        booking.mark_cancelled()
+                        logger.info("Booking cancelled after refund")
+                    else:
+                        logger.error(f"Automatic refund failed: {message}")
+                        # Payment succeeded but refund failed - manual intervention needed
+                        AuditService.log_error(
+                            action="webhook_refund_failed",
+                            message=f"Payment succeeded but automatic refund failed for booking {booking.public_id}",
+                            user=booking.user,
+                            error_details={
+                                "booking_id": booking.id,
+                                "payment_id": payment.id,
+                                "refund_message": message,
+                                "reason": str(e)
+                            }
+                        )
+
+                except Exception as refund_error:
+                    logger.error(f"Exception during automatic refund: {str(refund_error)}")
+                    AuditService.log_error(
+                        action="webhook_refund_exception",
+                        message=f"Exception during automatic refund for booking {booking.public_id}",
+                        user=booking.user,
+                        error_details={
+                            "booking_id": booking.id,
+                            "payment_id": payment.id,
+                            "error": str(refund_error),
+                            "reason": str(e)
+                        }
+                    )
+        else:
+            logger.info(f"Booking status is {booking.status}, skipping confirmation")
+            payment.status = STATUS_SUCCEEDED
+            payment.save()
 
         logger.info(f"Payment #{payment.id} marked as SUCCEEDED")
-
-        # Log success
-        AuditService.log_payment_succeeded(payment, booking.user, is_free=False)
-
         logger.info(f"Payment confirmation complete for booking {booking_public_id}")
 
         return payment

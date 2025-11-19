@@ -144,6 +144,11 @@ class GameCreateSerializer(serializers.Serializer):
     """
 
     game_type = serializers.ChoiceField(choices=GameType.choices, required=True)
+    skip_time_validation = serializers.BooleanField(
+        required=False,
+        default=False,
+        help_text="Skip time validation for testing purposes (organizer only)"
+    )
 
     def validate(self, attrs):
         """Validate game creation data."""

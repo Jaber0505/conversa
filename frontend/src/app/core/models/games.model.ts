@@ -55,6 +55,7 @@ export interface GameDto {
 export interface GameCreatePayload {
   event_id: number;
   game_type: GameType;
+  skip_time_validation?: boolean;
 }
 
 export interface VoteSubmitPayload {

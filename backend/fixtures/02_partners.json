@@ -3,1500 +3,1500 @@
     "model": "partners.partner",
     "pk": 1,
     "fields": {
-      "name": "Brasserie de la Gare",
-      "address": "Rue Antoine Dansaert 203, 1020 Etterbeek, Belgique",
-      "city": "Etterbeek",
-      "reputation": 4.2,
-      "capacity": 20,
+      "name": "La Guinguette",
+      "address": "Avenue de la Toison d'Or 55, 1180 Ganshoren, Belgique",
+      "city": "Ganshoren",
+      "reputation": 4.0,
+      "capacity": 22,
       "is_active": true,
-      "api_key": "811102528291b2316bde9a8b4a41b13ac7f0d0c9eade7853dd949aaf3df3dac3",
-      "created_at": "2024-06-29T14:02:33.984846Z",
-      "updated_at": "2024-06-29T14:02:33.984846Z"
+      "api_key": "481ee026f78652629db01c4f5a5202640a7a3b484e5569c0c34b7862f16c1f62",
+      "created_at": "2025-06-21T21:36:16.630810Z",
+      "updated_at": "2025-06-21T21:36:16.630810Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 2,
     "fields": {
-      "name": "La Taverne Anversoise",
-      "address": "Place de Brouckère 160, 1180 Evere, Belgique",
-      "city": "Evere",
-      "reputation": 4.3,
-      "capacity": 25,
-      "is_active": true,
-      "api_key": "7d45acb31a622c34c4331f8031449a84196bfb87e137354f673ae95c306d3b50",
-      "created_at": "2024-04-11T14:02:33.984961Z",
-      "updated_at": "2024-04-11T14:02:33.984961Z"
+      "name": "Le Bar Central",
+      "address": "Boulevard du Jardin Botanique 20, 1080 Koekelberg, Belgique",
+      "city": "Koekelberg",
+      "reputation": 4.8,
+      "capacity": 10,
+      "is_active": false,
+      "api_key": "7a24649ee959b8d563b19cac843e02778c58ee8a581f35199b4941c316e2352c",
+      "created_at": "2024-06-14T21:36:16.631044Z",
+      "updated_at": "2024-06-14T21:36:16.631044Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 3,
     "fields": {
-      "name": "Le Café Wallon",
-      "address": "Avenue Franklin Roosevelt 269, 1160 Woluwe-Saint-Lambert, Belgique",
-      "city": "Woluwe-Saint-Lambert",
-      "reputation": 3.6,
-      "capacity": 21,
+      "name": "Chez Marie",
+      "address": "Place de la Monnaie 69, 1040 Jette, Belgique",
+      "city": "Jette",
+      "reputation": 4.2,
+      "capacity": 11,
       "is_active": true,
-      "api_key": "b6131ef79f5a28b4e22c85be8d607d2df9c956ea2ae40448b63e8a895ae7512c",
-      "created_at": "2024-06-18T14:02:33.984994Z",
-      "updated_at": "2024-06-18T14:02:33.984994Z"
+      "api_key": "b82eb1e0a039d44ad38b05d52748ffe6235de4bbcb5b39241df6244df0905310",
+      "created_at": "2024-03-28T21:36:16.631063Z",
+      "updated_at": "2024-03-28T21:36:16.631063Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 4,
     "fields": {
-      "name": "Le Petit Zinc",
-      "address": "Avenue de la Toison d'Or 22, 1190 Etterbeek, Belgique",
-      "city": "Etterbeek",
-      "reputation": 3.3,
-      "capacity": 18,
+      "name": "La Terrasse",
+      "address": "Avenue de Tervueren 172, 1140 Evere, Belgique",
+      "city": "Evere",
+      "reputation": 3.8,
+      "capacity": 23,
       "is_active": true,
-      "api_key": "9427d4691e8da71304968f9c05da2ad9b04f66479123e3583583525703878bc4",
-      "created_at": "2025-01-18T14:02:33.985010Z",
-      "updated_at": "2025-01-18T14:02:33.985010Z"
+      "api_key": "c0d1d6de17f8f65454d438e39d6ae58ca2c37994bc36b697b4163bced44919ef",
+      "created_at": "2025-07-30T21:36:16.631074Z",
+      "updated_at": "2025-07-30T21:36:16.631074Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 5,
     "fields": {
-      "name": "Café de la Montagne",
-      "address": "Rue de la Régence 240, 1210 Saint-Josse, Belgique",
-      "city": "Saint-Josse",
-      "reputation": 3.2,
-      "capacity": 12,
+      "name": "Le Grand Zinc",
+      "address": "Rue des Bouchers 21, 1120 Auderghem, Belgique",
+      "city": "Auderghem",
+      "reputation": 4.6,
+      "capacity": 38,
       "is_active": true,
-      "api_key": "c93afe9f0ef599bd1a69d7089e5bced93f6314dccfac19f1005df3848ce06893",
-      "created_at": "2025-03-01T14:02:33.985021Z",
-      "updated_at": "2025-03-01T14:02:33.985021Z"
+      "api_key": "5e4c43d6ea80f554d426b2925fdaf09929e207454fb8c82355a66a655478c732",
+      "created_at": "2024-02-09T21:36:16.631085Z",
+      "updated_at": "2024-02-09T21:36:16.631085Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 6,
     "fields": {
-      "name": "Café de la Place",
-      "address": "Boulevard du Régent 131, 1000 Auderghem, Belgique",
-      "city": "Auderghem",
-      "reputation": 4.5,
-      "capacity": 23,
+      "name": "Le Bar à Vins",
+      "address": "Rue du Midi 268, 1160 Uccle, Belgique",
+      "city": "Uccle",
+      "reputation": 4.2,
+      "capacity": 32,
       "is_active": true,
-      "api_key": "378f52fc1ed96cdeeeb847492c359ac31dce38b4812670a07c71ef1fe3d39c06",
-      "created_at": "2025-05-19T14:02:33.985032Z",
-      "updated_at": "2025-05-19T14:02:33.985032Z"
+      "api_key": "f89e2ed63d6c53f442af028a5529f5f2f87d4be898ed6c0a70144ea37ae92661",
+      "created_at": "2024-02-01T21:36:16.631095Z",
+      "updated_at": "2024-02-01T21:36:16.631095Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 7,
     "fields": {
-      "name": "Café du Marché",
-      "address": "Rue de la Régence 45, 1080 Ixelles, Belgique",
-      "city": "Ixelles",
-      "reputation": 4.3,
-      "capacity": 33,
+      "name": "Le Zinc Doré",
+      "address": "Boulevard du Midi 83, 1040 Saint-Gilles, Belgique",
+      "city": "Saint-Gilles",
+      "reputation": 4.7,
+      "capacity": 28,
       "is_active": true,
-      "api_key": "6ee1f89df5cc87c911a64174308bb4ee669c0f553bacbb5de90c92f31774c6f9",
-      "created_at": "2025-03-23T14:02:33.985042Z",
-      "updated_at": "2025-03-23T14:02:33.985042Z"
+      "api_key": "338e58bca91be44226bcbce0cc4145aef2bcaabd63f5140f7fc9437c095d57da",
+      "created_at": "2023-12-21T21:36:16.631102Z",
+      "updated_at": "2023-12-21T21:36:16.631102Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 8,
     "fields": {
-      "name": "Le Petit Bruxelles",
-      "address": "Boulevard de Waterloo 11, 1130 Saint-Gilles, Belgique",
-      "city": "Saint-Gilles",
-      "reputation": 4.1,
-      "capacity": 19,
+      "name": "Café du Marché",
+      "address": "Rue Neuve 39, 1120 Uccle, Belgique",
+      "city": "Uccle",
+      "reputation": 3.4,
+      "capacity": 25,
       "is_active": true,
-      "api_key": "0338f6fe1d893b645a6877111dd2a72904df9eb341fdf6e20f56562126a8b10c",
-      "created_at": "2024-06-04T14:02:33.985056Z",
-      "updated_at": "2024-06-04T14:02:33.985056Z"
+      "api_key": "2a30754c865a96726b9676fbaa49956a4c25abe3ab08c46034d32792190cfe45",
+      "created_at": "2025-04-11T21:36:16.631112Z",
+      "updated_at": "2025-04-11T21:36:16.631112Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 9,
     "fields": {
-      "name": "Le Bar du Coin",
-      "address": "Avenue Général de Gaulle 100, 1020 Forest, Belgique",
-      "city": "Forest",
-      "reputation": 3.3,
-      "capacity": 14,
-      "is_active": true,
-      "api_key": "5b7bebb0c02452d535f8b3920004164afc54156da39ed4a7e3210af114ab5718",
-      "created_at": "2024-01-15T14:02:33.985068Z",
-      "updated_at": "2024-01-15T14:02:33.985068Z"
+      "name": "La Choperie",
+      "address": "Rue Blaes 300, 1030 Ganshoren, Belgique",
+      "city": "Ganshoren",
+      "reputation": 4.4,
+      "capacity": 23,
+      "is_active": false,
+      "api_key": "28108a048b2cfca036053fa02f61445b1e73fe2ba78c1c7650c682963ec576f9",
+      "created_at": "2024-08-06T21:36:16.631120Z",
+      "updated_at": "2024-08-06T21:36:16.631120Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 10,
     "fields": {
-      "name": "Le Zinc Doré",
-      "address": "Rue Blaes 35, 1080 Molenbeek, Belgique",
-      "city": "Molenbeek",
-      "reputation": 4.9,
-      "capacity": 25,
+      "name": "Café des Arts",
+      "address": "Chaussée de Boondael 212, 1210 Koekelberg, Belgique",
+      "city": "Koekelberg",
+      "reputation": 4.6,
+      "capacity": 36,
       "is_active": true,
-      "api_key": "1a98afc4312db9b2d0d08e0366d999c68a8e7c95572217087103020e6d96f627",
-      "created_at": "2023-12-17T14:02:33.985077Z",
-      "updated_at": "2023-12-17T14:02:33.985077Z"
+      "api_key": "154e33dd0e6dbef3409016317d0b9d38f46718bac3569a085d838a0debfa390f",
+      "created_at": "2024-04-06T21:36:16.631126Z",
+      "updated_at": "2024-04-06T21:36:16.631126Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 11,
     "fields": {
-      "name": "Brasserie de l'Europe",
-      "address": "Rue du Grand Sablon 246, 1050 Koekelberg, Belgique",
-      "city": "Koekelberg",
-      "reputation": 3.5,
-      "capacity": 24,
+      "name": "La Maison Bleue",
+      "address": "Avenue Louise 190, 1140 Auderghem, Belgique",
+      "city": "Auderghem",
+      "reputation": 4.9,
+      "capacity": 34,
       "is_active": true,
-      "api_key": "31b4043dc46ee433e22aafc64b98208cce5434617c9232a64536b1e4a3e35aa5",
-      "created_at": "2024-12-04T14:02:33.985085Z",
-      "updated_at": "2024-12-04T14:02:33.985085Z"
+      "api_key": "19b0905d0f96af861a293f98e7bd1659e100b9cd6ef8af4c39591b948991ffd9",
+      "created_at": "2025-02-05T21:36:16.631132Z",
+      "updated_at": "2025-02-05T21:36:16.631132Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 12,
     "fields": {
-      "name": "Chez Marie",
-      "address": "Chaussée d'Ixelles 43, 1070 Watermael-Boitsfort, Belgique",
-      "city": "Watermael-Boitsfort",
-      "reputation": 4.4,
-      "capacity": 39,
+      "name": "Le Zinc",
+      "address": "Boulevard Anspach 227, 1130 Ixelles, Belgique",
+      "city": "Ixelles",
+      "reputation": 4.8,
+      "capacity": 28,
       "is_active": true,
-      "api_key": "721926c1c294480f7ddae03871e6b8b0059395e486b561445ec4b86ac4b8e915",
-      "created_at": "2025-09-22T14:02:33.985094Z",
-      "updated_at": "2025-09-22T14:02:33.985094Z"
+      "api_key": "b57183db68d672a29c371a6c1ec8f337aa1289f2074aec84d21078a28c9e4bcf",
+      "created_at": "2025-07-22T21:36:16.631138Z",
+      "updated_at": "2025-07-22T21:36:16.631138Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 13,
     "fields": {
-      "name": "Le Petit Café",
-      "address": "Boulevard Anspach 146, 1180 Etterbeek, Belgique",
-      "city": "Etterbeek",
-      "reputation": 4.3,
-      "capacity": 12,
+      "name": "L'Auberge Flamande",
+      "address": "Avenue Général de Gaulle 255, 1180 Forest, Belgique",
+      "city": "Forest",
+      "reputation": 3.8,
+      "capacity": 29,
       "is_active": true,
-      "api_key": "8dfd9ac63a87ef6bc041ff5a801ee1e6bf6efa1b4663a25ca4d705d7d489aab0",
-      "created_at": "2024-02-27T14:02:33.985102Z",
-      "updated_at": "2024-02-27T14:02:33.985102Z"
+      "api_key": "b958fa4f45c1206a0d8f71b79b2a9b48a068b64e8cf01d391a239c0f5b9bfe40",
+      "created_at": "2024-03-07T21:36:16.631143Z",
+      "updated_at": "2024-03-07T21:36:16.631143Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 14,
     "fields": {
-      "name": "Pub Saint-Michel",
-      "address": "Place de la Monnaie 235, 1210 Bruxelles Centre, Belgique",
-      "city": "Bruxelles Centre",
-      "reputation": 4.5,
-      "capacity": 12,
+      "name": "Le Bistrot",
+      "address": "Boulevard Charlemagne 129, 1080 Koekelberg, Belgique",
+      "city": "Koekelberg",
+      "reputation": 4.8,
+      "capacity": 18,
       "is_active": true,
-      "api_key": "26d20ca1ab7608d0b48493cc2023c437e751adabfc5d0dc6aabbfef88d6c7583",
-      "created_at": "2025-10-08T14:02:33.985110Z",
-      "updated_at": "2025-10-08T14:02:33.985110Z"
+      "api_key": "972374409be2c79ad5294ba48c0c8ff97f03de8932e4e26bba86e4de26f4339e",
+      "created_at": "2024-07-24T21:36:16.631148Z",
+      "updated_at": "2024-07-24T21:36:16.631148Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 15,
     "fields": {
-      "name": "Café Bruxellois",
-      "address": "Place Flagey 171, 1060 Saint-Gilles, Belgique",
-      "city": "Saint-Gilles",
-      "reputation": 4.6,
-      "capacity": 33,
+      "name": "Le Petit Zinc",
+      "address": "Chaussée de Wavre 283, 1170 Woluwe-Saint-Lambert, Belgique",
+      "city": "Woluwe-Saint-Lambert",
+      "reputation": 4.3,
+      "capacity": 12,
       "is_active": true,
-      "api_key": "9760eee54be4dfcd40daac8625c35f89766e48bc25d8cb5dba8a175509f09c5f",
-      "created_at": "2024-08-29T14:02:33.985119Z",
-      "updated_at": "2024-08-29T14:02:33.985119Z"
+      "api_key": "def1e5bce88f08d7b21f402b6bb179f16c6f5ce30bfcd9c4ef09b8d126514914",
+      "created_at": "2025-07-12T21:36:16.631153Z",
+      "updated_at": "2025-07-12T21:36:16.631153Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 16,
     "fields": {
-      "name": "Le Bar à Vins",
-      "address": "Boulevard Anspach 129, 1120 Bruxelles Centre, Belgique",
-      "city": "Bruxelles Centre",
-      "reputation": 4.5,
-      "capacity": 26,
+      "name": "Café de la Montagne",
+      "address": "Chaussée de Forest 169, 1160 Anderlecht, Belgique",
+      "city": "Anderlecht",
+      "reputation": 3.9,
+      "capacity": 37,
       "is_active": true,
-      "api_key": "6786567f8f9bb394c7fd35d522abc0d63a20b63ec9464d8644b22951e9b281f0",
-      "created_at": "2023-11-28T14:02:33.985127Z",
-      "updated_at": "2023-11-28T14:02:33.985127Z"
+      "api_key": "9742abe5deb9c99b368d90fb912abcd07bb696349d1a7bab1911b331fac924a1",
+      "created_at": "2025-01-08T21:36:16.631159Z",
+      "updated_at": "2025-01-08T21:36:16.631159Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 17,
     "fields": {
-      "name": "La Brasserie Royale",
-      "address": "Chaussée de Wavre 154, 1120 Anderlecht, Belgique",
-      "city": "Anderlecht",
-      "reputation": 3.3,
+      "name": "Le Bar des Sportifs",
+      "address": "Boulevard du Triomphe 198, 1140 Evere, Belgique",
+      "city": "Evere",
+      "reputation": 4.3,
       "capacity": 23,
       "is_active": true,
-      "api_key": "0564d30a29406020a8da8c968c77ab60c7dd961b7a246fe85d408b9cd6dc3b6c",
-      "created_at": "2024-11-24T14:02:33.985134Z",
-      "updated_at": "2024-11-24T14:02:33.985134Z"
+      "api_key": "d31814d314b584275e1b7704cb08e14a01bb56b9eea6791a47ea9d5abf8c86e9",
+      "created_at": "2024-02-01T21:36:16.631164Z",
+      "updated_at": "2024-02-01T21:36:16.631164Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 18,
     "fields": {
-      "name": "La Choperie",
-      "address": "Boulevard du Triomphe 287, 1000 Jette, Belgique",
-      "city": "Jette",
-      "reputation": 3.8,
-      "capacity": 26,
+      "name": "Le Relais",
+      "address": "Boulevard Charlemagne 71, 1040 Ixelles, Belgique",
+      "city": "Ixelles",
+      "reputation": 3.5,
+      "capacity": 23,
       "is_active": true,
-      "api_key": "a6ecbf476218497dc886f30bbc521ebd68f3164ae6980025c3fac66bd514c239",
-      "created_at": "2024-10-23T14:02:33.985143Z",
-      "updated_at": "2024-10-23T14:02:33.985143Z"
+      "api_key": "2647ec0b1d54b3e957f5f4229c25b790dea74d3c0f3810583fffb26e29042a08",
+      "created_at": "2024-09-14T21:36:16.631189Z",
+      "updated_at": "2024-09-14T21:36:16.631189Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 19,
     "fields": {
-      "name": "Le Relais",
-      "address": "Boulevard Anspach 106, 1210 Forest, Belgique",
-      "city": "Forest",
-      "reputation": 3.4,
-      "capacity": 13,
+      "name": "Café de l'Avenue",
+      "address": "Avenue Brugmann 274, 1070 Jette, Belgique",
+      "city": "Jette",
+      "reputation": 3.2,
+      "capacity": 28,
       "is_active": true,
-      "api_key": "a8ebfe8f0a3a0e875362da648a5bb16574a59690bfea53c7f3865848abab2522",
-      "created_at": "2025-04-20T14:02:33.985177Z",
-      "updated_at": "2025-04-20T14:02:33.985177Z"
+      "api_key": "c36a5a471cc93d68f67adc8b2a0a6d0d9afd8b740889a1891f598099aa54bfde",
+      "created_at": "2025-06-05T21:36:16.631200Z",
+      "updated_at": "2025-06-05T21:36:16.631200Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 20,
     "fields": {
-      "name": "Le Grand Café",
-      "address": "Chaussée de Boondael 61, 1210 Bruxelles Centre, Belgique",
-      "city": "Bruxelles Centre",
-      "reputation": 3.7,
-      "capacity": 27,
+      "name": "Le Coin Convivial",
+      "address": "Rue Archimède 12, 1060 Etterbeek, Belgique",
+      "city": "Etterbeek",
+      "reputation": 4.8,
+      "capacity": 14,
       "is_active": true,
-      "api_key": "3a35d8443adddd3cd678c8199d90e64b6fb2f9dc74a8c37a1130cca4e31e819b",
-      "created_at": "2025-08-15T14:02:33.985191Z",
-      "updated_at": "2025-08-15T14:02:33.985191Z"
+      "api_key": "f5d36265813b4abf1eec996a708b3873d2876518873245d850699b024c1b3de4",
+      "created_at": "2024-05-02T21:36:16.631219Z",
+      "updated_at": "2024-05-02T21:36:16.631219Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 21,
     "fields": {
-      "name": "Le Bistrot",
-      "address": "Avenue Louise 141, 1160 Jette, Belgique",
-      "city": "Jette",
-      "reputation": 4.9,
-      "capacity": 32,
+      "name": "L'Atelier du Coin",
+      "address": "Rue Blaes 214, 1190 Auderghem, Belgique",
+      "city": "Auderghem",
+      "reputation": 4.0,
+      "capacity": 20,
       "is_active": true,
-      "api_key": "18c19bde5d49839747040437a84a91c70b4fcba254251bb08e073132474ef030",
-      "created_at": "2024-04-06T14:02:33.985200Z",
-      "updated_at": "2024-04-06T14:02:33.985200Z"
+      "api_key": "ed31e65338a5dee7c0be1f9ccdbe1be815a2924d58857fc68a0feda1892dcca6",
+      "created_at": "2024-12-12T21:36:16.631225Z",
+      "updated_at": "2024-12-12T21:36:16.631225Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 22,
     "fields": {
-      "name": "Le Refuge",
-      "address": "Place de Brouckère 5, 1000 Ganshoren, Belgique",
-      "city": "Ganshoren",
-      "reputation": 4.0,
-      "capacity": 36,
+      "name": "Le Café Wallon",
+      "address": "Place de la Monnaie 31, 1020 Auderghem, Belgique",
+      "city": "Auderghem",
+      "reputation": 4.7,
+      "capacity": 18,
       "is_active": true,
-      "api_key": "756591e318d8cf415d2394346297ca44d286f681e4ef25b8584635a0995215e2",
-      "created_at": "2024-01-25T14:02:33.985208Z",
-      "updated_at": "2024-01-25T14:02:33.985208Z"
+      "api_key": "006e6ca55b2822a1475891e73839745deb262f703cc96ec0985a2feedf6a60e6",
+      "created_at": "2025-10-17T21:36:16.631230Z",
+      "updated_at": "2025-10-17T21:36:16.631230Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 23,
     "fields": {
-      "name": "La Brasserie Belge",
-      "address": "Boulevard de l'Empereur 4, 1020 Uccle, Belgique",
-      "city": "Uccle",
-      "reputation": 5.0,
-      "capacity": 14,
+      "name": "Le Petit Café",
+      "address": "Rue du Midi 202, 1090 Saint-Josse, Belgique",
+      "city": "Saint-Josse",
+      "reputation": 4.0,
+      "capacity": 21,
       "is_active": true,
-      "api_key": "f302dc1194ca1d7bdd441f1ef6aeafd44260eb150e7c0f5172b6f8e331557e8a",
-      "created_at": "2024-05-09T14:02:33.985217Z",
-      "updated_at": "2024-05-09T14:02:33.985217Z"
+      "api_key": "7ffda4937b0b3de051cc701960a60d61e91e2d838bc455f4e027832eb34459ca",
+      "created_at": "2024-11-14T21:36:16.631235Z",
+      "updated_at": "2024-11-14T21:36:16.631235Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 24,
     "fields": {
-      "name": "La Guinguette",
-      "address": "Boulevard du Midi 35, 1130 Etterbeek, Belgique",
-      "city": "Etterbeek",
-      "reputation": 3.5,
-      "capacity": 28,
-      "is_active": false,
-      "api_key": "6ff93d92a59e90a313c0a11e323e5077cd7ed69db5befa810eaa8e5b2257d880",
-      "created_at": "2023-12-13T14:02:33.985225Z",
-      "updated_at": "2023-12-13T14:02:33.985225Z"
+      "name": "La Brasserie du Nord",
+      "address": "Boulevard du Jardin Botanique 52, 1070 Schaerbeek, Belgique",
+      "city": "Schaerbeek",
+      "reputation": 3.6,
+      "capacity": 34,
+      "is_active": true,
+      "api_key": "2658e6bb49ca0d961e25e8ade3993f1848e1e005d2378a123398be0eee0f1056",
+      "created_at": "2023-12-14T21:36:16.631241Z",
+      "updated_at": "2023-12-14T21:36:16.631241Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 25,
     "fields": {
-      "name": "Le Pub Irlandais",
-      "address": "Chaussée de Waterloo 127, 1080 Anderlecht, Belgique",
-      "city": "Anderlecht",
-      "reputation": 3.5,
-      "capacity": 29,
+      "name": "La Maison du Peuple",
+      "address": "Rue Royale 188, 1200 Evere, Belgique",
+      "city": "Evere",
+      "reputation": 5.0,
+      "capacity": 15,
       "is_active": true,
-      "api_key": "48ac8d6dabc366bd3ac2c8a1bf4cbfdf7163ecd6e7d9ca19d22e902eae235d87",
-      "created_at": "2024-05-17T14:02:33.985233Z",
-      "updated_at": "2024-05-17T14:02:33.985233Z"
+      "api_key": "24b8019afd94ac5c9e0c872156bca18007159ef6e3504db527c80354bf0ca9f1",
+      "created_at": "2025-03-01T21:36:16.631246Z",
+      "updated_at": "2025-03-01T21:36:16.631246Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 26,
     "fields": {
-      "name": "Le Drinking",
-      "address": "Boulevard du Triomphe 72, 1070 Woluwe-Saint-Pierre, Belgique",
-      "city": "Woluwe-Saint-Pierre",
-      "reputation": 4.5,
-      "capacity": 28,
+      "name": "Café de la Place",
+      "address": "Boulevard Charlemagne 105, 1160 Saint-Gilles, Belgique",
+      "city": "Saint-Gilles",
+      "reputation": 3.7,
+      "capacity": 26,
       "is_active": true,
-      "api_key": "afec91c900a5b885cfb3d646d3f2adfab72a87d9971a69338a34a54884837903",
-      "created_at": "2024-06-07T14:02:33.985241Z",
-      "updated_at": "2024-06-07T14:02:33.985241Z"
+      "api_key": "77fefbdf39d62a76b61c4fd7473a90b0d228ea4c204f27003c79590545c62e01",
+      "created_at": "2025-10-22T21:36:16.631254Z",
+      "updated_at": "2025-10-22T21:36:16.631254Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 27,
     "fields": {
-      "name": "Brasserie du Centre",
-      "address": "Place Poelaert 157, 1170 Forest, Belgique",
-      "city": "Forest",
-      "reputation": 4.5,
-      "capacity": 19,
+      "name": "Le Café Liégeois",
+      "address": "Chaussée de Forest 59, 1030 Saint-Gilles, Belgique",
+      "city": "Saint-Gilles",
+      "reputation": 5.0,
+      "capacity": 18,
       "is_active": true,
-      "api_key": "166fe75b7f34abe89c4806f9880b3c394dbab59453e62edaece4f7ad720b8d54",
-      "created_at": "2025-10-11T14:02:33.985250Z",
-      "updated_at": "2025-10-11T14:02:33.985250Z"
+      "api_key": "f73ab8b173fec54a104d39d7dd1da6eba8f293e9a6e3b0b061cf43233df7b5b2",
+      "created_at": "2025-06-07T21:36:16.631259Z",
+      "updated_at": "2025-06-07T21:36:16.631259Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 28,
     "fields": {
-      "name": "La Taverne",
-      "address": "Place de Brouckère 188, 1020 Anderlecht, Belgique",
-      "city": "Anderlecht",
-      "reputation": 4.9,
-      "capacity": 27,
+      "name": "Le Grand Café",
+      "address": "Chaussée de Waterloo 230, 1180 Saint-Josse, Belgique",
+      "city": "Saint-Josse",
+      "reputation": 4.6,
+      "capacity": 19,
       "is_active": true,
-      "api_key": "1fc24c53eb5b91b73ee8e91f49253a9565b7dc920d4e12492541bb034a3485fa",
-      "created_at": "2024-10-05T14:02:33.985258Z",
-      "updated_at": "2024-10-05T14:02:33.985258Z"
+      "api_key": "1af172e2ba375e0dad63f8e682417e6825ffc30d6906575d4991e6e255da5872",
+      "created_at": "2025-08-28T21:36:16.631264Z",
+      "updated_at": "2025-08-28T21:36:16.631264Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 29,
     "fields": {
-      "name": "La Maison Bleue",
-      "address": "Rue Blaes 237, 1070 Saint-Gilles, Belgique",
-      "city": "Saint-Gilles",
-      "reputation": 5.0,
-      "capacity": 26,
+      "name": "Le Café du Théâtre",
+      "address": "Avenue de la Toison d'Or 162, 1030 Forest, Belgique",
+      "city": "Forest",
+      "reputation": 3.4,
+      "capacity": 34,
       "is_active": true,
-      "api_key": "356adffe489bbdd1306fbdc60c58862ce03e931aa81d8b999645789558fcb70f",
-      "created_at": "2025-07-17T14:02:33.985265Z",
-      "updated_at": "2025-07-17T14:02:33.985265Z"
+      "api_key": "2bc7b086b7f0232c8735af1c907cfcc95b77d6a44df7164d2a214bb55a8ba3b9",
+      "created_at": "2024-03-20T21:36:16.631270Z",
+      "updated_at": "2024-03-20T21:36:16.631270Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 30,
     "fields": {
-      "name": "La Brasserie du Nord",
-      "address": "Rue du Midi 57, 1040 Jette, Belgique",
-      "city": "Jette",
-      "reputation": 3.7,
-      "capacity": 33,
+      "name": "La Brasserie Belge",
+      "address": "Place Flagey 287, 1090 Anderlecht, Belgique",
+      "city": "Anderlecht",
+      "reputation": 4.3,
+      "capacity": 26,
       "is_active": true,
-      "api_key": "0c62a2e8c4dc8e899e33cd5e7a80118c42b6a0c55cef162554965dbf4ad301b4",
-      "created_at": "2024-05-17T14:02:33.985275Z",
-      "updated_at": "2024-05-17T14:02:33.985275Z"
+      "api_key": "572d9d07fdb378c5f2f9cad925c170d9ac34faed9408416b43a45c2328356f90",
+      "created_at": "2025-06-01T21:36:16.631289Z",
+      "updated_at": "2025-06-01T21:36:16.631289Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 31,
     "fields": {
-      "name": "Brasserie du Parc",
-      "address": "Chaussée d'Ixelles 48, 1150 Schaerbeek, Belgique",
-      "city": "Schaerbeek",
-      "reputation": 5.0,
-      "capacity": 24,
+      "name": "Le Petit Bruxelles",
+      "address": "Avenue Louise 16, 1160 Auderghem, Belgique",
+      "city": "Auderghem",
+      "reputation": 4.2,
+      "capacity": 29,
       "is_active": true,
-      "api_key": "0b12d2aafced8faeb29a9ab9904f3e684f6339967fdcec95f2bd1aa2a6c1c626",
-      "created_at": "2024-07-16T14:02:33.985283Z",
-      "updated_at": "2024-07-16T14:02:33.985283Z"
+      "api_key": "8d1b5b9af84b4588a5070894986996dc7b1d6410732fda9d3c0692fc02458494",
+      "created_at": "2025-02-15T21:36:16.631294Z",
+      "updated_at": "2025-02-15T21:36:16.631294Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 32,
     "fields": {
-      "name": "L'Auberge Flamande",
-      "address": "Rue Vanderkindere 200, 1160 Auderghem, Belgique",
+      "name": "La Taverne",
+      "address": "Rue des Pierres 69, 1210 Auderghem, Belgique",
       "city": "Auderghem",
-      "reputation": 4.1,
+      "reputation": 3.0,
       "capacity": 14,
       "is_active": true,
-      "api_key": "68612a1e37a79336a551de81fe683585c90d53ba6a9e2d68f7c99794305becf2",
-      "created_at": "2024-09-05T14:02:33.985291Z",
-      "updated_at": "2024-09-05T14:02:33.985291Z"
+      "api_key": "4a377d58f23363f8ec476516cd09fa98445e2d4b179cdc0ac97c4d73b6362b24",
+      "created_at": "2025-08-20T21:36:16.631300Z",
+      "updated_at": "2025-08-20T21:36:16.631300Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 33,
     "fields": {
-      "name": "Café de l'Avenue",
-      "address": "Place Flagey 126, 1210 Berchem-Sainte-Agathe, Belgique",
-      "city": "Berchem-Sainte-Agathe",
-      "reputation": 3.3,
-      "capacity": 22,
+      "name": "Le Troquet",
+      "address": "Boulevard du Régent 28, 1200 Etterbeek, Belgique",
+      "city": "Etterbeek",
+      "reputation": 4.9,
+      "capacity": 38,
       "is_active": true,
-      "api_key": "306eafa37521908c8c0c2fdaa0404e1238fc627d0d2b7c9ea919d8b9e795186a",
-      "created_at": "2024-12-08T14:02:33.985299Z",
-      "updated_at": "2024-12-08T14:02:33.985299Z"
+      "api_key": "8f0c6fbd53bd6680cd2e5cc8558362a23262abad24e0fd10dd8f0a9f573876fe",
+      "created_at": "2024-10-29T21:36:16.631306Z",
+      "updated_at": "2024-10-29T21:36:16.631306Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 34,
     "fields": {
-      "name": "L'Atelier du Coin",
-      "address": "Place Flagey 115, 1120 Koekelberg, Belgique",
-      "city": "Koekelberg",
-      "reputation": 4.5,
-      "capacity": 14,
+      "name": "Brasserie de la Gare",
+      "address": "Rue Vanderkindere 107, 1060 Jette, Belgique",
+      "city": "Jette",
+      "reputation": 5.0,
+      "capacity": 37,
       "is_active": true,
-      "api_key": "08064b75becd67e20396ac4890f46e7be63decd32619115e3d4bbb2aefaa3413",
-      "created_at": "2025-03-05T14:02:33.985308Z",
-      "updated_at": "2025-03-05T14:02:33.985308Z"
+      "api_key": "09d1dd01624ff0a463591e711f86f44a4fb4a86bb1999324e466932518d0621b",
+      "created_at": "2025-07-19T21:36:16.631312Z",
+      "updated_at": "2025-07-19T21:36:16.631312Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 35,
     "fields": {
-      "name": "Café des Arts",
-      "address": "Place Poelaert 281, 1210 Watermael-Boitsfort, Belgique",
-      "city": "Watermael-Boitsfort",
-      "reputation": 4.3,
-      "capacity": 17,
+      "name": "Le Refuge",
+      "address": "Avenue Louise 98, 1060 Forest, Belgique",
+      "city": "Forest",
+      "reputation": 4.0,
+      "capacity": 31,
       "is_active": true,
-      "api_key": "ce28cf782eba5f067e49c14e2676819e7927d141cab0ab69a1d518146debd7a3",
-      "created_at": "2025-05-30T14:02:33.985316Z",
-      "updated_at": "2025-05-30T14:02:33.985316Z"
+      "api_key": "9c054b5fa0fe7b781f1ffda6c8eb83b7e6bc80b7fdde3f845043bab3c6aa353c",
+      "created_at": "2024-10-23T21:36:16.631319Z",
+      "updated_at": "2024-10-23T21:36:16.631319Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 36,
     "fields": {
-      "name": "Le Coin Convivial",
-      "address": "Avenue des Arts 269, 1140 Ganshoren, Belgique",
-      "city": "Ganshoren",
-      "reputation": 4.9,
-      "capacity": 20,
+      "name": "Café Bruxellois",
+      "address": "Avenue de la Toison d'Or 101, 1150 Anderlecht, Belgique",
+      "city": "Anderlecht",
+      "reputation": 4.7,
+      "capacity": 33,
       "is_active": true,
-      "api_key": "63cad9246d96ec959a900cb5a14b51b3e35ace8c7b93b83db730b148945a747d",
-      "created_at": "2024-09-15T14:02:33.985326Z",
-      "updated_at": "2024-09-15T14:02:33.985326Z"
+      "api_key": "07af1f01a7de3bee32e8e3ad933fe6aa68246cf3f258c65a1e3fcd74181c0409",
+      "created_at": "2025-10-19T21:36:16.631328Z",
+      "updated_at": "2025-10-19T21:36:16.631328Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 37,
     "fields": {
-      "name": "Le Café Liégeois",
-      "address": "Rue des Pierres 191, 1080 Evere, Belgique",
+      "name": "Le Café Central",
+      "address": "Rue de Flandre 81, 1140 Evere, Belgique",
       "city": "Evere",
-      "reputation": 3.4,
-      "capacity": 16,
+      "reputation": 3.2,
+      "capacity": 38,
       "is_active": true,
-      "api_key": "792cc632a821a0505f5782c0bd443378ebc3cefeacaaaf99b4d9c4ece46e77cc",
-      "created_at": "2023-12-30T14:02:33.985334Z",
-      "updated_at": "2023-12-30T14:02:33.985334Z"
+      "api_key": "975c0c90535617de198a6669c79a26271b411e48d59c7201d7019e65c23ed3dd",
+      "created_at": "2025-02-16T21:36:16.631333Z",
+      "updated_at": "2025-02-16T21:36:16.631333Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 38,
     "fields": {
-      "name": "Café des Amis",
-      "address": "Chaussée d'Ixelles 38, 1160 Watermael-Boitsfort, Belgique",
-      "city": "Watermael-Boitsfort",
-      "reputation": 3.2,
-      "capacity": 12,
+      "name": "La Taverne Anversoise",
+      "address": "Chaussée de Louvain 166, 1000 Ganshoren, Belgique",
+      "city": "Ganshoren",
+      "reputation": 3.1,
+      "capacity": 31,
       "is_active": true,
-      "api_key": "fac9689b944fe80a0c4ece972736c3fb29aa355c5f5c9f15704bd28b08dedc70",
-      "created_at": "2024-06-05T14:02:33.985342Z",
-      "updated_at": "2024-06-05T14:02:33.985342Z"
+      "api_key": "285da6bceaafbdc5d191f52af550a0da6baf042d9a61cbcbde294ebaa61fc67c",
+      "created_at": "2025-02-21T21:36:16.631340Z",
+      "updated_at": "2025-02-21T21:36:16.631340Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 39,
     "fields": {
-      "name": "Le Troquet",
-      "address": "Avenue Louise 104, 1200 Forest, Belgique",
-      "city": "Forest",
-      "reputation": 4.6,
-      "capacity": 20,
+      "name": "Café des Amis",
+      "address": "Boulevard de Waterloo 76, 1070 Woluwe-Saint-Lambert, Belgique",
+      "city": "Woluwe-Saint-Lambert",
+      "reputation": 4.3,
+      "capacity": 36,
       "is_active": true,
-      "api_key": "85bd42d2bfb203aa261bc769266db18f0803acc8e8208433ec0fa9a254946d9d",
-      "created_at": "2025-06-28T14:02:33.985350Z",
-      "updated_at": "2025-06-28T14:02:33.985350Z"
+      "api_key": "c886c7d8450ed9021fde46cee02631e0fcaef122c21a0c82cff4321bdabcb5a6",
+      "created_at": "2025-05-16T21:36:16.631347Z",
+      "updated_at": "2025-05-16T21:36:16.631347Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 40,
     "fields": {
-      "name": "Le Grand Zinc",
-      "address": "Chaussée de Boondael 107, 1160 Berchem-Sainte-Agathe, Belgique",
-      "city": "Berchem-Sainte-Agathe",
-      "reputation": 3.2,
-      "capacity": 32,
-      "is_active": true,
-      "api_key": "e82eff23ad237ecddfa396c53bbf142ff9d1614bcabd042d41d4d4c2e09924b7",
-      "created_at": "2024-03-18T14:02:33.985359Z",
-      "updated_at": "2024-03-18T14:02:33.985359Z"
+      "name": "Brasserie de l'Europe",
+      "address": "Rue de Namur 205, 1080 Koekelberg, Belgique",
+      "city": "Koekelberg",
+      "reputation": 4.3,
+      "capacity": 30,
+      "is_active": false,
+      "api_key": "b90b8543fa3145d5899f3ea7023717f08996f5772dd808f4d081b077a014874a",
+      "created_at": "2024-05-18T21:36:16.631353Z",
+      "updated_at": "2024-05-18T21:36:16.631353Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 41,
     "fields": {
-      "name": "Le Café du Théâtre",
-      "address": "Rue Royale 138, 1030 Saint-Gilles, Belgique",
-      "city": "Saint-Gilles",
-      "reputation": 3.7,
-      "capacity": 24,
+      "name": "Le Comptoir",
+      "address": "Avenue Louise 7, 1090 Uccle, Belgique",
+      "city": "Uccle",
+      "reputation": 3.4,
+      "capacity": 12,
       "is_active": true,
-      "api_key": "ae1f1ce6a5cdc9cc97403fe955befa6ec55f8bb9d7588d7523a9692514066452",
-      "created_at": "2024-12-19T14:02:33.985368Z",
-      "updated_at": "2024-12-19T14:02:33.985368Z"
+      "api_key": "7d928e46eb7fd7a74966e164cdac72b05724af113ceef69633ab7fd2511dbd85",
+      "created_at": "2025-10-31T21:36:16.631358Z",
+      "updated_at": "2025-10-31T21:36:16.631358Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 42,
     "fields": {
-      "name": "Le Comptoir",
-      "address": "Rue Royale 259, 1030 Bruxelles Centre, Belgique",
-      "city": "Bruxelles Centre",
-      "reputation": 3.2,
-      "capacity": 28,
+      "name": "Brasserie du Parc",
+      "address": "Avenue de la Toison d'Or 82, 1150 Watermael-Boitsfort, Belgique",
+      "city": "Watermael-Boitsfort",
+      "reputation": 3.9,
+      "capacity": 24,
       "is_active": true,
-      "api_key": "1871ba0e1a71f91b48e4cb2384ab9e69d9bdfd0c5a5e958a62693ba08b2fb3c1",
-      "created_at": "2024-08-19T14:02:33.985376Z",
-      "updated_at": "2024-08-19T14:02:33.985376Z"
+      "api_key": "602bc643a893f7aa233cb3cc47af97ba191f7dce74e8564d1180df14ade63cb6",
+      "created_at": "2025-11-15T21:36:16.631363Z",
+      "updated_at": "2025-11-15T21:36:16.631363Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 43,
     "fields": {
-      "name": "Le Zinc",
-      "address": "Boulevard de l'Empereur 127, 1090 Ganshoren, Belgique",
-      "city": "Ganshoren",
-      "reputation": 4.1,
-      "capacity": 30,
-      "is_active": true,
-      "api_key": "0c01e7b4b12620933df4f3a0bb7275f917a3ad2b04c086c61c40936c499abf7a",
-      "created_at": "2024-07-14T14:02:33.985384Z",
-      "updated_at": "2024-07-14T14:02:33.985384Z"
+      "name": "Café des Sports",
+      "address": "Rue de Flandre 52, 1150 Watermael-Boitsfort, Belgique",
+      "city": "Watermael-Boitsfort",
+      "reputation": 4.4,
+      "capacity": 12,
+      "is_active": false,
+      "api_key": "534a2e978b007409d747c7d9f4ca24ea12627bb7f1f0709001b755f61ea10a0f",
+      "created_at": "2024-04-24T21:36:16.631370Z",
+      "updated_at": "2024-04-24T21:36:16.631370Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 44,
     "fields": {
-      "name": "Le Bar des Sportifs",
-      "address": "Avenue Brugmann 265, 1170 Auderghem, Belgique",
-      "city": "Auderghem",
-      "reputation": 3.5,
-      "capacity": 23,
-      "is_active": true,
-      "api_key": "0cce4568495fe144b263c8c2baaaedbe94304b9b824944278aa6995176a82a68",
-      "created_at": "2024-05-21T14:02:33.985392Z",
-      "updated_at": "2024-05-21T14:02:33.985392Z"
+      "name": "Café de la Paix",
+      "address": "Avenue Général de Gaulle 281, 1200 Koekelberg, Belgique",
+      "city": "Koekelberg",
+      "reputation": 4.4,
+      "capacity": 10,
+      "is_active": false,
+      "api_key": "4c201dfe10467f59a9a12898e595aedfd7678ed6306967d6e4f272f16c826575",
+      "created_at": "2025-09-26T21:36:16.631376Z",
+      "updated_at": "2025-09-26T21:36:16.631376Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 45,
     "fields": {
-      "name": "La Terrasse",
-      "address": "Rue Archimède 128, 1180 Ganshoren, Belgique",
+      "name": "Le Coin des Artistes",
+      "address": "Chaussée de Wavre 119, 1080 Ganshoren, Belgique",
       "city": "Ganshoren",
-      "reputation": 4.6,
-      "capacity": 28,
+      "reputation": 4.4,
+      "capacity": 24,
       "is_active": true,
-      "api_key": "91aac6ad539c47458af94bf0947e8cc32842c9a7acecdd89b9f5e31208a164b8",
-      "created_at": "2024-10-15T14:02:33.985403Z",
-      "updated_at": "2024-10-15T14:02:33.985403Z"
+      "api_key": "9d86f4f6866fa68ccdd0634a91c4c335b33295f36b253703073c4fc3712c8dcd",
+      "created_at": "2024-07-09T21:36:16.631382Z",
+      "updated_at": "2024-07-09T21:36:16.631382Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 46,
     "fields": {
-      "name": "Le Café Central",
-      "address": "Rue des Bouchers 85, 1070 Auderghem, Belgique",
-      "city": "Auderghem",
-      "reputation": 4.8,
-      "capacity": 21,
+      "name": "Le Bar du Coin",
+      "address": "Rue Neuve 10, 1150 Uccle, Belgique",
+      "city": "Uccle",
+      "reputation": 4.5,
+      "capacity": 40,
       "is_active": true,
-      "api_key": "1b342157d71bf047e1961a976df9de4db6c5a613a6d1d7ec0cfa4099fc977928",
-      "created_at": "2024-09-03T14:02:33.985412Z",
-      "updated_at": "2024-09-03T14:02:33.985412Z"
+      "api_key": "666e32ba56de056ee7e79e6e78f8e7b0408eb4ef04371b1720c861936c419a2b",
+      "created_at": "2024-05-24T21:36:16.631389Z",
+      "updated_at": "2024-05-24T21:36:16.631389Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 47,
     "fields": {
-      "name": "Café de la Paix",
-      "address": "Boulevard Anspach 66, 1180 Molenbeek, Belgique",
-      "city": "Molenbeek",
-      "reputation": 3.5,
-      "capacity": 31,
+      "name": "Le Pub Irlandais",
+      "address": "Place de la Monnaie 73, 1050 Woluwe-Saint-Lambert, Belgique",
+      "city": "Woluwe-Saint-Lambert",
+      "reputation": 3.8,
+      "capacity": 24,
       "is_active": true,
-      "api_key": "f448f41b9f291f75f090d39e08a8d0aca8a5a9083f4245e143477800fa8c0795",
-      "created_at": "2024-02-04T14:02:33.985421Z",
-      "updated_at": "2024-02-04T14:02:33.985421Z"
+      "api_key": "71778bfa7d01f6ef17a1ef564b570e9b409ffd359e1ca3c1d406987470691483",
+      "created_at": "2025-09-30T21:36:16.631398Z",
+      "updated_at": "2025-09-30T21:36:16.631398Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 48,
     "fields": {
-      "name": "Le Bar Flamand",
-      "address": "Chaussée d'Ixelles 246, 1050 Auderghem, Belgique",
-      "city": "Auderghem",
-      "reputation": 4.0,
-      "capacity": 19,
+      "name": "Brasserie du Centre",
+      "address": "Rue Vanderkindere 197, 1070 Bruxelles Centre, Belgique",
+      "city": "Bruxelles Centre",
+      "reputation": 4.7,
+      "capacity": 40,
       "is_active": true,
-      "api_key": "8197068bbae953685f3f6961561e2c28005f8c83bae368c2128809f7c302e278",
-      "created_at": "2025-09-23T14:02:33.985430Z",
-      "updated_at": "2025-09-23T14:02:33.985430Z"
+      "api_key": "7726c40d04e06bace524ab08c985e6169424174cfe64d6aaeceeb50f8bb52780",
+      "created_at": "2025-09-02T21:36:16.631402Z",
+      "updated_at": "2025-09-02T21:36:16.631402Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 49,
     "fields": {
-      "name": "Le Coin des Artistes",
-      "address": "Boulevard de la Cambre 263, 1060 Schaerbeek, Belgique",
+      "name": "Le Bar Flamand",
+      "address": "Chaussée de Boondael 26, 1060 Schaerbeek, Belgique",
       "city": "Schaerbeek",
-      "reputation": 4.1,
-      "capacity": 36,
+      "reputation": 3.0,
+      "capacity": 13,
       "is_active": true,
-      "api_key": "2c70031aee6e7718ffb244967f041b5030569feff18d7e75253980590e41d909",
-      "created_at": "2025-01-20T14:02:33.985440Z",
-      "updated_at": "2025-01-20T14:02:33.985440Z"
+      "api_key": "daaaed1a2d8b34f3380845a257810852b851a5062a412cf03d33dfd6bdaa9114",
+      "created_at": "2024-01-04T21:36:16.631408Z",
+      "updated_at": "2024-01-04T21:36:16.631408Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 50,
     "fields": {
-      "name": "Café des Sports",
-      "address": "Rue des Sablons 149, 1150 Jette, Belgique",
-      "city": "Jette",
-      "reputation": 4.9,
-      "capacity": 34,
+      "name": "Pub Saint-Michel",
+      "address": "Chaussée de Boondael 192, 1030 Forest, Belgique",
+      "city": "Forest",
+      "reputation": 3.6,
+      "capacity": 37,
       "is_active": true,
-      "api_key": "9527488eab765e7fb0004b344052832c6254106453f044a56abde3cb692e5f20",
-      "created_at": "2025-07-22T14:02:33.985448Z",
-      "updated_at": "2025-07-22T14:02:33.985448Z"
+      "api_key": "8d2d65bb6105cf8aef64df5719638ffceb6c883d7831f4e0dec4f54d0ee35d9d",
+      "created_at": "2025-03-09T21:36:16.631413Z",
+      "updated_at": "2025-03-09T21:36:16.631413Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 51,
     "fields": {
-      "name": "Le Bar Central",
-      "address": "Boulevard de la Cambre 263, 1140 Ganshoren, Belgique",
-      "city": "Ganshoren",
-      "reputation": 4.8,
-      "capacity": 15,
+      "name": "La Brasserie Royale",
+      "address": "Boulevard du Jardin Botanique 269, 1030 Uccle, Belgique",
+      "city": "Uccle",
+      "reputation": 4.1,
+      "capacity": 11,
       "is_active": true,
-      "api_key": "c3a756033cd25870f80705ad310f3682d450e05abb8701013d0e770048683595",
-      "created_at": "2025-08-10T14:02:33.985465Z",
-      "updated_at": "2025-08-10T14:02:33.985465Z"
+      "api_key": "9f2080e6bb639c1e3d017df23a8c1a455d579d06b317f18f66bbb27f7f22361c",
+      "created_at": "2024-01-07T21:36:16.631430Z",
+      "updated_at": "2024-01-07T21:36:16.631430Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 52,
     "fields": {
-      "name": "La Maison du Peuple",
-      "address": "Boulevard de l'Empereur 105, 1090 Forest, Belgique",
-      "city": "Forest",
-      "reputation": 4.6,
-      "capacity": 31,
+      "name": "Le Drinking",
+      "address": "Rue Neuve 143, 1090 Ganshoren, Belgique",
+      "city": "Ganshoren",
+      "reputation": 4.5,
+      "capacity": 26,
       "is_active": true,
-      "api_key": "0c8199b3151a3dfd8a0a31f14fabaabdc0a7f377246394e13ed8345ecab0ce16",
-      "created_at": "2024-05-20T14:02:33.985503Z",
-      "updated_at": "2024-05-20T14:02:33.985503Z"
+      "api_key": "eeeea432385bb8cbab78ffdde6bca2423c40a4a1fddda5cf8fcdb274a102b03b",
+      "created_at": "2024-08-01T21:36:16.631442Z",
+      "updated_at": "2024-08-01T21:36:16.631442Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 53,
     "fields": {
-      "name": "Le Bar à Vins Est",
-      "address": "Place Saint-Géry 266, 1080 Uccle, Belgique",
-      "city": "Uccle",
-      "reputation": 3.3,
-      "capacity": 18,
-      "is_active": false,
-      "api_key": "4c5cbb2e0acb196b24fc0aadd9bb5c8515a80ba4cbcb655ddcdf0a4a0b659b9e",
-      "created_at": "2025-11-09T14:02:33.985512Z",
-      "updated_at": "2025-11-09T14:02:33.985512Z"
+      "name": "Le Zinc Doré Nord",
+      "address": "Rue Neuve 240, 1190 Koekelberg, Belgique",
+      "city": "Koekelberg",
+      "reputation": 3.6,
+      "capacity": 26,
+      "is_active": true,
+      "api_key": "b2cd7690d171eec54319f16dffa0cc9c7145411d3d7932d66235f4bb9156e971",
+      "created_at": "2024-12-22T21:36:16.631448Z",
+      "updated_at": "2024-12-22T21:36:16.631448Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 54,
     "fields": {
-      "name": "Le Troquet Centre",
-      "address": "Rue de la Montagne 280, 1080 Bruxelles Centre, Belgique",
-      "city": "Bruxelles Centre",
-      "reputation": 5.0,
-      "capacity": 17,
+      "name": "Le Coin des Artistes Ouest",
+      "address": "Boulevard du Triomphe 270, 1050 Anderlecht, Belgique",
+      "city": "Anderlecht",
+      "reputation": 3.5,
+      "capacity": 34,
       "is_active": true,
-      "api_key": "f6356de1409a5bc3deda575a5ba27b6c2ee864839b98d0c8eace96eb4f0ae3fc",
-      "created_at": "2025-03-27T14:02:33.985522Z",
-      "updated_at": "2025-03-27T14:02:33.985522Z"
+      "api_key": "dd6816fd30711dfd97466109733f6086d12459b47b79dcbe4cfdb9065e3cc55f",
+      "created_at": "2024-07-23T21:36:16.631454Z",
+      "updated_at": "2024-07-23T21:36:16.631454Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 55,
     "fields": {
-      "name": "Le Zinc Doré Centre",
-      "address": "Rue Haute 177, 1090 Woluwe-Saint-Lambert, Belgique",
-      "city": "Woluwe-Saint-Lambert",
-      "reputation": 3.9,
-      "capacity": 11,
+      "name": "La Terrasse Ouest",
+      "address": "Boulevard du Régent 85, 1030 Schaerbeek, Belgique",
+      "city": "Schaerbeek",
+      "reputation": 4.8,
+      "capacity": 31,
       "is_active": true,
-      "api_key": "568d65888f18ce987e12089f414cd2d7200b3ade5267062ab2be1660f78819bb",
-      "created_at": "2024-05-24T14:02:33.985530Z",
-      "updated_at": "2024-05-24T14:02:33.985530Z"
+      "api_key": "77145e87df43e8bbc840b5b9cc85fabbfcd8eb481035464b62e770ca6e7fb088",
+      "created_at": "2024-07-31T21:36:16.631460Z",
+      "updated_at": "2024-07-31T21:36:16.631460Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 56,
     "fields": {
-      "name": "L'Atelier du Coin Centre",
-      "address": "Chaussée de Forest 14, 1140 Anderlecht, Belgique",
-      "city": "Anderlecht",
-      "reputation": 3.6,
-      "capacity": 11,
+      "name": "Brasserie de la Gare Ouest",
+      "address": "Rue Haute 150, 1030 Etterbeek, Belgique",
+      "city": "Etterbeek",
+      "reputation": 3.2,
+      "capacity": 30,
       "is_active": true,
-      "api_key": "f73b3b37d467d468bdc0f904aeb820cb35b2a05faabbb5aae156add286eee330",
-      "created_at": "2024-01-22T14:02:33.985539Z",
-      "updated_at": "2024-01-22T14:02:33.985539Z"
+      "api_key": "5aedc5886d04bb194817e0cec5077272f6ca17c4c2673b90dd54e742398047b8",
+      "created_at": "2024-07-08T21:36:16.631466Z",
+      "updated_at": "2024-07-08T21:36:16.631466Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 57,
     "fields": {
-      "name": "La Taverne Est",
-      "address": "Boulevard de la Cambre 70, 1190 Berchem-Sainte-Agathe, Belgique",
-      "city": "Berchem-Sainte-Agathe",
-      "reputation": 4.4,
-      "capacity": 24,
+      "name": "La Taverne Anversoise Ouest",
+      "address": "Rue de Trèves 209, 1120 Schaerbeek, Belgique",
+      "city": "Schaerbeek",
+      "reputation": 4.5,
+      "capacity": 20,
       "is_active": true,
-      "api_key": "af5cd5fab44a0e6f4f7d3a8406a37f468aef74f77e564bdbdb73bad9efc660bb",
-      "created_at": "2024-04-12T14:02:33.985547Z",
-      "updated_at": "2024-04-12T14:02:33.985547Z"
+      "api_key": "aa329965d146c2bcd43d40522d3bb08130e35ee1751df31583cc0145bd177dd4",
+      "created_at": "2024-03-19T21:36:16.631471Z",
+      "updated_at": "2024-03-19T21:36:16.631471Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 58,
     "fields": {
-      "name": "Le Bar Central Ouest",
-      "address": "Rue de la Montagne 184, 1150 Ixelles, Belgique",
-      "city": "Ixelles",
-      "reputation": 4.7,
-      "capacity": 26,
+      "name": "La Taverne Anversoise Centre",
+      "address": "Place de Brouckère 208, 1040 Ganshoren, Belgique",
+      "city": "Ganshoren",
+      "reputation": 5.0,
+      "capacity": 21,
       "is_active": true,
-      "api_key": "8f132bfdfe53a904b293cb0c20d75e01cca20d66bb9bba9ca00c400283004e35",
-      "created_at": "2025-03-31T14:02:33.985555Z",
-      "updated_at": "2025-03-31T14:02:33.985555Z"
+      "api_key": "d79b5a606dc61285bd8966cef12e0e8ac5ea0a37dd97b331ac222f0785663022",
+      "created_at": "2025-05-11T21:36:16.631477Z",
+      "updated_at": "2025-05-11T21:36:16.631477Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 59,
     "fields": {
-      "name": "Café du Marché Ouest",
-      "address": "Boulevard du Jardin Botanique 124, 1120 Woluwe-Saint-Pierre, Belgique",
+      "name": "Le Zinc Centre",
+      "address": "Boulevard du Midi 148, 1160 Woluwe-Saint-Pierre, Belgique",
       "city": "Woluwe-Saint-Pierre",
-      "reputation": 3.3,
-      "capacity": 20,
+      "reputation": 4.0,
+      "capacity": 12,
       "is_active": true,
-      "api_key": "42231ffec4f44391d9667b12c46789fd6a3f54d48095f8d8255653ab07772fdb",
-      "created_at": "2023-12-20T14:02:33.985563Z",
-      "updated_at": "2023-12-20T14:02:33.985563Z"
+      "api_key": "8172f9347b89036d4ed34b8af28e42e2b9399641c4f95842715c0a24f293eb39",
+      "created_at": "2025-10-05T21:36:16.631482Z",
+      "updated_at": "2025-10-05T21:36:16.631482Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 60,
     "fields": {
-      "name": "Café des Amis Centre",
-      "address": "Place du Jeu de Balle 210, 1160 Schaerbeek, Belgique",
-      "city": "Schaerbeek",
-      "reputation": 3.5,
+      "name": "Le Troquet Sud",
+      "address": "Chaussée de Louvain 24, 1050 Koekelberg, Belgique",
+      "city": "Koekelberg",
+      "reputation": 4.4,
       "capacity": 33,
       "is_active": true,
-      "api_key": "63fb14bfbd31fcd9b2a3a3ccdda95d7124c61d8e6b8d712e2571b6c931fb51ee",
-      "created_at": "2024-01-07T14:02:33.985572Z",
-      "updated_at": "2024-01-07T14:02:33.985572Z"
+      "api_key": "aee0cec4589a5da98b9c9c8d5c62433de1bfa19bc03ec1c7cdb7aa9e75c7dcea",
+      "created_at": "2024-05-09T21:36:16.631487Z",
+      "updated_at": "2024-05-09T21:36:16.631487Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 61,
     "fields": {
-      "name": "La Brasserie Royale Est",
-      "address": "Rue Vanderkindere 226, 1170 Schaerbeek, Belgique",
-      "city": "Schaerbeek",
-      "reputation": 4.7,
-      "capacity": 27,
+      "name": "Pub Saint-Michel Nord",
+      "address": "Chaussée de Forest 95, 1150 Etterbeek, Belgique",
+      "city": "Etterbeek",
+      "reputation": 3.5,
+      "capacity": 40,
       "is_active": true,
-      "api_key": "a6a435165e87ff4c1ba013bb0d9bff56bb17bacb22048c77ebb5fe25e81651f3",
-      "created_at": "2025-02-01T14:02:33.985581Z",
-      "updated_at": "2025-02-01T14:02:33.985581Z"
+      "api_key": "e46e46895dfbfc5a9b2ec243d48c030df99163d842c3509a1f15196e2951641c",
+      "created_at": "2025-11-04T21:36:16.631492Z",
+      "updated_at": "2025-11-04T21:36:16.631492Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 62,
     "fields": {
-      "name": "L'Atelier du Coin Sud",
-      "address": "Rue Haute 179, 1210 Forest, Belgique",
-      "city": "Forest",
-      "reputation": 4.8,
-      "capacity": 15,
+      "name": "Le Bar Central Centre",
+      "address": "Avenue Franklin Roosevelt 252, 1000 Woluwe-Saint-Lambert, Belgique",
+      "city": "Woluwe-Saint-Lambert",
+      "reputation": 3.3,
+      "capacity": 40,
       "is_active": true,
-      "api_key": "555bd4ec6d090d1643f8b1f70c9beffdd18ccc16f071b00a551cfc349c291122",
-      "created_at": "2024-04-03T14:02:33.985589Z",
-      "updated_at": "2024-04-03T14:02:33.985589Z"
+      "api_key": "99eff954df377667b0c90393731ba487380b4a746bedbf25a3d9ff53191e9431",
+      "created_at": "2025-11-17T21:36:16.631498Z",
+      "updated_at": "2025-11-17T21:36:16.631498Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 63,
     "fields": {
-      "name": "Le Bar des Sportifs Sud",
-      "address": "Boulevard de la Cambre 10, 1130 Etterbeek, Belgique",
-      "city": "Etterbeek",
-      "reputation": 3.7,
-      "capacity": 21,
+      "name": "Le Zinc Est",
+      "address": "Rue des Pierres 190, 1130 Saint-Gilles, Belgique",
+      "city": "Saint-Gilles",
+      "reputation": 3.4,
+      "capacity": 25,
       "is_active": true,
-      "api_key": "5b79d2c227c460c2ad13dfaf286310e8fbceb6456d5b951d300161202e3729d6",
-      "created_at": "2024-10-19T14:02:33.985597Z",
-      "updated_at": "2024-10-19T14:02:33.985597Z"
+      "api_key": "865f5e4c80b3800167b39a7b1dd8e01c38a214944ee8b263826564993fad755c",
+      "created_at": "2023-12-03T21:36:16.631503Z",
+      "updated_at": "2023-12-03T21:36:16.631503Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 64,
     "fields": {
-      "name": "Le Bar des Sportifs Ouest",
-      "address": "Chaussée de Wavre 98, 1160 Woluwe-Saint-Lambert, Belgique",
-      "city": "Woluwe-Saint-Lambert",
+      "name": "La Terrasse Nord",
+      "address": "Avenue de la Toison d'Or 13, 1090 Molenbeek, Belgique",
+      "city": "Molenbeek",
       "reputation": 4.5,
-      "capacity": 31,
+      "capacity": 13,
       "is_active": true,
-      "api_key": "1821b794b4e053fd119c52a50a3c0aad4f51dea7eefd50b0b5d8ae69188827c9",
-      "created_at": "2024-01-16T14:02:33.985605Z",
-      "updated_at": "2024-01-16T14:02:33.985605Z"
+      "api_key": "63a62e25c4f6353c16ba54fc276858e971fb411770964d8f653da01719558255",
+      "created_at": "2024-10-14T21:36:16.631508Z",
+      "updated_at": "2024-10-14T21:36:16.631508Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 65,
     "fields": {
-      "name": "Le Petit Café Nord",
-      "address": "Rue Blaes 43, 1130 Ganshoren, Belgique",
-      "city": "Ganshoren",
-      "reputation": 4.8,
-      "capacity": 19,
+      "name": "Le Grand Zinc Sud",
+      "address": "Rue Royale 285, 1070 Berchem-Sainte-Agathe, Belgique",
+      "city": "Berchem-Sainte-Agathe",
+      "reputation": 4.9,
+      "capacity": 20,
       "is_active": true,
-      "api_key": "4a724fe8f58990f421bc258f08b8dd21cd259249ced8affb026b40a66d6caedc",
-      "created_at": "2024-11-27T14:02:33.985613Z",
-      "updated_at": "2024-11-27T14:02:33.985613Z"
+      "api_key": "8b9a373b0b70c7221d7ef9e7dfc069800e04b074781dc72018718411beaec91d",
+      "created_at": "2024-02-13T21:36:16.631528Z",
+      "updated_at": "2024-02-13T21:36:16.631528Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 66,
     "fields": {
-      "name": "Café de la Montagne Est",
-      "address": "Avenue Brugmann 167, 1060 Berchem-Sainte-Agathe, Belgique",
-      "city": "Berchem-Sainte-Agathe",
-      "reputation": 3.8,
-      "capacity": 31,
+      "name": "Brasserie du Centre Ouest",
+      "address": "Rue de la Montagne 212, 1080 Woluwe-Saint-Pierre, Belgique",
+      "city": "Woluwe-Saint-Pierre",
+      "reputation": 4.3,
+      "capacity": 16,
       "is_active": true,
-      "api_key": "9493a048fdf9946f05f379b9cac0c7d3ea31293ea70ae25025312327cd0a8434",
-      "created_at": "2023-12-11T14:02:33.985622Z",
-      "updated_at": "2023-12-11T14:02:33.985622Z"
+      "api_key": "8d7a4f30d5495112c72a481f0ff3a1422f52f9ffa259a633948be4548e6e5941",
+      "created_at": "2024-07-08T21:36:16.631533Z",
+      "updated_at": "2024-07-08T21:36:16.631533Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 67,
     "fields": {
-      "name": "Brasserie du Centre Centre",
-      "address": "Rue de Namur 184, 1210 Forest, Belgique",
-      "city": "Forest",
-      "reputation": 4.5,
-      "capacity": 32,
+      "name": "La Brasserie du Nord Centre",
+      "address": "Rue des Sablons 259, 1160 Auderghem, Belgique",
+      "city": "Auderghem",
+      "reputation": 4.3,
+      "capacity": 15,
       "is_active": true,
-      "api_key": "9ed60d1b5e83bbba8b965d99e590d59fd8dbdb5f33dee085009b03dbea15c3db",
-      "created_at": "2024-05-15T14:02:33.985630Z",
-      "updated_at": "2024-05-15T14:02:33.985630Z"
+      "api_key": "0b3d60edc2312c5e08183ec97161a5ac9132cf3f375fa006e6cc081fd47f99ea",
+      "created_at": "2024-10-09T21:36:16.631542Z",
+      "updated_at": "2024-10-09T21:36:16.631542Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 68,
     "fields": {
-      "name": "La Maison Bleue Est",
-      "address": "Rue Archimède 263, 1000 Molenbeek, Belgique",
-      "city": "Molenbeek",
-      "reputation": 3.5,
-      "capacity": 24,
+      "name": "Le Grand Zinc Sud",
+      "address": "Boulevard de Waterloo 134, 1050 Saint-Josse, Belgique",
+      "city": "Saint-Josse",
+      "reputation": 3.9,
+      "capacity": 12,
       "is_active": true,
-      "api_key": "36e66f31989d097db8771e262639afdc395b7c2d76987cc3a0001997234042d8",
-      "created_at": "2024-11-27T14:02:33.985639Z",
-      "updated_at": "2024-11-27T14:02:33.985639Z"
+      "api_key": "6a778b0404a40ce200357502eab02c8f5828588656860c1a66aa7d6435297199",
+      "created_at": "2025-11-11T21:36:16.631549Z",
+      "updated_at": "2025-11-11T21:36:16.631549Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 69,
     "fields": {
-      "name": "Le Relais Nord",
-      "address": "Rue des Sablons 103, 1000 Evere, Belgique",
-      "city": "Evere",
-      "reputation": 4.7,
-      "capacity": 25,
+      "name": "Pub Saint-Michel Sud",
+      "address": "Chaussée de Boondael 133, 1200 Molenbeek, Belgique",
+      "city": "Molenbeek",
+      "reputation": 3.7,
+      "capacity": 24,
       "is_active": true,
-      "api_key": "a70d16987fbc11a211fffb3d7ce41fc54d853cc88ad0aa9e880188fbb8464647",
-      "created_at": "2025-11-02T14:02:33.985647Z",
-      "updated_at": "2025-11-02T14:02:33.985647Z"
+      "api_key": "af1196dd2da9c54338a9e24b9f0d73a3f786418a64377429dc7222c24198360c",
+      "created_at": "2025-05-16T21:36:16.631557Z",
+      "updated_at": "2025-05-16T21:36:16.631557Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 70,
     "fields": {
-      "name": "Café des Amis Centre",
-      "address": "Rue Vanderkindere 49, 1160 Schaerbeek, Belgique",
-      "city": "Schaerbeek",
-      "reputation": 4.5,
-      "capacity": 11,
+      "name": "Le Petit Bruxelles Ouest",
+      "address": "Rue Blaes 251, 1200 Uccle, Belgique",
+      "city": "Uccle",
+      "reputation": 4.7,
+      "capacity": 10,
       "is_active": true,
-      "api_key": "3b33408c2e9e9194462fb7a25b715a3ab02288afaef084f1137b0b42dcf02ed3",
-      "created_at": "2025-07-11T14:02:33.985656Z",
-      "updated_at": "2025-07-11T14:02:33.985656Z"
+      "api_key": "ab2be298e4c069c9740c942533c2fa912bc51aac1a89e92be5a222a40192d285",
+      "created_at": "2023-12-27T21:36:16.631565Z",
+      "updated_at": "2023-12-27T21:36:16.631565Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 71,
     "fields": {
-      "name": "La Choperie Sud",
-      "address": "Rue du Marché aux Herbes 86, 1120 Berchem-Sainte-Agathe, Belgique",
-      "city": "Berchem-Sainte-Agathe",
-      "reputation": 4.2,
-      "capacity": 35,
+      "name": "Café des Arts Ouest",
+      "address": "Chaussée de Wavre 169, 1180 Woluwe-Saint-Pierre, Belgique",
+      "city": "Woluwe-Saint-Pierre",
+      "reputation": 3.9,
+      "capacity": 37,
       "is_active": true,
-      "api_key": "d52019c271b48c857ca8589f94386c3c55c6a2bf9a60a7f3ad9843870c54690f",
-      "created_at": "2025-08-31T14:02:33.985664Z",
-      "updated_at": "2025-08-31T14:02:33.985664Z"
+      "api_key": "fb800e9e2aa416a1c158d496cc6e2398e4f4d1b695fc9fe1ffa738c912e12d65",
+      "created_at": "2024-01-24T21:36:16.631574Z",
+      "updated_at": "2024-01-24T21:36:16.631574Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 72,
     "fields": {
-      "name": "La Brasserie du Nord Est",
-      "address": "Avenue Molière 186, 1060 Schaerbeek, Belgique",
-      "city": "Schaerbeek",
-      "reputation": 3.3,
-      "capacity": 16,
+      "name": "Pub Saint-Michel Nord",
+      "address": "Chaussée de Wavre 11, 1050 Saint-Josse, Belgique",
+      "city": "Saint-Josse",
+      "reputation": 3.4,
+      "capacity": 38,
       "is_active": true,
-      "api_key": "766880afb38d4f9c35a17851d77eb5e8295a0cf73ca09ce6dba4201b5317107a",
-      "created_at": "2025-01-25T14:02:33.985672Z",
-      "updated_at": "2025-01-25T14:02:33.985672Z"
+      "api_key": "9bfc95d1f34e814d67968c2e8930a9312c20d082753c38eec68581f1a876f697",
+      "created_at": "2023-12-22T21:36:16.631583Z",
+      "updated_at": "2023-12-22T21:36:16.631583Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 73,
     "fields": {
-      "name": "Le Refuge Centre",
-      "address": "Avenue de Tervueren 111, 1050 Anderlecht, Belgique",
-      "city": "Anderlecht",
-      "reputation": 4.1,
-      "capacity": 32,
+      "name": "Le Bar des Sportifs Sud",
+      "address": "Avenue de la Toison d'Or 299, 1070 Schaerbeek, Belgique",
+      "city": "Schaerbeek",
+      "reputation": 3.5,
+      "capacity": 17,
       "is_active": true,
-      "api_key": "354dd512189357f79daec106388321e80b31b77be27ea783f6a9b7766f0aab35",
-      "created_at": "2025-10-26T14:02:33.985680Z",
-      "updated_at": "2025-10-26T14:02:33.985680Z"
+      "api_key": "ef96f55d7c3fc17085cba05647b88a9ef70c425c21a43b220e48e572446f10c1",
+      "created_at": "2025-04-22T21:36:16.631589Z",
+      "updated_at": "2025-04-22T21:36:16.631589Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 74,
     "fields": {
-      "name": "Brasserie de la Gare Centre",
-      "address": "Avenue des Arts 215, 1180 Woluwe-Saint-Pierre, Belgique",
-      "city": "Woluwe-Saint-Pierre",
-      "reputation": 4.2,
-      "capacity": 26,
+      "name": "Chez Marie Centre",
+      "address": "Rue de Flandre 74, 1160 Ixelles, Belgique",
+      "city": "Ixelles",
+      "reputation": 4.1,
+      "capacity": 12,
       "is_active": true,
-      "api_key": "a28116221ce6b5623a93715124025ae81acf6176f67f99cf2a4739bf60f51fc9",
-      "created_at": "2025-09-07T14:02:33.985688Z",
-      "updated_at": "2025-09-07T14:02:33.985688Z"
+      "api_key": "8d57075ec7ab22787ab2eab34909c13940b6b9c39c222e9503fdb495139ff73c",
+      "created_at": "2025-01-22T21:36:16.631609Z",
+      "updated_at": "2025-01-22T21:36:16.631609Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 75,
     "fields": {
-      "name": "Le Café Wallon Nord",
-      "address": "Rue du Bailli 282, 1000 Molenbeek, Belgique",
-      "city": "Molenbeek",
-      "reputation": 4.0,
-      "capacity": 29,
+      "name": "La Maison Bleue Nord",
+      "address": "Boulevard de Waterloo 176, 1170 Ganshoren, Belgique",
+      "city": "Ganshoren",
+      "reputation": 3.6,
+      "capacity": 24,
       "is_active": true,
-      "api_key": "f49beb5ae2e7361f619be702545d2215af91b7ca601ef2085c071538917aacd3",
-      "created_at": "2025-02-17T14:02:33.985697Z",
-      "updated_at": "2025-02-17T14:02:33.985697Z"
+      "api_key": "a11840c4673f321878744f99db9a2d9db505be9f239ff83d6e42637b93c871a9",
+      "created_at": "2024-07-19T21:36:16.631617Z",
+      "updated_at": "2024-07-19T21:36:16.631617Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 76,
     "fields": {
-      "name": "Café de l'Avenue Ouest",
-      "address": "Avenue Louise 274, 1070 Ganshoren, Belgique",
-      "city": "Ganshoren",
-      "reputation": 4.1,
+      "name": "Le Zinc Doré Nord",
+      "address": "Rue Haute 204, 1060 Jette, Belgique",
+      "city": "Jette",
+      "reputation": 3.7,
       "capacity": 15,
       "is_active": true,
-      "api_key": "6c31c3cd8aa53a18aff9bf26e91eabbe9a804cb778fa1d42becb1491dd84739a",
-      "created_at": "2025-08-19T14:02:33.985705Z",
-      "updated_at": "2025-08-19T14:02:33.985705Z"
+      "api_key": "6c1379272e4801e65507a42928e91358123ed2b0f3af37cd9cd70e9e0bdb71f9",
+      "created_at": "2025-10-10T21:36:16.631625Z",
+      "updated_at": "2025-10-10T21:36:16.631625Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 77,
     "fields": {
-      "name": "La Choperie Nord",
-      "address": "Boulevard Charlemagne 97, 1170 Molenbeek, Belgique",
-      "city": "Molenbeek",
-      "reputation": 4.9,
-      "capacity": 15,
+      "name": "Café des Amis Ouest",
+      "address": "Chaussée de Louvain 208, 1170 Saint-Josse, Belgique",
+      "city": "Saint-Josse",
+      "reputation": 4.3,
+      "capacity": 32,
       "is_active": true,
-      "api_key": "59700a945632183b948b0e6229ed3f16a4439b3b597872ddc136328ee7c94b3d",
-      "created_at": "2024-07-01T14:02:33.985713Z",
-      "updated_at": "2024-07-01T14:02:33.985713Z"
+      "api_key": "3aede9723b79fb7a411d4011907e39115d8050aa9fc7d2d46422ed6600bb6dd5",
+      "created_at": "2024-01-02T21:36:16.631633Z",
+      "updated_at": "2024-01-02T21:36:16.631633Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 78,
     "fields": {
-      "name": "Café Bruxellois Est",
-      "address": "Avenue Louise 188, 1070 Anderlecht, Belgique",
-      "city": "Anderlecht",
-      "reputation": 3.5,
-      "capacity": 20,
-      "is_active": true,
-      "api_key": "fba1364aa377d82600c760cf6543ece5144b6b7c17f9844396d964bb7113b5d6",
-      "created_at": "2024-10-17T14:02:33.985722Z",
-      "updated_at": "2024-10-17T14:02:33.985722Z"
+      "name": "L'Atelier du Coin Centre",
+      "address": "Boulevard de la Cambre 141, 1170 Uccle, Belgique",
+      "city": "Uccle",
+      "reputation": 4.0,
+      "capacity": 25,
+      "is_active": false,
+      "api_key": "ca2154aa982b81f05c23caffa11ef5b716cf186aacb4e2d6c1b6e264c8011c44",
+      "created_at": "2024-12-20T21:36:16.631643Z",
+      "updated_at": "2024-12-20T21:36:16.631643Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 79,
     "fields": {
-      "name": "Le Bar des Sportifs Nord",
-      "address": "Rue de la Montagne 218, 1130 Forest, Belgique",
-      "city": "Forest",
-      "reputation": 4.2,
-      "capacity": 15,
+      "name": "Le Comptoir Sud",
+      "address": "Rue Archimède 113, 1000 Etterbeek, Belgique",
+      "city": "Etterbeek",
+      "reputation": 3.4,
+      "capacity": 21,
       "is_active": true,
-      "api_key": "812a9df8b39311899939823686929e50ef3df1df129eb02ea80a00e22f857314",
-      "created_at": "2025-04-12T14:02:33.985731Z",
-      "updated_at": "2025-04-12T14:02:33.985731Z"
+      "api_key": "387ea0ac40264ff14239effcb1f949ea42fc06bde54523d0db40ed11fc3d5f2d",
+      "created_at": "2024-06-01T21:36:16.631652Z",
+      "updated_at": "2024-06-01T21:36:16.631652Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 80,
     "fields": {
-      "name": "La Maison Bleue Sud",
-      "address": "Chaussée de Charleroi 245, 1190 Etterbeek, Belgique",
-      "city": "Etterbeek",
-      "reputation": 4.3,
-      "capacity": 15,
+      "name": "Le Petit Bruxelles Ouest",
+      "address": "Rue Archimède 96, 1000 Forest, Belgique",
+      "city": "Forest",
+      "reputation": 4.7,
+      "capacity": 39,
       "is_active": true,
-      "api_key": "d5e1a88f03b59d7b5c7a5d66dcdfebea9cd96c5101381161975c8c1e0f3d55b1",
-      "created_at": "2025-07-14T14:02:33.985739Z",
-      "updated_at": "2025-07-14T14:02:33.985739Z"
+      "api_key": "313848b2ca821c4ba7a39cacac3b1484a5e3374050693c49bd1e623ab557f023",
+      "created_at": "2023-12-08T21:36:16.631661Z",
+      "updated_at": "2023-12-08T21:36:16.631661Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 81,
     "fields": {
-      "name": "La Terrasse Sud",
-      "address": "Chaussée d'Ixelles 36, 1040 Anderlecht, Belgique",
-      "city": "Anderlecht",
-      "reputation": 5.0,
-      "capacity": 34,
+      "name": "Le Petit Bruxelles Ouest",
+      "address": "Rue de la Régence 145, 1140 Ixelles, Belgique",
+      "city": "Ixelles",
+      "reputation": 4.7,
+      "capacity": 24,
       "is_active": true,
-      "api_key": "3b8edbefde83f57f03d98c05aabb90e68e8a713af3b2dafa0ba689bcb6a0be8e",
-      "created_at": "2024-11-22T14:02:33.985747Z",
-      "updated_at": "2024-11-22T14:02:33.985747Z"
+      "api_key": "198e245d11b39051b58b30fd40da6977c1515f383bdbcd32921d547acfb30492",
+      "created_at": "2024-02-22T21:36:16.631670Z",
+      "updated_at": "2024-02-22T21:36:16.631670Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 82,
     "fields": {
-      "name": "Le Café Central Nord",
-      "address": "Rue Neuve 47, 1070 Saint-Josse, Belgique",
-      "city": "Saint-Josse",
-      "reputation": 4.7,
-      "capacity": 38,
-      "is_active": true,
-      "api_key": "f3b68f57f3e4f157f9f0af31cd3da06a9ec264800ba0365e69340c927e9118bc",
-      "created_at": "2025-10-30T14:02:33.985755Z",
-      "updated_at": "2025-10-30T14:02:33.985755Z"
+      "name": "Le Café Central Sud",
+      "address": "Boulevard du Midi 252, 1060 Evere, Belgique",
+      "city": "Evere",
+      "reputation": 3.8,
+      "capacity": 17,
+      "is_active": false,
+      "api_key": "e3e13ae64fed3df36064d66e461110370763cf28f8c95867c4b5d89b2f2684b1",
+      "created_at": "2024-09-20T21:36:16.631704Z",
+      "updated_at": "2024-09-20T21:36:16.631704Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 83,
     "fields": {
-      "name": "Le Bistrot Nord",
-      "address": "Avenue Brugmann 163, 1020 Saint-Josse, Belgique",
-      "city": "Saint-Josse",
-      "reputation": 4.4,
-      "capacity": 38,
+      "name": "Le Bar Flamand Nord",
+      "address": "Rue Royale 171, 1170 Saint-Gilles, Belgique",
+      "city": "Saint-Gilles",
+      "reputation": 4.1,
+      "capacity": 10,
       "is_active": true,
-      "api_key": "3eb67e730b8cc66fcd170f23f2f4820bfc85c62265c6c90d7c0c0f10243933e2",
-      "created_at": "2025-08-25T14:02:33.985763Z",
-      "updated_at": "2025-08-25T14:02:33.985763Z"
+      "api_key": "c692acde2a46e9ca02d85133a62a909481a2ac75824237387f21229e345ba4ca",
+      "created_at": "2024-10-16T21:36:16.631716Z",
+      "updated_at": "2024-10-16T21:36:16.631716Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 84,
     "fields": {
-      "name": "La Guinguette Ouest",
-      "address": "Boulevard du Triomphe 27, 1180 Uccle, Belgique",
-      "city": "Uccle",
-      "reputation": 4.4,
-      "capacity": 11,
+      "name": "Café des Sports Est",
+      "address": "Rue des Bouchers 119, 1080 Anderlecht, Belgique",
+      "city": "Anderlecht",
+      "reputation": 5.0,
+      "capacity": 39,
       "is_active": true,
-      "api_key": "a712b45fc272609b6a37b855ada90c1ac8d8ac806adbb18dd41bd785c37d0413",
-      "created_at": "2025-07-25T14:02:33.985772Z",
-      "updated_at": "2025-07-25T14:02:33.985772Z"
+      "api_key": "ce953c26e77684c26997f938dc4bfbfe771aa1e5bc7c12e2bc51a81af89d86d8",
+      "created_at": "2024-01-21T21:36:16.631723Z",
+      "updated_at": "2024-01-21T21:36:16.631723Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 85,
     "fields": {
-      "name": "Café Bruxellois Est",
-      "address": "Rue Neuve 103, 1050 Koekelberg, Belgique",
-      "city": "Koekelberg",
-      "reputation": 4.3,
-      "capacity": 14,
+      "name": "Le Drinking Est",
+      "address": "Rue du Bailli 140, 1080 Ixelles, Belgique",
+      "city": "Ixelles",
+      "reputation": 3.3,
+      "capacity": 13,
       "is_active": true,
-      "api_key": "267b87201007b2ee15d5b6d9f8d319c1c1b6d7ee5008f466f92afdbc25d04055",
-      "created_at": "2024-02-10T14:02:33.985780Z",
-      "updated_at": "2024-02-10T14:02:33.985780Z"
+      "api_key": "b0513cdcd85ac03eba1f35754a58dd478df53cd04b861792229ba0cc87885305",
+      "created_at": "2025-05-21T21:36:16.631729Z",
+      "updated_at": "2025-05-21T21:36:16.631729Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 86,
     "fields": {
-      "name": "Café des Arts Centre",
-      "address": "Rue de la Régence 249, 1140 Watermael-Boitsfort, Belgique",
-      "city": "Watermael-Boitsfort",
-      "reputation": 3.2,
-      "capacity": 18,
+      "name": "Le Café Central Nord",
+      "address": "Boulevard du Régent 266, 1120 Saint-Josse, Belgique",
+      "city": "Saint-Josse",
+      "reputation": 4.9,
+      "capacity": 33,
       "is_active": true,
-      "api_key": "945ef046a2fa8a6a1b213faf35bc2a68762dcbbae938aa1f796ec35a24f25863",
-      "created_at": "2024-03-11T14:02:33.985788Z",
-      "updated_at": "2024-03-11T14:02:33.985788Z"
+      "api_key": "d2925ba47764f9051ccf4f9aa1a1deda7a667daa9be09e0ec59f0521cc769b9a",
+      "created_at": "2024-08-18T21:36:16.631734Z",
+      "updated_at": "2024-08-18T21:36:16.631734Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 87,
     "fields": {
-      "name": "Le Bistrot Centre",
-      "address": "Boulevard du Régent 134, 1080 Schaerbeek, Belgique",
-      "city": "Schaerbeek",
-      "reputation": 4.7,
-      "capacity": 13,
+      "name": "Le Pub Irlandais Sud",
+      "address": "Boulevard du Jardin Botanique 79, 1050 Saint-Gilles, Belgique",
+      "city": "Saint-Gilles",
+      "reputation": 3.1,
+      "capacity": 21,
       "is_active": true,
-      "api_key": "3b67e92f4bb193aa05d20f9940024d5ae7374e52f3b50803eff93ad172fbea75",
-      "created_at": "2025-10-02T14:02:33.985796Z",
-      "updated_at": "2025-10-02T14:02:33.985796Z"
+      "api_key": "95ce455ea820988448ffb5869909859ac625eb7231daa0d535aa135a313dd49d",
+      "created_at": "2025-07-22T21:36:16.631740Z",
+      "updated_at": "2025-07-22T21:36:16.631740Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 88,
     "fields": {
-      "name": "La Terrasse Centre",
-      "address": "Boulevard de Waterloo 264, 1020 Forest, Belgique",
-      "city": "Forest",
-      "reputation": 4.1,
-      "capacity": 26,
+      "name": "Le Café Central Sud",
+      "address": "Place du Jeu de Balle 285, 1120 Evere, Belgique",
+      "city": "Evere",
+      "reputation": 3.3,
+      "capacity": 15,
       "is_active": true,
-      "api_key": "5733e7a3ea592507ed32168ddba229f76e89d3a8908fff9d65a7b277011054f7",
-      "created_at": "2024-02-20T14:02:33.985804Z",
-      "updated_at": "2024-02-20T14:02:33.985804Z"
+      "api_key": "43b4240e5bce16696768296df5b8cbee56131a718157bfe5a7c860b0177206bc",
+      "created_at": "2024-09-19T21:36:16.631745Z",
+      "updated_at": "2024-09-19T21:36:16.631745Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 89,
     "fields": {
-      "name": "Café Bruxellois Nord",
-      "address": "Chaussée d'Ixelles 72, 1170 Watermael-Boitsfort, Belgique",
-      "city": "Watermael-Boitsfort",
-      "reputation": 3.3,
-      "capacity": 35,
-      "is_active": true,
-      "api_key": "c6cec58dc3e34775db8c791d72fac2a68414843ceb47cc429d712e93a60a48c9",
-      "created_at": "2025-05-16T14:02:33.985812Z",
-      "updated_at": "2025-05-16T14:02:33.985812Z"
+      "name": "La Choperie Nord",
+      "address": "Chaussée de Louvain 111, 1120 Woluwe-Saint-Lambert, Belgique",
+      "city": "Woluwe-Saint-Lambert",
+      "reputation": 4.6,
+      "capacity": 23,
+      "is_active": false,
+      "api_key": "6599d149e0eff1114951f67335a6d9707b5349c21445880afb48ec4bc988039c",
+      "created_at": "2025-05-18T21:36:16.631751Z",
+      "updated_at": "2025-05-18T21:36:16.631751Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 90,
     "fields": {
-      "name": "Café de la Place Nord",
-      "address": "Rue de Trèves 14, 1080 Anderlecht, Belgique",
-      "city": "Anderlecht",
-      "reputation": 4.3,
-      "capacity": 40,
+      "name": "La Maison du Peuple Sud",
+      "address": "Avenue Louise 264, 1160 Jette, Belgique",
+      "city": "Jette",
+      "reputation": 4.0,
+      "capacity": 23,
       "is_active": true,
-      "api_key": "a3444d686f46656022147ba6c531197b137e07c30e4bb579c5132178732b1b1c",
-      "created_at": "2024-11-25T14:02:33.985820Z",
-      "updated_at": "2024-11-25T14:02:33.985820Z"
+      "api_key": "55b6540580a737dc68a675f75f3337522f3abdbc97b0e26521aa9fcce77f079f",
+      "created_at": "2024-04-25T21:36:16.631756Z",
+      "updated_at": "2024-04-25T21:36:16.631756Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 91,
     "fields": {
-      "name": "Le Bar Central Sud",
-      "address": "Boulevard de l'Empereur 211, 1170 Etterbeek, Belgique",
-      "city": "Etterbeek",
-      "reputation": 4.7,
-      "capacity": 10,
+      "name": "Le Petit Bruxelles Est",
+      "address": "Avenue Molière 43, 1020 Saint-Josse, Belgique",
+      "city": "Saint-Josse",
+      "reputation": 4.9,
+      "capacity": 12,
       "is_active": true,
-      "api_key": "653197d2a8886bf9909baa7bc3a6173dae6ed964a021f2493d175dbabb06ed74",
-      "created_at": "2025-10-26T14:02:33.985829Z",
-      "updated_at": "2025-10-26T14:02:33.985829Z"
+      "api_key": "2cdb49dac7445e561270ce75597d0da8839b29b9f4b62b60f3fa8c84852a22c3",
+      "created_at": "2025-05-05T21:36:16.631762Z",
+      "updated_at": "2025-05-05T21:36:16.631762Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 92,
     "fields": {
-      "name": "Le Pub Irlandais Sud",
-      "address": "Rue de la Loi 254, 1170 Saint-Gilles, Belgique",
-      "city": "Saint-Gilles",
-      "reputation": 3.6,
-      "capacity": 14,
+      "name": "Le Petit Café Sud",
+      "address": "Boulevard du Jardin Botanique 233, 1120 Watermael-Boitsfort, Belgique",
+      "city": "Watermael-Boitsfort",
+      "reputation": 4.4,
+      "capacity": 11,
       "is_active": true,
-      "api_key": "c13e6838b314bab752d3b755587973ffa938ff026edac6150870ddb77cc348a8",
-      "created_at": "2024-10-17T14:02:33.985837Z",
-      "updated_at": "2024-10-17T14:02:33.985837Z"
+      "api_key": "b26f3e07788cc0ec9c1adbac6118a62214ed5f4a125c35048f54fb04a86b819f",
+      "created_at": "2025-11-17T21:36:16.631768Z",
+      "updated_at": "2025-11-17T21:36:16.631768Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 93,
     "fields": {
-      "name": "Café du Marché Ouest",
-      "address": "Avenue Molière 144, 1170 Berchem-Sainte-Agathe, Belgique",
-      "city": "Berchem-Sainte-Agathe",
-      "reputation": 4.2,
-      "capacity": 40,
+      "name": "Le Relais Nord",
+      "address": "Place du Jeu de Balle 88, 1150 Uccle, Belgique",
+      "city": "Uccle",
+      "reputation": 4.3,
+      "capacity": 27,
       "is_active": true,
-      "api_key": "31480b706638dd2f0a8c5456ab27aa800bdac5f68ac9e23f3a4d2d8cb7cee1b4",
-      "created_at": "2025-04-09T14:02:33.985846Z",
-      "updated_at": "2025-04-09T14:02:33.985846Z"
+      "api_key": "fc1bf7cf4f03fd6314bad92923a7d408f21deb50d9c017a21fc770ed8cf62b94",
+      "created_at": "2024-04-26T21:36:16.631773Z",
+      "updated_at": "2024-04-26T21:36:16.631773Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 94,
     "fields": {
-      "name": "La Taverne Sud",
-      "address": "Avenue Général de Gaulle 15, 1070 Etterbeek, Belgique",
-      "city": "Etterbeek",
-      "reputation": 3.0,
-      "capacity": 25,
+      "name": "Le Coin des Artistes Centre",
+      "address": "Chaussée de Wavre 105, 1120 Molenbeek, Belgique",
+      "city": "Molenbeek",
+      "reputation": 4.1,
+      "capacity": 15,
       "is_active": true,
-      "api_key": "082272b2f9d18315c3aaee926b1b92b96157694d9f655ab6bca47ae92e9563d1",
-      "created_at": "2024-03-14T14:02:33.985855Z",
-      "updated_at": "2024-03-14T14:02:33.985855Z"
+      "api_key": "8d21a8a1e29dc028e1e02e742d043de8b4eb8d7169af2c07522b03d263017e7b",
+      "created_at": "2025-11-11T21:36:16.631779Z",
+      "updated_at": "2025-11-11T21:36:16.631779Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 95,
     "fields": {
-      "name": "Brasserie du Parc Ouest",
-      "address": "Chaussée d'Ixelles 25, 1070 Saint-Josse, Belgique",
-      "city": "Saint-Josse",
-      "reputation": 4.4,
-      "capacity": 20,
+      "name": "Le Coin des Artistes Est",
+      "address": "Boulevard du Régent 288, 1030 Woluwe-Saint-Pierre, Belgique",
+      "city": "Woluwe-Saint-Pierre",
+      "reputation": 3.1,
+      "capacity": 37,
       "is_active": true,
-      "api_key": "96f397098d8bd29595824aab93b1965f39b98aa3aaf30aa7e3d215004c912ee6",
-      "created_at": "2024-04-23T14:02:33.985864Z",
-      "updated_at": "2024-04-23T14:02:33.985864Z"
+      "api_key": "b261e27f181b1565d6188693053b8fabe6ab26f2998dced4a9ea4e04b9a262fd",
+      "created_at": "2024-09-10T21:36:16.631799Z",
+      "updated_at": "2024-09-10T21:36:16.631799Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 96,
     "fields": {
-      "name": "La Terrasse Nord",
-      "address": "Place Royale 219, 1050 Saint-Gilles, Belgique",
-      "city": "Saint-Gilles",
-      "reputation": 3.6,
-      "capacity": 16,
+      "name": "Le Zinc Sud",
+      "address": "Place du Jeu de Balle 209, 1000 Koekelberg, Belgique",
+      "city": "Koekelberg",
+      "reputation": 4.4,
+      "capacity": 29,
       "is_active": true,
-      "api_key": "b2ea5814ca8d3949ddb8422781e021d0cdbfae140f80f91b343b55ccb05aa461",
-      "created_at": "2025-04-10T14:02:33.985872Z",
-      "updated_at": "2025-04-10T14:02:33.985872Z"
+      "api_key": "d2e472036f2112be47d04ce8c9483a8efe91f7e7ddfc3240071cef66210ace54",
+      "created_at": "2025-08-05T21:36:16.631808Z",
+      "updated_at": "2025-08-05T21:36:16.631808Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 97,
     "fields": {
-      "name": "L'Atelier du Coin Sud",
-      "address": "Chaussée de Louvain 296, 1190 Bruxelles Centre, Belgique",
-      "city": "Bruxelles Centre",
-      "reputation": 3.0,
-      "capacity": 12,
+      "name": "Le Troquet Nord",
+      "address": "Rue Vanderkindere 76, 1200 Ganshoren, Belgique",
+      "city": "Ganshoren",
+      "reputation": 4.0,
+      "capacity": 39,
       "is_active": true,
-      "api_key": "f65383f73f3a80bd7000b3bd9b6f53cba994a80c78b5e7bef728b46d5e80db7a",
-      "created_at": "2024-06-29T14:02:33.985881Z",
-      "updated_at": "2024-06-29T14:02:33.985881Z"
+      "api_key": "7d8438c32763c02e55dcbc70542d39097296bf83c90dfe5adefe6197f87d24aa",
+      "created_at": "2025-08-18T21:36:16.631814Z",
+      "updated_at": "2025-08-18T21:36:16.631814Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 98,
     "fields": {
-      "name": "Le Troquet Ouest",
-      "address": "Boulevard du Midi 288, 1210 Watermael-Boitsfort, Belgique",
-      "city": "Watermael-Boitsfort",
-      "reputation": 3.6,
-      "capacity": 33,
+      "name": "La Choperie Ouest",
+      "address": "Rue des Bouchers 38, 1090 Etterbeek, Belgique",
+      "city": "Etterbeek",
+      "reputation": 4.6,
+      "capacity": 26,
       "is_active": true,
-      "api_key": "2a42a552e6d636b24db920e8534b59fad109c8f46832a2146235ef93d27f0686",
-      "created_at": "2024-05-26T14:02:33.985889Z",
-      "updated_at": "2024-05-26T14:02:33.985889Z"
+      "api_key": "244416f3355ec7e26a13c7cd1829847824ac6c62a44d236415505af9ba890c35",
+      "created_at": "2024-04-16T21:36:16.631822Z",
+      "updated_at": "2024-04-16T21:36:16.631822Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 99,
     "fields": {
-      "name": "La Brasserie Royale Centre",
-      "address": "Rue du Marché aux Herbes 66, 1150 Uccle, Belgique",
-      "city": "Uccle",
-      "reputation": 4.3,
-      "capacity": 31,
+      "name": "Le Petit Zinc Nord",
+      "address": "Rue des Sablons 214, 1090 Molenbeek, Belgique",
+      "city": "Molenbeek",
+      "reputation": 4.6,
+      "capacity": 14,
       "is_active": true,
-      "api_key": "d3a10879dfb669daf4d033e166470a48c95511072745d40d1f2adbf85ac08385",
-      "created_at": "2025-04-06T14:02:33.985897Z",
-      "updated_at": "2025-04-06T14:02:33.985897Z"
+      "api_key": "2542d0bbce501360b4421ca3c65f9290d1d1971ab38404af8a9a91a05b3c444e",
+      "created_at": "2025-01-09T21:36:16.631828Z",
+      "updated_at": "2025-01-09T21:36:16.631828Z"
     }
   },
   {
     "model": "partners.partner",
     "pk": 100,
     "fields": {
-      "name": "Le Café du Théâtre Ouest",
-      "address": "Boulevard du Midi 149, 1000 Bruxelles Centre, Belgique",
-      "city": "Bruxelles Centre",
-      "reputation": 3.9,
-      "capacity": 36,
+      "name": "Le Zinc Doré Est",
+      "address": "Avenue de la Toison d'Or 222, 1070 Berchem-Sainte-Agathe, Belgique",
+      "city": "Berchem-Sainte-Agathe",
+      "reputation": 4.8,
+      "capacity": 34,
       "is_active": true,
-      "api_key": "12672f75102bca265cbff21eb2cf6e811445ebcf05f1eb5927c26347d3648ec1",
-      "created_at": "2024-04-14T14:02:33.985906Z",
-      "updated_at": "2024-04-14T14:02:33.985906Z"
+      "api_key": "c96eabc65127b60cdb02f9cfbe551edee80626c4a35f7bf33ee0610d4a8dc02d",
+      "created_at": "2024-05-21T21:36:16.631833Z",
+      "updated_at": "2024-05-21T21:36:16.631833Z"
     }
   }
 ]

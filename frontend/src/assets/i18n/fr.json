@@ -524,11 +524,28 @@
     },
     "bookings": {
         "title": "Mes réservations",
+        "subtitle": "Consultez et gérez toutes vos réservations",
         "empty": "Aucune réservation pour le moment.",
+        "empty_subtitle": "Découvrez nos événements et réservez votre place",
         "when": "Quand",
         "amount": "Montant",
         "event": "Événement",
+        "location": "Lieu",
+        "event_date": "Date de l'événement",
         "creating": "Création de la réservation...",
+        "load_error": "Erreur lors du chargement des réservations",
+        "current": "En cours",
+        "current_count": "{{count}} réservation(s) en cours",
+        "future": "À venir",
+        "history": "Historique",
+        "live": "🔴 En direct",
+        "time_until_hours": "Dans {{hours}}h",
+        "time_until_minutes": "Dans {{minutes}} min",
+        "time_until_hours_mins": "Dans {{hours}}h {{minutes}}min",
+        "join_now": "Rejoindre maintenant",
+        "cancelled_by_organizer": "Annulé par l'organisateur",
+        "cancelled_by_you": "Annulé par vous",
+        "finished": "Finalisé",
         "errors": {
             "creation_failed": "Erreur lors de la création de la réservation."
         },
@@ -560,7 +577,44 @@
         "badges": {
             "recommended": "Recommandé",
             "full": "Complet",
-            "cancelled": "Annulé"
+            "cancelled": "Annulé",
+            "draft": "Brouillon",
+            "pending-confirmation": "En attente",
+            "published": "Publié",
+            "finished": "Terminé",
+            "starting-soon": "Démarre bientôt",
+            "game-live": "🎮 Jeu en direct"
+        },
+        "actions": {
+            "view_details": "Voir les détails",
+            "pay_and_publish": "Payer et publier (7€)",
+            "delete_draft": "Supprimer le brouillon",
+            "cancel_event": "Annuler l'événement",
+            "start_game": "Lancer le jeu",
+            "join_game": "Rejoindre le jeu",
+            "book": "Réserver ma place",
+            "pay_booking": "Payer ma réservation",
+            "cancel_booking": "Annuler ma réservation",
+            "event_full": "Complet",
+            "event_cancelled": "Événement annulé",
+            "event_finished": "Événement terminé",
+            "booking_confirmed": "Réservation confirmée",
+            "starting_soon": "Démarre dans moins de 3h",
+            "pending_confirmation": "En attente de confirmation"
+        },
+        "disabled_reasons": {
+            "event-full": "L'événement est complet. Toutes les places sont réservées.",
+            "event-cancelled": "Cet événement a été annulé par l'organisateur.",
+            "event-finished": "Cet événement est terminé.",
+            "booking-pending": "Vous avez déjà une réservation en attente de paiement.",
+            "booking-confirmed": "Votre réservation est confirmée.",
+            "already-booked": "Vous avez déjà réservé cet événement.",
+            "cancellation-deadline-passed": "Le délai d'annulation est dépassé (moins de 3h avant l'événement).",
+            "event-not-started": "L'événement n'a pas encore commencé.",
+            "game-not-configured": "Aucun jeu n'est configuré pour cet événement.",
+            "game-not-started": "Le jeu n'a pas encore été lancé par l'organisateur.",
+            "no-confirmed-booking": "Vous devez avoir une réservation confirmée pour rejoindre le jeu.",
+            "insufficient-permissions": "Vous n'avez pas les permissions nécessaires."
         },
         "recommended": "Recommandé",
         "nearby": "Près de vous",
@@ -746,15 +800,60 @@
             "cancel_event": "Annuler mon événement",
             "cancel_event_title": "Annuler cet événement ?",
             "cancel_event_message": "Annuler la création de votre événement",
-            "yes_cancel_event": "Oui, annuler l’événement",
-            "register_free": "S’inscrire gratuitement",
-            "unregister": "Se désinscrire"
+            "yes_cancel_event": "Oui, annuler l'événement",
+            "register_free": "S'inscrire gratuitement",
+            "unregister": "Se désinscrire",
+            "status": {
+                "pending_confirmation": "En attente de confirmation",
+                "published": "Publié",
+                "finished": "Terminé",
+                "you_are_organizer": "Vous êtes l'organisateur"
+            },
+            "test_mode": "Mode Test (ignorer l'heure de l'événement)",
+            "loader": {
+                "preparing_payment": "Préparation du paiement...",
+                "creating_booking": "Création de la réservation...",
+                "redirecting_payment": "Redirection vers le paiement...",
+                "deleting_draft": "Suppression du brouillon...",
+                "checking_game": "Vérification du jeu...",
+                "starting_game": "Lancement du jeu...",
+                "retrieving_game": "Récupération du jeu..."
+            },
+            "errors": {
+                "payment_url_unavailable": "URL de paiement indisponible",
+                "publication_request_failed": "Erreur lors de la demande de publication",
+                "booking_creation_failed": "Erreur lors de la création de la réservation",
+                "checkout_session_failed": "Erreur lors de la création de la session de paiement",
+                "booking_cancellation_failed": "Erreur lors de l'annulation de la réservation",
+                "draft_deletion_failed": "Erreur lors de la suppression du brouillon",
+                "no_active_game": "Aucun jeu actif. L'organisateur doit lancer le jeu.",
+                "game_access_denied": "Vous n'avez pas accès à ce jeu. Assurez-vous d'être inscrit à l'événement.",
+                "game_search_failed": "Erreur lors de la recherche du jeu ({{status}}). Réessayez.",
+                "game_retrieval_failed": "Un jeu existe déjà mais impossible de le rejoindre. Contactez le support.",
+                "game_start_failed": "Erreur lors du lancement du jeu",
+                "event_cancellation_failed": "Erreur lors de l'annulation de l'événement"
+            },
+            "confirm": {
+                "delete_draft": "Voulez-vous vraiment supprimer ce brouillon ? Cette action est irréversible."
+            }
         }
     },
     "checkout": {
         "title": "Confirmer l'achat",
         "message": "Voulez-vous confirmer votre achat ?",
-        "buy": "Payer"
+        "buy": "Payer",
+        "confirm": {
+            "title": "Confirmer l'achat",
+            "message": "Voulez-vous confirmer votre achat ?"
+        }
+    },
+    "PAYMENT": {
+        "PUBLISH_EVENT": "Publier l'événement",
+        "PUBLISH_QUESTION": "Souhaitez-vous payer maintenant pour publier immédiatement votre événement, ou payer plus tard ?",
+        "PRICE": "Prix",
+        "PAY_NOW": "Payer maintenant",
+        "PAY_LATER": "Payer plus tard",
+        "PAY_LATER_INFO": "Vous pourrez payer plus tard depuis votre liste d'événements."
     },
     "GAMES": {
         "LOADING": "Chargement du jeu...",

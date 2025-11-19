@@ -64,6 +64,8 @@
           type="date"
           class="date-input"
           [value]="dateFrom() || ''"
+          [min]="minDate()"
+          [max]="maxDate()"
           (change)="onDateFromChange($event)" />
       </shared-form-field>
 
@@ -73,27 +75,9 @@
           type="date"
           class="date-input"
           [value]="dateTo() || ''"
+          [min]="minDateTo()"
+          [max]="maxDate()"
           (change)="onDateToChange($event)" />
-      </shared-form-field>
-
-      <!-- Filtre prix -->
-      <shared-form-field [label]="'events.filters.price_label' | t" class="filter-field">
-        <shared-select
-          [options]="priceOptions()"
-          [value]="priceType()"
-          [placeholder]="'events.filters.price.all' | t"
-          (valueChange)="onPriceTypeChange($event)">
-        </shared-select>
-      </shared-form-field>
-
-      <!-- Filtre disponibilité -->
-      <shared-form-field [label]="'events.filters.availability_label' | t" class="filter-field">
-        <shared-select
-          [options]="availabilityOptions()"
-          [value]="availability()"
-          [placeholder]="'events.filters.availability.all' | t"
-          (valueChange)="onAvailabilityChange($event)">
-        </shared-select>
       </shared-form-field>
     </div>
   </div>

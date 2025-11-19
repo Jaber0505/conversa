@@ -223,3 +223,108 @@ class RefundService(BaseService):
             booking=booking,
             amount_cents__lt=0  # Negative = refund
         ).exists()
+
+    @staticmethod
+    @transaction.atomic
+    def process_emergency_refund(booking, payment_intent_id, reason="overbooking"):
+        """
+        Process emergency refund for failed confirmations (e.g., overbooking).
+
+        This method bypasses normal validation checks since it's called
+        when a payment succeeded but booking confirmation failed.
+
+        Args:
+            booking: Booking instance (may be PENDING)
+            payment_intent_id: Stripe PaymentIntent ID
+            reason: Reason for emergency refund
+
+        Returns:
+            tuple: (success: bool, message: str, refund_payment: Payment or None)
+        """
+        import logging
+        logger = logging.getLogger("payments.refund")
+
+        logger.info(f"Processing emergency refund for booking {booking.public_id}, reason: {reason}")
+
+        # Find the successful payment
+        payment = Payment.objects.filter(
+            booking=booking,
+            status=STATUS_SUCCEEDED
+        ).order_by('-created_at').first()
+
+        if not payment:
+            logger.error(f"No successful payment found for booking {booking.id}")
+            return False, "No successful payment found for this booking", None
+
+        # If zero amount (free booking), skip refund
+        if booking.amount_cents == 0:
+            logger.info("Zero amount booking, no refund needed")
+            return True, "Free booking (no refund needed)", None
+
+        # Check if already refunded
+        if payment.amount_cents <= 0:
+            logger.warning(f"Payment {payment.id} already refunded")
+            return False, "Payment already refunded", payment
+
+        # Process Stripe refund (NO validation checks)
+        RefundService._initialize_stripe()
+
+        if not payment_intent_id:
+            logger.error(f"Payment {payment.id} has no payment_intent_id")
+            return False, "Payment has no payment_intent_id - cannot refund", None
+
+        try:
+            # Create Stripe refund
+            refund = stripe.Refund.create(
+                payment_intent=payment_intent_id,
+                metadata={
+                    "booking_public_id": str(booking.public_id),
+                    "reason": reason,
+                    "emergency_refund": "true",
+                },
+            )
+
+            logger.info(f"Stripe refund created: {refund.id}")
+
+            # Ensure currency is valid 3-letter code
+            currency = str(payment.currency).upper().strip()[:3] if payment.currency else "EUR"
+
+            # Create refund payment record (negative amount)
+            refund_payment = Payment.objects.create(
+                user=payment.user,
+                booking=booking,
+                amount_cents=-abs(payment.amount_cents),  # Negative for refund
+                currency=currency,
+                status=STATUS_SUCCEEDED,
+                stripe_payment_intent_id=payment_intent_id,
+                raw_event={
+                    "type": "emergency_refund",
+                    "refund_id": str(refund.id),
+                    "reason": reason,
+                    "amount": int(getattr(refund, "amount", 0)) if hasattr(refund, "amount") else 0,
+                    "status": str(getattr(refund, "status", "")),
+                },
+            )
+
+            logger.info(f"Refund payment created: {refund_payment.id}")
+
+            # Log refund
+            from audit.services import AuditService
+
+            AuditService.log_payment_refunded(
+                refund_payment,
+                booking.user,
+                amount_cents=payment.amount_cents,
+                refund_id=refund.id,
+                reason=f"Emergency refund: {reason}"
+            )
+
+            return True, f"Emergency refund processed: {refund.id}", refund_payment
+
+        except stripe.error.StripeError as e:
+            logger.error(f"Stripe error during emergency refund: {str(e)}")
+            return False, f"Stripe error: {str(e)}", None
+
+        except Exception as e:
+            logger.error(f"Exception during emergency refund: {str(e)}")
+            return False, f"Unexpected error: {str(e)}", None

@@ -4,12 +4,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { TPipe, I18nService } from '@core/i18n';
 import {Booking, EventDto} from '@core/models';
-import {BookingsApiService, EventsApiService, PaymentsApiService, GamesApiService} from '@core/http';
+import {BookingsApiService, EventsApiService, PaymentsApiService, GamesApiService, AuthApiService} from '@core/http';
+import { EventAction } from '@app/features/events/services/event-actions.service';
 import { CurrencyFormatterService, DateFormatterService } from '@app/core/services';
 
 import {
   ContainerComponent, HeadlineBarComponent,
-  BadgeComponent, ButtonComponent, EmptyStateComponent
+  BadgeComponent, EmptyStateComponent, EventActionButtonComponent
 } from '@shared';
 
 import { BlockingSpinnerService } from '@app/core/http/services/spinner-service';
@@ -26,8 +27,8 @@ interface BookingWithEvent extends Booking {
   imports: [
     CommonModule, TPipe,
     ContainerComponent, HeadlineBarComponent,
-    BadgeComponent, ButtonComponent, EmptyStateComponent,
-    BookingDetailModalComponent,
+    BadgeComponent, EmptyStateComponent,
+    BookingDetailModalComponent, EventActionButtonComponent
   ],
   templateUrl: './my-bookings.component.html',
   styleUrls: ['./my-bookings.component.scss'],
@@ -40,6 +41,7 @@ export class MyBookingsComponent {
   private readonly eventsApiService = inject(EventsApiService);
   private readonly paymentsApi = inject(PaymentsApiService);
   private readonly gamesApi = inject(GamesApiService);
+  private readonly authApi = inject(AuthApiService);
   private readonly loader = inject(BlockingSpinnerService);
   private readonly currencyFormatter = inject(CurrencyFormatterService);
   private readonly dateFormatter = inject(DateFormatterService);
@@ -48,6 +50,7 @@ export class MyBookingsComponent {
   readonly items = signal<BookingWithEvent[]>([]);
   readonly error = signal<string | null>(null);
   readonly loading = signal<boolean>(false);
+  readonly currentUserId = signal<number | null>(null);
 
   // Sections pour organiser les réservations
   readonly currentBookings = signal<BookingWithEvent[]>([]);
@@ -70,7 +73,15 @@ export class MyBookingsComponent {
   selectedEvent = this._selectedEvent.asReadonly();
 
   constructor() {
+    this.loadCurrentUser();
     this.fetch();
+  }
+
+  private loadCurrentUser() {
+    this.authApi.me().pipe(take(1)).subscribe({
+      next: (user) => this.currentUserId.set(user.id),
+      error: () => this.currentUserId.set(null)
+    });
   }
 
   /**
@@ -150,15 +161,28 @@ export class MyBookingsComponent {
           next: (events) => {
             // Filtrer les bookings dont l'événement n'existe plus
             const bookingsWithEvents: BookingWithEvent[] = res.results
-              .map((booking, index) => ({
-                booking,
-                event: events[index]
-              }))
-              .filter(item => item.event !== null) // Exclure les événements null (404)
-              .map(item => ({
-                ...item.booking,
-                eventObject: item.event!
-              }));
+              .map((booking, index) => {
+                const event = events[index];
+                if (!event) return null;
+
+                // Ajouter la réservation à l'événement pour que EventActionButton puisse la voir
+                const eventWithBooking = {
+                  ...event,
+                  my_booking: {
+                    id: booking.id,
+                    public_id: booking.public_id,
+                    status: booking.status,
+                    amount_cents: booking.amount_cents,
+                    currency: booking.currency
+                  }
+                };
+
+                return {
+                  ...booking,
+                  eventObject: eventWithBooking
+                };
+              })
+              .filter(item => item !== null) as BookingWithEvent[];
 
             this.items.set(bookingsWithEvents);
             this.organizeBookings(bookingsWithEvents);
@@ -411,5 +435,31 @@ export class MyBookingsComponent {
    */
   viewEventDetails(eventId: number) {
     this.router.navigate(['/', this.lang, 'events', eventId]);
+  }
+
+  /**
+   * Gérer les actions déclenchées par EventActionButton
+   */
+  handleEventAction(action: EventAction, booking: BookingWithEvent) {
+    switch (action) {
+      case 'view-details':
+        // Rediriger vers la page de détails de l'événement
+        this.viewEventDetails(booking.eventObject.id);
+        break;
+      case 'user-pay-booking':
+        this.pay(booking.public_id);
+        break;
+      case 'user-cancel-booking':
+        this.cancel(booking.public_id);
+        break;
+      case 'user-join-game':
+      case 'organizer-join-game':
+        this.joinEvent(booking.eventObject.id);
+        break;
+      default:
+        // Pour toute autre action, rediriger vers les détails de l'événement
+        this.viewEventDetails(booking.eventObject.id);
+        break;
+    }
   }
 }

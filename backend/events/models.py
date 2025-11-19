@@ -266,14 +266,13 @@ class Event(models.Model):
     @property
     def booked_seats(self):
         """
-        Get count of seats taken (pending + confirmed bookings).
+        Get count of seats taken (confirmed bookings only).
 
         Returns:
-            int: Number of active bookings consuming a seat
+            int: Number of confirmed bookings consuming a seat
         """
         from bookings.models import BookingStatus
-        active_statuses = [BookingStatus.CONFIRMED, BookingStatus.PENDING]
-        return self.bookings.filter(status__in=active_statuses).count()
+        return self.bookings.filter(status=BookingStatus.CONFIRMED).count()
 
     @property
     def is_full(self):

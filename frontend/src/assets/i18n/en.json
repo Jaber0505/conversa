@@ -64,7 +64,15 @@
         },
         "errors": {
             "generic": "Something went wrong",
-            "bad_credentials": "Invalid email or password"
+            "bad_credentials": "Invalid email or password",
+            "email_required": "Email is required",
+            "email_invalid": "Invalid email format",
+            "email_too_long": "Email is too long",
+            "password_required": "Password is required",
+            "password_too_short": "Password must be at least 8 characters",
+            "password_too_long": "Password is too long",
+            "rate_limit": "Too many attempts. Please try again in a moment",
+            "register_rate_limit": "Signup limit reached. Please try again later"
         },
         "account_reactivated": "Welcome back! Your account has been reactivated successfully."
     },
@@ -128,7 +136,13 @@
         "badges": {
             "recommended": "Recommended",
             "full": "Full",
-            "cancelled": "Cancelled"
+            "cancelled": "Cancelled",
+            "members_1000_plus": "+1000 members",
+            "partners_20": "20 partner bars",
+            "fun_100": "100% fun sessions",
+            "rapid": "Fast",
+            "local": "Local",
+            "effective": "Effective"
         },
         "filters": {
             "lang": {
@@ -487,6 +501,11 @@
         "payment_error": "Payment error. Please try again."
     },
     "payments": {
+        "redirecting": "Redirecting to payment...",
+        "errors": {
+            "url_not_found": "Payment URL not found.",
+            "session_creation_failed": "Error while creating the payment session."
+        },
         "success": {
             "title": "Payment confirmed",
             "thanks": "Thank you! Your booking has been successfully validated.",
@@ -516,10 +535,31 @@
     },
     "bookings": {
         "title": "My bookings",
+        "subtitle": "View and manage all your bookings",
         "empty": "No bookings yet.",
+        "empty_subtitle": "Discover our events and book your spot",
         "when": "When",
         "amount": "Amount",
         "event": "Event",
+        "location": "Location",
+        "event_date": "Event date",
+        "creating": "Creating booking...",
+        "load_error": "Error loading bookings",
+        "current": "Current",
+        "current_count": "{{count}} booking(s) in progress",
+        "future": "Upcoming",
+        "history": "History",
+        "live": "🔴 Live",
+        "time_until_hours": "In {{hours}}h",
+        "time_until_minutes": "In {{minutes}} min",
+        "time_until_hours_mins": "In {{hours}}h {{minutes}}min",
+        "join_now": "Join now",
+        "cancelled_by_organizer": "Cancelled by organizer",
+        "cancelled_by_you": "Cancelled by you",
+        "finished": "Finished",
+        "errors": {
+            "creation_failed": "Error creating booking."
+        },
         "status": {
             "PENDING": "Pending payment",
             "CONFIRMED": "Confirmed",
@@ -541,6 +581,53 @@
         "free": "Free",
         "book": "Book",
         "already_booked": "Already booked",
+        "errors": {
+            "loading_failed": "Error while loading events",
+            "publication_request_failed": "Unable to request publication"
+        },
+        "badges": {
+            "recommended": "Recommended",
+            "full": "Full",
+            "cancelled": "Cancelled",
+            "draft": "Draft",
+            "pending-confirmation": "Pending",
+            "published": "Published",
+            "finished": "Finished",
+            "starting-soon": "Starting soon",
+            "game-live": "🎮 Game live"
+        },
+        "actions": {
+            "view_details": "View details",
+            "pay_and_publish": "Pay and publish (€7)",
+            "delete_draft": "Delete draft",
+            "cancel_event": "Cancel event",
+            "start_game": "Start game",
+            "join_game": "Join game",
+            "book": "Book my spot",
+            "pay_booking": "Pay my booking",
+            "cancel_booking": "Cancel my booking",
+            "event_full": "Full",
+            "event_cancelled": "Event cancelled",
+            "event_finished": "Event finished",
+            "booking_confirmed": "Booking confirmed",
+            "starting_soon": "Starts in less than 3h",
+            "pending_confirmation": "Pending confirmation"
+        },
+        "disabled_reasons": {
+            "event-full": "The event is full. All spots are booked.",
+            "event-cancelled": "This event has been cancelled by the organizer.",
+            "event-finished": "This event is finished.",
+            "booking-pending": "You already have a pending booking awaiting payment.",
+            "booking-confirmed": "Your booking is confirmed.",
+            "already-booked": "You have already booked this event.",
+            "cancellation-deadline-passed": "Cancellation deadline has passed (less than 3h before event).",
+            "event-not-started": "The event hasn't started yet.",
+            "game-not-configured": "No game is configured for this event.",
+            "game-not-started": "The game hasn't been started by the organizer yet.",
+            "no-confirmed-booking": "You must have a confirmed booking to join the game.",
+            "insufficient-permissions": "You don't have the necessary permissions."
+        },
+        "recommended": "Recommended",
         "my_events": "My events",
         "show_my_events": "Show my events",
         "hide_my_events": "Hide my events",
@@ -588,8 +675,28 @@
                 "almost_full": "Almost full"
             }
         },
+        "sort_reason": {
+            "nearby": "Near you",
+            "bidirectional": "Language match",
+            "target_language": "Language you're learning",
+            "native_language": "Your native language",
+            "support": "You can help",
+            "free": "Free event",
+            "coming_soon": "Coming soon",
+            "almost_full": "Almost full",
+            "already_booked": "Already booked"
+        },
+        "sort_info": {
+            "title": "Smart sorting enabled",
+            "subtitle": "Events are sorted according to your preferences"
+        },
         "nearby": "Nearby",
         "near_city": "Based on your city: {{city}}",
+        "difficulty": {
+            "easy": "Beginner",
+            "medium": "Intermediate",
+            "hard": "Advanced"
+        },
         "create": {
             "title": "Create an event",
             "back": "Back",
@@ -680,6 +787,8 @@
             "target_languages": "Learning languages",
             "price_per_person": "Price per person",
             "organized_by": "Organized by",
+            "spots_remaining": "{{count}} spots left",
+            "spots_remaining_one": "{{count}} spot left",
             "book_spot": "Book my spot",
             "pay_booking": "Pay my booking",
             "cancel_booking": "Cancel my booking",
@@ -705,7 +814,40 @@
             "yes_cancel_event": "Yes, cancel event",
             "register_free": "Register for free",
             "unregister": "Unregister",
-            "games_title": "Collaborative Games"
+            "games_title": "Collaborative Games",
+            "status": {
+                "pending_confirmation": "Awaiting confirmation",
+                "published": "Published",
+                "finished": "Finished",
+                "you_are_organizer": "You are the organizer"
+            },
+            "test_mode": "Test Mode (ignore event time)",
+            "loader": {
+                "preparing_payment": "Preparing payment...",
+                "creating_booking": "Creating booking...",
+                "redirecting_payment": "Redirecting to payment...",
+                "deleting_draft": "Deleting draft...",
+                "checking_game": "Checking game...",
+                "starting_game": "Starting game...",
+                "retrieving_game": "Retrieving game..."
+            },
+            "errors": {
+                "payment_url_unavailable": "Payment URL unavailable",
+                "publication_request_failed": "Error requesting publication",
+                "booking_creation_failed": "Error creating booking",
+                "checkout_session_failed": "Error creating payment session",
+                "booking_cancellation_failed": "Error cancelling booking",
+                "draft_deletion_failed": "Error deleting draft",
+                "no_active_game": "No active game. The organizer must start the game.",
+                "game_access_denied": "You don't have access to this game. Make sure you're registered for the event.",
+                "game_search_failed": "Error searching for game ({{status}}). Try again.",
+                "game_retrieval_failed": "A game already exists but cannot be joined. Contact support.",
+                "game_start_failed": "Error starting game",
+                "event_cancellation_failed": "Error cancelling event"
+            },
+            "confirm": {
+                "delete_draft": "Do you really want to delete this draft? This action is irreversible."
+            }
         }
     },
     "GAMES": {
@@ -839,7 +981,19 @@
     "checkout": {
         "title": "Confirm purchase",
         "message": "Do you want to confirm your purchase?",
-        "buy": "Pay"
+        "buy": "Pay",
+        "confirm": {
+            "title": "Confirm purchase",
+            "message": "Do you want to confirm your purchase?"
+        }
+    },
+    "PAYMENT": {
+        "PUBLISH_EVENT": "Publish event",
+        "PUBLISH_QUESTION": "Would you like to pay now to publish your event immediately, or pay later?",
+        "PRICE": "Price",
+        "PAY_NOW": "Pay now",
+        "PAY_LATER": "Pay later",
+        "PAY_LATER_INFO": "You can pay later from your events list."
     },
     "PROFILE": {
         "TITLE": "My profile",

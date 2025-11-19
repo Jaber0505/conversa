@@ -43,7 +43,39 @@
         "my_bookings": "Mijn boekingen"
     },
     "auth": {
-        "account_reactivated": "Welkom terug! Uw account is succesvol gereactiveerd."
+        "account_reactivated": "Welkom terug! Uw account is succesvol gereactiveerd.",
+        "email_placeholder": "bijv. voornaam.achternaam@email.com",
+        "password_placeholder": "Minstens 9 tekens",
+        "login": "Inloggen",
+        "login_subtitle": "Log in op uw account om evenementen te boeken en uw reserveringen te volgen.",
+        "email": "E-mailadres",
+        "password": "Wachtwoord",
+        "forgot_password": "Wachtwoord vergeten?",
+        "no_account": "Nog geen account?",
+        "create_account": "Maak er een aan",
+        "back_to_login": "Terug naar inloggen",
+        "show_password": "Wachtwoord weergeven",
+        "hide_password": "Wachtwoord verbergen",
+        "register": "Registreren",
+        "logout": "Afmelden",
+        "reset": {
+            "title": "Stel uw wachtwoord opnieuw in",
+            "subtitle": "Voer uw e-mailadres in. Als er een account bestaat, ontvangt u een resetlink.",
+            "cta": "Resetlink verzenden",
+            "sent": "Als dit e-mailadres bestaat, is er een resetlink verstuurd."
+        },
+        "errors": {
+            "generic": "Er is iets misgegaan",
+            "bad_credentials": "Ongeldig e-mailadres of wachtwoord",
+            "email_required": "E-mailadres is verplicht",
+            "email_invalid": "Ongeldig e-mailadres",
+            "email_too_long": "E-mailadres is te lang",
+            "password_required": "Wachtwoord is verplicht",
+            "password_too_short": "Wachtwoord moet minstens 8 tekens bevatten",
+            "password_too_long": "Wachtwoord is te lang",
+            "rate_limit": "Te veel pogingen. Probeer het over een ogenblik opnieuw",
+            "register_rate_limit": "Limiet voor registraties bereikt. Probeer het later opnieuw"
+        }
     },
     "register": {
         "title": "Maak uw account aan",
@@ -396,6 +428,14 @@
         "payment_success": "Betaling geslaagd! Uw evenement is nu gepubliceerd.",
         "payment_error": "Betalingsfout. Probeer het opnieuw."
     },
+    "PAYMENT": {
+        "PUBLISH_EVENT": "Evenement publiceren",
+        "PUBLISH_QUESTION": "Wilt u nu betalen om uw evenement direct te publiceren, of later betalen?",
+        "PRICE": "Prijs",
+        "PAY_NOW": "Nu betalen",
+        "PAY_LATER": "Later betalen",
+        "PAY_LATER_INFO": "U kunt later betalen vanaf uw evenementenlijst."
+    },
     "payments": {
         "success": {
             "title": "Betaling bevestigd",
@@ -422,14 +462,40 @@
         "meta": {
             "session": "Sessie",
             "booking": "Boeking"
+        },
+        "redirecting": "Bezig met doorverwijzen naar de betaling...",
+        "errors": {
+            "url_not_found": "Betalings-URL niet gevonden.",
+            "session_creation_failed": "Fout bij het aanmaken van de betalingssessie."
         }
     },
     "bookings": {
         "title": "Mijn boekingen",
+        "subtitle": "Bekijk en beheer al uw boekingen",
         "empty": "Nog geen boekingen.",
+        "empty_subtitle": "Ontdek onze evenementen en reserveer uw plaats",
         "when": "Wanneer",
         "amount": "Bedrag",
         "event": "Evenement",
+        "location": "Locatie",
+        "event_date": "Evenementdatum",
+        "creating": "Boeking aanmaken...",
+        "load_error": "Fout bij het laden van boekingen",
+        "current": "Lopend",
+        "current_count": "{{count}} lopende boeking(en)",
+        "future": "Binnenkort",
+        "history": "Geschiedenis",
+        "live": "🔴 Live",
+        "time_until_hours": "Over {{hours}}u",
+        "time_until_minutes": "Over {{minutes}} min",
+        "time_until_hours_mins": "Over {{hours}}u {{minutes}}min",
+        "join_now": "Nu deelnemen",
+        "cancelled_by_organizer": "Geannuleerd door organisator",
+        "cancelled_by_you": "Geannuleerd door u",
+        "finished": "Voltooid",
+        "errors": {
+            "creation_failed": "Fout bij het aanmaken van de boeking."
+        },
         "status": {
             "PENDING": "In afwachting van betaling",
             "CONFIRMED": "Bevestigd",
@@ -440,20 +506,160 @@
         }
     },
     "events": {
+        "difficulty": {
+            "easy": "Beginner",
+            "medium": "Gemiddeld",
+            "hard": "Gevorderd"
+        },
+        "create": {
+            "step3_description_full": "Organiseer een korte sessie van 1 uur tussen 12u en 21u. Tot 7 dagen op voorhand – zorg er alleen voor dat u minstens 3 uur op voorhand plant!",
+            "title": "Evenement aanmaken",
+            "back": "Terug",
+            "draft_limit_reached": "U hebt de limiet van 3 concepten bereikt.",
+            "step1": "Stap 1",
+            "step2": "Stap 2",
+            "step3": "Stap 3",
+            "step4": "Stap 4",
+            "step5": "Stap 5",
+            "step1_title": "Locatie",
+            "step2_title": "Details",
+            "step3_title": "Datum",
+            "step4_title": "Validatie",
+            "step1_heading": "Waar wilt u uw evenement organiseren?",
+            "step1_description": "Kies de locatie uit onze partners",
+            "step2_heading": "Details van uw evenement",
+            "step2_description": "Taal, thema en niveau van de deelnemers",
+            "step3_heading": "Wanneer vindt het evenement plaats?",
+            "step3_description": "Kies de begindatum en tijd",
+            "step4_heading": "Samenvatting van uw evenement",
+            "step4_description": "Controleer de informatie voordat u creëert",
+            "step5_heading": "Afronding",
+            "step5_description": "Bevestig uw informatie en kies de betaling",
+            "postal_code": "Postcode",
+            "postal_code_placeholder": "1000, 1050, Brussel...",
+            "capacity": "Capaciteit",
+            "select": "Kiezen",
+            "selected": "Geselecteerd",
+            "view_details": "Details bekijken",
+            "no_partners": "Geen locatie gevonden voor deze postcode",
+            "language": "Taal die wordt geoefend",
+            "select_language": "Selecteer een taal",
+            "theme": "Gespreksthema",
+            "theme_placeholder": "bv. Franse cultuur, Business English...",
+            "difficulty": "Vereist niveau",
+            "select_difficulty": "Selecteer een niveau",
+            "date": "Datum",
+            "time": "Starttijd",
+            "duration_note": "Het evenement duurt 1 uur",
+            "game_type": "Speltype",
+            "select_game_type": "Selecteer een speltype",
+            "game_difficulty": "Spelniveau",
+            "select_game_difficulty": "Selecteer een niveau",
+            "summary_location": "Locatie",
+            "summary_language": "Taal",
+            "summary_theme": "Thema",
+            "summary_difficulty": "Niveau",
+            "summary_game_type": "Speltype",
+            "summary_game_difficulty": "Spelniveau",
+            "summary_datetime": "Datum en tijd",
+            "at": "om",
+            "create_event": "Mijn evenement aanmaken",
+            "create_draft": "Concept opslaan",
+            "payment_modal_title": "Evenement aangemaakt!",
+            "payment_modal_message": "Uw evenement is als concept aangemaakt. Betaal nu om het te publiceren of rond de betaling later af vanuit uw evenementlijst.",
+            "pay_now": "Nu betalen (€7)",
+            "pay_later": "Ik betaal later",
+            "pagination": {
+                "previous": "Vorige",
+                "next": "Volgende"
+            },
+            "day": {
+                "today": "Vandaag",
+                "tomorrow": "Morgen"
+            },
+            "errors": {
+                "slot_required": "Selecteer een tijdslot",
+                "form_required": "Vul alle verplichte velden in",
+                "create_failed": "Fout bij het aanmaken van het evenement"
+            },
+            "loader": {
+                "creating": "Uw evenement wordt aangemaakt..."
+            }
+        },
+        "badges": {
+            "recommended": "Aanbevolen",
+            "full": "Vol",
+            "cancelled": "Geannuleerd",
+            "draft": "Concept",
+            "pending-confirmation": "In afwachting",
+            "published": "Gepubliceerd",
+            "finished": "Afgerond",
+            "starting-soon": "Start binnenkort",
+            "game-live": "🎮 Live spel"
+        },
+        "actions": {
+            "view_details": "Details bekijken",
+            "pay_and_publish": "Betalen en publiceren (€7)",
+            "delete_draft": "Concept verwijderen",
+            "cancel_event": "Evenement annuleren",
+            "start_game": "Spel starten",
+            "join_game": "Meedoen aan spel",
+            "book": "Mijn plaats reserveren",
+            "pay_booking": "Mijn reservering betalen",
+            "cancel_booking": "Mijn reservering annuleren",
+            "event_full": "Vol",
+            "event_cancelled": "Evenement geannuleerd",
+            "event_finished": "Evenement afgelopen",
+            "booking_confirmed": "Reservering bevestigd",
+            "starting_soon": "Start binnen minder dan 3u",
+            "pending_confirmation": "In afwachting van bevestiging"
+        },
+        "disabled_reasons": {
+            "event-full": "Het evenement is vol. Alle plaatsen zijn gereserveerd.",
+            "event-cancelled": "Dit evenement is geannuleerd door de organisator.",
+            "event-finished": "Dit evenement is afgelopen.",
+            "booking-pending": "U hebt al een reservering in afwachting van betaling.",
+            "booking-confirmed": "Uw reservering is bevestigd.",
+            "already-booked": "U hebt dit evenement al gereserveerd.",
+            "cancellation-deadline-passed": "De annuleringsdeadline is verstreken (minder dan 3u voor het evenement).",
+            "event-not-started": "Het evenement is nog niet begonnen.",
+            "game-not-configured": "Er is geen spel geconfigureerd voor dit evenement.",
+            "game-not-started": "Het spel is nog niet gestart door de organisator.",
+            "no-confirmed-booking": "U hebt een bevestigde reservering nodig om aan het spel mee te doen.",
+            "insufficient-permissions": "U hebt niet de vereiste rechten."
+        },
+        "title": "Evenementen",
+        "empty": "Geen evenementen gevonden",
+        "cancelled": "Geannuleerd",
+        "address": "Adres",
+        "city": "Stad",
+        "when": "Wanneer",
+        "theme": "Thema",
+        "price": "Prijs",
+        "free": "Gratis",
+        "book": "Boeken",
+        "already_booked": "Al geboekt",
+        "errors": {
+            "loading_failed": "Fout bij het laden van evenementen",
+            "publication_request_failed": "Publicatie aanvragen is niet gelukt"
+        },
+        "recommended": "Aanbevolen",
+        "nearby": "In de buurt",
+        "near_city": "Gebaseerd op uw stad: {{city}}",
         "filters": {
             "languages_placeholder": "Doeltalen",
-            "search_placeholder": "Zoeken op titel, thema, adres...",
+            "search_placeholder": "Zoek op titel, thema, adres...",
             "all_languages": "Alle talen",
             "reset": "Resetten",
             "show_filters": "Filters tonen",
             "hide_filters": "Filters verbergen",
             "active_filters": "Actieve filters",
             "languages": "Talen",
-            "select_languages": "Selecteer talen",
-            "difficulty_label": "Moeilijkheid",
+            "select_languages": "Talen selecteren",
+            "difficulty_label": "Niveau",
             "all_difficulties": "Alle niveaus",
-            "date_from": "Vanaf datum",
-            "date_to": "Tot datum",
+            "date_from": "Begindatum",
+            "date_to": "Einddatum",
             "price_label": "Prijs",
             "availability_label": "Beschikbaarheid",
             "difficulty": {
@@ -464,7 +670,7 @@
             "price": {
                 "all": "Alle prijzen",
                 "free": "Gratis",
-                "paid": "Betaald"
+                "paid": "Betalend"
             },
             "availability": {
                 "all": "Alle",
@@ -472,23 +678,35 @@
                 "almost_full": "Bijna vol"
             }
         },
+        "sort_reason": {
+            "nearby": "Dicht bij u",
+            "bidirectional": "Talen matchen",
+            "target_language": "Taal die u leert",
+            "native_language": "Uw moedertaal",
+            "support": "U kunt helpen",
+            "free": "Gratis evenement",
+            "coming_soon": "Binnenkort beschikbaar",
+            "almost_full": "Bijna vol",
+            "already_booked": "Al geboekt"
+        },
+        "sort_info": {
+            "title": "Slim sorteren ingeschakeld",
+            "subtitle": "Evenementen worden gesorteerd op basis van uw voorkeuren"
+        },
         "my_events": "Mijn evenementen",
         "show_my_events": "Mijn evenementen tonen",
         "hide_my_events": "Mijn evenementen verbergen",
         "all_events": "Alle evenementen",
         "add_event": "Evenement toevoegen",
         "draft": "Concept",
-        "empty": "Geen evenementen gevonden",
-        "empty_subtitle": "Probeer je filters aan te passen of kom later terug",
+        "empty_subtitle": "Pas uw filters aan of kom later terug",
         "results_count": {
             "singular": "{{count}} evenement gevonden",
             "plural": "{{count}} evenementen gevonden"
         },
-        "badges": {
-            "recommended": "Aanbevolen",
-            "full": "Volzet",
-            "cancelled": "Geannuleerd"
-        },
+        "organizer": "Organisator",
+        "reserved": "Gereserveerd",
+        "pay_to_publish": "Betalen om te publiceren",
         "detail": {
             "back_to_events": "Terug naar evenementen",
             "about": "Over dit evenement",
@@ -496,40 +714,74 @@
             "participants": "Deelnemers",
             "participant": "deelnemer",
             "participants_plural": "deelnemers",
-            "no_participants_yet": "Nog geen inschrijvingen",
-            "participants_loading": "Deelnemers worden geladen...",
-            "participants_error": "Kan de deelnemers nu niet laden.",
-            "participants_forbidden": "Alleen organisatoren of gepubliceerde evenementen kunnen deelnemers tonen.",
+            "no_participants_yet": "Nog niemand heeft zich ingeschreven",
+            "participants_loading": "Deelnemers laden...",
+            "participants_error": "Deelnemers kunnen nu niet worden geladen.",
+            "participants_forbidden": "Alleen organisatoren of gepubliceerde evenementen kunnen de deelnemers tonen.",
             "native_languages": "Moedertalen",
             "target_languages": "Doeltalen",
             "price_per_person": "Prijs per persoon",
             "organized_by": "Georganiseerd door",
-            "book_spot": "Mijn plek reserveren",
-            "pay_booking": "Reservering betalen",
-            "cancel_booking": "Reservering annuleren",
-            "event_full": "Volzet",
-            "event_cancelled": "Evenement geannuleerd",
-            "booking_notice": "Onmiddellijke bevestiging �?� Gratis annuleren tot 3u ervoor",
-            "pay_notice": "Uw reservering wacht op betaling. Klik om te voltooien.",
-            "cancel_notice": "U kan annuleren tot 3 uur voor de start",
+            "spots_remaining": "{{count}} plaatsen over",
+            "spots_remaining_one": "{{count}} plaats over",
+            "book_spot": "Mijn plaats reserveren",
+            "pay_booking": "Mijn reservering betalen",
+            "cancel_booking": "Mijn reservering annuleren",
             "starting_soon": "Start binnenkort",
-            "starting_soon_notice": "Het evenement start binnen minder dan 3 uur, annuleren niet mogelijk",
+            "event_full": "Vol",
+            "event_cancelled": "Evenement geannuleerd",
+            "booking_notice": "Onmiddellijke bevestiging • Gratis annuleren tot 3u vooraf",
+            "pay_notice": "Uw reservering wacht nog op betaling. Klik om af te ronden.",
+            "cancel_notice": "U kunt uw reservering tot 3 uur voor de start annuleren",
+            "starting_soon_notice": "Het evenement begint binnen 3 uur, annuleren is niet mogelijk",
             "cancel_modal_title": "Reservering annuleren?",
-            "cancel_modal_message": "Weet u zeker dat u deze reservering wilt annuleren? Dit is onomkeerbaar.",
+            "cancel_modal_message": "Weet u zeker dat u uw reservering wilt annuleren? Deze actie kan niet ongedaan gemaakt worden.",
             "yes_cancel": "Ja, annuleren",
             "not_found": "Evenement niet gevonden",
             "error": "Er is een fout opgetreden bij het laden",
-            "loading": "Bezig met laden...",
+            "loading": "Laden...",
             "pay_and_publish": "Betalen en publiceren",
             "delete_draft": "Concept verwijderen",
-            "organizer_pending": "Betaling bezig...",
+            "organizer_pending": "Betaling wordt verwerkt...",
             "cancel_event": "Evenement annuleren",
             "cancel_event_title": "Dit evenement annuleren?",
             "cancel_event_message": "Deze actie is onomkeerbaar en annuleert alle deelnemers.",
             "yes_cancel_event": "Ja, evenement annuleren",
             "register_free": "Gratis inschrijven",
             "unregister": "Uitschrijven",
-            "games_title": "Samenwerkingsspellen"
+            "status": {
+                "pending_confirmation": "Wachten op bevestiging",
+                "published": "Gepubliceerd",
+                "finished": "Afgerond",
+                "you_are_organizer": "U bent de organisator"
+            },
+            "test_mode": "Testmodus (evenementtijd negeren)",
+            "loader": {
+                "preparing_payment": "Betaling voorbereiden...",
+                "creating_booking": "Reservering aanmaken...",
+                "redirecting_payment": "Doorsturen naar betaling...",
+                "deleting_draft": "Concept verwijderen...",
+                "checking_game": "Spel controleren...",
+                "starting_game": "Spel starten...",
+                "retrieving_game": "Spel ophalen..."
+            },
+            "errors": {
+                "payment_url_unavailable": "Betalings-URL niet beschikbaar",
+                "publication_request_failed": "Fout bij het aanvragen van publicatie",
+                "booking_creation_failed": "Fout bij het aanmaken van de reservering",
+                "checkout_session_failed": "Fout bij het aanmaken van de betalingssessie",
+                "booking_cancellation_failed": "Fout bij het annuleren van de reservering",
+                "draft_deletion_failed": "Fout bij het verwijderen van het concept",
+                "no_active_game": "Geen actief spel. De organisator moet het spel starten.",
+                "game_access_denied": "U hebt geen toegang tot dit spel. Zorg ervoor dat u voor het evenement bent ingeschreven.",
+                "game_search_failed": "Fout bij het zoeken naar spel ({{status}}). Probeer opnieuw.",
+                "game_retrieval_failed": "Er bestaat al een spel maar het kan niet worden betreden. Neem contact op met de ondersteuning.",
+                "game_start_failed": "Fout bij het starten van het spel",
+                "event_cancellation_failed": "Fout bij het annuleren van het evenement"
+            },
+            "confirm": {
+                "delete_draft": "Wilt u dit concept echt verwijderen? Deze actie kan niet ongedaan gemaakt worden."
+            }
         }
     },
     "landing": {
@@ -706,7 +958,11 @@
     "checkout": {
         "title": "Aankoop bevestigen",
         "message": "Wilt u uw aankoop bevestigen?",
-        "buy": "Betalen"
+        "buy": "Betalen",
+        "confirm": {
+            "title": "Aankoop bevestigen",
+            "message": "Wilt u uw aankoop bevestigen?"
+        }
     },
     "footer": {
         "navigation": {
@@ -778,11 +1034,6 @@
             "word_association": "Woordassociatie",
             "debate": "Debat",
             "role_play": "Rollenspel"
-        }
-    },
-    "events": {
-        "create": {
-            "step3_description_full": "Organiseer een korte sessie van 1 uur tussen 12u en 21u. Tot 7 dagen van tevoren – denk er alleen aan om minstens 3 uur vooruit te plannen!"
         }
     }
 }

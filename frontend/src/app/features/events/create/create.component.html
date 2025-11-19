@@ -235,7 +235,7 @@
           </div>
           <div class="summary-row">
             <span class="summary-label">{{ 'events.create.summary_language' | t }}:</span>
-            <span class="summary-value">{{ selectedLanguageName }}</span>
+            <span class="summary-value">{{ selectedLanguageName() }}</span>
           </div>
           <div class="summary-row">
             <span class="summary-label">{{ 'events.create.summary_theme' | t }}:</span>
@@ -250,7 +250,7 @@
           <div class="summary-row">
             <span class="summary-label">{{ 'events.create.summary_datetime' | t }}:</span>
             <span class="summary-value">
-              {{ eventForm.get('date')?.value }} {{ 'common.at' | t }} {{ eventForm.get('time')?.value }}
+              {{ formattedDateTime() }}
             </span>
           </div>
           <div class="summary-row">

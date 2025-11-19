@@ -3,34 +3,132 @@
 /* Layout principal */
 .event-detail-page {
   padding: var(--space-8) 0;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in oklab, var(--color-primary), white 97%) 0%,
+    var(--surface-0) 40%
+  );
+  min-height: 100vh;
 }
 
 /* Bouton retour */
 .back-section {
   margin-bottom: var(--space-6);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 200px;
+    background: linear-gradient(135deg,
+      color-mix(in oklab, var(--color-primary), white 95%) 0%,
+      color-mix(in oklab, var(--color-secondary), white 95%) 100%);
+    z-index: -1;
+    opacity: 0.5;
+  }
 }
 
 .btn-back {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-3) var(--space-4);
-  background: transparent;
+  padding: var(--space-3) var(--space-5);
+  background: var(--surface-0);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-full);
   color: var(--color-text);
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 
   &:hover {
-    background: var(--surface-1);
+    background: var(--color-primary);
     border-color: var(--color-primary);
-    color: var(--color-primary);
+    color: white;
+    transform: translateX(-4px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
   }
 
   .icon-arrow {
     font-size: 1.2rem;
+    transition: transform 0.25s ease;
+  }
+
+  &:hover .icon-arrow {
+    transform: translateX(-2px);
+  }
+}
+
+/* Status Badges */
+.status-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+  animation: fadeInUp 0.5s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mode Test Checkbox */
+.test-mode-container {
+  margin-top: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  background: linear-gradient(135deg,
+    color-mix(in oklab, var(--color-warning, #ffc107), white 85%) 0%,
+    color-mix(in oklab, var(--color-warning, #ffc107), white 90%) 100%);
+  border: 2px solid var(--color-warning, #ffc107);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.15);
+  animation: slideInDown 0.4s ease;
+
+  @keyframes slideInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    cursor: pointer;
+    font-size: 0.9375rem;
+    color: var(--color-text);
+
+    input[type="checkbox"] {
+      cursor: pointer;
+      width: 20px;
+      height: 20px;
+      accent-color: var(--color-warning, #ffc107);
+      transition: transform 0.2s ease;
+
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+
+    span {
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
   }
 }
 
@@ -52,31 +150,89 @@
   gap: var(--space-8);
 }
 
-/* En-tÃƒÆ’Ã‚Âªte ÃƒÆ’Ã‚Â©vÃƒÆ’Ã‚Â©nement */
+/* En-tête événement */
 .event-header {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-5);
+  padding: var(--space-6);
+  background: var(--surface-0);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.05),
+    0 10px 30px rgba(0, 0, 0, 0.03);
+  position: relative;
+  overflow: hidden;
+  animation: fadeInScale 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+    opacity: 0.8;
+  }
+
+  @keyframes fadeInScale {
+    from {
+      opacity: 0;
+      transform: scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
 }
 
 .event-badges {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-2);
+  gap: var(--space-3);
 }
 
 .badge {
   display: inline-flex;
   align-items: center;
-  padding: var(--space-2) var(--space-3);
+  padding: var(--space-2) var(--space-4);
   border-radius: var(--radius-full);
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-transform: uppercase;
+  font-size: 0.75rem;
 
   &.badge-primary {
-    background: color-mix(in oklab, var(--color-primary), white 90%);
+    background: linear-gradient(135deg,
+      color-mix(in oklab, var(--color-primary), white 85%) 0%,
+      color-mix(in oklab, var(--color-primary), white 90%) 100%);
     color: var(--color-primary);
-    border: 1px solid color-mix(in oklab, var(--color-primary), white 80%);
+    border: 2px solid color-mix(in oklab, var(--color-primary), white 75%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  &.badge-secondary {
+    background: linear-gradient(135deg,
+      color-mix(in oklab, var(--color-secondary), white 85%) 0%,
+      color-mix(in oklab, var(--color-secondary), white 90%) 100%);
+    color: var(--color-secondary);
+    border: 2px solid color-mix(in oklab, var(--color-secondary), white 75%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
   }
 }
 
@@ -92,18 +248,39 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
+  padding: var(--space-4);
+  background: linear-gradient(135deg,
+    color-mix(in oklab, var(--color-primary), white 97%) 0%,
+    var(--surface-1) 100%);
+  border-radius: var(--radius-lg);
+  border: 1px solid color-mix(in oklab, var(--color-primary), white 90%);
 }
 
 .meta-item {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
-  color: var(--color-text-muted);
+  gap: var(--space-3);
+  color: var(--color-text);
   font-size: 0.9375rem;
+  font-weight: 500;
+  padding: var(--space-2) 0;
+  position: relative;
+
+  &::before {
+    content: '●';
+    color: var(--color-primary);
+    font-size: 0.5rem;
+    margin-right: var(--space-1);
+  }
+
+  span {
+    font-weight: 600;
+  }
 
   .icon {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     flex-shrink: 0;
+    color: var(--color-primary);
   }
 }
 
@@ -111,7 +288,28 @@
 .event-section {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-5);
+  padding: var(--space-6);
+  background: var(--surface-0);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.05),
+    0 10px 30px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: fadeInUp 0.6s ease;
+  animation-fill-mode: backwards;
+
+  &:nth-child(1) { animation-delay: 0.1s; }
+  &:nth-child(2) { animation-delay: 0.2s; }
+  &:nth-child(3) { animation-delay: 0.3s; }
+
+  &:hover {
+    box-shadow:
+      0 4px 8px rgba(0, 0, 0, 0.08),
+      0 15px 40px rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+  }
 }
 
 .participants-section {
@@ -130,11 +328,41 @@
   .participant-card {
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
-    padding: var(--space-4);
-    background: var(--surface-0);
+    padding: var(--space-5);
+    background: linear-gradient(135deg,
+      var(--surface-0) 0%,
+      color-mix(in oklab, var(--color-primary), white 98%) 100%);
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+      background: linear-gradient(180deg, var(--color-primary), var(--color-secondary));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    &:hover {
+      border-color: var(--color-primary);
+      box-shadow:
+        0 4px 16px rgba(0, 0, 0, 0.08),
+        0 1px 3px rgba(0, 0, 0, 0.05);
+      transform: translateY(-2px);
+
+      &::before {
+        opacity: 1;
+      }
+    }
   }
 
   .participant-name {
@@ -170,9 +398,22 @@
 
 .section-title {
   font-size: 1.5rem;
-  font-weight: 700;
+  font-weight: 800;
   margin: 0;
   color: var(--color-text);
+  position: relative;
+  padding-bottom: var(--space-3);
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+    border-radius: var(--radius-full);
+  }
 }
 
 .event-description {
@@ -185,24 +426,66 @@
 
 /* Carte Google Maps */
 .map-container {
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
   overflow: hidden;
-  box-shadow: var(--shadow-1);
-  border: 1px solid var(--color-border);
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.1),
+    0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 2px solid var(--color-border);
+  transition: all 0.3s ease;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg,
+      color-mix(in oklab, var(--color-primary), transparent 95%) 0%,
+      transparent 50%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  &:hover {
+    box-shadow:
+      0 8px 24px rgba(0, 0, 0, 0.12),
+      0 2px 6px rgba(0, 0, 0, 0.08);
+    transform: scale(1.01);
+  }
 
   iframe {
     display: block;
+    position: relative;
+    z-index: 0;
   }
 }
 
 .address-text {
   margin: var(--space-3) 0 0;
-  padding: var(--space-4);
-  background: var(--surface-1);
-  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  background: linear-gradient(135deg,
+    var(--surface-1) 0%,
+    color-mix(in oklab, var(--color-primary), white 97%) 100%);
+  border-radius: var(--radius-lg);
   border: 1px solid var(--color-border);
   font-size: 0.9375rem;
-  line-height: 1.6;
+  line-height: 1.8;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  position: relative;
+  padding-left: var(--space-6);
+
+  &::before {
+    content: '📍';
+    position: absolute;
+    left: var(--space-4);
+    top: var(--space-5);
+    font-size: 1.2rem;
+  }
+
+  strong {
+    color: var(--color-primary);
+    font-weight: 700;
+  }
 }
 
 /* Participants */
@@ -271,21 +554,51 @@
 }
 
 .booking-card {
-  background: var(--surface-0);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-6);
-  box-shadow: var(--shadow-1);
+  background: linear-gradient(135deg,
+    var(--surface-0) 0%,
+    color-mix(in oklab, var(--color-primary), white 98%) 100%);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.08),
+    0 1px 3px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
-  gap: var(--space-5);
+  gap: var(--space-6);
+  position: relative;
+  overflow: hidden;
+  animation: slideInRight 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+  }
+
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
 }
 
 .price-section {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
-  padding-bottom: var(--space-4);
+  align-items: center;
+  text-align: center;
+  padding: var(--space-2) 0 var(--space-5);
   border-bottom: 1px solid var(--color-border);
 }
 
@@ -296,16 +609,23 @@
 }
 
 .price-value {
-  font-size: 2rem;
-  font-weight: 800;
-  color: var(--color-primary);
+  font-size: 2.5rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.02em;
+  line-height: 1;
 }
 
 .organizer-section {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
-  padding-bottom: var(--space-4);
+  align-items: center;
+  text-align: center;
+  padding: var(--space-2) 0 var(--space-5);
   border-bottom: 1px solid var(--color-border);
 }
 
@@ -327,20 +647,61 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
+  align-items: center;
+  text-align: center;
+  padding-top: var(--space-2);
 }
 
 .availability-bar {
   width: 100%;
-  height: 8px;
+  height: 10px;
   background: var(--surface-1);
   border-radius: var(--radius-full);
   overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.3) 50%,
+      transparent 100%);
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
 }
 
 .availability-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
-  transition: width 0.3s ease;
+  background: linear-gradient(90deg,
+    var(--color-primary) 0%,
+    var(--color-secondary) 100%);
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 10px rgba(var(--color-primary-rgb, 99, 102, 241), 0.3);
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.4) 50%,
+      transparent 100%);
+    animation: slide 1.5s ease-in-out infinite;
+  }
+
+  @keyframes slide {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
 }
 
 .availability-text {
@@ -348,6 +709,7 @@
   font-size: 0.875rem;
   color: var(--color-text-muted);
   font-weight: 500;
+  text-align: center;
 
   &.full {
     color: var(--color-danger);

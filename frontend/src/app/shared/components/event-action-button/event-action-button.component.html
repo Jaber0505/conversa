@@ -1,0 +1,72 @@
+<div class="event-action-button-wrapper">
+  <!-- Badge d'état (si activé) -->
+  @if (showBadge && badgeLabelKey()) {
+    <div class="event-badge-container">
+      <shared-badge
+        [variant]="badgeVariant()"
+        tone="soft"
+        size="sm">
+        {{ badgeLabelKey()! | t }}
+      </shared-badge>
+    </div>
+  }
+
+  <!-- Mode : Bouton principal uniquement -->
+  @if (primaryOnly && primaryAction()) {
+    <div class="primary-action-container">
+      @let action = primaryAction()!;
+
+      <shared-button
+        type="button"
+        [variant]="getButtonVariant(action.variant)"
+        [size]="size"
+        [disabled]="!action.enabled || isLoading()"
+        [title]="!action.enabled && action.disabledReason ? (getDisabledTooltip(action) | t) : ''"
+        (click)="onActionClick(action.action, $event)"
+        class="event-action-btn">
+
+        <!-- Icône (si présente) -->
+        @if (action.icon && !isActionLoading(action.action)) {
+          <span class="btn-icon">{{ action.icon }}</span>
+        }
+
+        <!-- Spinner de chargement -->
+        @if (isActionLoading(action.action)) {
+          <span class="spinner"></span>
+        }
+
+        <!-- Label -->
+        <span class="btn-label">{{ action.labelKey | t }}</span>
+      </shared-button>
+    </div>
+  }
+
+  <!-- Mode : Tous les boutons -->
+  @if (!primaryOnly) {
+    <div class="all-actions-container">
+      @for (action of allActions(); track action.action) {
+        @if (action.visible) {
+          <shared-button
+            type="button"
+            [variant]="getButtonVariant(action.variant)"
+            [size]="size"
+            [disabled]="!action.enabled || isLoading()"
+            [title]="!action.enabled && action.disabledReason ? (getDisabledTooltip(action) | t) : ''"
+            (click)="onActionClick(action.action, $event)"
+            class="event-action-btn">
+
+            @if (action.icon && !isActionLoading(action.action)) {
+              <span class="btn-icon">{{ action.icon }}</span>
+            }
+
+            @if (isActionLoading(action.action)) {
+              <span class="spinner"></span>
+            }
+
+            <span class="btn-label">{{ action.labelKey | t }}</span>
+          </shared-button>
+        }
+      }
+    </div>
+  }
+</div>

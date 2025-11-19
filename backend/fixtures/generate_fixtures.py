@@ -3,11 +3,12 @@ Script to generate comprehensive fixtures for Conversa.
 
 Generates:
 - 100 users (30 organizers, 70 participants)
-- Events with dates spaced 1 day apart (exactly 100 events)
+- Events distributed from yesterday to +7 days (exactly 100 events over 8 days)
 - Bookings capped at 6 reservations per event (organizer included)
 
 Usage:
     python generate_fixtures.py --start-date 2025-12-01
+    (Events will be generated from 2025-11-30 to 2025-12-08)
 """
 
 import json
@@ -285,9 +286,9 @@ def generate_events(
     target_events=TARGET_NUM_EVENTS,
 ):
     """
-    Generate exactly target_events within a 7-day window starting at start_date.
+    Generate exactly target_events within an 8-day window from yesterday to +7 days.
 
-    Events are distributed between the provided start date and start date + 6 days
+    Events are distributed from yesterday (start_date - 1 day) to start_date + 7 days
     (inclusive), with start times between 12:00 and 21:00 inclusive.
     """
     events = []
@@ -298,7 +299,7 @@ def generate_events(
         return events
 
     event_id = 11  # Start after existing events
-    day_offsets = list(range(7))  # Ensure coverage from day 0 to day 6
+    day_offsets = list(range(-1, 8))  # Ensure coverage from day -1 (yesterday) to day +7
     event_counter = 0
 
     while len(events) < target_events:
@@ -311,7 +312,7 @@ def generate_events(
             num_events = min(random.randint(2, 4), remaining)
 
             for _ in range(num_events):
-                # Keep events within a 7-day window from the provided start date
+                # Keep events within an 8-day window (yesterday to +7 days from start date)
                 days_offset = day_offsets[event_counter % len(day_offsets)]
                 event_date = start_date + timedelta(days=days_offset)
 
@@ -333,6 +334,10 @@ def generate_events(
                     event_datetime - timedelta(days=random.randint(7, 30))
                 ).isoformat() + "Z"
 
+                # Determine status: FINISHED if event time has passed, PUBLISHED otherwise
+                now = datetime.now()
+                status = "FINISHED" if event_datetime < now else "PUBLISHED"
+
                 event = {
                     "model": "events.event",
                     "pk": event_id,
@@ -346,7 +351,7 @@ def generate_events(
                         "photo": None,
                         "title": f"Event {event_id}",
                         "address": "Rue Example, 1000, Bruxelles, BE",
-                        "status": "PUBLISHED",  # All events are published
+                        "status": status,
                         "created_at": created_at,
                         "updated_at": created_at,
                         "price_cents": 700,
@@ -364,7 +369,7 @@ def generate_events(
                 event_id += 1
                 event_counter += 1
 
-    # Keep fixture order chronological within the 7-day window
+    # Keep fixture order chronological within the 8-day window (yesterday to +7 days)
     events.sort(key=lambda e: e["fields"]["datetime_start"])
 
     return events

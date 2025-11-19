@@ -85,7 +85,7 @@ export class EventsListComponent {
   readonly isMobile = signal<boolean>(false);
 
   // User data
-  private currentUserId: number | null = null;
+  currentUserId: number | null = null;
   userCity: string | null = null;
   userTargetLangs: string[] = [];
   userNativeLangs: string[] = [];
@@ -461,26 +461,6 @@ export class EventsListComponent {
       filtered = filtered.filter(({ event }) =>
         new Date(event.datetime_start) <= toDate
       );
-    }
-
-    // Filtre par prix
-    if (this.currentFilters.priceType === 'free') {
-      filtered = filtered.filter(({ event }) => event.price_cents === 0);
-    } else if (this.currentFilters.priceType === 'paid') {
-      filtered = filtered.filter(({ event }) => event.price_cents > 0);
-    }
-
-    // Filtre par disponibilité
-    if (this.currentFilters.availability === 'available') {
-      filtered = filtered.filter(({ event }) => !event.is_full);
-    } else if (this.currentFilters.availability === 'almost_full') {
-      filtered = filtered.filter(({ event }) => {
-        const max = event.max_participants || 0;
-        if (!max) return false;
-        const booked = (event as any).booked_seats ?? event.registration_count ?? 0;
-        const ratio = booked / max;
-        return ratio >= 0.8 && ratio < 1 && !event.is_full;
-      });
     }
 
     // Séparer "mes événements" et "événements publics"

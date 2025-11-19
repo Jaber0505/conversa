@@ -37,6 +37,22 @@ def validate_cancellation_deadline(booking):
         )
 
 
+def validate_event_not_cancelled(event):
+    """
+    Validate that event is not cancelled.
+
+    Args:
+        event: Event instance to validate
+
+    Raises:
+        ValidationError: If event is cancelled
+    """
+    from events.models import EventStatus
+
+    if event.status == EventStatus.CANCELLED or event.is_cancelled:
+        raise ValidationError("Cannot create or modify booking for a cancelled event.")
+
+
 def validate_event_not_started(booking):
     """
     Validate that event has not started yet.
@@ -59,9 +75,9 @@ def validate_event_capacity(event):
     Validate that event has available capacity for booking.
 
     Business Rules:
-        - Event must have sufficient available slots to remain viable
-          (minimum MIN_PARTICIPANTS_PER_EVENT slots must remain available).
-        - This is checked at booking creation time.
+        - Only CONFIRMED bookings count towards capacity
+        - PENDING bookings do not reserve a spot (payment required first)
+        - This prevents unpaid bookings from blocking event capacity
 
     Args:
         event: Event instance to validate
@@ -71,11 +87,11 @@ def validate_event_capacity(event):
     """
     # Enforce per-event maximum (6 per event by business rule)
     from bookings.models import BookingStatus
-    # Count both pending (awaiting payment) and confirmed seats to avoid overselling.
-    active_statuses = [BookingStatus.CONFIRMED, BookingStatus.PENDING]
-    active_count = event.bookings.filter(status__in=active_statuses).count()
+    # Count only CONFIRMED seats - PENDING bookings don't reserve capacity
+    # until payment is completed (prevents unpaid bookings from blocking spots)
+    confirmed_count = event.bookings.filter(status=BookingStatus.CONFIRMED).count()
     per_event_cap = int(getattr(event, 'max_participants', MAX_PARTICIPANTS_PER_EVENT) or MAX_PARTICIPANTS_PER_EVENT)
-    if active_count >= per_event_cap:
+    if confirmed_count >= per_event_cap:
         raise ValidationError(
             f"Event is full for this time slot (limit {per_event_cap} per event)."
         )

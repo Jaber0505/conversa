@@ -168,7 +168,8 @@ class GameViewSet(viewsets.ReadOnlyModelViewSet):
             game = GameService.create_game(
                 event=event,
                 created_by=request.user,
-                game_type=serializer.validated_data["game_type"]
+                game_type=serializer.validated_data["game_type"],
+                skip_time_validation=serializer.validated_data.get("skip_time_validation", False)
             )
         except (ValidationError, PermissionDenied) as e:
             raise e
@@ -277,6 +278,9 @@ class GameViewSet(viewsets.ReadOnlyModelViewSet):
     @action(detail=False, methods=["get"], url_path="active")
     def active_game(self, request):
         """Get the active game for an event."""
+        from django.utils import timezone
+        from bookings.models import BookingStatus
+
         event_id = request.query_params.get("event_id")
         if not event_id:
             raise ValidationError({"event_id": "Event ID is required"})
@@ -294,6 +298,25 @@ class GameViewSet(viewsets.ReadOnlyModelViewSet):
         queryset = self.get_queryset()
         if not queryset.filter(pk=game.pk).exists():
             raise PermissionDenied("You do not have access to this event")
+
+        # Verify event has started (except for organizer)
+        # Si le jeu est déjà lancé (game_started=True), on autorise l'accès
+        # car cela signifie que l'organisateur a utilisé le mode test
+        is_organizer = event.organizer_id == request.user.id
+        now = timezone.now()
+
+        if not is_organizer and now < event.datetime_start and not event.game_started:
+            raise PermissionDenied("Event has not started yet. Only the organizer can access the game before event start.")
+
+        # Verify user has confirmed booking (except for organizer)
+        if not is_organizer:
+            has_confirmed_booking = event.bookings.filter(
+                user=request.user,
+                status=BookingStatus.CONFIRMED
+            ).exists()
+
+            if not has_confirmed_booking:
+                raise PermissionDenied("You must have a confirmed booking to access this game")
 
         serializer = GameSerializer(game, context={"request": request})
         return Response(serializer.data)

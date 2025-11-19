@@ -190,16 +190,18 @@ class GameService(BaseService):
             })
 
     @staticmethod
-    def _validate_event_is_active(event: Event) -> None:
+    def _validate_event_is_active(event: Event, skip_time_validation: bool = False) -> None:
         """
         Validate that event is currently active.
 
         Args:
             event: Event instance
+            skip_time_validation: If True, skip time-based validations (for testing)
 
         Raises:
             ValidationError: If event is not active
         """
+        from datetime import timedelta
         now = timezone.now()
 
         # Event must be published
@@ -208,29 +210,30 @@ class GameService(BaseService):
                 "event": "Games can only be created for published events"
             })
 
-        # TEMPORAIRE : Désactivé pour permettre les tests
-        # Les jeux peuvent être créés à tout moment pour un événement publié
-        # TODO: Réactiver ces validations en production
+        # Skip time validation if requested (for testing)
+        if skip_time_validation:
+            return
 
-        # # Event must have started (or be within 15 minutes of start)
-        # start_window = event.datetime_start - timedelta(minutes=15)
-        # if now < start_window:
-        #     raise ValidationError({
-        #         "event": "Games can only be created within 15 minutes before event starts"
-        #     })
+        # Event must have started (or be within 15 minutes of start)
+        start_window = event.datetime_start - timedelta(minutes=15)
+        if now < start_window:
+            raise ValidationError({
+                "event": "Games can only be created within 15 minutes before event starts"
+            })
 
-        # # Event must not be finished (within event duration)
-        # if now > event.datetime_end:
-        #     raise ValidationError({
-        #         "event": "Games cannot be created after event has ended"
-        #     })
+        # Event must not be finished (within event duration)
+        if now > event.datetime_end:
+            raise ValidationError({
+                "event": "Games cannot be created after event has ended"
+            })
 
     @staticmethod
     @transaction.atomic
     def create_game(
         event: Event,
         created_by,
-        game_type: str
+        game_type: str,
+        skip_time_validation: bool = False
     ):
         """
         Create a new game for an event.
@@ -244,6 +247,7 @@ class GameService(BaseService):
             event: Event to create game for
             created_by: User creating the game (must be organizer)
             game_type: Type of game
+            skip_time_validation: If True, skip time-based validations (for testing)
 
         Returns:
             Game instance
@@ -256,7 +260,7 @@ class GameService(BaseService):
 
         # Validations
         GameService._validate_organizer_permission(event, created_by)
-        GameService._validate_event_is_active(event)
+        GameService._validate_event_is_active(event, skip_time_validation)
         GameService._validate_no_active_game(event)
 
         # Get language and difficulty from event (automatic)

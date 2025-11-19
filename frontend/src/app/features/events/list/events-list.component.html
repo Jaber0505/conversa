@@ -48,6 +48,7 @@
         <app-event-card
           *ngFor="let scoredEvent of getPaginatedEvents(myEvents(), 'my'); trackBy: trackById"
           [event]="scoredEvent.event"
+          [userId]="currentUserId"
           [isNearby]="false"
           [isRecommended]="scoredEvent.isRecommended"
           [isOrganizer]="true"
@@ -105,14 +106,17 @@
       <app-event-card
         *ngFor="let scoredEvent of getPaginatedEvents(publicEvents(), 'public'); trackBy: trackById"
         [event]="scoredEvent.event"
+        [userId]="currentUserId"
         [isNearby]="scoredEvent.isNearby"
         [isRecommended]="scoredEvent.isRecommended"
         [priorityBadge]="scoredEvent.badgeReason"
         [isOrganizer]="false"
         [reserved]="scoredEvent.event.alreadyBooked === true"
         [showBookButton]="false"
+        [isPaymentLoading]="paymentLoadingEventId() === scoredEvent.event.id"
         (book)="onBookEvent($event)"
         (viewDetails)="onViewDetails($event)"
+        (payDraft)="onPayDraftNow($event)"
         (playGame)="onPlayGame($event)">
       </app-event-card>
     </div>

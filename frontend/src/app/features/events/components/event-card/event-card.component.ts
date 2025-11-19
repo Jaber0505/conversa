@@ -4,12 +4,13 @@ import { TPipe } from '@core/i18n';
 import { EventDto } from '@core/models';
 import { PriorityBadge } from '../../services/events-sorting.service';
 import { CurrencyFormatterService, DateFormatterService } from '@app/core/services';
-import { CardComponent, BadgeComponent, ButtonComponent } from '@shared';
+import { CardComponent, BadgeComponent, EventActionButtonComponent } from '@shared';
+import { EventAction } from '../../services/event-actions.service';
 
 @Component({
   selector: 'app-event-card',
   standalone: true,
-  imports: [CommonModule, TPipe, CardComponent, BadgeComponent, ButtonComponent],
+  imports: [CommonModule, TPipe, CardComponent, BadgeComponent, EventActionButtonComponent],
   templateUrl: './event-card.component.html',
   styleUrls: ['./event-card.component.scss']
 })
@@ -25,6 +26,7 @@ export class EventCardComponent {
   @Input() showBookButton = false; // control visibility of book button (user list)
   @Input() isPaymentLoading = false; // loading state for payment button
   @Input() priorityBadge: PriorityBadge | null = null;
+  @Input() userId: number | null = null; // ID de l'utilisateur connecté
 
   @Output() book = new EventEmitter<number>();
   @Output() viewDetails = new EventEmitter<number>();
@@ -160,5 +162,38 @@ export class EventCardComponent {
       event.stopPropagation();
     }
     this.playGame.emit(this.event.id);
+  }
+
+  handleEventAction(action: EventAction): void {
+    // Mapper les actions du EventActionButton vers les outputs existants
+    // L'action est une string directe (EventAction type)
+    switch (action) {
+      case 'view-details':
+        this.viewDetails.emit(this.event.id);
+        break;
+      case 'organizer-pay-and-publish':
+        this.payDraft.emit(this.event.id);
+        break;
+      case 'organizer-start-game':
+      case 'organizer-join-game':
+      case 'user-join-game':
+        this.playGame.emit(this.event.id);
+        break;
+      case 'user-book':
+        this.book.emit(this.event.id);
+        break;
+      case 'user-pay-booking':
+        this.payDraft.emit(this.event.id);
+        break;
+      case 'user-cancel-booking':
+      case 'organizer-cancel-event':
+        // Ces actions nécessitent une confirmation, on navigue vers les détails
+        this.viewDetails.emit(this.event.id);
+        break;
+      case 'organizer-delete-draft':
+        // Cette action nécessite une confirmation, on navigue vers les détails
+        this.viewDetails.emit(this.event.id);
+        break;
+    }
   }
 }

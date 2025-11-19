@@ -12,8 +12,6 @@ export interface EventFilters {
   difficulty: string | null;
   dateFrom: string | null;
   dateTo: string | null;
-  priceType: 'all' | 'free' | 'paid';
-  availability: 'all' | 'available' | 'almost_full';
 }
 
 export interface LanguageOption {
@@ -53,33 +51,32 @@ export class EventFiltersComponent {
   selectedDifficulty = signal<string | null>(null);
   dateFrom = signal<string | null>(null);
   dateTo = signal<string | null>(null);
-  priceType = signal<'all' | 'free' | 'paid'>('all');
-  availability = signal<'all' | 'available' | 'almost_full'>('all');
+
+  // Date constraints: aujourd'hui à aujourd'hui + 7 jours
+  minDate = computed(() => {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
+  });
+
+  maxDate = computed(() => {
+    const today = new Date();
+    const maxDate = new Date(today);
+    maxDate.setDate(today.getDate() + 7);
+    return maxDate.toISOString().split('T')[0];
+  });
+
+  // Min date for "date to" field: either dateFrom or today
+  minDateTo = computed(() => {
+    const from = this.dateFrom();
+    return from || this.minDate();
+  });
 
   difficultyOptions = computed(() => {
     this.langSignal();
     return [
-      { value: 'beginner', label: this.i18n.t('events.filters.difficulty.beginner') },
-      { value: 'intermediate', label: this.i18n.t('events.filters.difficulty.intermediate') },
-      { value: 'advanced', label: this.i18n.t('events.filters.difficulty.advanced') }
-    ];
-  });
-
-  priceOptions = computed(() => {
-    this.langSignal();
-    return [
-      { value: 'all', label: this.i18n.t('events.filters.price.all') },
-      { value: 'free', label: this.i18n.t('events.filters.price.free') },
-      { value: 'paid', label: this.i18n.t('events.filters.price.paid') }
-    ];
-  });
-
-  availabilityOptions = computed(() => {
-    this.langSignal();
-    return [
-      { value: 'all', label: this.i18n.t('events.filters.availability.all') },
-      { value: 'available', label: this.i18n.t('events.filters.availability.available') },
-      { value: 'almost_full', label: this.i18n.t('events.filters.availability.almost_full') }
+      { value: 'easy', label: this.i18n.t('events.difficulty.easy') },
+      { value: 'medium', label: this.i18n.t('events.difficulty.medium') },
+      { value: 'hard', label: this.i18n.t('events.difficulty.hard') }
     ];
   });
 
@@ -108,20 +105,18 @@ export class EventFiltersComponent {
 
   onDateFromChange(event: Event): void {
     const input = event.target as HTMLInputElement;
-    this.dateFrom.set(input.value || null);
+    const newDateFrom = input.value || null;
+    this.dateFrom.set(newDateFrom);
+
+    // Si la date de fin est avant la nouvelle date de début, on la réinitialise
+    if (newDateFrom && this.dateTo() && this.dateTo()! < newDateFrom) {
+      this.dateTo.set(null);
+    }
   }
 
   onDateToChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.dateTo.set(input.value || null);
-  }
-
-  onPriceTypeChange(value: string | undefined): void {
-    this.priceType.set((value as 'all' | 'free' | 'paid') || 'all');
-  }
-
-  onAvailabilityChange(value: string | undefined): void {
-    this.availability.set((value as 'all' | 'available' | 'almost_full') || 'all');
   }
 
   resetFilters(): void {
@@ -130,8 +125,6 @@ export class EventFiltersComponent {
     this.selectedDifficulty.set(null);
     this.dateFrom.set(null);
     this.dateTo.set(null);
-    this.priceType.set('all');
-    this.availability.set('all');
   }
 
   hasActiveFilters(): boolean {
@@ -140,9 +133,7 @@ export class EventFiltersComponent {
       this.selectedLanguages().length > 0 ||
       this.selectedDifficulty() !== null ||
       this.dateFrom() !== null ||
-      this.dateTo() !== null ||
-      this.priceType() !== 'all' ||
-      this.availability() !== 'all'
+      this.dateTo() !== null
     );
   }
 
@@ -152,9 +143,7 @@ export class EventFiltersComponent {
       languages: this.selectedLanguages(),
       difficulty: this.selectedDifficulty(),
       dateFrom: this.dateFrom(),
-      dateTo: this.dateTo(),
-      priceType: this.priceType(),
-      availability: this.availability()
+      dateTo: this.dateTo()
     });
   }
 }

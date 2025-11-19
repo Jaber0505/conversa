@@ -1,9 +1,9 @@
-import { Component, OnInit, inject, signal, DestroyRef } from '@angular/core';
+import { Component, OnInit, inject, signal, DestroyRef, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { take, finalize, debounceTime } from 'rxjs/operators';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { fromEvent } from 'rxjs';
 
 import { I18nService, LangService, TPipe } from '@core/i18n';
@@ -97,6 +97,9 @@ export class CreateEventComponent implements OnInit {
 
   selectedDay = signal<DaySlot | null>(null);
   selectedTimeSlot = signal<string | null>(null);
+
+  // Current language for reactive translations
+  private readonly currentLang = toSignal(this.langService.lang$, { initialValue: this.langService.current });
 
   // Timezone Europe/Brussels
   private readonly TIMEZONE = 'Europe/Brussels';
@@ -642,13 +645,16 @@ export class CreateEventComponent implements OnInit {
     return fallback || lang.label_fr || lang.label_en || lang.label_nl || lang.code.toUpperCase();
   }
 
-  get selectedLanguageName(): string {
+  selectedLanguageName = computed(() => {
+    // Force recompute when language changes
+    this.currentLang();
+
     const langId = this.eventForm.get('language')?.value;
     if (!langId) return '';
     const numericId = typeof langId === 'string' ? parseInt(langId, 10) : langId;
     const lang = this.languages().find(l => l.id === numericId);
     return lang ? this.getLanguageLabel(lang) : '';
-  }
+  });
 
   get selectedPartnerName(): string {
     const partner = this.selectedPartner();
@@ -667,6 +673,53 @@ export class CreateEventComponent implements OnInit {
   get selectedGameTypeValue(): string | undefined {
     return this.eventForm.get('gameType')?.value || undefined;
   }
+
+  formattedDateTime = computed(() => {
+    // Force recompute when language changes
+    const currentLang = this.currentLang();
+
+    const date = this.eventForm.get('date')?.value;
+    const time = this.eventForm.get('time')?.value;
+    if (!date || !time) return '';
+
+    // Parse date: 2025-11-26
+    const [year, month, day] = date.split('-');
+    const dateObj = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+
+    // Month names by language
+    const monthNames: Record<string, string[]> = {
+      fr: ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'],
+      en: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+      nl: ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december']
+    };
+
+    const monthName = monthNames[currentLang]?.[dateObj.getMonth()] || monthNames['fr'][dateObj.getMonth()];
+
+    // "at" word by language (hardcoded to avoid i18n cache issues)
+    const atWords: Record<string, string> = {
+      fr: 'à',
+      en: 'at',
+      nl: 'om'
+    };
+    const atWord = atWords[currentLang] || 'à';
+
+    // Format time based on language
+    let formattedTime = time;
+    if (currentLang === 'fr') {
+      // French: 21h00
+      formattedTime = time.replace(':', 'h');
+    } else if (currentLang === 'en') {
+      // English: 9:00 PM
+      const [hours, minutes] = time.split(':');
+      const h = parseInt(hours);
+      const period = h >= 12 ? 'PM' : 'AM';
+      const displayHour = h === 0 ? 12 : h > 12 ? h - 12 : h;
+      formattedTime = `${displayHour}:${minutes} ${period}`;
+    }
+    // Dutch keeps 21:00 format
+
+    return `${day} ${monthName} ${year} ${atWord} ${formattedTime}`;
+  });
 
   // ============================================================================
   // ÉTAPE 3: Sélecteur de dates et créneaux
