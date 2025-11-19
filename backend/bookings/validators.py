@@ -47,9 +47,15 @@ def validate_event_not_cancelled(event):
     Raises:
         ValidationError: If event is cancelled
     """
-    from events.models import EventStatus
+    status_value = getattr(event, "status", None)
+    event_status_enum = getattr(event, "Status", None)
+    is_cancelled_status = False
+    if event_status_enum and hasattr(event_status_enum, "CANCELLED"):
+        is_cancelled_status = status_value == event_status_enum.CANCELLED
+    else:
+        is_cancelled_status = str(status_value).upper() == "CANCELLED"
 
-    if event.status == EventStatus.CANCELLED or event.is_cancelled:
+    if is_cancelled_status or getattr(event, "is_cancelled", False):
         raise ValidationError("Cannot create or modify booking for a cancelled event.")
 
 

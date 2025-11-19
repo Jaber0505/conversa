@@ -552,3 +552,128 @@
     }
   }
 }
+
+// ============================================================================
+// DESIGN MODERNE POUR ÉVÉNEMENTS LIVE / JEU ACTIF
+// ============================================================================
+
+// Badge LIVE pulsant pour jeux actifs
+.live-badge-overlay {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+
+  .live-pulse {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2, 0.5rem);
+    padding: var(--space-2, 0.5rem) var(--space-3, 0.75rem);
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+    animation: livePulse 2s ease-in-out infinite;
+  }
+}
+
+// Animation du badge LIVE
+@keyframes livePulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.6);
+  }
+}
+
+// Carte avec jeu actif - design moderne et accrocheur
+.booking-card.game-live {
+  border: 3px solid #ef4444 !important;
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+  box-shadow: 0 8px 24px rgba(239, 68, 68, 0.3), 0 0 0 1px rgba(239, 68, 68, 0.1) !important;
+  animation: gameCardGlow 2s ease-in-out infinite;
+
+  .booking-card-header {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+
+    .booking-status-badge {
+      .status-dot.confirmed {
+        background: #10b981;
+        box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+      }
+
+      .status-text {
+        color: white;
+        font-weight: 600;
+      }
+    }
+
+    .booking-id {
+      color: rgba(255, 255, 255, 0.9);
+    }
+  }
+
+  .time-badge.game-active {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+    animation: badgePulse 2s ease-in-out infinite;
+  }
+}
+
+// Carte avec événement en cours (mais jeu pas encore lancé)
+.booking-card.event-live:not(.game-live) {
+  border: 2px solid #3b82f6 !important;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.2) !important;
+
+  .booking-card-header {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+
+    .booking-status-badge {
+      .status-text {
+        color: white;
+      }
+    }
+
+    .booking-id {
+      color: rgba(255, 255, 255, 0.9);
+    }
+  }
+
+  .time-badge.live {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  }
+}
+
+// Animation subtile pour cartes avec jeu actif
+@keyframes gameCardGlow {
+  0%, 100% {
+    box-shadow: 0 8px 24px rgba(239, 68, 68, 0.3), 0 0 0 1px rgba(239, 68, 68, 0.1);
+  }
+  50% {
+    box-shadow: 0 12px 32px rgba(239, 68, 68, 0.4), 0 0 0 2px rgba(239, 68, 68, 0.2);
+  }
+}
+
+// Animation pour le badge temps
+@keyframes badgePulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}

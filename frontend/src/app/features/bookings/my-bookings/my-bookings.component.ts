@@ -201,9 +201,9 @@ export class MyBookingsComponent {
 
   /**
    * Organise les réservations en 3 catégories temporelles basées sur l'heure de l'événement
-   * - En cours: événements qui commencent dans les 3h ou sont en cours
-   * - Futur: événements confirmés qui sont plus tard
-   * - Passé: événements annulés ou terminés
+   * - En cours: événements CONFIRMÉS qui commencent dans les 15 minutes, sont en cours, ou dont le jeu est lancé
+   * - Futur: événements confirmés qui sont plus tard, et réservations en attente de paiement
+   * - Passé: événements annulés, terminés (FINISHED), ou événements dont l'heure est passée
    */
   private organizeBookings(bookings: BookingWithEvent[]) {
     const now = new Date();
@@ -213,20 +213,26 @@ export class MyBookingsComponent {
 
     bookings.forEach(booking => {
       const eventStart = new Date(booking.eventObject.datetime_start);
-      const hoursUntilEvent = (eventStart.getTime() - now.getTime()) / (1000 * 60 * 60);
+      const minutesUntilEvent = (eventStart.getTime() - now.getTime()) / (1000 * 60);
       const eventEnd = new Date(eventStart.getTime() + 60 * 60 * 1000); // Événement dure 1h
       const isPast = now > eventEnd;
+      const isEventFinished = booking.eventObject.status === 'FINISHED';
+      const isGameLaunched = booking.eventObject.game_started;
 
-      // Réservations annulées ou événements passés → Historique
-      if (booking.status === 'CANCELLED' || isPast) {
+      // Réservations annulées, événements terminés (FINISHED) ou événements passés → Historique
+      if (booking.status === 'CANCELLED' || isEventFinished || isPast) {
         pastBookingsTemp.push(booking);
       }
-      // Réservations en attente de paiement → En cours
+      // Réservations en attente de paiement (PENDING) → Futur (pas en cours car non payé)
       else if (booking.status === 'PENDING') {
+        futureBookingsTemp.push(booking);
+      }
+      // Événements CONFIRMÉS dont le jeu est lancé → En cours (prioritaire)
+      else if (booking.status === 'CONFIRMED' && isGameLaunched && !isPast) {
         currentBookingsTemp.push(booking);
       }
-      // Événements qui commencent dans les 3h ou sont en cours → En cours
-      else if (booking.status === 'CONFIRMED' && hoursUntilEvent <= 3 && !isPast) {
+      // Événements CONFIRMÉS qui commencent dans les 15 minutes ou sont en cours → En cours
+      else if (booking.status === 'CONFIRMED' && minutesUntilEvent <= 15 && !isPast) {
         currentBookingsTemp.push(booking);
       }
       // Événements confirmés dans le futur → Futur
@@ -259,6 +265,13 @@ export class MyBookingsComponent {
     const eventStart = new Date(booking.eventObject.datetime_start);
     const eventEnd = new Date(eventStart.getTime() + 60 * 60 * 1000); // Événement dure 1h
     return now >= eventStart && now <= eventEnd;
+  }
+
+  /**
+   * Vérifie si le jeu de l'événement est lancé et actif
+   */
+  isGameLive(booking: BookingWithEvent): boolean {
+    return !!booking.eventObject.game_started && this.isEventLive(booking);
   }
 
   /**

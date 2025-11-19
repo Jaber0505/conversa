@@ -550,6 +550,7 @@
         "future": "Upcoming",
         "history": "History",
         "live": "🔴 Live",
+        "game_live": "GAME LIVE",
         "time_until_hours": "In {{hours}}h",
         "time_until_minutes": "In {{minutes}} min",
         "time_until_hours_mins": "In {{hours}}h {{minutes}}min",

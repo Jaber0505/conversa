@@ -6,6 +6,7 @@
 .env.dev
 .env.local
 .env.*.local
+.env.render
 
 # Allow example/template files
 !.env.example

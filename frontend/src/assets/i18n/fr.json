@@ -539,6 +539,7 @@
         "future": "À venir",
         "history": "Historique",
         "live": "🔴 En direct",
+        "game_live": "JEU EN COURS",
         "time_until_hours": "Dans {{hours}}h",
         "time_until_minutes": "Dans {{minutes}} min",
         "time_until_hours_mins": "Dans {{hours}}h {{minutes}}min",

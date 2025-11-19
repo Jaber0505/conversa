@@ -31,7 +31,16 @@
     </div>
 
     <div class="bookings-grid highlight-grid">
-      <div *ngFor="let b of getPaginatedBookings('current'); trackBy: trackById" class="booking-card current">
+      <div *ngFor="let b of getPaginatedBookings('current'); trackBy: trackById"
+           class="booking-card current"
+           [class.game-live]="isGameLive(b)"
+           [class.event-live]="isEventLive(b) && !isGameLive(b)">
+
+        <!-- Badge LIVE pour jeu actif -->
+        <div class="live-badge-overlay" *ngIf="isGameLive(b)">
+          <span class="live-pulse">🎮 LIVE</span>
+        </div>
+
         <div class="booking-card-header">
           <div class="booking-status-badge">
             <span class="status-dot" [class.pending]="b.status === 'PENDING'" [class.confirmed]="b.status === 'CONFIRMED'"></span>
@@ -41,10 +50,12 @@
         </div>
 
         <div class="booking-card-body">
-          <!-- Timer pour événements en cours -->
+          <!-- Timer pour événements en cours ou jeu lancé -->
           <div class="time-until" *ngIf="b.status === 'CONFIRMED'">
-            <span class="time-badge" [class.live]="isEventLive(b)">
-              {{ isEventLive(b) ? ('bookings.live' | t) : getTimeUntilEvent(b) }}
+            <span class="time-badge"
+                  [class.live]="isEventLive(b)"
+                  [class.game-active]="isGameLive(b)">
+              {{ isGameLive(b) ? ('🎮 ' + ('bookings.game_live' | t)) : (isEventLive(b) ? ('bookings.live' | t) : getTimeUntilEvent(b)) }}
             </span>
           </div>
 

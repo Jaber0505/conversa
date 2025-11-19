@@ -486,6 +486,7 @@
         "future": "Binnenkort",
         "history": "Geschiedenis",
         "live": "🔴 Live",
+        "game_live": "SPEL LIVE",
         "time_until_hours": "Over {{hours}}u",
         "time_until_minutes": "Over {{minutes}} min",
         "time_until_hours_mins": "Over {{hours}}u {{minutes}}min",
