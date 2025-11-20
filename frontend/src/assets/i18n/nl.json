@@ -612,6 +612,7 @@
             "event_cancelled": "Evenement geannuleerd",
             "event_finished": "Evenement afgelopen",
             "booking_confirmed": "Reservering bevestigd",
+            "booking_closed": "Inschrijvingen gesloten",
             "starting_soon": "Start binnen minder dan 3u",
             "pending_confirmation": "In afwachting van bevestiging"
         },
@@ -623,6 +624,7 @@
             "booking-confirmed": "Uw reservering is bevestigd.",
             "already-booked": "U hebt dit evenement al gereserveerd.",
             "cancellation-deadline-passed": "De annuleringsdeadline is verstreken (minder dan 3u voor het evenement).",
+            "booking-cutoff-passed": "Inschrijvingen zijn gesloten (minder dan 15 minuten voor het evenement).",
             "event-not-started": "Het evenement is nog niet begonnen.",
             "game-not-configured": "Er is geen spel geconfigureerd voor dit evenement.",
             "game-not-started": "Het spel is nog niet gestart door de organisator.",
@@ -925,7 +927,8 @@
             "PARTICIPATION_MESSAGE": "Bedankt voor je deelname! Blijf verbeteren.",
             "SCORE_TITLE": "Eindscore",
             "CORRECT_ANSWERS": "Correcte antwoorden",
-            "PARTICIPANTS": "Deelnemers"
+            "PARTICIPANTS": "Deelnemers",
+            "BACK_TO_EVENTS": "Terug naar evenementen"
         },
         "RESULTS": {
             "TITLE": "Resultaten",

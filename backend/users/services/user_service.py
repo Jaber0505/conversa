@@ -3,6 +3,7 @@ User service for user management business logic.
 
 Handles user creation, profile updates, and user-related operations.
 """
+from uuid import uuid4
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.utils import timezone
@@ -178,4 +179,41 @@ class UserService(BaseService):
         """Reactivate a user account."""
         user.is_active = True
         user.save()
+        return user
+
+    @staticmethod
+    @transaction.atomic
+    def anonymize_user(user, email_prefix="deleted"):
+        """
+        Anonymize all personally identifiable data for a user.
+
+        Args:
+            user: User instance to anonymize
+            email_prefix: Prefix to use for the generated email
+
+        Returns:
+            User: The anonymized user instance
+        """
+        random_suffix = uuid4().hex[:12]
+        user.email = f"{email_prefix}_{random_suffix}@deleted.local"
+        user.first_name = "Deleted"
+        user.last_name = "User"
+        user.bio = ""
+        user.avatar = ""
+        user.address = ""
+        user.city = ""
+        user.country = ""
+        user.latitude = None
+        user.longitude = None
+        user.age = MINIMUM_USER_AGE
+        user.is_active = False
+        user.consent_given = False
+        user.consent_given_at = None
+        user.set_unusable_password()
+        user.save()
+
+        # Clear relations after saving
+        user.native_langs.clear()
+        user.target_langs.clear()
+
         return user

@@ -611,6 +611,7 @@
             "event_cancelled": "Event cancelled",
             "event_finished": "Event finished",
             "booking_confirmed": "Booking confirmed",
+            "booking_closed": "Bookings closed",
             "starting_soon": "Starts in less than 3h",
             "pending_confirmation": "Pending confirmation"
         },
@@ -622,6 +623,7 @@
             "booking-confirmed": "Your booking is confirmed.",
             "already-booked": "You have already booked this event.",
             "cancellation-deadline-passed": "Cancellation deadline has passed (less than 3h before event).",
+            "booking-cutoff-passed": "Bookings are closed (less than 15 minutes before event).",
             "event-not-started": "The event hasn't started yet.",
             "game-not-configured": "No game is configured for this event.",
             "game-not-started": "The game hasn't been started by the organizer yet.",
@@ -948,7 +950,8 @@
             "PARTICIPATION_MESSAGE": "Thank you for participating! Keep improving.",
             "SCORE_TITLE": "Final Score",
             "CORRECT_ANSWERS": "Correct answers",
-            "PARTICIPANTS": "Participants"
+            "PARTICIPANTS": "Participants",
+            "BACK_TO_EVENTS": "Back to events"
         },
         "RESULTS": {
             "TITLE": "Results",

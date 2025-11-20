@@ -161,6 +161,85 @@ class EventService(BaseService):
         return event
 
     @staticmethod
+    def cleanup_expired_drafts():
+        """
+        Delete DRAFT events whose datetime_start has passed.
+
+        This prevents old drafts from cluttering the database and
+        ensures organizers cannot publish events in the past.
+
+        Returns:
+            int: Number of drafts deleted
+        """
+        from events.models import Event
+
+        now = timezone.now()
+
+        # Find all DRAFT events whose start time has passed
+        expired_drafts = Event.objects.filter(
+            status=Event.Status.DRAFT,
+            datetime_start__lt=now
+        )
+
+        count = expired_drafts.count()
+
+        # Hard delete these drafts (they were never published)
+        expired_drafts.delete()
+
+        return count
+
+    @staticmethod
+    def auto_finish_completed_events():
+        """
+        Automatically mark PUBLISHED events as FINISHED if:
+        - Event started more than 1 hour ago (event duration exceeded)
+
+        Also force-completes any ACTIVE games for these events (timeout).
+
+        Returns:
+            int: Number of events marked as FINISHED
+        """
+        from events.models import Event
+        from games.models import Game, GameStatus
+
+        now = timezone.now()
+
+        # Events that should be finished (started > 1h ago and still PUBLISHED)
+        events_to_finish = Event.objects.filter(
+            status=Event.Status.PUBLISHED,
+            datetime_start__lt=now - timedelta(hours=1)  # 1h after event start
+        ).select_related('organizer')
+
+        finished_count = 0
+
+        for event in events_to_finish:
+            # Check if event has an active game that needs to be force-completed
+            active_game = Game.objects.filter(
+                event=event,
+                status=GameStatus.ACTIVE
+            ).first()
+
+            if active_game:
+                # Force-complete the game (timeout after 1h)
+                active_game.status = GameStatus.COMPLETED
+                active_game.completed_at = now
+                active_game.save(update_fields=['status', 'completed_at', 'updated_at'])
+
+                # Calculate and save final results even if game wasn't finished normally
+                from games.services import GameService
+                try:
+                    GameService._calculate_final_results(active_game)
+                except Exception:
+                    # If result calculation fails, continue anyway
+                    pass
+
+            # Mark event as finished
+            event.mark_finished()
+            finished_count += 1
+
+        return finished_count
+
+    @staticmethod
     def check_and_cancel_underpopulated_events():
         """
         Check for events starting soon with insufficient participants.

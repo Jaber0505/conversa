@@ -50,12 +50,11 @@
         </div>
 
         <div class="booking-card-body">
-          <!-- Timer pour événements en cours ou jeu lancé -->
-          <div class="time-until" *ngIf="b.status === 'CONFIRMED'">
+          <!-- Timer pour événements en cours (sauf si jeu lancé) -->
+          <div class="time-until" *ngIf="b.status === 'CONFIRMED' && !isGameLive(b)">
             <span class="time-badge"
-                  [class.live]="isEventLive(b)"
-                  [class.game-active]="isGameLive(b)">
-              {{ isGameLive(b) ? ('🎮 ' + ('bookings.game_live' | t)) : (isEventLive(b) ? ('bookings.live' | t) : getTimeUntilEvent(b)) }}
+                  [class.live]="isEventLive(b)">
+              {{ isEventLive(b) ? ('bookings.live' | t) : getTimeUntilEvent(b) }}
             </span>
           </div>
 

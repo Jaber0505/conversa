@@ -1,0 +1,9 @@
+{
+  "Test de login": {
+    "1. Vérifiez votre email/password": "Remplacez par vos vraies credentials",
+    "2. Si 401 après login": "Le compte n'existe pas ou le mot de passe est incorrect",
+    "3. Si 401 sur PATCH avec token": "Le token est expiré - refaites le login",
+    "4. Format du header": "Authorization: Bearer TOKEN (avec espace après Bearer)",
+    "5. Vérifier que le token est dans les variables": "Collection -> Variables -> organizer_token doit avoir une valeur"
+  }
+}

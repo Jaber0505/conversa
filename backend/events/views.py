@@ -10,6 +10,7 @@ from rest_framework import viewsets, filters, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError, APIException
+from rest_framework.permissions import IsAdminUser
 from drf_spectacular.utils import (
     extend_schema,
     extend_schema_view,
@@ -17,7 +18,7 @@ from drf_spectacular.utils import (
     OpenApiResponse,
 )
 
-from common.permissions import IsAuthenticatedAndActive, IsOrganizerOrAdmin
+from common.permissions import IsAuthenticatedAndActive, IsOrganizerOrAdmin, IsOrganizerOrReadOnly
 from common.exceptions import EventAlreadyCancelledError
 
 from .models import Event
@@ -155,7 +156,11 @@ class EventViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         """Apply stricter permissions for modification actions."""
-        if self.action in ("update", "partial_update", "destroy", "cancel"):
+        if self.action in ("update", "partial_update"):
+            # Only organizer can update events (NOT admins)
+            return [IsAuthenticatedAndActive(), IsOrganizerOrReadOnly()]
+        if self.action in ("destroy", "cancel"):
+            # Organizer OR admin can delete/cancel events
             return [IsAuthenticatedAndActive(), IsOrganizerOrAdmin()]
         return [IsAuthenticatedAndActive()]
 
@@ -190,19 +195,20 @@ class EventViewSet(viewsets.ModelViewSet):
             now = timezone.now()
             max_date = now + timedelta(days=7)
 
-            # Default visibility for non-staff
-            # Only show PUBLISHED events that are not FINISHED
-            base_filter = Q(status=Event.Status.PUBLISHED) | Q(organizer_id=user.id)
-
-            # For retrieve action, also allow events the user has booked (history needs details
-            # for CANCELLED/FINISHED events the user participated in)
+            # For retrieve action, allow viewing any event the user has booked (for history)
             if getattr(self, "action", None) == "retrieve":
-                qs = qs.filter(base_filter | Q(bookings__user_id=user.id)).distinct()
+                qs = qs.filter(
+                    Q(status=Event.Status.PUBLISHED) |
+                    Q(organizer_id=user.id) |
+                    Q(bookings__user_id=user.id)
+                ).distinct()
             else:
-                # For list action, apply date range filter for public events only
-                # Organizer's own events are not filtered by date
-                qs = qs.filter(base_filter).exclude(
-                    Q(status=Event.Status.FINISHED) & ~Q(organizer_id=user.id)
+                # For list action: NEVER show CANCELLED or FINISHED events (even for organizers)
+                # This ensures event list only shows active/upcoming events
+                qs = qs.exclude(
+                    status__in=[Event.Status.CANCELLED, Event.Status.FINISHED]
+                ).filter(
+                    Q(status=Event.Status.PUBLISHED) | Q(organizer_id=user.id)
                 ).filter(
                     Q(organizer_id=user.id) |  # Own events: no date filter
                     Q(datetime_start__gte=now, datetime_start__lte=max_date)  # Public events: today to +7 days
@@ -647,3 +653,47 @@ class EventViewSet(viewsets.ModelViewSet):
     def request_publication(self, request, pk=None):
         """Alias pour compat: utilise pay_and_publish sous le capot."""
         return self.pay_and_publish(request, pk)
+
+    @extend_schema(
+        tags=["Events"],
+        summary="Force publish (admin only)",
+        description=(
+            "Action administrative permettant de publier immédiatement un événement "
+            "sans passer par le paiement. À utiliser uniquement pour des besoins de test "
+            "ou de support."
+        ),
+        responses={
+            200: EventDetailSerializer,
+            400: OpenApiResponse(description="Unable to publish"),
+            403: OpenApiResponse(description="Admin only"),
+        },
+    )
+    @action(
+        detail=True,
+        methods=["POST"],
+        url_path="force-publish",
+        permission_classes=[IsAdminUser],
+    )
+    def force_publish(self, request, pk=None):
+        event = self.get_object()
+
+        if event.status == event.Status.PUBLISHED:
+            serializer = EventDetailSerializer(
+                event, context=self.get_serializer_context()
+            )
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        try:
+            # Force transition through pending state if necessary
+            if event.status == event.Status.DRAFT:
+                EventService.transition_to_pending_confirmation(event)
+
+            EventService.transition_to_published(event=event, published_by=request.user)
+            event.refresh_from_db()
+        except ValidationError as exc:
+            raise exc
+        except Exception as exc:  # pragma: no cover - logging fallback
+            raise APIException(str(exc))
+
+        serializer = EventDetailSerializer(event, context=self.get_serializer_context())
+        return Response(serializer.data, status=status.HTTP_200_OK)

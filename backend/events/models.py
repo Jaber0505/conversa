@@ -338,16 +338,23 @@ class Event(models.Model):
         Check if organizer can request publication.
 
         Business Rules:
-        - Event must be >= 3h in future
-                - Event must be >= 3h in future
+        - Event must be in DRAFT status
+        - Event must be >= 3h in future (MIN_ADVANCE_BOOKING_HOURS)
+        - Event datetime must not have passed
 
         Returns:
             bool: True if all conditions met
         """
         from datetime import timedelta
+        from common.constants import MIN_ADVANCE_BOOKING_HOURS
+
+        now = timezone.now()
+        min_advance = now + timedelta(hours=MIN_ADVANCE_BOOKING_HOURS)
+
         return (
             self.status == self.Status.DRAFT and
-            self.datetime_start >= timezone.now() + timedelta(hours=3)
+            self.datetime_start >= min_advance and
+            self.datetime_start > now  # Event must not have started
         )
 
     def mark_pending_confirmation(self):

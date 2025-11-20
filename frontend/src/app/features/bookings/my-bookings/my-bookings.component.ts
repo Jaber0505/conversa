@@ -275,13 +275,20 @@ export class MyBookingsComponent {
   }
 
   /**
-   * Obtient le temps restant avant l'événement
+   * Obtient le temps restant avant l'événement.
+   * Si l'événement a déjà commencé, retourne "LIVE".
    */
   getTimeUntilEvent(booking: BookingWithEvent): string {
     const now = new Date();
     const eventStart = new Date(booking.eventObject.datetime_start);
     const diffMs = eventStart.getTime() - now.getTime();
     const diffMins = Math.floor(diffMs / (1000 * 60));
+
+    // Si l'événement a déjà commencé ou va commencer dans moins d'une minute
+    if (diffMins <= 0) {
+      return this.i18n.t('bookings.live');
+    }
+
     const diffHours = Math.floor(diffMins / 60);
     const remainingMins = diffMins % 60;
 
@@ -290,10 +297,8 @@ export class MyBookingsComponent {
         return this.i18n.t('bookings.time_until_hours_mins', { hours: diffHours, minutes: remainingMins });
       }
       return this.i18n.t('bookings.time_until_hours', { hours: diffHours });
-    } else if (diffMins > 0) {
-      return this.i18n.t('bookings.time_until_minutes', { minutes: diffMins });
     } else {
-      return this.i18n.t('bookings.live');
+      return this.i18n.t('bookings.time_until_minutes', { minutes: diffMins });
     }
   }
 

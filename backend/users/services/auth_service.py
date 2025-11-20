@@ -223,19 +223,9 @@ class AuthService(BaseService):
         if upcoming_events:
             return False, "Cannot delete account: you are organizing upcoming published events. Please cancel them first."
 
-        # Deactivate user
+        # Deactivate user account (reversible)
         from .user_service import UserService
         UserService.deactivate_user(user)
-
-        # Revoke all active tokens by creating a marker
-        # (In practice, after deactivation, authentication will fail anyway)
-        # But we'll blacklist recent tokens to be safe
-        from rest_framework_simplejwt.tokens import RefreshToken
-        from ..models import RevokedAccessToken
-
-        # Note: We can't revoke all tokens without knowing them
-        # The deactivation (is_active=False) will prevent new logins
-        # Existing tokens will be denied by authentication backend checking is_active
 
         return True, None
 
@@ -290,30 +280,8 @@ class AuthService(BaseService):
         if upcoming_events:
             return False, "Cannot delete account: you are organizing upcoming published events. Please cancel them first."
 
-        # Anonymize all personal data (GDPR compliant)
-        user_id = user.id
-        user.email = f"deleted_user_{user_id}@deleted.local"
-        user.first_name = "Deleted"
-        user.last_name = "User"
-        user.bio = ""
-        user.avatar = ""
-        user.address = ""
-        user.city = ""
-        user.country = ""
-        user.latitude = None
-        user.longitude = None
-        user.age = None
-        user.is_active = False
-        user.consent_given = False
-        user.consent_given_at = None
+        from .user_service import UserService
 
-        # Clear password (set unusable)
-        user.set_unusable_password()
-
-        # Clear language preferences
-        user.native_langs.clear()
-        user.target_langs.clear()
-
-        user.save()
+        UserService.anonymize_user(user, email_prefix="purged_user")
 
         return True, None

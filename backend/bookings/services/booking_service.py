@@ -16,7 +16,12 @@ from common.exceptions import (
     CancellationDeadlineError,
     EventFullError,
 )
-from ..validators import validate_cancellation_deadline, validate_event_capacity, validate_event_not_cancelled
+from ..validators import (
+    validate_cancellation_deadline,
+    validate_event_capacity,
+    validate_event_not_cancelled,
+    validate_booking_cutoff
+)
 
 
 class BookingService(BaseService):
@@ -50,6 +55,9 @@ class BookingService(BaseService):
 
         # Validate event is not cancelled
         validate_event_not_cancelled(event)
+
+        # Validate booking cutoff (cannot book within 15 minutes of event start)
+        validate_booking_cutoff(event)
 
         # Check if user already has an active booking for this event
         existing_booking = Booking.objects.filter(

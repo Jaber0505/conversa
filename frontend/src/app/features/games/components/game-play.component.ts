@@ -685,7 +685,6 @@ export class GamePlayComponent implements OnInit, OnDestroy {
   currentUserId: number | null = null;
 
   private statsSubscription?: Subscription;
-  private autoNextTimer?: any;
   Object = Object; // Expose Object to template
 
   ngOnInit() {
@@ -705,7 +704,6 @@ export class GamePlayComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.stopStatsPolling();
-    this.clearAutoNextTimer();
   }
 
   loadGame() {
@@ -784,13 +782,6 @@ export class GamePlayComponent implements OnInit, OnDestroy {
     if (this.statsSubscription) {
       this.statsSubscription.unsubscribe();
       this.statsSubscription = undefined;
-    }
-  }
-
-  clearAutoNextTimer() {
-    if (this.autoNextTimer) {
-      clearTimeout(this.autoNextTimer);
-      this.autoNextTimer = undefined;
     }
   }
 
@@ -876,11 +867,6 @@ export class GamePlayComponent implements OnInit, OnDestroy {
 
         // Keep polling so participants get the update
         // (polling continues while status is SHOWING_RESULTS)
-
-        // Start auto-next timer for organizer (10 seconds to view results)
-        if (this.isOrganizer()) {
-          this.startAutoNextTimer();
-        }
       },
       error: (err) => {
         this.revealing.set(false);
@@ -889,29 +875,10 @@ export class GamePlayComponent implements OnInit, OnDestroy {
     });
   }
 
-  startAutoNextTimer() {
-    // Clear any existing timer
-    this.clearAutoNextTimer();
-
-    // Auto-advance to next question after 10 seconds
-    this.autoNextTimer = setTimeout(() => {
-      const currentGame = this.game();
-      if (currentGame && currentGame.status === 'SHOWING_RESULTS' && this.isOrganizer()) {
-        // Check if there are more questions
-        if (currentGame.current_question_index + 1 < currentGame.total_questions) {
-          this.onNextQuestion();
-        }
-      }
-    }, 10000); // 10 seconds delay
-  }
-
   onNextQuestion() {
     if (this.movingNext()) {
       return;
     }
-
-    // Clear auto-next timer if manually advancing
-    this.clearAutoNextTimer();
 
     this.movingNext.set(true);
     this.error.set(null);

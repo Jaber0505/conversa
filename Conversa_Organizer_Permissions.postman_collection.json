@@ -1,0 +1,1181 @@
+{
+	"info": {
+		"_postman_id": "conversa-organizer-permissions",
+		"name": "Conversa - Organizer Permissions Demo",
+		"description": "Collection démontrant les permissions spécifiques aux organisateurs.\n\nIMPORTANT:\n- PATCH /events/{id}/ : UNIQUEMENT l'organisateur (PAS les admins) - IsOrganizerOrReadOnly\n- Autres endpoints : Organisateur OU Admin - IsOrganizerOrAdmin\n- Les utilisateurs réguliers ne peuvent accéder à AUCUN endpoint de modification.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "organizer_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "regular_user_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "admin_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "event_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "game_id",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "0. Setup - Create Test Environment",
+			"item": [
+				{
+					"name": "1. Register Organizer User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('organizer_email', 'organizer.test@conversa.com');",
+									"    pm.collectionVariables.set('organizer_password', 'TestPassword123!');",
+									"    console.log('✅ Organizer user registered');",
+									"    console.log('Email:', 'organizer.test@conversa.com');",
+									"} else if (pm.response.code === 400) {",
+									"    console.log('⚠️ User already exists - continuing...');",
+									"    pm.collectionVariables.set('organizer_email', 'organizer.test@conversa.com');",
+									"    pm.collectionVariables.set('organizer_password', 'TestPassword123!');",
+									"} else {",
+									"    console.error('❌ Registration failed:', pm.response.json());",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"organizer.test@conversa.com\",\n  \"password\": \"TestPassword123!\",\n  \"first_name\": \"Organizer\",\n  \"last_name\": \"Test\",\n  \"age\": 30,\n  \"native_langs\": [\"en\"],\n  \"target_langs\": [\"fr\"],\n  \"consent_given\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/register/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"register",
+								""
+							]
+						},
+						"description": "Crée le compte utilisateur qui deviendra organisateur"
+					},
+					"response": []
+				},
+				{
+					"name": "2. Register Regular User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    pm.collectionVariables.set('regular_user_email', 'user.test@conversa.com');",
+									"    pm.collectionVariables.set('regular_user_password', 'TestPassword123!');",
+									"    console.log('✅ Regular user registered');",
+									"} else if (pm.response.code === 400) {",
+									"    console.log('⚠️ User already exists - continuing...');",
+									"    pm.collectionVariables.set('regular_user_email', 'user.test@conversa.com');",
+									"    pm.collectionVariables.set('regular_user_password', 'TestPassword123!');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"user.test@conversa.com\",\n  \"password\": \"TestPassword123!\",\n  \"first_name\": \"Regular\",\n  \"last_name\": \"User\",\n  \"age\": 25,\n  \"native_langs\": [\"fr\"],\n  \"target_langs\": [\"en\"],\n  \"consent_given\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/register/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"register",
+								""
+							]
+						},
+						"description": "Crée un utilisateur régulier pour les tests"
+					},
+					"response": []
+				},
+				{
+					"name": "3. Login as Organizer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('organizer_token', response.access);",
+									"    console.log('✅ Organizer token saved');",
+									"    console.log('Token:', response.access.substring(0, 50) + '...');",
+									"} else {",
+									"    console.error('❌ Login failed:', pm.response.json());",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{organizer_email}}\",\n  \"password\": \"{{organizer_password}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/login/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login",
+								""
+							]
+						},
+						"description": "Se connecte avec le compte organisateur créé précédemment"
+					},
+					"response": []
+				},
+				{
+					"name": "4. Create Test Event (Organizer becomes owner)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('event_id', response.id);",
+									"    console.log('✅ Event created successfully');",
+									"    console.log('Event ID:', response.id);",
+									"    console.log('Organizer is now:', response.organizer_email);",
+									"} else {",
+									"    console.error('❌ Event creation failed:', pm.response.json());",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{organizer_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"partner\": 1,\n  \"language\": 1,\n  \"theme\": \"Test Permissions Event\",\n  \"difficulty\": \"medium\",\n  \"datetime_start\": \"2025-01-15T19:00:00Z\",\n  \"game_type\": \"picture_description\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/events/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events",
+								""
+							]
+						},
+						"description": "Crée un événement - l'utilisateur devient automatiquement l'organisateur"
+					},
+					"response": []
+				},
+				{
+					"name": "5. Login as Regular User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('regular_user_token', response.access);",
+									"    console.log('✅ Regular user token saved');",
+									"} else {",
+									"    console.error('❌ Login failed:', pm.response.json());",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{regular_user_email}}\",\n  \"password\": \"{{regular_user_password}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/login/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login",
+								""
+							]
+						},
+						"description": "Se connecte avec l'utilisateur régulier créé précédemment"
+					},
+					"response": []
+				},
+				{
+					"name": "6. Login as Admin (Optional - manual setup required)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('admin_token', response.access);",
+									"    console.log('✅ Admin token saved');",
+									"} else {",
+									"    console.error('❌ Login failed - vous devez créer un admin manuellement');",
+									"    console.error('Utilisez: python manage.py createsuperuser');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@conversa.com\",\n  \"password\": \"admin123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/login/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login",
+								""
+							]
+						},
+						"description": "Optionnel: Se connecte avec un admin (is_staff=True).\n\nVous devez créer un admin manuellement:\npython manage.py createsuperuser\n\nPuis modifiez l'email/password dans cette requête."
+					},
+					"response": []
+				}
+			],
+			"description": "⚙️ SETUP COMPLET AUTOMATIQUE\n\nCette section crée automatiquement:\n1. Un compte organisateur (organizer.test@conversa.com)\n2. Un compte utilisateur régulier (user.test@conversa.com)\n3. Un événement de test (l'organisateur devient propriétaire)\n4. Tous les tokens d'authentification\n\nEXÉCUTEZ TOUTES LES REQUÊTES DANS L'ORDRE (1 → 6)\n\nNote: Pour l'admin, vous devez le créer manuellement via Django."
+		},
+		{
+			"name": "1. POST - Create Game (Organizer Only)",
+			"item": [
+				{
+					"name": "✅ Create Game - AS ORGANIZER (SUCCESS)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 201', function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('game_id', response.id);",
+									"    console.log('✅ Game created successfully by organizer');",
+									"    console.log('Game ID:', response.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{organizer_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"event_id\": {{event_id}},\n  \"game_type\": \"sport\",\n  \"skip_time_validation\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/games/create/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"games",
+								"create",
+								""
+							]
+						},
+						"description": "L'organisateur peut créer un jeu pour son événement.\n\nValidation: `_validate_organizer_permission(event, user)`\nCode: `event.organizer_id != user.id and not user.is_staff`"
+					},
+					"response": []
+				},
+				{
+					"name": "❌ Create Game - AS REGULAR USER (FAIL)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 403 Forbidden', function () {",
+									"    pm.response.to.have.status(403);",
+									"});",
+									"",
+									"console.log('✅ Regular user correctly denied access');",
+									"console.log('Response:', pm.response.json());"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{regular_user_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"event_id\": {{event_id}},\n  \"game_type\": \"sport\",\n  \"skip_time_validation\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/games/create/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"games",
+								"create",
+								""
+							]
+						},
+						"description": "Un utilisateur régulier NE PEUT PAS créer de jeu pour un événement dont il n'est pas l'organisateur.\n\nAttend: 403 Forbidden - \"Only the event organizer can create games\""
+					},
+					"response": []
+				},
+				{
+					"name": "⚠️ Create Game - AS ADMIN (SUCCESS)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 201', function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"console.log('⚠️ Admin also has access (is_staff bypass)');",
+									"console.log('Response:', pm.response.json());"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"event_id\": {{event_id}},\n  \"game_type\": \"sport\",\n  \"skip_time_validation\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/games/create/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"games",
+								"create",
+								""
+							]
+						},
+						"description": "Note: Les admins (is_staff=True) peuvent AUSSI créer des jeux grâce à la condition:\n`if event.organizer_id != user.id and not user.is_staff`\n\nCeci est voulu pour permettre aux admins de gérer tous les événements."
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoint: POST /api/v1/games/create/\n\nPermission: Organizer OU Admin\nValidation: GameService._validate_organizer_permission()"
+		},
+		{
+			"name": "2. POST - Reveal Answer (Organizer Only)",
+			"item": [
+				{
+					"name": "✅ Reveal Answer - AS ORGANIZER (SUCCESS)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"console.log('✅ Answer revealed successfully by organizer');",
+									"console.log('Response:', pm.response.json());"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{organizer_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/games/{{game_id}}/reveal-answer/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"games",
+								"{{game_id}}",
+								"reveal-answer",
+								""
+							]
+						},
+						"description": "L'organisateur révèle la réponse de la question courante.\n\nValidation: `_validate_organizer_permission(game.event, user)`"
+					},
+					"response": []
+				},
+				{
+					"name": "❌ Reveal Answer - AS REGULAR USER (FAIL)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 403 Forbidden', function () {",
+									"    pm.response.to.have.status(403);",
+									"});",
+									"",
+									"console.log('✅ Regular user correctly denied access');",
+									"console.log('Response:', pm.response.json());"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{regular_user_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/games/{{game_id}}/reveal-answer/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"games",
+								"{{game_id}}",
+								"reveal-answer",
+								""
+							]
+						},
+						"description": "Un utilisateur régulier NE PEUT PAS révéler la réponse.\n\nAttend: 403 Forbidden - \"Only the event organizer can create games\""
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoint: POST /api/v1/games/{id}/reveal-answer/\n\nPermission: Organizer OU Admin\nValidation: GameService._validate_organizer_permission()"
+		},
+		{
+			"name": "3. POST - Next Question (Organizer Only)",
+			"item": [
+				{
+					"name": "✅ Next Question - AS ORGANIZER (SUCCESS)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"console.log('✅ Advanced to next question successfully');",
+									"console.log('Response:', pm.response.json());"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{organizer_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/games/{{game_id}}/next-question/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"games",
+								"{{game_id}}",
+								"next-question",
+								""
+							]
+						},
+						"description": "L'organisateur passe à la question suivante.\n\nValidation: `_validate_organizer_permission(game.event, user)`"
+					},
+					"response": []
+				},
+				{
+					"name": "❌ Next Question - AS REGULAR USER (FAIL)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 403 Forbidden', function () {",
+									"    pm.response.to.have.status(403);",
+									"});",
+									"",
+									"console.log('✅ Regular user correctly denied access');",
+									"console.log('Response:', pm.response.json());"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{regular_user_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/games/{{game_id}}/next-question/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"games",
+								"{{game_id}}",
+								"next-question",
+								""
+							]
+						},
+						"description": "Un utilisateur régulier NE PEUT PAS avancer à la question suivante.\n\nAttend: 403 Forbidden"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoint: POST /api/v1/games/{id}/next-question/\n\nPermission: Organizer OU Admin\nValidation: GameService._validate_organizer_permission()"
+		},
+		{
+			"name": "4. PATCH - Update Event (Organizer ONLY - NOT Admin)",
+			"item": [
+				{
+					"name": "✅ Update Event - AS ORGANIZER (SUCCESS)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"console.log('✅ Event updated successfully by organizer');",
+									"console.log('Response:', pm.response.json());"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{organizer_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"theme\": \"Updated Theme by Organizer\",\n  \"difficulty\": \"hard\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/events/{{event_id}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events",
+								"{{event_id}}",
+								""
+							]
+						},
+						"description": "L'organisateur peut modifier SON événement (champs verrouillés : title, price, address, organizer).\n\nPermission: IsOrganizerOrReadOnly\nLogic: `obj.organizer_id == request.user.id` (PAS d'exception pour les admins!)"
+					},
+					"response": []
+				},
+				{
+					"name": "❌ Update Event - AS REGULAR USER (FAIL)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 403 Forbidden', function () {",
+									"    pm.response.to.have.status(403);",
+									"});",
+									"",
+									"console.log('✅ Regular user correctly denied access');"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{regular_user_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"theme\": \"Attempt to update by regular user\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/events/{{event_id}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events",
+								"{{event_id}}",
+								""
+							]
+						},
+						"description": "Un utilisateur régulier NE PEUT PAS modifier un événement.\n\nAttend: 403 Forbidden - \"You do not have permission to perform this action.\""
+					},
+					"response": []
+				},
+				{
+					"name": "❌ Update Event - AS ADMIN (FAIL - NEW!)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 403 Forbidden', function () {",
+									"    pm.response.to.have.status(403);",
+									"});",
+									"",
+									"console.log('✅ Admin correctly DENIED - Only organizer can update!');",
+									"console.log('Response:', pm.response.json());"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"theme\": \"Attempt to update by admin\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/events/{{event_id}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events",
+								"{{event_id}}",
+								""
+							]
+						},
+						"description": "NOUVEAU: Les admins NE PEUVENT PLUS modifier les événements!\n\nPermission: IsOrganizerOrReadOnly (strictement l'organisateur, sans exception pour is_staff)\n\nAttend: 403 Forbidden - Seul l'organisateur propriétaire peut modifier son événement."
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoint: PATCH /api/v1/events/{id}/\n\nPermission: IsOrganizerOrReadOnly (UNIQUEMENT l'organisateur)\nLogic: obj.organizer_id == request.user.id (sans exception pour admins)\n\nChamps verrouillés: title, price_cents, address, organizer"
+		},
+		{
+			"name": "5. DELETE - Delete Event (Organizer Only)",
+			"item": [
+				{
+					"name": "✅ Cancel Event - AS ORGANIZER (SUCCESS)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"console.log('✅ Event cancelled successfully by organizer');",
+									"console.log('Response:', pm.response.json());"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{organizer_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/events/{{event_id}}/cancel/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events",
+								"{{event_id}}",
+								"cancel",
+								""
+							]
+						},
+						"description": "L'organisateur peut annuler son événement. Ceci déclenche automatiquement le remboursement de toutes les réservations.\n\nPermission: IsOrganizerOrAdmin"
+					},
+					"response": []
+				},
+				{
+					"name": "❌ Cancel Event - AS REGULAR USER (FAIL)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 403 Forbidden', function () {",
+									"    pm.response.to.have.status(403);",
+									"});",
+									"",
+									"console.log('✅ Regular user correctly denied access');"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{regular_user_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/events/{{event_id}}/cancel/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events",
+								"{{event_id}}",
+								"cancel",
+								""
+							]
+						},
+						"description": "Un utilisateur régulier NE PEUT PAS annuler un événement.\n\nAttend: 403 Forbidden"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoint: POST /api/v1/events/{id}/cancel/\n\nPermission: Organizer OU Admin (IsOrganizerOrAdmin)"
+		},
+		{
+			"name": "6. POST - Cancel Event (Organizer Only)",
+			"item": [
+				{
+					"name": "✅ Get Participants - AS ORGANIZER (SUCCESS)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"console.log('✅ Participants list retrieved by organizer');",
+									"console.log('Response:', pm.response.json());"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{organizer_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/events/{{event_id}}/participants/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events",
+								"{{event_id}}",
+								"participants",
+								""
+							]
+						},
+						"description": "L'organisateur peut voir la liste des participants confirmés pour son événement.\n\nCe endpoint vérifie: `event.organizer_id != request.user.id`"
+					},
+					"response": []
+				},
+				{
+					"name": "❌ Get Participants - AS REGULAR USER (FAIL)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 403 Forbidden', function () {",
+									"    pm.response.to.have.status(403);",
+									"});",
+									"",
+									"console.log('✅ Regular user correctly denied access');"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{regular_user_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/events/{{event_id}}/participants/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events",
+								"{{event_id}}",
+								"participants",
+								""
+							]
+						},
+						"description": "Un utilisateur régulier NE PEUT PAS voir la liste complète des participants.\n\nAttend: 403 Forbidden - \"Only organizer can view participants\""
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoint: GET /api/v1/events/{id}/participants/\n\nPermission: Organizer uniquement\nValidation manuelle dans la view: `event.organizer_id != request.user.id`"
+		},
+		{
+			"name": "7. POST - Force Publish (Admin Only)",
+			"item": [
+				{
+					"name": "✅ Force Publish - AS ADMIN (SUCCESS)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"console.log('✅ Event published by admin override');"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/events/{{event_id}}/force-publish/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events",
+								"{{event_id}}",
+								"force-publish",
+								""
+							]
+						},
+						"description": "Action admin pour forcer la publication d'un événement (bypass paiement)."
+					},
+					"response": []
+				},
+				{
+					"name": "❌ Force Publish - AS ORGANIZER (FORBIDDEN)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 403 Forbidden', function () {",
+									"    pm.response.to.have.status(403);",
+									"});",
+									"",
+									"console.log('❌ Organizer correctly blocked from force publish');"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{organizer_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/events/{{event_id}}/force-publish/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events",
+								"{{event_id}}",
+								"force-publish",
+								""
+							]
+						},
+						"description": "Un organisateur ne peut pas utiliser l'endpoint administrateur."
+					},
+					"response": []
+				},
+				{
+					"name": "❌ Force Publish - AS REGULAR USER (FORBIDDEN)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 403 Forbidden', function () {",
+									"    pm.response.to.have.status(403);",
+									"});",
+									"",
+									"console.log('❌ Regular user correctly denied (admin only)');"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{regular_user_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/events/{{event_id}}/force-publish/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events",
+								"{{event_id}}",
+								"force-publish",
+								""
+							]
+						},
+						"description": "Les utilisateurs standard ne peuvent pas publier un événement via cette route."
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoint: POST /api/v1/events/{id}/force-publish/\n\nPermission: Admin uniquement (IsAdminUser)."
+		}
+	]
+}

@@ -8,7 +8,12 @@ from datetime import timedelta
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 
-from common.constants import CANCELLATION_DEADLINE_HOURS, MIN_PARTICIPANTS_PER_EVENT, MAX_PARTICIPANTS_PER_EVENT
+from common.constants import (
+    CANCELLATION_DEADLINE_HOURS,
+    BOOKING_CUTOFF_MINUTES,
+    MIN_PARTICIPANTS_PER_EVENT,
+    MAX_PARTICIPANTS_PER_EVENT
+)
 from common.exceptions import CancellationDeadlineError
 
 
@@ -74,6 +79,31 @@ def validate_event_not_started(booking):
 
     if timezone.now() >= booking.event.datetime_start:
         raise ValidationError("Cannot modify booking for an event that has already started.")
+
+
+def validate_booking_cutoff(event):
+    """
+    Validate that event booking is still allowed (not within 15 minutes of start).
+
+    New bookings are not allowed within BOOKING_CUTOFF_MINUTES (15 minutes) of event start.
+    This prevents last-minute bookings that could disrupt event preparation.
+
+    Args:
+        event: Event instance to validate
+
+    Raises:
+        ValidationError: If within booking cutoff window
+    """
+    if not event:
+        return
+
+    cutoff = event.datetime_start - timedelta(minutes=BOOKING_CUTOFF_MINUTES)
+    now = timezone.now()
+
+    if now >= cutoff:
+        raise ValidationError(
+            f"Cannot book event within {BOOKING_CUTOFF_MINUTES} minutes of event start."
+        )
 
 
 def validate_event_capacity(event):

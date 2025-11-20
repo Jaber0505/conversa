@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router, ActivatedRoute } from '@angular/router';
 import { TPipe } from '@core/i18n';
 import { GamesApiService } from '@core/http';
 import { GameResultDto } from '@core/models';
@@ -93,6 +94,13 @@ import { GameResultDto } from '@core/models';
               </div>
             </div>
           }
+
+          <!-- Action Buttons -->
+          <div class="action-buttons">
+            <button class="btn btn-primary btn-lg" (click)="goToEvents()">
+              {{ 'GAMES.SUMMARY.BACK_TO_EVENTS' | t }}
+            </button>
+          </div>
         </div>
       }
     </div>
@@ -336,6 +344,45 @@ import { GameResultDto } from '@core/models';
       color: white;
     }
 
+    .action-buttons {
+      margin-top: 40px;
+      padding-top: 32px;
+      border-top: 2px solid #e0e0e0;
+      display: flex;
+      justify-content: center;
+    }
+
+    .btn {
+      padding: 16px 32px;
+      border: none;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    }
+
+    .btn-primary:active {
+      transform: translateY(-1px);
+    }
+
+    .btn-lg {
+      font-size: 20px;
+      padding: 18px 40px;
+    }
+
     @media (max-width: 600px) {
       .summary-card {
         padding: 24px;
@@ -369,10 +416,16 @@ export class GameSummaryComponent implements OnInit {
   @Input() gameId!: number;
 
   private gamesApi = inject(GamesApiService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   summary = signal<GameResultDto | null>(null);
   loading = signal(true);
   error = signal<string | null>(null);
+
+  get lang(): string {
+    return this.route.snapshot.paramMap.get('lang') ?? 'fr';
+  }
 
   ngOnInit() {
     this.loadSummary();
@@ -411,5 +464,9 @@ export class GameSummaryComponent implements OnInit {
       return (parts[0][0] + parts[1][0]).toUpperCase();
     }
     return email.substring(0, 2).toUpperCase();
+  }
+
+  goToEvents(): void {
+    this.router.navigate(['/', this.lang, 'events']);
   }
 }

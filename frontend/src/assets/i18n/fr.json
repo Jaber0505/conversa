@@ -600,6 +600,7 @@
             "event_cancelled": "Événement annulé",
             "event_finished": "Événement terminé",
             "booking_confirmed": "Réservation confirmée",
+            "booking_closed": "Inscriptions fermées",
             "starting_soon": "Démarre dans moins de 3h",
             "pending_confirmation": "En attente de confirmation"
         },
@@ -611,6 +612,7 @@
             "booking-confirmed": "Votre réservation est confirmée.",
             "already-booked": "Vous avez déjà réservé cet événement.",
             "cancellation-deadline-passed": "Le délai d'annulation est dépassé (moins de 3h avant l'événement).",
+            "booking-cutoff-passed": "Les inscriptions sont fermées (moins de 15 minutes avant l'événement).",
             "event-not-started": "L'événement n'a pas encore commencé.",
             "game-not-configured": "Aucun jeu n'est configuré pour cet événement.",
             "game-not-started": "Le jeu n'a pas encore été lancé par l'organisateur.",
@@ -937,7 +939,52 @@
             "TEAM_ANSWER": "Réponse de l'équipe",
             "CORRECT_ANSWER": "Bonne réponse",
             "NO_ANSWER": "Pas de réponse",
-            "EXPLANATION": "Explication"
+            "EXPLANATION": "Explication",
+            "VOTES_TITLE": "Votes des participants",
+            "NO_VOTES": "Aucun vote enregistré",
+            "PREVIOUS": "Précédent",
+            "NEXT_QUESTION": "Question suivante",
+            "VIEW_SUMMARY": "Voir le récapitulatif"
+        },
+        "SUMMARY": {
+            "LOADING": "Chargement du récapitulatif...",
+            "ERROR": "Erreur",
+            "VICTORY": "Victoire !",
+            "PARTICIPATION": "Belle participation !",
+            "VICTORY_MESSAGE": "Félicitations ! Vous avez remporté ce jeu.",
+            "PARTICIPATION_MESSAGE": "Merci d'avoir participé ! Continuez à progresser.",
+            "SCORE_TITLE": "Score final",
+            "CORRECT_ANSWERS": "Bonnes réponses",
+            "PARTICIPANTS": "Participants",
+            "BACK_TO_EVENTS": "Retour aux événements"
+        },
+        "RESULTS": {
+            "TITLE": "Résultats",
+            "LOADING": "Chargement des résultats...",
+            "ERROR": "Erreur",
+            "IMAGE_ALT": "Illustration du jeu",
+            "SUCCESS_TITLE": "Bravo ! Réponse collective correcte !",
+            "FAILURE_TITLE": "Presque ! Vous vous rapprochez !",
+            "TIMEOUT_TITLE": "Temps écoulé",
+            "TIMEOUT_MESSAGE": "Le temps imparti est écoulé. Aucun consensus n'a été trouvé.",
+            "YOUR_ANSWER": "Réponse du groupe",
+            "CORRECT_ANSWER": "Bonne réponse",
+            "STATISTICS": "Statistiques",
+            "TOTAL_PARTICIPANTS": "Participants",
+            "TOTAL_VOTES": "Nombre de votes",
+            "PARTICIPATION_RATE": "Taux de participation",
+            "VOTE_BREAKDOWN": "Répartition des votes",
+            "CORRECT": "Correct",
+            "WINNER": "Gagnant",
+            "VOTES": "votes",
+            "INDIVIDUAL_VOTES": "Votes individuels",
+            "START_NEW_GAME": "Lancer une nouvelle partie"
+        },
+        "HISTORY": {
+            "TITLE": "Historique des jeux",
+            "SUCCESS": "Succès",
+            "FAILURE": "Échec",
+            "TIMEOUT": "Temps écoulé"
         }
     },
     "games": {

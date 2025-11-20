@@ -30,6 +30,7 @@ MAX_FUTURE_BOOKING_DAYS = 7  # Events cannot be scheduled more than 1 week in ad
 
 # Booking time limits
 BOOKING_TTL_MINUTES = 15  # Booking expiration time (PENDING → CANCELLED)
+BOOKING_CUTOFF_MINUTES = 15  # Cannot book within 15 minutes of event start
 CANCELLATION_DEADLINE_HOURS = 3  # Cannot cancel within 3h of event start
 AUTO_CANCEL_CHECK_HOURS = 1  # Auto-cancel if < min participants 1h before event
 

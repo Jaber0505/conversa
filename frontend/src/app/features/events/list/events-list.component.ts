@@ -10,7 +10,8 @@ import {
   EventsListParams,
   LanguagesApiService,
   PaymentsApiService,
-  AuthTokenService
+  AuthTokenService,
+  GamesApiService
 } from '@core/http';
 import { Booking, EventDto, langToOptionsSS, Language, Paginated } from '@core/models';
 import { AuthApiService } from '@core/http';
@@ -58,6 +59,7 @@ export class EventsListComponent {
   private readonly languagesApiService = inject(LanguagesApiService);
   private readonly bookingsApiService = inject(BookingsApiService);
   private readonly paymentsApiService = inject(PaymentsApiService);
+  private readonly gamesApi = inject(GamesApiService);
   private readonly loader = inject(BlockingSpinnerService);
   private readonly sortingService = inject(EventsSortingService);
   private readonly destroyRef = inject(DestroyRef);
@@ -332,7 +334,10 @@ export class EventsListComponent {
     filtered.forEach(se => {
       const status = se.event.status;
       const isCancelled = status === 'CANCELLED' || !!se.event.cancelled_at;
-      if (isCancelled) return;
+      const isFinished = status === 'FINISHED';
+
+      // Exclure les événements annulés ou terminés (pour tous, même l'organisateur)
+      if (isCancelled || isFinished) return;
 
       if (se.event.organizer_id === this.currentUserId) {
         myEvts.push(se);
@@ -470,6 +475,13 @@ export class EventsListComponent {
     const userId = this.currentUserId;
 
     for (const s of filtered) {
+      const status = s.event.status;
+      const isCancelled = status === 'CANCELLED' || !!s.event.cancelled_at;
+      const isFinished = status === 'FINISHED';
+
+      // Exclure les événements annulés ou terminés (pour tous, même l'organisateur)
+      if (isCancelled || isFinished) continue;
+
       const isOrganizer = (s.event as any).organizer_id === userId || s.event.organizer === userId;
       const alreadyBooked = s.event.alreadyBooked || s.event.alreadyRegistered;
 
@@ -517,8 +529,39 @@ export class EventsListComponent {
     this.router.navigate(['/', this.lang, 'events', 'create']);
   }
 
+  /**
+   * Lancer/rejoindre le jeu d'un événement.
+   * Vérifie s'il existe un jeu actif et redirige vers le jeu ou la page de détail.
+   */
   onPlayGame(eventId: number): void {
-    this.router.navigate(['/', this.lang, 'events', eventId]);
+    // Chercher l'événement dans les listes
+    const allEvents = [...this.myEvents(), ...this.publicEvents()];
+    const scoredEvent = allEvents.find(se => se.event.id === eventId);
+
+    if (!scoredEvent || !scoredEvent.event.game_type) {
+      // Pas de jeu configuré, rediriger vers les détails
+      this.router.navigate(['/', this.lang, 'events', eventId]);
+      return;
+    }
+
+    this.loader.show('games.checking_game');
+
+    // Vérifier s'il existe un jeu actif
+    this.gamesApi.getActiveGame(eventId).pipe(
+      take(1),
+      finalize(() => this.loader.hide())
+    ).subscribe({
+      next: (activeGame) => {
+        // Un jeu actif existe, le rejoindre directement
+        this.router.navigate(['/', this.lang, 'games', activeGame.id]);
+      },
+      error: (err) => {
+        console.error('Error getting active game:', err);
+        // Pas de jeu actif ou erreur, rediriger vers les détails de l'événement
+        // où l'organisateur pourra lancer le jeu
+        this.router.navigate(['/', this.lang, 'events', eventId]);
+      }
+    });
   }
 
   onPayDraft(eventId: number): void {

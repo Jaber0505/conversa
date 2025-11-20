@@ -485,7 +485,15 @@ class GameService(BaseService):
 
         # Calculate majority vote
         vote_counts = Counter(votes)
-        most_common_answer, most_common_count = vote_counts.most_common(1)[0]
+
+        # Get the highest vote count
+        max_count = max(vote_counts.values())
+
+        # Find all answers that have the maximum vote count (handles ties)
+        top_answers = [answer for answer, count in vote_counts.items() if count == max_count]
+
+        # If there's a tie, choose randomly among the tied answers
+        most_common_answer = random.choice(top_answers)
         is_correct = (most_common_answer == game.correct_answer)
 
         # Update game state
@@ -541,6 +549,10 @@ class GameService(BaseService):
             game.status = GameStatus.COMPLETED
             game.completed_at = timezone.now()
             game.save(update_fields=['status', 'completed_at', 'updated_at'])
+
+            # Mark event as FINISHED when game completes
+            if game.event and game.event.status != game.event.Status.FINISHED:
+                game.event.mark_finished()
 
             # Calculate and save final results with badges
             game_result = GameService._calculate_final_results(game)

@@ -55,6 +55,7 @@ export type DisabledReason =
   | 'booking-confirmed'
   | 'already-booked'
   | 'cancellation-deadline-passed'
+  | 'booking-cutoff-passed'
   | 'event-not-started'
   | 'game-not-configured'
   | 'game-not-started'
@@ -107,6 +108,7 @@ export interface UserContext {
 })
 export class EventActionsService {
   private readonly CANCELLATION_DEADLINE_HOURS = 3;
+  private readonly BOOKING_CUTOFF_MINUTES = 15;
 
   /**
    * Détermine toutes les actions disponibles pour un événement donné.
@@ -217,6 +219,16 @@ export class EventActionsService {
     return hoursUntilStart >= this.CANCELLATION_DEADLINE_HOURS;
   }
 
+  /**
+   * Vérifier si on peut encore réserver (cutoff de 15 minutes).
+   */
+  canBookEvent(event: EventDto | EventDetailDto): boolean {
+    const now = new Date();
+    const start = new Date(event.datetime_start);
+    const minutesUntilStart = (start.getTime() - now.getTime()) / (1000 * 60);
+    return minutesUntilStart >= this.BOOKING_CUTOFF_MINUTES;
+  }
+
   // ==================== ACTIONS ORGANISATEUR ====================
 
   private getOrganizerActions(
@@ -285,33 +297,34 @@ export class EventActionsService {
       const hasGame = !!event.game_type;
       const canShowGame = hasStarted || (userContext.isOrganizer && userContext.skipTimeValidation);
 
-      // Action : Lancer/rejoindre le jeu (visible si événement commencé OU mode test activé)
-      if (hasGame && canShowGame) {
-        if (event.game_started) {
-          // Jeu déjà démarré : rejoindre
-          actions.push({
-            action: 'organizer-join-game',
-            enabled: true,
-            visible: true,
-            variant: 'accent',
-            labelKey: 'events.actions.join_game',
-            badge: 'game-live',
-            priority: 0
-          });
-        } else {
-          // Jeu pas démarré : lancer
-          actions.push({
-            action: 'organizer-start-game',
-            enabled: true,
-            visible: true,
-            variant: 'accent',
-            labelKey: 'events.actions.start_game',
-            priority: 0
-          });
-        }
+      // Si le jeu est lancé, afficher UNIQUEMENT le bouton "Rejoindre le jeu"
+      if (event.game_started && hasGame) {
+        actions.push({
+          action: 'organizer-join-game',
+          enabled: true,
+          visible: true,
+          variant: 'accent',
+          labelKey: 'events.actions.join_game',
+          badge: 'game-live',
+          priority: 0
+        });
+        // Ne pas afficher d'autres actions si le jeu est lancé
+        return actions;
       }
 
-      // Action : Annuler l'événement
+      // Jeu pas encore lancé : afficher le bouton "Lancer le jeu"
+      if (hasGame && canShowGame) {
+        actions.push({
+          action: 'organizer-start-game',
+          enabled: true,
+          visible: true,
+          variant: 'accent',
+          labelKey: 'events.actions.start_game',
+          priority: 0
+        });
+      }
+
+      // Action : Annuler l'événement (seulement si le jeu n'est pas lancé)
       if (perms.can_cancel_event || links.cancel) {
         const canCancel = this.canCancelBooking(event);
         actions.push({
@@ -375,32 +388,33 @@ export class EventActionsService {
       const hasStarted = this.hasEventStarted(event);
       const hasGame = !!event.game_type;
 
-      // Action : Rejoindre le jeu (si réservation confirmée)
-      // Afficher le bouton dès que l'événement a commencé et qu'il y a un jeu configuré
-      if (hasStarted && hasGame && myBooking?.status === 'CONFIRMED') {
-        if (event.game_started) {
-          // Jeu démarré : bouton enabled
-          actions.push({
-            action: 'user-join-game',
-            enabled: true,
-            visible: true,
-            variant: 'accent',
-            labelKey: 'events.actions.join_game',
-            badge: 'game-live',
-            priority: 0
-          });
-        } else {
-          // Jeu pas encore lancé : bouton disabled avec message d'attente
-          actions.push({
-            action: 'user-join-game',
-            enabled: false,
-            visible: true,
-            variant: 'accent',
-            labelKey: 'events.actions.join_game',
-            disabledReason: 'game-not-started',
-            priority: 0
-          });
-        }
+      // Si le jeu est lancé et que l'utilisateur a une réservation CONFIRMED,
+      // afficher UNIQUEMENT le bouton "Rejoindre le jeu"
+      if (event.game_started && hasGame && myBooking?.status === 'CONFIRMED') {
+        actions.push({
+          action: 'user-join-game',
+          enabled: true,
+          visible: true,
+          variant: 'accent',
+          labelKey: 'events.actions.join_game',
+          badge: 'game-live',
+          priority: 0
+        });
+        // Ne pas afficher d'autres actions si le jeu est lancé
+        return actions;
+      }
+
+      // Jeu configuré mais pas encore lancé : afficher bouton disabled
+      if (hasStarted && hasGame && myBooking?.status === 'CONFIRMED' && !event.game_started) {
+        actions.push({
+          action: 'user-join-game',
+          enabled: false,
+          visible: true,
+          variant: 'accent',
+          labelKey: 'events.actions.join_game',
+          disabledReason: 'game-not-started',
+          priority: 0
+        });
       }
 
       // Action : Payer une réservation PENDING
@@ -416,8 +430,8 @@ export class EventActionsService {
         });
       }
 
-      // Action : Annuler une réservation CONFIRMED
-      if (myBooking?.status === 'CONFIRMED') {
+      // Action : Annuler une réservation CONFIRMED (seulement si jeu pas lancé)
+      if (myBooking?.status === 'CONFIRMED' && !event.game_started) {
         const canCancel = this.canCancelBooking(event);
         actions.push({
           action: 'user-cancel-booking',
@@ -426,11 +440,11 @@ export class EventActionsService {
           variant: 'danger',
           labelKey: 'events.actions.cancel_booking',
           disabledReason: canCancel ? undefined : 'cancellation-deadline-passed',
-          priority: hasStarted && hasGame && event.game_started ? 2 : 1
+          priority: hasStarted && hasGame ? 2 : 1
         });
 
         // Si pas d'action jeu, mais réservé : afficher badge
-        if (!(hasStarted && hasGame && event.game_started)) {
+        if (!(hasStarted && hasGame)) {
           actions.push({
             action: 'view-details',
             enabled: false,
@@ -447,20 +461,36 @@ export class EventActionsService {
       // Action : Réserver (si pas de réservation et événement pas plein)
       if (!myBooking) {
         const isFull = this.isEventFull(event);
+        const isWithinCutoff = !this.canBookEvent(event);
+
         // Si permissions est défini, utiliser can_book, sinon fallback : utilisateur connecté + pas annulé + pas fini
         const hasPermission = perms.can_book !== undefined
           ? !!perms.can_book
           : (!!userContext.userId && event.status === 'PUBLISHED');
-        const canBook = hasPermission && !isFull;
+        const canBook = hasPermission && !isFull && !isWithinCutoff;
+
+        // Déterminer le label et la raison
+        let labelKey = 'events.actions.book';
+        let disabledReason: DisabledReason | undefined = undefined;
+        let badge: EventBadge | undefined = undefined;
+
+        if (isWithinCutoff) {
+          labelKey = 'events.actions.booking_closed';
+          disabledReason = 'booking-cutoff-passed';
+        } else if (isFull) {
+          labelKey = 'events.actions.event_full';
+          disabledReason = 'event-full';
+          badge = 'full';
+        }
 
         actions.push({
           action: 'user-book',
           enabled: canBook,
           visible: true,
           variant: 'primary',
-          labelKey: isFull ? 'events.actions.event_full' : 'events.actions.book',
-          disabledReason: isFull ? 'event-full' : undefined,
-          badge: isFull ? 'full' : undefined,
+          labelKey,
+          disabledReason,
+          badge,
           priority: 0
         });
       }
