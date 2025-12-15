@@ -81,10 +81,8 @@ export class AuthApiService {
     });
   }
 
-  permanentlyDeleteAccount(password: string) {
-    return this.http.request('delete', `${this.base}/auth/permanently-delete-account/`, {
-      body: { password }
-    });
+  permanentlyDeleteAccount() {
+    return this.http.delete(`${this.base}/auth/permanently-delete-account/`);
   }
 }
 

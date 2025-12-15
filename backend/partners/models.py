@@ -1,6 +1,7 @@
 """Partner venue models for Conversa."""
 import secrets
 from datetime import timedelta
+from django.conf import settings
 from django.db import models
 
 
@@ -11,6 +12,16 @@ class Partner(models.Model):
     Represents cafes, bars, and venues that host language exchange events.
     Each partner has API key for secure integration and capacity management.
     """
+
+    # Ownership (1:1 relationship - one user can own only one partner)
+    owner = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="owned_partner",
+        help_text="User who owns this partner (assigned by admin). Owner has exclusive access.",
+    )
 
     # Basic information
     name = models.CharField(max_length=255, help_text="Venue name")

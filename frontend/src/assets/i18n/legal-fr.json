@@ -1,0 +1,300 @@
+{
+  "legal": {
+    "privacy_policy": "Politique de confidentialité",
+    "terms_of_service": "Conditions d'utilisation",
+    "last_updated": "Dernière mise à jour : {{date}}",
+    "contact": {
+      "title": "Contact",
+      "text": "Pour toute question concernant cette politique, veuillez nous contacter :",
+      "terms_text": "Pour toute question concernant ces conditions, veuillez nous contacter :",
+      "address": "Adresse :"
+    },
+    "privacy": {
+      "title": "Politique de confidentialité",
+      "intro": {
+        "title": "Introduction",
+        "text1": "Conversa s'engage à protéger votre vie privée et vos données personnelles conformément au Règlement Général sur la Protection des Données (RGPD).",
+        "text2": "Cette politique explique quelles données nous collectons, comment nous les utilisons, et vos droits en tant qu'utilisateur."
+      },
+      "data_collected": {
+        "title": "1. Données collectées",
+        "intro": "Nous collectons les données suivantes lorsque vous utilisez notre plateforme :",
+        "account": {
+          "title": "Données de compte",
+          "email": "Adresse email (utilisée pour l'authentification)",
+          "name": "Nom et prénom",
+          "age": "Âge (minimum 18 ans requis)",
+          "languages": "Langues natives et langues cibles",
+          "location": "Localisation (ville, adresse optionnelle)"
+        },
+        "booking": {
+          "title": "Données de réservation",
+          "events": "Événements réservés et participation",
+          "payment": "Informations de paiement (via Stripe - voir section 4)",
+          "history": "Historique des réservations et annulations"
+        },
+        "technical": {
+          "title": "Données techniques",
+          "ip": "Adresse IP et données de connexion",
+          "browser": "Type de navigateur et appareil",
+          "cookies": "Cookies essentiels (authentification, préférences de langue)"
+        }
+      },
+      "data_usage": {
+        "title": "2. Utilisation des données",
+        "service": "Fournir et gérer votre compte utilisateur",
+        "bookings": "Traiter vos réservations et paiements",
+        "communication": "Vous envoyer des notifications importantes (confirmations, annulations)",
+        "matching": "Faciliter le matching linguistique lors des événements",
+        "improvement": "Améliorer nos services et l'expérience utilisateur",
+        "security": "Assurer la sécurité et prévenir la fraude"
+      },
+      "legal_basis": {
+        "title": "3. Base légale (RGPD)",
+        "intro": "Nous traitons vos données sur les bases légales suivantes :",
+        "consent": {
+          "title": "Consentement :",
+          "text": "Vous avez consenti au traitement de vos données lors de l'inscription"
+        },
+        "contract": {
+          "title": "Exécution d'un contrat :",
+          "text": "Nécessaire pour fournir le service de réservation"
+        },
+        "legal": {
+          "title": "Obligation légale :",
+          "text": "Conservation des données de facturation (obligations fiscales)"
+        },
+        "interest": {
+          "title": "Intérêt légitime :",
+          "text": "Amélioration du service et prévention de la fraude"
+        }
+      },
+      "data_sharing": {
+        "title": "4. Partage des données",
+        "intro": "Vos données ne sont partagées qu'avec les entités suivantes :",
+        "stripe": {
+          "title": "Stripe :",
+          "text": "Processeur de paiement sécurisé (informations bancaires uniquement)"
+        },
+        "partners": {
+          "title": "Partenaires (cafés/bars) :",
+          "text": "Nom et nombre de participants pour les réservations confirmées"
+        },
+        "authorities": {
+          "title": "Autorités :",
+          "text": "Si requis par la loi (obligations fiscales, enquêtes judiciaires)"
+        },
+        "no_sale": "⚠️ Nous ne vendons JAMAIS vos données à des tiers."
+      },
+      "your_rights": {
+        "title": "5. Vos droits RGPD",
+        "intro": "Conformément au RGPD, vous disposez des droits suivants :",
+        "access": {
+          "title": "Droit d'accès :",
+          "text": "Obtenir une copie de toutes vos données personnelles"
+        },
+        "rectification": {
+          "title": "Droit de rectification :",
+          "text": "Corriger des données inexactes via votre profil"
+        },
+        "deletion": {
+          "title": "Droit à l'effacement ('droit à l'oubli') :",
+          "text": "Supprimer votre compte et anonymiser vos données (voir section 6)"
+        },
+        "portability": {
+          "title": "Droit à la portabilité :",
+          "text": "Recevoir vos données dans un format structuré"
+        },
+        "objection": {
+          "title": "Droit d'opposition :",
+          "text": "Vous opposer au traitement de vos données"
+        },
+        "limitation": {
+          "title": "Droit à la limitation :",
+          "text": "Demander la limitation du traitement"
+        },
+        "complaint": {
+          "title": "Droit de réclamation :",
+          "text": "Déposer une plainte auprès de l'autorité de protection des données"
+        },
+        "contact": "Pour exercer ces droits, contactez-nous à privacy@conversa.app"
+      },
+      "data_retention": {
+        "title": "6. Conservation des données",
+        "account": "Données de compte : Conservées tant que votre compte est actif",
+        "bookings": "Données de réservation : 7 ans (obligation fiscale)",
+        "deletion": "Suppression de compte : Anonymisation immédiate de 15 champs sensibles (email, nom, bio, adresse, langues, etc.)"
+      },
+      "security": {
+        "title": "7. Sécurité",
+        "intro": "Nous mettons en œuvre des mesures de sécurité robustes :",
+        "encryption": "Chiffrement HTTPS pour toutes les communications",
+        "passwords": "Hachage bcrypt pour les mots de passe",
+        "access": "Contrôle d'accès strict basé sur les rôles",
+        "monitoring": "Surveillance et journalisation des activités sensibles"
+      },
+      "payments": {
+        "title": "8. Paiements et remboursements",
+        "processor": "Tous les paiements sont traités par Stripe. Nous ne stockons JAMAIS vos informations bancaires complètes (seuls les 4 derniers chiffres et la marque de la carte sont conservés pour référence).",
+        "refund_policy": {
+          "title": "Politique de remboursement",
+          "user_cancel": {
+            "title": "Annulation par l'utilisateur :",
+            "text": "Remboursement automatique complet via Stripe (délai 5-10 jours ouvrables)"
+          },
+          "organizer_cancel": {
+            "title": "Annulation par l'organisateur :",
+            "text": "Remboursement automatique complet pour tous les participants"
+          },
+          "account_deletion": {
+            "title": "Suppression de compte :",
+            "text": "Toutes les réservations futures sont automatiquement annulées avec remboursement complet"
+          },
+          "delay": {
+            "title": "Délais de traitement :",
+            "text": "Les remboursements apparaissent sous 5-10 jours ouvrables selon votre banque"
+          }
+        }
+      },
+      "cookies": {
+        "title": "9. Cookies",
+        "intro": "Nous utilisons uniquement des cookies essentiels :",
+        "essential": {
+          "title": "Cookies d'authentification :",
+          "text": "Token JWT pour maintenir votre session connectée"
+        },
+        "functional": {
+          "title": "Cookies fonctionnels :",
+          "text": "Préférences de langue"
+        }
+      },
+      "changes": {
+        "title": "10. Modifications",
+        "text": "Nous nous réservons le droit de modifier cette politique. Les modifications importantes vous seront notifiées par email."
+      }
+    },
+    "terms": {
+      "title": "Conditions d'utilisation",
+      "intro": {
+        "title": "Introduction",
+        "text1": "Bienvenue sur Conversa ! En utilisant notre plateforme, vous acceptez les présentes Conditions d'Utilisation.",
+        "text2": "Ces conditions régissent votre utilisation de notre service de réservation d'événements d'échange linguistique."
+      },
+      "acceptance": {
+        "title": "1. Acceptation des conditions",
+        "text1": "En créant un compte sur Conversa, vous acceptez d'être lié par ces Conditions d'Utilisation et notre Politique de Confidentialité.",
+        "text2": "Si vous n'acceptez pas ces conditions, veuillez ne pas utiliser notre service."
+      },
+      "service_description": {
+        "title": "2. Description du service",
+        "intro": "Conversa propose les services suivants :",
+        "events": "Organisation et participation à des événements d'échange linguistique",
+        "bookings": "Système de réservation en ligne avec paiement sécurisé",
+        "payments": "Traitement des paiements via Stripe",
+        "game": "Jeu interactif pendant les événements (nécessite une connexion Internet)",
+        "matching": "Matching linguistique entre participants"
+      },
+      "account": {
+        "title": "3. Inscription et compte utilisateur",
+        "age": "Vous devez avoir au moins 18 ans pour créer un compte.",
+        "info": "Lors de l'inscription, vous vous engagez à :",
+        "accurate": "Fournir des informations exactes et complètes",
+        "confidential": "Maintenir la confidentialité de votre mot de passe",
+        "responsibility": "Être responsable de toutes les activités sur votre compte",
+        "notify": "Nous notifier immédiatement en cas d'utilisation non autorisée"
+      },
+      "bookings": {
+        "title": "4. Réservations et paiements",
+        "process": {
+          "title": "Processus de réservation",
+          "selection": "Sélectionnez un événement et réservez votre place",
+          "payment": "Effectuez le paiement sécurisé via Stripe",
+          "confirmation": "Recevez une confirmation par email (statut CONFIRMED)",
+          "access": "Accédez au jeu interactif pendant l'événement"
+        },
+        "payment": {
+          "title": "Paiements",
+          "stripe": "Tous les paiements sont traités par Stripe (PCI-DSS compliant)",
+          "secure": "Vos informations bancaires ne transitent jamais par nos serveurs",
+          "prices": "Les prix affichés incluent toutes les taxes applicables"
+        }
+      },
+      "cancellation": {
+        "title": "5. Annulation et remboursement",
+        "user": {
+          "title": "Annulation par l'utilisateur",
+          "right": "Vous pouvez annuler votre réservation à tout moment",
+          "automatic": "Le remboursement est automatique et complet",
+          "delay": "Le remboursement apparaît sous 5-10 jours ouvrables"
+        },
+        "organizer": {
+          "title": "Annulation par l'organisateur",
+          "right": "L'organisateur peut annuler un événement (raisons valables)",
+          "refund": "Remboursement automatique complet pour tous les participants",
+          "notification": "Notification par email à tous les participants"
+        },
+        "account_deletion": {
+          "title": "Suppression de compte",
+          "text": "La suppression de votre compte entraîne l'annulation automatique de toutes vos réservations futures avec remboursement complet."
+        }
+      },
+      "game": {
+        "title": "6. Jeu interactif",
+        "intro": "Le jeu interactif est accessible pendant les événements confirmés :",
+        "internet": "⚠️ CONNEXION INTERNET OBLIGATOIRE pour jouer au jeu",
+        "timing": "Le jeu est accessible uniquement pendant la durée de l'événement",
+        "participation": "La participation au jeu est optionnelle",
+        "conduct": "Comportement respectueux et fair-play exigés"
+      },
+      "obligations": {
+        "title": "7. Obligations de l'utilisateur",
+        "intro": "Vous vous engagez à :",
+        "respect": "Respecter les autres participants et organisateurs",
+        "accurate": "Fournir des informations exactes lors de l'inscription",
+        "attendance": "Honorer vos réservations ou les annuler à l'avance",
+        "no_spam": "Ne pas envoyer de spam ou de contenu non sollicité",
+        "no_fraud": "Ne pas tenter de contourner le système de paiement",
+        "no_illegal": "Ne pas utiliser le service à des fins illégales"
+      },
+      "user_content": {
+        "title": "8. Contenu utilisateur",
+        "responsibility": "Vous êtes responsable du contenu que vous publiez (bio, commentaires, etc.).",
+        "license": "En publiant du contenu, vous accordez à Conversa une licence non exclusive pour afficher ce contenu.",
+        "moderation": "Nous nous réservons le droit de modérer ou supprimer tout contenu inapproprié."
+      },
+      "intellectual_property": {
+        "title": "9. Propriété intellectuelle",
+        "ownership": "Conversa et ses licenciants possèdent tous les droits de propriété intellectuelle sur la plateforme.",
+        "license": "Nous vous accordons une licence limitée, non exclusive et révocable pour utiliser notre service.",
+        "prohibited": "Toute reproduction, distribution ou modification non autorisée est strictement interdite."
+      },
+      "liability": {
+        "title": "10. Limitation de responsabilité",
+        "platform": "Conversa est une plateforme de mise en relation. Nous ne sommes pas responsables des interactions entre utilisateurs.",
+        "availability": "Nous ne garantissons pas une disponibilité ininterrompue du service",
+        "content": "Nous ne sommes pas responsables du contenu publié par les utilisateurs",
+        "interactions": "Les interactions physiques lors des événements relèvent de votre responsabilité",
+        "partners": "Les partenaires (cafés/bars) sont indépendants de Conversa"
+      },
+      "termination": {
+        "title": "11. Suspension et résiliation",
+        "user": "Vous pouvez supprimer votre compte à tout moment via votre profil.",
+        "conversa": "Nous nous réservons le droit de suspendre ou résilier votre compte en cas de :",
+        "violation": "Violation de ces Conditions d'Utilisation",
+        "fraud": "Tentative de fraude ou d'abus du système",
+        "abuse": "Comportement abusif envers d'autres utilisateurs",
+        "illegal": "Activités illégales ou non conformes",
+        "consequences": "En cas de résiliation, vous perdez l'accès à votre compte et vos données sont anonymisées."
+      },
+      "modifications": {
+        "title": "12. Modifications des conditions",
+        "right": "Nous nous réservons le droit de modifier ces Conditions d'Utilisation à tout moment.",
+        "notification": "Les modifications importantes vous seront notifiées par email. La poursuite de l'utilisation du service après modification constitue votre acceptation."
+      },
+      "applicable_law": {
+        "title": "13. Loi applicable et juridiction",
+        "text": "Ces Conditions d'Utilisation sont régies par le droit belge. Tout litige sera soumis à la juridiction exclusive des tribunaux de Bruxelles, Belgique."
+      }
+    }
+  }
+}

@@ -4,6 +4,65 @@
   min-height: calc(100vh - 200px);
 }
 
+// Bannière d'avertissement Internet
+.warning-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4, 1rem);
+  padding: var(--space-4, 1rem) var(--space-5, 1.5rem);
+  margin: var(--space-5, 2rem) 0;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border: 2px solid #f59e0b;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);
+  animation: fadeInSlide 0.5s ease-out;
+
+  .warning-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  .warning-content {
+    flex: 1;
+
+    .warning-title {
+      display: block;
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: #92400e;
+      margin-bottom: var(--space-2, 0.5rem);
+    }
+
+    .warning-text {
+      font-size: 0.95rem;
+      color: #78350f;
+      margin: 0;
+      line-height: 1.6;
+    }
+  }
+}
+
+@keyframes fadeInSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
 // Message d'erreur
 .state-error {
   display: flex;

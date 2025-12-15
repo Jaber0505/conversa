@@ -5,11 +5,13 @@
       <span class="name">Conversa</span>
     </div>
     <nav class="links" aria-label="Footer">
-      <a routerLink="./">{{ 'nav.about' | t }}</a>
-      <a routerLink="./">FAQ</a>
+      <a [routerLink]="['/', lang, 'about']">{{ 'nav.about' | t }}</a>
+      <a [routerLink]="['/', lang, 'faq']">FAQ</a>
+      <a [routerLink]="['/', lang, 'privacy-policy']">{{ 'legal.privacy_policy' | t }}</a>
+      <a [routerLink]="['/', lang, 'terms-of-service']">{{ 'legal.terms_of_service' | t }}</a>
     </nav>
     <div class="copy">© {{ year }} · Conversa</div>
   </div>
-  
+
 </footer>
 

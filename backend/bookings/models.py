@@ -140,7 +140,7 @@ class Booking(models.Model):
         constraints = [
             # Amount must be non-negative
             CheckConstraint(
-                condition=Q(amount_cents__gte=0),
+                check=Q(amount_cents__gte=0),
                 name="booking_amount_cents_gte_0"
             ),
             # Only one active (non-cancelled) booking per user/event

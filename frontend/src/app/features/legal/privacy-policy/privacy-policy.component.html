@@ -1,0 +1,169 @@
+<shared-container>
+  <div class="legal-page">
+    <!-- Header -->
+    <div class="legal-header">
+      <h1 class="legal-title">{{ 'legal.privacy.title' | t }}</h1>
+      <p class="legal-updated">{{ 'legal.last_updated' | t:{ date: '15/12/2025' } }}</p>
+      <shared-button
+        variant="outline"
+        size="sm"
+        (click)="goBack()">
+        {{ 'COMMON.BACK' | t }}
+      </shared-button>
+    </div>
+
+    <!-- Content -->
+    <div class="legal-content">
+      <!-- Introduction -->
+      <section class="legal-section">
+        <h2>{{ 'legal.privacy.intro.title' | t }}</h2>
+        <p>{{ 'legal.privacy.intro.text1' | t }}</p>
+        <p>{{ 'legal.privacy.intro.text2' | t }}</p>
+      </section>
+
+      <!-- 1. Données collectées -->
+      <section class="legal-section">
+        <h2>{{ 'legal.privacy.data_collected.title' | t }}</h2>
+        <p>{{ 'legal.privacy.data_collected.intro' | t }}</p>
+
+        <h3>{{ 'legal.privacy.data_collected.account.title' | t }}</h3>
+        <ul>
+          <li>{{ 'legal.privacy.data_collected.account.email' | t }}</li>
+          <li>{{ 'legal.privacy.data_collected.account.name' | t }}</li>
+          <li>{{ 'legal.privacy.data_collected.account.age' | t }}</li>
+          <li>{{ 'legal.privacy.data_collected.account.languages' | t }}</li>
+          <li>{{ 'legal.privacy.data_collected.account.location' | t }}</li>
+        </ul>
+
+        <h3>{{ 'legal.privacy.data_collected.booking.title' | t }}</h3>
+        <ul>
+          <li>{{ 'legal.privacy.data_collected.booking.events' | t }}</li>
+          <li>{{ 'legal.privacy.data_collected.booking.payment' | t }}</li>
+          <li>{{ 'legal.privacy.data_collected.booking.history' | t }}</li>
+        </ul>
+
+        <h3>{{ 'legal.privacy.data_collected.technical.title' | t }}</h3>
+        <ul>
+          <li>{{ 'legal.privacy.data_collected.technical.ip' | t }}</li>
+          <li>{{ 'legal.privacy.data_collected.technical.browser' | t }}</li>
+          <li>{{ 'legal.privacy.data_collected.technical.cookies' | t }}</li>
+        </ul>
+      </section>
+
+      <!-- 2. Utilisation des données -->
+      <section class="legal-section">
+        <h2>{{ 'legal.privacy.data_usage.title' | t }}</h2>
+        <ul>
+          <li>{{ 'legal.privacy.data_usage.service' | t }}</li>
+          <li>{{ 'legal.privacy.data_usage.bookings' | t }}</li>
+          <li>{{ 'legal.privacy.data_usage.communication' | t }}</li>
+          <li>{{ 'legal.privacy.data_usage.matching' | t }}</li>
+          <li>{{ 'legal.privacy.data_usage.improvement' | t }}</li>
+          <li>{{ 'legal.privacy.data_usage.security' | t }}</li>
+        </ul>
+      </section>
+
+      <!-- 3. Base légale (RGPD) -->
+      <section class="legal-section">
+        <h2>{{ 'legal.privacy.legal_basis.title' | t }}</h2>
+        <p>{{ 'legal.privacy.legal_basis.intro' | t }}</p>
+        <ul>
+          <li><strong>{{ 'legal.privacy.legal_basis.consent.title' | t }}</strong> {{ 'legal.privacy.legal_basis.consent.text' | t }}</li>
+          <li><strong>{{ 'legal.privacy.legal_basis.contract.title' | t }}</strong> {{ 'legal.privacy.legal_basis.contract.text' | t }}</li>
+          <li><strong>{{ 'legal.privacy.legal_basis.legal.title' | t }}</strong> {{ 'legal.privacy.legal_basis.legal.text' | t }}</li>
+          <li><strong>{{ 'legal.privacy.legal_basis.interest.title' | t }}</strong> {{ 'legal.privacy.legal_basis.interest.text' | t }}</li>
+        </ul>
+      </section>
+
+      <!-- 4. Partage des données -->
+      <section class="legal-section">
+        <h2>{{ 'legal.privacy.data_sharing.title' | t }}</h2>
+        <p>{{ 'legal.privacy.data_sharing.intro' | t }}</p>
+        <ul>
+          <li><strong>{{ 'legal.privacy.data_sharing.stripe.title' | t }}</strong> {{ 'legal.privacy.data_sharing.stripe.text' | t }}</li>
+          <li><strong>{{ 'legal.privacy.data_sharing.partners.title' | t }}</strong> {{ 'legal.privacy.data_sharing.partners.text' | t }}</li>
+          <li><strong>{{ 'legal.privacy.data_sharing.authorities.title' | t }}</strong> {{ 'legal.privacy.data_sharing.authorities.text' | t }}</li>
+        </ul>
+        <p class="legal-warning">{{ 'legal.privacy.data_sharing.no_sale' | t }}</p>
+      </section>
+
+      <!-- 5. Vos droits RGPD -->
+      <section class="legal-section highlight-section">
+        <h2>{{ 'legal.privacy.your_rights.title' | t }}</h2>
+        <p>{{ 'legal.privacy.your_rights.intro' | t }}</p>
+        <ul class="rights-list">
+          <li><strong>{{ 'legal.privacy.your_rights.access.title' | t }}</strong> {{ 'legal.privacy.your_rights.access.text' | t }}</li>
+          <li><strong>{{ 'legal.privacy.your_rights.rectification.title' | t }}</strong> {{ 'legal.privacy.your_rights.rectification.text' | t }}</li>
+          <li><strong>{{ 'legal.privacy.your_rights.deletion.title' | t }}</strong> {{ 'legal.privacy.your_rights.deletion.text' | t }}</li>
+          <li><strong>{{ 'legal.privacy.your_rights.portability.title' | t }}</strong> {{ 'legal.privacy.your_rights.portability.text' | t }}</li>
+          <li><strong>{{ 'legal.privacy.your_rights.objection.title' | t }}</strong> {{ 'legal.privacy.your_rights.objection.text' | t }}</li>
+          <li><strong>{{ 'legal.privacy.your_rights.limitation.title' | t }}</strong> {{ 'legal.privacy.your_rights.limitation.text' | t }}</li>
+          <li><strong>{{ 'legal.privacy.your_rights.complaint.title' | t }}</strong> {{ 'legal.privacy.your_rights.complaint.text' | t }}</li>
+        </ul>
+        <p class="legal-contact">{{ 'legal.privacy.your_rights.contact' | t }}</p>
+      </section>
+
+      <!-- 6. Conservation des données -->
+      <section class="legal-section">
+        <h2>{{ 'legal.privacy.data_retention.title' | t }}</h2>
+        <ul>
+          <li>{{ 'legal.privacy.data_retention.account' | t }}</li>
+          <li>{{ 'legal.privacy.data_retention.bookings' | t }}</li>
+          <li>{{ 'legal.privacy.data_retention.deletion' | t }}</li>
+        </ul>
+      </section>
+
+      <!-- 7. Sécurité -->
+      <section class="legal-section">
+        <h2>{{ 'legal.privacy.security.title' | t }}</h2>
+        <p>{{ 'legal.privacy.security.intro' | t }}</p>
+        <ul>
+          <li>{{ 'legal.privacy.security.encryption' | t }}</li>
+          <li>{{ 'legal.privacy.security.passwords' | t }}</li>
+          <li>{{ 'legal.privacy.security.access' | t }}</li>
+          <li>{{ 'legal.privacy.security.monitoring' | t }}</li>
+        </ul>
+      </section>
+
+      <!-- 8. Paiements et remboursements -->
+      <section class="legal-section highlight-section">
+        <h2>{{ 'legal.privacy.payments.title' | t }}</h2>
+        <p>{{ 'legal.privacy.payments.processor' | t }}</p>
+
+        <h3>{{ 'legal.privacy.payments.refund_policy.title' | t }}</h3>
+        <ul>
+          <li><strong>{{ 'legal.privacy.payments.refund_policy.user_cancel.title' | t }}</strong> {{ 'legal.privacy.payments.refund_policy.user_cancel.text' | t }}</li>
+          <li><strong>{{ 'legal.privacy.payments.refund_policy.organizer_cancel.title' | t }}</strong> {{ 'legal.privacy.payments.refund_policy.organizer_cancel.text' | t }}</li>
+          <li><strong>{{ 'legal.privacy.payments.refund_policy.account_deletion.title' | t }}</strong> {{ 'legal.privacy.payments.refund_policy.account_deletion.text' | t }}</li>
+          <li><strong>{{ 'legal.privacy.payments.refund_policy.delay.title' | t }}</strong> {{ 'legal.privacy.payments.refund_policy.delay.text' | t }}</li>
+        </ul>
+      </section>
+
+      <!-- 9. Cookies -->
+      <section class="legal-section">
+        <h2>{{ 'legal.privacy.cookies.title' | t }}</h2>
+        <p>{{ 'legal.privacy.cookies.intro' | t }}</p>
+        <ul>
+          <li><strong>{{ 'legal.privacy.cookies.essential.title' | t }}</strong> {{ 'legal.privacy.cookies.essential.text' | t }}</li>
+          <li><strong>{{ 'legal.privacy.cookies.functional.title' | t }}</strong> {{ 'legal.privacy.cookies.functional.text' | t }}</li>
+        </ul>
+      </section>
+
+      <!-- 10. Modifications -->
+      <section class="legal-section">
+        <h2>{{ 'legal.privacy.changes.title' | t }}</h2>
+        <p>{{ 'legal.privacy.changes.text' | t }}</p>
+      </section>
+
+      <!-- Contact -->
+      <section class="legal-section contact-section">
+        <h2>{{ 'legal.contact.title' | t }}</h2>
+        <p>{{ 'legal.contact.text' | t }}</p>
+        <div class="contact-info">
+          <p><strong>Email:</strong> privacy@conversa.app</p>
+          <p><strong>{{ 'legal.contact.address' | t }}</strong> Bruxelles, Belgique</p>
+        </div>
+      </section>
+    </div>
+  </div>
+</shared-container>

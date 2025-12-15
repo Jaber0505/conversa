@@ -11,6 +11,7 @@ class PartnerAdmin(admin.ModelAdmin):
     list_display = (
         "name",
         "city",
+        "owner_display",
         "capacity",
         "reputation_display",
         "is_active",
@@ -24,6 +25,10 @@ class PartnerAdmin(admin.ModelAdmin):
     ordering = ("-created_at",)
 
     fieldsets = (
+        ("Ownership", {
+            "fields": ("owner",),
+            "description": "Assign a user as the owner of this partner. The owner will have exclusive access to view bookings and modify this partner."
+        }),
         ("Basic Information", {
             "fields": ("name", "address", "city")
         }),
@@ -56,3 +61,14 @@ class PartnerAdmin(admin.ModelAdmin):
             )
         return "-"
     api_key_preview.short_description = "API Key"
+
+    def owner_display(self, obj):
+        """Display owner name with email."""
+        if obj.owner:
+            return format_html(
+                '<strong>{}</strong><br/><small>{}</small>',
+                f"{obj.owner.first_name} {obj.owner.last_name}",
+                obj.owner.email
+            )
+        return format_html('<em style="color: #999;">No owner assigned</em>')
+    owner_display.short_description = "Owner"

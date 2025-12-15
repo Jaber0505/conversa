@@ -31,13 +31,10 @@ export class ProfileComponent implements OnInit {
 
   user = signal<MeRes | null>(null);
 
-  // Delete account modals
-  showDeactivateModal = signal(false);
-  showPermanentDeleteModal = signal(false);
-  deletePassword = signal('');
+  // Delete account modal
+  showDeleteModal = signal(false);
   deleteError = signal<string | null>(null);
   deleteLoading = signal(false);
-  deletionType = signal<'deactivate' | 'permanent'>('deactivate');
 
   ngOnInit() {
     // Load user data
@@ -47,43 +44,22 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  openDeactivateModal() {
-    this.deletionType.set('deactivate');
-    this.showDeactivateModal.set(true);
-    this.deletePassword.set('');
-    this.deleteError.set(null);
-  }
-
-  openPermanentDeleteModal() {
-    this.deletionType.set('permanent');
-    this.showPermanentDeleteModal.set(true);
-    this.deletePassword.set('');
+  openDeleteModal() {
+    this.showDeleteModal.set(true);
     this.deleteError.set(null);
   }
 
   closeDeleteModal() {
-    this.showDeactivateModal.set(false);
-    this.showPermanentDeleteModal.set(false);
-    this.deletePassword.set('');
+    this.showDeleteModal.set(false);
     this.deleteError.set(null);
   }
 
   confirmDeleteAccount() {
-    const password = this.deletePassword();
-
-    if (!password) {
-      this.deleteError.set('PASSWORD_REQUIRED');
-      return;
-    }
-
     this.deleteLoading.set(true);
     this.deleteError.set(null);
 
-    const deleteMethod = this.deletionType() === 'deactivate'
-      ? this.authApi.deactivateAccount(password)
-      : this.authApi.permanentlyDeleteAccount(password);
-
-    deleteMethod.subscribe({
+    // Only permanent deletion - no password required
+    this.authApi.permanentlyDeleteAccount().subscribe({
       next: () => {
         // Account deleted successfully
         this.deleteLoading.set(false);
@@ -103,8 +79,6 @@ export class ProfileComponent implements OnInit {
           errorKey = 'PROFILE.CANNOT_DELETE_WITH_BOOKINGS';
         } else if (errorDetail.includes('organizing upcoming published events')) {
           errorKey = 'PROFILE.CANNOT_DELETE_WITH_EVENTS';
-        } else if (errorDetail.includes('Invalid password')) {
-          errorKey = 'auth.errors.bad_credentials';
         }
 
         this.deleteError.set(errorKey);

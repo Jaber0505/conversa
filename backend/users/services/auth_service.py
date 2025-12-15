@@ -207,7 +207,7 @@ class AuthService(BaseService):
         upcoming_bookings = Booking.objects.filter(
             user=user,
             status=BookingStatus.CONFIRMED,
-            event__date__gte=now
+            event__datetime_start__gte=now
         ).exists()
 
         if upcoming_bookings:
@@ -217,7 +217,7 @@ class AuthService(BaseService):
         upcoming_events = Event.objects.filter(
             organizer=user,
             status=Event.Status.PUBLISHED,
-            date__gte=now
+            datetime_start__gte=now
         ).exists()
 
         if upcoming_events:
@@ -260,26 +260,58 @@ class AuthService(BaseService):
 
         now = timezone.now()
 
-        # Check for upcoming confirmed bookings
+        # 1. Cancel all upcoming confirmed bookings WITH AUTOMATIC REFUND
         upcoming_bookings = Booking.objects.filter(
             user=user,
             status=BookingStatus.CONFIRMED,
-            event__date__gte=now
-        ).exists()
+            event__datetime_start__gte=now
+        )
 
-        if upcoming_bookings:
-            return False, "Cannot delete account: you have upcoming confirmed bookings. Please cancel them first."
+        from bookings.services import BookingService
 
-        # Check for upcoming published events as organizer
+        for booking in upcoming_bookings:
+            # Use BookingService to handle cancellation + automatic Stripe refund
+            # system_cancellation=True bypasses the 3h deadline check
+            try:
+                BookingService.cancel_booking(
+                    booking=booking,
+                    cancelled_by=user,
+                    system_cancellation=True
+                )
+            except Exception as e:
+                # Log error but continue with other bookings
+                # We don't want to block account deletion if one refund fails
+                pass
+
+        # 2. Cancel all PENDING bookings (no refund needed)
+        pending_bookings = Booking.objects.filter(
+            user=user,
+            status=BookingStatus.PENDING,
+            event__datetime_start__gte=now
+        )
+
+        for booking in pending_bookings:
+            booking.mark_cancelled()
+
+        # 3. Cancel all upcoming published events as organizer
         upcoming_events = Event.objects.filter(
             organizer=user,
             status=Event.Status.PUBLISHED,
-            date__gte=now
-        ).exists()
+            datetime_start__gte=now
+        )
 
-        if upcoming_events:
-            return False, "Cannot delete account: you are organizing upcoming published events. Please cancel them first."
+        for event in upcoming_events:
+            event.mark_cancelled(cancelled_by=user, system_cancellation=True)
 
+        # 4. Delete all draft events (brouillons)
+        draft_events = Event.objects.filter(
+            organizer=user,
+            status=Event.Status.DRAFT
+        )
+
+        draft_events.delete()
+
+        # 5. Anonymize user data
         from .user_service import UserService
 
         UserService.anonymize_user(user, email_prefix="purged_user")

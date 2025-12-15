@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
         migrations.AddConstraint(
             model_name="user",
             constraint=models.CheckConstraint(
-                condition=models.Q(("age__gte", 18)), name="users_user_age_gte_18"
+                check=models.Q(("age__gte", 18)), name="users_user_age_gte_18"
             ),
         ),
     ]

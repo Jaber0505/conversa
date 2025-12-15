@@ -15,6 +15,17 @@ from common.constants import (
 User = get_user_model()
 
 
+class LoginSerializer(serializers.Serializer):
+    """Login request body."""
+
+    email = serializers.EmailField(help_text="User email")
+    password = serializers.CharField(
+        write_only=True,
+        help_text="User password",
+        style={"input_type": "password"},
+    )
+
+
 class UserSerializer(serializers.ModelSerializer):
     """
     User read serializer.

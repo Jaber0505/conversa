@@ -5,11 +5,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenRefreshView
 
-from drf_spectacular.utils import extend_schema, OpenApiResponse
+from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiExample
 
 from common.mixins import HateoasOptionsMixin
 from common.metadata import HateoasMetadata
-from .serializers import RegisterSerializer, UserSerializer
+from .serializers import RegisterSerializer, UserSerializer, LoginSerializer
 from .services import AuthService
 
 User = get_user_model()
@@ -80,10 +80,37 @@ class RegisterView(HateoasOptionsMixin, generics.CreateAPIView):
         "- access: JWT access token (valid 15 minutes)\n\n"
         "**Rate limit:** 10 requests per minute per IP"
     ),
-    request={"application/json": {"email": "string", "password": "string"}},
+    request=LoginSerializer,
     responses={
-        200: OpenApiResponse(description="Login successful with JWT tokens"),
-        401: OpenApiResponse(description="Invalid credentials"),
+        200: OpenApiResponse(
+            description="Login successful with JWT tokens",
+            examples=[
+                OpenApiExample(
+                    "Requête d'exemple",
+                    description="Corps à envoyer sur /api/v1/auth/login/",
+                    value={"email": "alice@example.com", "password": "password123"},
+                    request_only=True,
+                ),
+                OpenApiExample(
+                    "Réponse 200",
+                    value={
+                        "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                        "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
+                    },
+                    response_only=True,
+                ),
+            ],
+        ),
+        401: OpenApiResponse(
+            description="Invalid credentials",
+            examples=[
+                OpenApiExample(
+                    "Réponse 401",
+                    value={"detail": "Invalid credentials."},
+                    response_only=True,
+                )
+            ],
+        ),
     },
 )
 class EmailLoginView(HateoasOptionsMixin, APIView):
@@ -329,7 +356,7 @@ class DeactivateAccountView(HateoasOptionsMixin, APIView):
         "**Authentication:** Required (Bearer JWT token)\n\n"
         "**Effect:**\n"
         "- All personal data is anonymized (GDPR compliant)\n"
-        "- Email becomes: deleted_user_[id]@deleted.local\n"
+        "- Email becomes: purged_user_[id]@deleted.local\n"
         "- Name becomes: 'Deleted User'\n"
         "- All personal fields cleared (bio, address, languages, etc.)\n"
         "- Account cannot be reactivated\n"
@@ -337,16 +364,13 @@ class DeactivateAccountView(HateoasOptionsMixin, APIView):
         "**Business Rules:**\n"
         "- User cannot have any upcoming confirmed bookings\n"
         "- User cannot be organizer of any upcoming published events\n\n"
+        "**Note:** No password confirmation required - JWT authentication is sufficient\n\n"
         "**Returns:** 204 No Content on success"
     ),
-    request={
-        "application/json": {
-            "password": "string (required - confirm user identity)"
-        }
-    },
+    request=None,
     responses={
         204: OpenApiResponse(description="Account permanently deleted"),
-        400: OpenApiResponse(description="Invalid password or business rule violation"),
+        400: OpenApiResponse(description="Business rule violation"),
         401: OpenApiResponse(description="Not authenticated"),
     },
 )
@@ -357,20 +381,8 @@ class PermanentlyDeleteAccountView(HateoasOptionsMixin, APIView):
     metadata_class = HateoasMetadata
 
     def delete(self, request, *args, **kwargs):
-        """Permanently delete user account after password confirmation."""
-        password = request.data.get("password")
-        if not password:
-            return Response(
-                {"detail": "Password required for permanent account deletion."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        # Verify password
-        if not request.user.check_password(password):
-            return Response(
-                {"detail": "Invalid password."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        """Permanently delete user account without password confirmation."""
+        # No password verification required - user is already authenticated via JWT
 
         # Check business rules via service
         success, error = AuthService.permanently_delete_account(request.user)

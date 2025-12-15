@@ -158,7 +158,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name_plural = "Users"
         constraints = [
             CheckConstraint(
-                condition=Q(age__gte=MINIMUM_USER_AGE),
+                check=Q(age__gte=MINIMUM_USER_AGE),
                 name="users_user_age_gte_18",
             ),
         ]

@@ -1,0 +1,192 @@
+<shared-container>
+  <div class="legal-page">
+    <!-- Header -->
+    <div class="legal-header">
+      <h1 class="legal-title">{{ 'legal.terms.title' | t }}</h1>
+      <p class="legal-updated">{{ 'legal.last_updated' | t:{ date: '15/12/2025' } }}</p>
+      <shared-button
+        variant="outline"
+        size="sm"
+        (click)="goBack()">
+        {{ 'COMMON.BACK' | t }}
+      </shared-button>
+    </div>
+
+    <!-- Content -->
+    <div class="legal-content">
+      <!-- Introduction -->
+      <section class="legal-section">
+        <h2>{{ 'legal.terms.intro.title' | t }}</h2>
+        <p>{{ 'legal.terms.intro.text1' | t }}</p>
+        <p>{{ 'legal.terms.intro.text2' | t }}</p>
+      </section>
+
+      <!-- 1. Acceptation des conditions -->
+      <section class="legal-section">
+        <h2>{{ 'legal.terms.acceptance.title' | t }}</h2>
+        <p>{{ 'legal.terms.acceptance.text1' | t }}</p>
+        <p>{{ 'legal.terms.acceptance.text2' | t }}</p>
+      </section>
+
+      <!-- 2. Description du service -->
+      <section class="legal-section">
+        <h2>{{ 'legal.terms.service_description.title' | t }}</h2>
+        <p>{{ 'legal.terms.service_description.intro' | t }}</p>
+        <ul>
+          <li>{{ 'legal.terms.service_description.events' | t }}</li>
+          <li>{{ 'legal.terms.service_description.bookings' | t }}</li>
+          <li>{{ 'legal.terms.service_description.payments' | t }}</li>
+          <li>{{ 'legal.terms.service_description.game' | t }}</li>
+          <li>{{ 'legal.terms.service_description.matching' | t }}</li>
+        </ul>
+      </section>
+
+      <!-- 3. Inscription et compte utilisateur -->
+      <section class="legal-section">
+        <h2>{{ 'legal.terms.account.title' | t }}</h2>
+        <p>{{ 'legal.terms.account.age' | t }}</p>
+        <p>{{ 'legal.terms.account.info' | t }}</p>
+        <ul>
+          <li>{{ 'legal.terms.account.accurate' | t }}</li>
+          <li>{{ 'legal.terms.account.confidential' | t }}</li>
+          <li>{{ 'legal.terms.account.responsibility' | t }}</li>
+          <li>{{ 'legal.terms.account.notify' | t }}</li>
+        </ul>
+      </section>
+
+      <!-- 4. Réservations et paiements -->
+      <section class="legal-section highlight-section">
+        <h2>{{ 'legal.terms.bookings.title' | t }}</h2>
+
+        <h3>{{ 'legal.terms.bookings.process.title' | t }}</h3>
+        <ul>
+          <li>{{ 'legal.terms.bookings.process.selection' | t }}</li>
+          <li>{{ 'legal.terms.bookings.process.payment' | t }}</li>
+          <li>{{ 'legal.terms.bookings.process.confirmation' | t }}</li>
+          <li>{{ 'legal.terms.bookings.process.access' | t }}</li>
+        </ul>
+
+        <h3>{{ 'legal.terms.bookings.payment.title' | t }}</h3>
+        <ul>
+          <li>{{ 'legal.terms.bookings.payment.stripe' | t }}</li>
+          <li>{{ 'legal.terms.bookings.payment.secure' | t }}</li>
+          <li>{{ 'legal.terms.bookings.payment.prices' | t }}</li>
+        </ul>
+      </section>
+
+      <!-- 5. Annulation et remboursement -->
+      <section class="legal-section highlight-section">
+        <h2>{{ 'legal.terms.cancellation.title' | t }}</h2>
+
+        <h3>{{ 'legal.terms.cancellation.user.title' | t }}</h3>
+        <ul>
+          <li>{{ 'legal.terms.cancellation.user.right' | t }}</li>
+          <li>{{ 'legal.terms.cancellation.user.automatic' | t }}</li>
+          <li>{{ 'legal.terms.cancellation.user.delay' | t }}</li>
+        </ul>
+
+        <h3>{{ 'legal.terms.cancellation.organizer.title' | t }}</h3>
+        <ul>
+          <li>{{ 'legal.terms.cancellation.organizer.right' | t }}</li>
+          <li>{{ 'legal.terms.cancellation.organizer.refund' | t }}</li>
+          <li>{{ 'legal.terms.cancellation.organizer.notification' | t }}</li>
+        </ul>
+
+        <h3>{{ 'legal.terms.cancellation.account_deletion.title' | t }}</h3>
+        <p>{{ 'legal.terms.cancellation.account_deletion.text' | t }}</p>
+      </section>
+
+      <!-- 6. Jeu interactif -->
+      <section class="legal-section">
+        <h2>{{ 'legal.terms.game.title' | t }}</h2>
+        <p>{{ 'legal.terms.game.intro' | t }}</p>
+        <ul>
+          <li>{{ 'legal.terms.game.internet' | t }}</li>
+          <li>{{ 'legal.terms.game.timing' | t }}</li>
+          <li>{{ 'legal.terms.game.participation' | t }}</li>
+          <li>{{ 'legal.terms.game.conduct' | t }}</li>
+        </ul>
+        <p class="legal-warning">{{ 'legal.terms.game.warning' | t }}</p>
+      </section>
+
+      <!-- 7. Obligations de l'utilisateur -->
+      <section class="legal-section">
+        <h2>{{ 'legal.terms.obligations.title' | t }}</h2>
+        <p>{{ 'legal.terms.obligations.intro' | t }}</p>
+        <ul>
+          <li>{{ 'legal.terms.obligations.respect' | t }}</li>
+          <li>{{ 'legal.terms.obligations.accurate' | t }}</li>
+          <li>{{ 'legal.terms.obligations.attendance' | t }}</li>
+          <li>{{ 'legal.terms.obligations.no_spam' | t }}</li>
+          <li>{{ 'legal.terms.obligations.no_fraud' | t }}</li>
+          <li>{{ 'legal.terms.obligations.no_illegal' | t }}</li>
+        </ul>
+      </section>
+
+      <!-- 8. Contenu utilisateur -->
+      <section class="legal-section">
+        <h2>{{ 'legal.terms.user_content.title' | t }}</h2>
+        <p>{{ 'legal.terms.user_content.responsibility' | t }}</p>
+        <p>{{ 'legal.terms.user_content.license' | t }}</p>
+        <p>{{ 'legal.terms.user_content.moderation' | t }}</p>
+      </section>
+
+      <!-- 9. Propriété intellectuelle -->
+      <section class="legal-section">
+        <h2>{{ 'legal.terms.intellectual_property.title' | t }}</h2>
+        <p>{{ 'legal.terms.intellectual_property.ownership' | t }}</p>
+        <p>{{ 'legal.terms.intellectual_property.license' | t }}</p>
+        <p>{{ 'legal.terms.intellectual_property.prohibited' | t }}</p>
+      </section>
+
+      <!-- 10. Limitation de responsabilité -->
+      <section class="legal-section">
+        <h2>{{ 'legal.terms.liability.title' | t }}</h2>
+        <ul>
+          <li>{{ 'legal.terms.liability.platform' | t }}</li>
+          <li>{{ 'legal.terms.liability.availability' | t }}</li>
+          <li>{{ 'legal.terms.liability.content' | t }}</li>
+          <li>{{ 'legal.terms.liability.interactions' | t }}</li>
+          <li>{{ 'legal.terms.liability.partners' | t }}</li>
+        </ul>
+      </section>
+
+      <!-- 11. Suspension et résiliation -->
+      <section class="legal-section">
+        <h2>{{ 'legal.terms.termination.title' | t }}</h2>
+        <p>{{ 'legal.terms.termination.user' | t }}</p>
+        <p>{{ 'legal.terms.termination.conversa' | t }}</p>
+        <ul>
+          <li>{{ 'legal.terms.termination.violation' | t }}</li>
+          <li>{{ 'legal.terms.termination.fraud' | t }}</li>
+          <li>{{ 'legal.terms.termination.abuse' | t }}</li>
+          <li>{{ 'legal.terms.termination.illegal' | t }}</li>
+        </ul>
+        <p>{{ 'legal.terms.termination.consequences' | t }}</p>
+      </section>
+
+      <!-- 12. Modifications des conditions -->
+      <section class="legal-section">
+        <h2>{{ 'legal.terms.modifications.title' | t }}</h2>
+        <p>{{ 'legal.terms.modifications.right' | t }}</p>
+        <p>{{ 'legal.terms.modifications.notification' | t }}</p>
+      </section>
+
+      <!-- 13. Loi applicable -->
+      <section class="legal-section">
+        <h2>{{ 'legal.terms.applicable_law.title' | t }}</h2>
+        <p>{{ 'legal.terms.applicable_law.text' | t }}</p>
+      </section>
+
+      <!-- Contact -->
+      <section class="legal-section contact-section">
+        <h2>{{ 'legal.contact.title' | t }}</h2>
+        <p>{{ 'legal.contact.terms_text' | t }}</p>
+        <div class="contact-info">
+          <p><strong>Email:</strong> legal@conversa.app</p>
+          <p><strong>{{ 'legal.contact.address' | t }}</strong> Bruxelles, Belgique</p>
+        </div>
+      </section>
+    </div>
+  </div>
+</shared-container>

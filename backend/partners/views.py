@@ -9,6 +9,7 @@ from drf_spectacular.utils import (
 )
 from .models import Partner
 from .serializers import PartnerSerializer
+from .permissions import IsPartnerOwnerOnly
 from common.permissions import IsAuthenticatedAndActive, IsAdminUser
 
 
@@ -110,15 +111,31 @@ class PartnerViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticatedAndActive]
 
     def get_permissions(self):
-        """Apply admin-only permissions for modification actions."""
-        if self.action in ("create", "update", "partial_update", "destroy"):
+        """
+        Apply permissions based on action.
+
+        Business Rules:
+            - Regular CRUD (list/retrieve/create/update/destroy): Admin only
+            - my_partner: Partner owner ONLY (not admin)
+            - my_partner_bookings: Partner owner ONLY (not admin)
+        """
+        if self.action in ("my_partner", "my_partner_bookings"):
+            # Dedicated APIs for partner owner ONLY
+            return [IsPartnerOwnerOnly()]
+        elif self.action in ("create", "update", "partial_update", "destroy"):
             return [IsAdminUser()]
         return [IsAuthenticatedAndActive()]
 
     def get_queryset(self):
-        """Filter queryset based on action and query parameters."""
-        # GET (list/retrieve) → only active partners
-        if self.action in ["list", "retrieve"]:
+        """
+        Filter queryset based on action.
+
+        Business Rules:
+            - list: All active partners (public view)
+            - Admin actions: All partners
+        """
+        # For list action → show all active partners (public view)
+        if self.action == "list":
             queryset = Partner.objects.filter(is_active=True)
 
             # Filter by search query (city, name, or address)
@@ -132,7 +149,8 @@ class PartnerViewSet(viewsets.ModelViewSet):
                 )
 
             return queryset
-        # Other actions → all partners (for admin operations)
+
+        # Default: all partners (for admin)
         return Partner.objects.all()
 
     @extend_schema(
@@ -212,3 +230,92 @@ class PartnerViewSet(viewsets.ModelViewSet):
             )
 
         return Response({"date": date_str, "partner": partner.id, "slots": slots}, status=200)
+
+    @extend_schema(
+        summary="Get my partner details (owner only)",
+        description=(
+            "Dedicated API for partner owners to view their partner details.\n\n"
+            "Business Rules:\n"
+            "- Only accessible to users who own a partner\n"
+            "- Admin cannot access this endpoint\n"
+            "- Returns the partner they own"
+        ),
+        responses={
+            200: PartnerSerializer,
+            403: OpenApiResponse(description="User is not a partner owner"),
+        },
+    )
+    @action(detail=False, methods=["GET", "PATCH"], url_path="my-partner")
+    def my_partner(self, request):
+        """
+        Get or update partner owner's venue.
+
+        Business Rule:
+            ONLY users who own a partner can access this endpoint.
+            Admin is BLOCKED from this endpoint.
+
+        GET: Returns partner details
+        PATCH: Updates partner details
+
+        Returns:
+            Response: Partner details
+        """
+        partner = request.user.owned_partner
+
+        if request.method == "GET":
+            serializer = PartnerSerializer(partner, context={'request': request})
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        elif request.method == "PATCH":
+            # Allow partner owner to update their partner
+            serializer = PartnerSerializer(
+                partner,
+                data=request.data,
+                partial=True,
+                context={'request': request}
+            )
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @extend_schema(
+        summary="Get all bookings for my partner (owner only)",
+        description=(
+            "Dedicated API for partner owners to view all bookings for events held at their venue.\n\n"
+            "Business Rules:\n"
+            "- Only accessible to users who own a partner\n"
+            "- Admin cannot access this endpoint\n"
+            "- Returns all bookings (PENDING, CONFIRMED, CANCELLED) for events at this partner\n"
+            "- Ordered by event datetime (most recent first)"
+        ),
+        responses={
+            200: OpenApiResponse(description="List of bookings for this partner"),
+            403: OpenApiResponse(description="User is not a partner owner"),
+        },
+    )
+    @action(detail=False, methods=["GET"], url_path="my-partner/bookings")
+    def my_partner_bookings(self, request):
+        """
+        Get all bookings for partner owner's venue.
+
+        Business Rule:
+            ONLY users who own a partner can access this endpoint.
+            Admin is BLOCKED from this endpoint.
+            Returns all bookings for events held at their venue.
+
+        Returns:
+            Response: List of bookings with event details
+        """
+        partner = request.user.owned_partner
+
+        # Get all bookings for events at this partner
+        from bookings.models import Booking
+        bookings = Booking.objects.filter(
+            event__partner=partner
+        ).select_related('event', 'user').order_by('-event__datetime_start')
+
+        # Serialize bookings
+        from bookings.serializers import BookingSerializer
+        serializer = BookingSerializer(bookings, many=True, context={'request': request})
+
+        return Response(serializer.data, status=status.HTTP_200_OK)

@@ -5,6 +5,15 @@
     [actionLink]="'/' + lang">
   </shared-headline-bar>
 
+  <!-- Bannière d'avertissement Internet -->
+  <div class="warning-banner">
+    <div class="warning-icon">⚠️</div>
+    <div class="warning-content">
+      <strong class="warning-title">{{ 'bookings.internet_required_title' | t }}</strong>
+      <p class="warning-text">{{ 'bookings.internet_required_message' | t }}</p>
+    </div>
+  </div>
+
   <!-- Message d'erreur -->
   <div class="state-error" *ngIf="error() as err">
     <shared-badge variant="danger" tone="soft">{{ err | t }}</shared-badge>

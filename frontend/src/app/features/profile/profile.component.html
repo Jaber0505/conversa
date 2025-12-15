@@ -65,135 +65,44 @@
         <h2 class="card-title danger-title">{{ 'PROFILE.DANGER_ZONE' | t }}</h2>
       </div>
 
-      <!-- Deactivate Account -->
-      <div class="danger-content">
-        <div class="danger-description">
-          <h3 class="danger-subtitle">{{ 'PROFILE.DEACTIVATE_ACCOUNT' | t }}</h3>
-          <p class="danger-text">{{ 'PROFILE.DEACTIVATE_ACCOUNT_WARNING' | t }}</p>
-        </div>
-
-        <shared-button
-          variant="outline"
-          (click)="openDeactivateModal()">
-          {{ 'PROFILE.DEACTIVATE_ACCOUNT_BUTTON' | t }}
-        </shared-button>
-      </div>
-
-      <!-- Permanent Delete -->
+      <!-- Permanent Delete Account -->
       <div class="danger-content danger-content-critical">
         <div class="danger-description">
-          <h3 class="danger-subtitle">{{ 'PROFILE.PERMANENT_DELETE_ACCOUNT' | t }}</h3>
-          <p class="danger-text">{{ 'PROFILE.PERMANENT_DELETE_WARNING' | t }}</p>
+          <h3 class="danger-subtitle">{{ 'PROFILE.DELETE_ACCOUNT' | t }}</h3>
+          <p class="danger-text">{{ 'PROFILE.DELETE_ACCOUNT_WARNING' | t }}</p>
         </div>
 
         <shared-button
           variant="danger"
-          (click)="openPermanentDeleteModal()">
-          {{ 'PROFILE.PERMANENT_DELETE_BUTTON' | t }}
+          (click)="openDeleteModal()">
+          {{ 'PROFILE.DELETE_ACCOUNT_BUTTON' | t }}
         </shared-button>
       </div>
     </shared-card>
   </div>
 
-  <!-- Deactivate Account Confirmation Modal -->
-  @if (showDeactivateModal()) {
-    <div class="modal-overlay" (click)="closeDeleteModal()">
-      <div class="modal-content" (click)="$event.stopPropagation()">
-        <div class="modal-header">
-          <h2 class="modal-title">{{ 'PROFILE.CONFIRM_DEACTIVATE_TITLE' | t }}</h2>
-          <button class="modal-close" (click)="closeDeleteModal()">&times;</button>
-        </div>
-
-        <div class="modal-body">
-          <p class="modal-warning">{{ 'PROFILE.CONFIRM_DEACTIVATE_MESSAGE' | t }}</p>
-
-          <ul class="modal-list">
-            <li>{{ 'PROFILE.DEACTIVATE_CONSEQUENCE_1' | t }}</li>
-            <li>{{ 'PROFILE.DEACTIVATE_CONSEQUENCE_2' | t }}</li>
-            <li>{{ 'PROFILE.DEACTIVATE_CONSEQUENCE_3' | t }}</li>
-          </ul>
-
-          <div class="form-group">
-            <label for="deactivate-password" class="form-label">
-              {{ 'PROFILE.CONFIRM_PASSWORD_LABEL' | t }}
-            </label>
-            <input
-              id="deactivate-password"
-              type="password"
-              class="form-input"
-              [value]="deletePassword()"
-              (input)="deletePassword.set($any($event.target).value)"
-              [placeholder]="'PROFILE.PASSWORD_PLACEHOLDER' | t"
-              [disabled]="deleteLoading()"
-            />
-          </div>
-
-          @if (deleteError()) {
-            <div class="error-message">
-              {{ (deleteError() || 'DELETE_ACCOUNT_ERROR') | t }}
-            </div>
-          }
-        </div>
-
-        <div class="modal-footer">
-          <shared-button
-            variant="outline"
-            (click)="closeDeleteModal()"
-            [disabled]="deleteLoading()">
-            {{ 'COMMON.CANCEL' | t }}
-          </shared-button>
-          <shared-button
-            variant="outline"
-            (click)="confirmDeleteAccount()"
-            [disabled]="deleteLoading() || !deletePassword()">
-            @if (deleteLoading()) {
-              {{ 'PROFILE.DEACTIVATING' | t }}
-            } @else {
-              {{ 'PROFILE.CONFIRM_DEACTIVATE_BUTTON' | t }}
-            }
-          </shared-button>
-        </div>
-      </div>
-    </div>
-  }
-
-  <!-- Permanent Delete Account Confirmation Modal -->
-  @if (showPermanentDeleteModal()) {
+  <!-- Delete Account Confirmation Modal -->
+  @if (showDeleteModal()) {
     <div class="modal-overlay" (click)="closeDeleteModal()">
       <div class="modal-content modal-content-danger" (click)="$event.stopPropagation()">
         <div class="modal-header">
-          <h2 class="modal-title">{{ 'PROFILE.CONFIRM_PERMANENT_DELETE_TITLE' | t }}</h2>
+          <h2 class="modal-title">{{ 'PROFILE.CONFIRM_DELETE_TITLE' | t }}</h2>
           <button class="modal-close" (click)="closeDeleteModal()">&times;</button>
         </div>
 
         <div class="modal-body">
-          <p class="modal-warning modal-warning-critical">{{ 'PROFILE.CONFIRM_PERMANENT_DELETE_MESSAGE' | t }}</p>
+          <p class="modal-warning modal-warning-critical">{{ 'PROFILE.CONFIRM_DELETE_MESSAGE' | t }}</p>
 
           <ul class="modal-list">
-            <li>{{ 'PROFILE.PERMANENT_CONSEQUENCE_1' | t }}</li>
-            <li>{{ 'PROFILE.PERMANENT_CONSEQUENCE_2' | t }}</li>
-            <li>{{ 'PROFILE.PERMANENT_CONSEQUENCE_3' | t }}</li>
-            <li>{{ 'PROFILE.PERMANENT_CONSEQUENCE_4' | t }}</li>
+            <li>{{ 'PROFILE.DELETE_CONSEQUENCE_1' | t }}</li>
+            <li>{{ 'PROFILE.DELETE_CONSEQUENCE_2' | t }}</li>
+            <li>{{ 'PROFILE.DELETE_CONSEQUENCE_3' | t }}</li>
+            <li>{{ 'PROFILE.DELETE_CONSEQUENCE_4' | t }}</li>
           </ul>
-
-          <div class="form-group">
-            <label for="delete-password" class="form-label">
-              {{ 'PROFILE.CONFIRM_PASSWORD_LABEL' | t }}
-            </label>
-            <input
-              id="delete-password"
-              type="password"
-              class="form-input"
-              [value]="deletePassword()"
-              (input)="deletePassword.set($any($event.target).value)"
-              [placeholder]="'PROFILE.PASSWORD_PLACEHOLDER' | t"
-              [disabled]="deleteLoading()"
-            />
-          </div>
 
           @if (deleteError()) {
             <div class="error-message">
-              {{ (deleteError() || 'DELETE_ACCOUNT_ERROR') | t }}
+              {{ (deleteError() || 'PROFILE.DELETE_ACCOUNT_ERROR') | t }}
             </div>
           }
         </div>
@@ -208,7 +117,7 @@
           <shared-button
             variant="danger"
             (click)="confirmDeleteAccount()"
-            [disabled]="deleteLoading() || !deletePassword()">
+            [disabled]="deleteLoading()">
             @if (deleteLoading()) {
               {{ 'PROFILE.DELETING' | t }}
             } @else {

@@ -1,998 +1,1328 @@
 {
-    "common": {
-        "brand": "Conversa",
-        "lang_change": "Changer de langue",
-        "save": "Enregistrer",
-        "cancel": "Annuler",
-        "close": "Fermer",
-        "clear": "Réinitialiser",
-        "add": "Ajouter",
-        "remove": "Retirer",
-        "next": "Suivant",
-        "previous": "Précédent",
-        "back": "Retour",
-        "selected": "Sélectionné",
-        "register": "Créer mon compte",
-        "details": "Détails",
-        "pay": "Payer",
-        "language": "Langue",
-        "search": "Rechercher",
-        "searchInput": "Rechercher",
-        "LanguageSearch": "Langues cibles",
-        "loading": "Chargement...",
-        "select": {
-            "placeholder": "Sélectionner...",
-            "search_placeholder": "Rechercher...",
-            "no_results": "Aucun résultat",
-            "clear": "Effacer",
-            "remove": "Retirer"
-        },
-        "nav": {
-            "menu": "Navigation principale"
-        }
+  "common": {
+    "brand": "Conversa",
+    "lang_change": "Changer de langue",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "close": "Fermer",
+    "clear": "Réinitialiser",
+    "add": "Ajouter",
+    "remove": "Retirer",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "back": "Retour",
+    "selected": "Sélectionné",
+    "register": "Créer mon compte",
+    "details": "Détails",
+    "pay": "Payer",
+    "language": "Langue",
+    "search": "Rechercher",
+    "searchInput": "Rechercher",
+    "LanguageSearch": "Langues cibles",
+    "loading": "Chargement...",
+    "select": {
+      "placeholder": "Sélectionner...",
+      "search_placeholder": "Rechercher...",
+      "no_results": "Aucun résultat",
+      "clear": "Effacer",
+      "remove": "Retirer"
     },
     "nav": {
-        "faq": "FAQ",
-        "about": "À propos",
-        "events": "Événements",
-        "booking": "Mes réservations"
+      "menu": "Navigation principale"
+    }
+  },
+  "nav": {
+    "faq": "FAQ",
+    "about": "À propos",
+    "events": "Événements",
+    "booking": "Mes réservations"
+  },
+  "navigation": {
+    "events": "Événements",
+    "my_bookings": "Mes réservations"
+  },
+  "auth": {
+    "email_placeholder": "ex. prenom.nom@email.com",
+    "password_placeholder": "Au moins 9 caractères",
+    "login": "Connexion",
+    "login_subtitle": "Accédez à votre compte pour réserver des événements et suivre vos réservations.",
+    "email": "Email",
+    "password": "Mot de passe",
+    "forgot_password": "Mot de passe oublié ?",
+    "no_account": "Pas de compte ?",
+    "create_account": "Créer un compte",
+    "back_to_login": "Retour à la connexion",
+    "show_password": "Afficher le mot de passe",
+    "hide_password": "Masquer le mot de passe",
+    "register": "Inscription",
+    "logout": "Se déconnecter",
+    "reset": {
+      "title": "Réinitialiser votre mot de passe",
+      "subtitle": "Saisissez votre email. Si un compte existe, vous recevrez un lien de réinitialisation.",
+      "cta": "Envoyer le lien",
+      "sent": "Si cet email existe, un lien de réinitialisation a été envoyé."
+    },
+    "errors": {
+      "generic": "Une erreur est survenue",
+      "bad_credentials": "Identifiants invalides",
+      "email_required": "L'email est requis",
+      "email_invalid": "Format d'email invalide",
+      "email_too_long": "L'email est trop long",
+      "password_required": "Le mot de passe est requis",
+      "password_too_short": "Le mot de passe doit contenir au moins 8 caractères",
+      "password_too_long": "Le mot de passe est trop long",
+      "rate_limit": "Trop de tentatives. Veuillez réessayer dans quelques instants",
+      "register_rate_limit": "Limite d'inscriptions atteinte. Veuillez réessayer plus tard"
+    }
+  },
+  "register": {
+    "title": "Créer votre compte",
+    "subtitle": "Complétez les étapes pour finaliser votre inscription.",
+    "firstTab": {
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "age": "Âge",
+      "ageError": "Vous devez avoir au moins 18 ans",
+      "nativeLangs": "Langues maternelles",
+      "targetLangs": "Langues cibles",
+      "selectLang": "Sélectionner une langue"
+    },
+    "secondTab": {
+      "bio": "Votre bio",
+      "bioPlaceHolder": "Présentez-vous en 2–3 phrases (expérience, centres d'intérêt, objectifs). 10 à 500 caractères.",
+      "limit": "Entre 10 et 500 caractères"
+    },
+    "thirdTab": {
+      "email": "Adresse e-mail",
+      "password": "Mot de passe",
+      "passwordLimit": "Le mot de passe doit contenir au minimum 9 caractères",
+      "consent": "J'accepte la politique de confidentialité et les conditions d'utilisation.",
+      "consent_required": "Vous devez accepter pour continuer."
+    }
+  },
+  "languages": {
+    "fr": "Français",
+    "en": "Anglais",
+    "nl": "Néerlandais",
+    "es": "Espagnol"
+  },
+  "shared": {
+    "common": {
+      "yes": "Oui",
+      "no": "Non",
+      "yes_no": "Oui / Non"
+    },
+    "actions": {
+      "see_all": "Voir tout",
+      "browse_events": "Parcourir les événements",
+      "create_account": "Créer un compte",
+      "create_free_account": "Créer un compte gratuit",
+      "details": "Détails"
+    },
+    "search": {
+      "query": "Recherche",
+      "placeholder_event": "Rechercher un événement…",
+      "input": {
+        "placeholder": "Rechercher un événement..."
+      },
+      "submit": "Rechercher",
+      "more_filters": "Plus de filtres",
+      "hide_filters": "Masquer les filtres",
+      "reset": "Réinitialiser",
+      "select_placeholder": "Sélectionner…",
+      "tip_keywords": "Astuce : \"café\", \"débutant\", \"afterwork\"… essaie des mots-clés."
+    },
+    "badges": {
+      "members_1000_plus": "+1000 membres",
+      "partners_20": "20 bars partenaires",
+      "fun_100": "Sessions 100% fun",
+      "rapid": "Rapide",
+      "local": "Local",
+      "effective": "Efficace"
+    },
+    "filters": {
+      "lang": {
+        "label": "Langue",
+        "placeholder": "Toutes les langues",
+        "options": {
+          "fr": "Français",
+          "en": "Anglais",
+          "es": "Espagnol",
+          "nl": "Néerlandais"
+        }
+      },
+      "area": {
+        "label": "Zone",
+        "placeholder": "Toutes les zones",
+        "options": {
+          "brussels": "Bruxelles",
+          "paris": "Paris",
+          "liege": "Liège"
+        }
+      },
+      "free": {
+        "label": "Gratuit",
+        "placeholder": "Oui / Non"
+      }
+    }
+  },
+  "i18n": {
+    "ui": "Langue de l’interface",
+    "preferred": "Langues parlées"
+  },
+  "landing": {
+    "hero": {
+      "title": "Parle une langue, vis une rencontre",
+      "subtitle": "Rejoins des milliers de membres qui apprennent en se rencontrant lors d'événements conviviaux. Simple, local et efficace.",
+      "nearby": "Près de",
+      "stats": {
+        "members": "membres actifs",
+        "events": "événements à venir",
+        "languages": "langues pratiquées"
+      },
+      "img_alt": "Rencontres linguistiques conviviales"
+    },
+    "howto": {
+      "title": "Comment ça marche ?",
+      "subtitle": "Rejoindre Conversa est simple et rapide. En 3 étapes, tu peux déjà participer à ton premier événement.",
+      "steps": {
+        "1": {
+          "title": "Crée ton compte gratuit",
+          "desc": "Inscris-toi en 2 minutes. Indique tes langues et centres d'intérêt."
+        },
+        "2": {
+          "title": "Réserve ta place à un événement",
+          "desc": "Parcours les événements près de chez toi et réserve en un clic."
+        },
+        "3": {
+          "title": "Rencontre et pratique",
+          "desc": "Rejoins l'événement, rencontre du monde et pratique naturellement."
+        }
+      }
+    },
+    "testimonials": {
+      "title": "Ils en parlent",
+      "subtitle": "Des membres partagent leur expérience."
+    },
+    "cta": {
+      "title": "Prêt·e à commencer ?",
+      "subtitle": "Crée ton compte gratuit et rejoins la prochaine session près de chez toi."
+    }
+  },
+  "footer": {
+    "brand": {
+      "tagline": "Apprendre des langues en rencontrant des personnes"
     },
     "navigation": {
-        "events": "Événements",
-        "my_bookings": "Mes réservations"
+      "title": "Navigation",
+      "events": "Événements",
+      "about": "À propos",
+      "faq": "FAQ"
     },
-    "auth": {
-        "email_placeholder": "ex. prenom.nom@email.com",
-        "password_placeholder": "Au moins 9 caractères",
-        "login": "Connexion",
-        "login_subtitle": "Accédez à votre compte pour réserver des événements et suivre vos réservations.",
-        "email": "Email",
-        "password": "Mot de passe",
-        "forgot_password": "Mot de passe oublié ?",
-        "no_account": "Pas de compte ?",
-        "create_account": "Créer un compte",
-        "back_to_login": "Retour à la connexion",
-        "show_password": "Afficher le mot de passe",
-        "hide_password": "Masquer le mot de passe",
-        "register": "Inscription",
-        "logout": "Se déconnecter",
-        "reset": {
-            "title": "Réinitialiser votre mot de passe",
-            "subtitle": "Saisissez votre email. Si un compte existe, vous recevrez un lien de réinitialisation.",
-            "cta": "Envoyer le lien",
-            "sent": "Si cet email existe, un lien de réinitialisation a été envoyé."
-        },
-        "errors": {
-            "generic": "Une erreur est survenue",
-            "bad_credentials": "Identifiants invalides",
-            "email_required": "L'email est requis",
-            "email_invalid": "Format d'email invalide",
-            "email_too_long": "L'email est trop long",
-            "password_required": "Le mot de passe est requis",
-            "password_too_short": "Le mot de passe doit contenir au moins 8 caractères",
-            "password_too_long": "Le mot de passe est trop long",
-            "rate_limit": "Trop de tentatives. Veuillez réessayer dans quelques instants",
-            "register_rate_limit": "Limite d'inscriptions atteinte. Veuillez réessayer plus tard"
+    "legal": {
+      "title": "Légal",
+      "privacy": "Politique de confidentialité",
+      "terms": "Conditions d'utilisation",
+      "cookies": "Cookies"
+    },
+    "social": {
+      "title": "Suivez-nous",
+      "facebook": "Facebook",
+      "twitter": "Twitter",
+      "instagram": "Instagram"
+    },
+    "copyright": "© {{year}} Conversa. Tous droits réservés."
+  },
+  "pages": {
+    "home": {
+      "hero": {
+        "title": "Parle une langue, vis une rencontre",
+        "subtitle": "Rejoignez Conversa, une communauté active grâce aux meetups linguistiques. Des jeux immersifs dans des bars à Bruxelles."
+      },
+      "search": {
+        "title": "Trouve tes partenaires de langue en 2 minutes",
+        "desc": "Entre un mot-clé, choisis ta langue et ta zone, puis lance la recherche. On te propose des sessions près de toi."
+      },
+      "howto": {
+        "img_alt": "Rencontres linguistiques conviviales",
+        "title": "Comment ça marche ?",
+        "steps": {
+          "1": {
+            "title": "Choisis ta langue et ta zone",
+            "desc": "Filtre avec la barre de recherche à gauche."
+          },
+          "2": {
+            "title": "Rejoins un groupe",
+            "desc": "3+ participants, validation sur place."
+          },
+          "3": {
+            "title": "Joue & pratique",
+            "desc": "Lance le jeu, débloque des badges, partage un avis."
+          }
         }
-    },
-    "register": {
-        "title": "Créer votre compte",
-        "subtitle": "Complétez les étapes pour finaliser votre inscription.",
-        "firstTab": {
-            "firstName": "Prénom",
-            "lastName": "Nom",
-            "age": "Âge",
-            "ageError": "Vous devez avoir au moins 18 ans",
-            "nativeLangs": "Langues maternelles",
-            "targetLangs": "Langues cibles",
-            "selectLang": "Sélectionner une langue"
-        },
-        "secondTab": {
-            "bio": "Votre bio",
-            "bioPlaceHolder": "Présentez-vous en 2–3 phrases (expérience, centres d'intérêt, objectifs). 10 à 500 caractères.",
-            "limit": "Entre 10 et 500 caractères"
-        },
-        "thirdTab": {
-            "email": "Adresse e-mail",
-            "password": "Mot de passe",
-            "passwordLimit": "Le mot de passe doit contenir au minimum 9 caractères",
-            "consent": "J'accepte la politique de confidentialité et les conditions d'utilisation.",
-            "consent_required": "Vous devez accepter pour continuer."
+      },
+      "upcoming": {
+        "title": "Événements à venir"
+      },
+      "categories": {
+        "title": "Explore par catégorie",
+        "items": {
+          "cafe": {
+            "title": "Conversa Café",
+            "subtitle": "Rencontres informelles"
+          },
+          "pro": {
+            "title": "Conversa Pro",
+            "subtitle": "Échanges professionnels"
+          },
+          "events": {
+            "title": "Conversa Events",
+            "subtitle": "Événements publics"
+          }
         }
+      },
+      "cta": {
+        "title": "Prêt·e à en parler pour de vrai ?",
+        "subtitle": "Rejoins des sessions conviviales près de chez toi et progresse dès cette semaine.",
+        "benefits": {
+          "rapid": {
+            "desc": "Inscription en 1 minute, aucun paiement requis"
+          },
+          "local": {
+            "desc": "Groupes à taille humaine dans des bars partenaires"
+          },
+          "effective": {
+            "desc": "Jeux de conversation guidés, feedback des pairs"
+          }
+        },
+        "hint": "Tu peux explorer sans inscription. Rejoins quand tu veux."
+      }
+    }
+  },
+  "about": {
+    "hero": {
+      "badge": "À propos",
+      "title": "Apprendre des langues, rencontrer des gens",
+      "subtitle": "Conversa rend la pratique des langues simple et conviviale : petits groupes, jeux de conversation, lieux chaleureux. Pas d'école, juste des échanges vrais."
     },
-    "languages": {
-        "fr": "Français",
-        "en": "Anglais",
-        "nl": "Néerlandais",
-        "es": "Espagnol"
+    "mission": {
+      "title": "Notre mission",
+      "p1": "Créer des occasions naturelles de parler une langue sans pression académique. Chaque session est pensée pour t'aider à oser, progresser et t'ouvrir aux autres.",
+      "bullets": [
+        "Pratique réelle, pas de cours magistral",
+        "Groupes 3–6 personnes pour laisser de la place à chacun",
+        "Jeux et cartes de discussion pour briser la glace"
+      ]
     },
-    "shared": {
-        "common": {
-            "yes": "Oui",
-            "no": "Non",
-            "yes_no": "Oui / Non"
+    "difference": {
+      "title": "Ce qui nous différencie",
+      "items": [
+        {
+          "title": "Ludique",
+          "desc": "Des jeux de conversation qui relancent l'échange et encouragent l'expression spontanée."
         },
-        "actions": {
-            "see_all": "Voir tout",
-            "browse_events": "Parcourir les événements",
-            "create_account": "Créer un compte",
-            "create_free_account": "Créer un compte gratuit",
-            "details": "Détails"
+        {
+          "title": "Social",
+          "desc": "Tu apprends en rencontrant des personnes curieuses comme toi, pas face à un tableau."
         },
-        "search": {
-            "query": "Recherche",
-            "placeholder_event": "Rechercher un événement…",
-            "input": {
-                "placeholder": "Rechercher un événement..."
-            },
-            "submit": "Rechercher",
-            "more_filters": "Plus de filtres",
-            "hide_filters": "Masquer les filtres",
-            "reset": "Réinitialiser",
-            "select_placeholder": "Sélectionner…",
-            "tip_keywords": "Astuce : \"café\", \"débutant\", \"afterwork\"… essaie des mots-clés."
-        },
-        "badges": {
-            "members_1000_plus": "+1000 membres",
-            "partners_20": "20 bars partenaires",
-            "fun_100": "Sessions 100% fun",
-            "rapid": "Rapide",
-            "local": "Local",
-            "effective": "Efficace"
-        },
-        "filters": {
-            "lang": {
-                "label": "Langue",
-                "placeholder": "Toutes les langues",
-                "options": {
-                    "fr": "Français",
-                    "en": "Anglais",
-                    "es": "Espagnol",
-                    "nl": "Néerlandais"
-                }
-            },
-            "area": {
-                "label": "Zone",
-                "placeholder": "Toutes les zones",
-                "options": {
-                    "brussels": "Bruxelles",
-                    "paris": "Paris",
-                    "liege": "Liège"
-                }
-            },
-            "free": {
-                "label": "Gratuit",
-                "placeholder": "Oui / Non"
-            }
+        {
+          "title": "Flexible",
+          "desc": "Des sessions courtes, après le travail ou le week-end, sans engagement long terme."
         }
+      ]
     },
-    "i18n": {
-        "ui": "Langue de l’interface",
-        "preferred": "Langues parlées"
-    },
-    "landing": {
-        "hero": {
-            "title": "Parle une langue, vis une rencontre",
-            "subtitle": "Rejoins des milliers de membres qui apprennent en se rencontrant lors d'événements conviviaux. Simple, local et efficace.",
-            "nearby": "Près de",
-            "stats": {
-                "members": "membres actifs",
-                "events": "événements à venir",
-                "languages": "langues pratiquées"
-            },
-            "img_alt": "Rencontres linguistiques conviviales"
+    "values": {
+      "title": "Nos valeurs",
+      "list": [
+        {
+          "title": "Bienveillance",
+          "desc": "Un cadre sûr pour essayer, se tromper, réessayer."
         },
-        "howto": {
-            "title": "Comment ça marche ?",
-            "subtitle": "Rejoindre Conversa est simple et rapide. En 3 étapes, tu peux déjà participer à ton premier événement.",
-            "steps": {
-                "1": {
-                    "title": "Crée ton compte gratuit",
-                    "desc": "Inscris-toi en 2 minutes. Indique tes langues et centres d'intérêt."
-                },
-                "2": {
-                    "title": "Réserve ta place à un événement",
-                    "desc": "Parcours les événements près de chez toi et réserve en un clic."
-                },
-                "3": {
-                    "title": "Rencontre et pratique",
-                    "desc": "Rejoins l'événement, rencontre du monde et pratique naturellement."
-                }
-            }
+        {
+          "title": "Ouverture",
+          "desc": "Toutes les langues, tous les niveaux, toutes les origines."
         },
-        "testimonials": {
-            "title": "Ils en parlent",
-            "subtitle": "Des membres partagent leur expérience."
+        {
+          "title": "Simplicité",
+          "desc": "Inscription en quelques clics, règles claires, zéro jargon."
         },
-        "cta": {
-            "title": "Prêt·e à commencer ?",
-            "subtitle": "Crée ton compte gratuit et rejoins la prochaine session près de chez toi."
+        {
+          "title": "Qualité",
+          "desc": "Animation structurée, retours réguliers, amélioration continue."
         }
+      ]
     },
-    "footer": {
-        "brand": {
-            "tagline": "Apprendre des langues en rencontrant des personnes"
+    "stats": {
+      "title": "En chiffres",
+      "sessions": {
+        "label": "Sessions réalisées",
+        "value": "250+"
+      },
+      "learners": {
+        "label": "Participants",
+        "value": "3 000+"
+      },
+      "languages": {
+        "label": "Langues pratiquées",
+        "value": "10+"
+      },
+      "partners": {
+        "label": "Lieux partenaires",
+        "value": "20+"
+      }
+    },
+    "how": {
+      "title": "Comment ça marche",
+      "steps": [
+        {
+          "title": "Choisis une langue",
+          "desc": "Filtre par anglais, néerlandais, espagnol… et ton quartier."
         },
-        "navigation": {
-            "title": "Navigation",
-            "events": "Événements",
-            "about": "À propos",
-            "faq": "FAQ"
+        {
+          "title": "Réserve ta place",
+          "desc": "Groupes limités pour de vrais échanges."
+        },
+        {
+          "title": "Rejoins la table",
+          "desc": "Un animateur lance le jeu et guide le rythme."
+        }
+      ],
+      "a11y_illustration_alt": "Illustration de personnes discutant autour d'une table"
+    },
+    "team": {
+      "title": "L'équipe",
+      "members": [
+        {
+          "name": "Ana",
+          "role": "Animation & Pédagogie",
+          "bio": "Conçoit les jeux et veille à l'expérience sur place."
+        },
+        {
+          "name": "Bram",
+          "role": "Partenariats",
+          "bio": "Trouve des lieux chaleureux et coordonne les hôtes."
+        }
+      ]
+    },
+    "partners": {
+      "title": "Nos partenaires",
+      "desc": "Des cafés et bars bruxellois qui aiment l'échange. Tu as un lieu et veux accueillir une table de conversation ?"
+    },
+    "timeline": {
+      "title": "Notre histoire",
+      "items": [
+        {
+          "date": "2023",
+          "text": "Premières tables pilotes avec des amis polyglottes."
+        },
+        {
+          "date": "2024",
+          "text": "Lancement public, premiers partenaires et jeux maison."
+        },
+        {
+          "date": "2025",
+          "text": "Sessions quotidiennes, nouvelles langues et quartiers."
+        }
+      ]
+    },
+    "testimonials": {
+      "title": "Ils en parlent",
+      "quotes": [
+        {
+          "author": "Lucía",
+          "text": "J'ai osé parler dès la première session. Les jeux aident vraiment."
+        },
+        {
+          "author": "Thomas",
+          "text": "On progresse sans s'en rendre compte, et on rencontre du monde."
+        }
+      ]
+    },
+    "cta": {
+      "primary_label": "Rejoindre une session",
+      "secondary_label": "Devenir partenaire",
+      "aria_primary": "Ouvrir la page de réservation",
+      "aria_secondary": "Contacter l'équipe partenaires"
+    },
+    "contact": {
+      "title": "Nous contacter",
+      "email_label": "Écrire un email",
+      "email_value": "conversa@hotmail.com",
+      "social_label": "Nous suivre"
+    },
+    "meta": {
+      "title": "À propos — Conversa",
+      "description": "Conversa — pratique des langues à Bruxelles en petits groupes, avec jeux et échanges conviviaux."
+    }
+  },
+  "faq": {
+    "hero": {
+      "title": "Questions fréquentes",
+      "subtitle": "Tout ce qu'il faut savoir pour démarrer sur Conversa.",
+      "intro": "Bienvenue dans notre centre de questions fréquentes. Ici, tu trouveras des réponses claires aux interrogations les plus courantes sur l'utilisation de Conversa. Si tu ne trouves pas ta réponse, n'hésite pas à nous contacter."
+    },
+    "qna": {
+      "what_is_conversa_q": "Qu'est-ce que Conversa ?",
+      "what_is_conversa_a": "Conversa est une plateforme qui permet de pratiquer des langues de manière ludique, en petits groupes, dans des bars et cafés partenaires à Bruxelles. Ici, pas de cours magistral : on discute, on joue et on échange, comme avec des amis, tout en rencontrant de nouvelles personnes.",
+      "how_join_event_q": "Comment rejoindre un événement ?",
+      "how_join_event_a": "Depuis la page d'accueil, choisis une langue qui t'intéresse, explore les sessions disponibles et clique sur \"Je participe\". Une fois sur place, confirme ta présence via l'application et rejoins le groupe pour commencer la partie.",
+      "cancel_policy_q": "Puis-je annuler ma participation ?",
+      "cancel_policy_a": "Oui, tant que l'événement n'a pas commencé. Tu peux annuler directement depuis l'application. Cela permet de libérer ta place pour une autre personne et de garder des groupes dynamiques.",
+      "account_data_q": "Que faites-vous de mes données ?",
+      "account_data_a": "Nous ne collectons que les informations nécessaires pour organiser les sessions et garantir la sécurité des participants. Tes données ne sont jamais revendues, et tu peux à tout moment les modifier ou demander leur suppression.",
+      "payment_price_q": "Combien ça coûte ?",
+      "payment_price_a": "Le billet standard est à 7 € par session, ce qui inclut l'accès au jeu de conversation et la mise en relation avec d'autres participants. Certains événements spéciaux ou ateliers peuvent avoir un tarif différent, toujours indiqué à l'avance."
+    },
+    "no_results": "Aucune question ne correspond à ta recherche ? conversa@hotmail.com"
+  },
+  "payment": {
+    "publish_event": "Publier votre événement",
+    "complete_payment": "Finaliser le paiement",
+    "publish_question": "Votre événement est créé ! Souhaitez-vous le publier maintenant ?",
+    "price": "Prix",
+    "pay_now": "Payer maintenant",
+    "pay_later": "Payer plus tard",
+    "pay_later_info": "Vous pourrez publier votre événement plus tard depuis votre liste d'événements.",
+    "secure_payment": "Paiement sécurisé via Stripe",
+    "amount": "Montant",
+    "confirm_payment": "Confirmer le paiement",
+    "payment_success": "Paiement réussi ! Votre événement est maintenant publié.",
+    "payment_error": "Erreur lors du paiement. Veuillez réessayer."
+  },
+  "payments": {
+    "redirecting": "Redirection vers le paiement...",
+    "errors": {
+      "url_not_found": "URL de paiement introuvable.",
+      "session_creation_failed": "Erreur lors de la création de la session de paiement."
+    },
+    "success": {
+      "title": "Paiement confirmé",
+      "thanks": "Merci ! Votre réservation a bien été validée.",
+      "for_booking": "pour la réservation {{id}}",
+      "back_to_event": "Retour à l'événement",
+      "my_bookings": "Mes réservations",
+      "back_to_events": "Retour aux événements"
+    },
+    "cancel": {
+      "title": "Paiement non finalisé",
+      "line1": "Votre paiement a été annulé",
+      "for_booking": "pour la réservation {{id}}",
+      "reassure": "Vous pouvez réessayer à tout moment.",
+      "retry": "Réessayer le paiement",
+      "view_booking": "Voir ma réservation",
+      "back_to_events": "Retour aux événements",
+      "help": "Si le problème persiste, vérifiez votre connexion ou essayez un autre moyen de paiement."
+    },
+    "badge": {
+      "interrupted": "Transaction interrompue",
+      "success": "Paiement réussi"
+    },
+    "meta": {
+      "session": "Session",
+      "booking": "Réservation"
+    }
+  },
+  "bookings": {
+    "title": "Mes réservations",
+    "subtitle": "Consultez et gérez toutes vos réservations",
+    "internet_required_title": "Connexion Internet requise",
+    "internet_required_message": "Pour jouer au jeu dans l'application, il faut bien avoir un appareil connecté à internet !",
+    "empty": "Aucune réservation pour le moment.",
+    "empty_subtitle": "Découvrez nos événements et réservez votre place",
+    "when": "Quand",
+    "amount": "Montant",
+    "event": "Événement",
+    "location": "Lieu",
+    "event_date": "Date de l'événement",
+    "creating": "Création de la réservation...",
+    "load_error": "Erreur lors du chargement des réservations",
+    "current": "En cours",
+    "current_count": "{{count}} réservation(s) en cours",
+    "future": "À venir",
+    "history": "Historique",
+    "live": "🔴 En direct",
+    "game_live": "JEU EN COURS",
+    "time_until_hours": "Dans {{hours}}h",
+    "time_until_minutes": "Dans {{minutes}} min",
+    "time_until_hours_mins": "Dans {{hours}}h {{minutes}}min",
+    "join_now": "Rejoindre maintenant",
+    "cancelled_by_organizer": "Annulé par l'organisateur",
+    "cancelled_by_you": "Annulé par vous",
+    "finished": "Finalisé",
+    "errors": {
+      "creation_failed": "Erreur lors de la création de la réservation."
+    },
+    "status": {
+      "PENDING": "En attente de paiement",
+      "CONFIRMED": "Confirmée",
+      "CANCELLED": "Annulée",
+      "FAILED": "Échouée",
+      "EXPIRED": "Expirée",
+      "REFUNDED": "Remboursée"
+    }
+  },
+  "events": {
+    "title": "Événements",
+    "empty": "Aucun événement trouvé",
+    "cancelled": "Annulé",
+    "address": "Adresse",
+    "city": "Ville",
+    "when": "Quand",
+    "theme": "Thème",
+    "price": "Prix",
+    "free": "Gratuit",
+    "book": "Réserver",
+    "already_booked": "Déjà réservé",
+    "errors": {
+      "loading_failed": "Erreur lors du chargement des événements",
+      "publication_request_failed": "Impossible de demander la publication"
+    },
+    "badges": {
+      "recommended": "Recommandé",
+      "full": "Complet",
+      "cancelled": "Annulé",
+      "draft": "Brouillon",
+      "pending-confirmation": "En attente",
+      "published": "Publié",
+      "finished": "Terminé",
+      "starting-soon": "Démarre bientôt",
+      "game-live": "🎮 Jeu en direct"
+    },
+    "actions": {
+      "view_details": "Voir les détails",
+      "pay_and_publish": "Payer et publier (7€)",
+      "delete_draft": "Supprimer le brouillon",
+      "cancel_event": "Annuler l'événement",
+      "start_game": "Lancer le jeu",
+      "join_game": "Rejoindre le jeu",
+      "book": "Réserver ma place",
+      "pay_booking": "Payer ma réservation",
+      "cancel_booking": "Annuler ma réservation",
+      "event_full": "Complet",
+      "event_cancelled": "Événement annulé",
+      "event_finished": "Événement terminé",
+      "booking_confirmed": "Réservation confirmée",
+      "booking_closed": "Inscriptions fermées",
+      "starting_soon": "Démarre dans moins de 3h",
+      "pending_confirmation": "En attente de confirmation"
+    },
+    "disabled_reasons": {
+      "event-full": "L'événement est complet. Toutes les places sont réservées.",
+      "event-cancelled": "Cet événement a été annulé par l'organisateur.",
+      "event-finished": "Cet événement est terminé.",
+      "booking-pending": "Vous avez déjà une réservation en attente de paiement.",
+      "booking-confirmed": "Votre réservation est confirmée.",
+      "already-booked": "Vous avez déjà réservé cet événement.",
+      "cancellation-deadline-passed": "Le délai d'annulation est dépassé (moins de 3h avant l'événement).",
+      "booking-cutoff-passed": "Les inscriptions sont fermées (moins de 15 minutes avant l'événement).",
+      "event-not-started": "L'événement n'a pas encore commencé.",
+      "game-not-configured": "Aucun jeu n'est configuré pour cet événement.",
+      "game-not-started": "Le jeu n'a pas encore été lancé par l'organisateur.",
+      "no-confirmed-booking": "Vous devez avoir une réservation confirmée pour rejoindre le jeu.",
+      "insufficient-permissions": "Vous n'avez pas les permissions nécessaires."
+    },
+    "recommended": "Recommandé",
+    "nearby": "Près de vous",
+    "near_city": "Basé sur votre ville : {{city}}",
+    "filters": {
+      "languages_placeholder": "Langues cibles",
+      "search_placeholder": "Rechercher par titre, thème, adresse...",
+      "all_languages": "Toutes les langues",
+      "reset": "Réinitialiser",
+      "show_filters": "Afficher les filtres",
+      "hide_filters": "Masquer les filtres",
+      "active_filters": "Filtres actifs",
+      "languages": "Langues",
+      "select_languages": "Sélectionner les langues",
+      "difficulty_label": "Difficulté",
+      "all_difficulties": "Toutes difficultés",
+      "date_from": "Date de début",
+      "date_to": "Date de fin",
+      "price_label": "Prix",
+      "availability_label": "Disponibilité",
+      "difficulty": {
+        "beginner": "Débutant",
+        "intermediate": "Intermédiaire",
+        "advanced": "Avancé"
+      },
+      "price": {
+        "all": "Tous les prix",
+        "free": "Gratuit",
+        "paid": "Payant"
+      },
+      "availability": {
+        "all": "Tous",
+        "available": "Places disponibles",
+        "almost_full": "Presque complet"
+      }
+    },
+    "sort_reason": {
+      "nearby": "Près de vous",
+      "bidirectional": "Langues compatibles",
+      "target_language": "Langue que vous apprenez",
+      "native_language": "Votre langue maternelle",
+      "support": "Vous pouvez aider",
+      "free": "Événement gratuit",
+      "coming_soon": "Bientôt disponible",
+      "almost_full": "Quasi complet",
+      "already_booked": "Déjà réservé"
+    },
+    "sort_info": {
+      "title": "Tri intelligent activé",
+      "subtitle": "Les événements sont triés selon vos préférences"
+    },
+    "my_events": "Mes événements",
+    "show_my_events": "Afficher mes événements",
+    "hide_my_events": "Masquer mes événements",
+    "all_events": "Tous les événements",
+    "add_event": "Ajouter un événement",
+    "draft": "Brouillon",
+    "empty_subtitle": "Essayez d'ajuster vos filtres ou revenez plus tard",
+    "results_count": {
+      "singular": "{{count}} événement trouvé",
+      "plural": "{{count}} événements trouvés"
+    },
+    "organizer": "Organisateur",
+    "reserved": "Réservé",
+    "pay_to_publish": "Payer pour publier",
+    "difficulty": {
+      "easy": "Débutant",
+      "medium": "Intermédiaire",
+      "hard": "Avancé"
+    },
+    "create": {
+      "title": "Créer un événement",
+      "back": "Retour",
+      "draft_limit_reached": "Vous avez atteint la limite de 3 événements en préparation.",
+      "step1": "Étape 1",
+      "step2": "Étape 2",
+      "step3": "Étape 3",
+      "step4": "Étape 4",
+      "step5": "Étape 5",
+      "step1_title": "Lieu",
+      "step2_title": "Détails",
+      "step3_title": "Date",
+      "step4_title": "Validation",
+      "step1_heading": "Où souhaitez-vous organiser votre événement ?",
+      "step1_description": "Sélectionnez le lieu parmi nos partenaires",
+      "step2_heading": "Détails de votre événement",
+      "step2_description": "Langue, thème et niveau des participants",
+      "step3_heading": "Quand aura lieu l'événement ?",
+      "step3_description": "Choisissez la date et l'heure de début",
+      "step3_description_full": "Organisez une petite session d'1h entre 12h et 21h. Jusqu'à 7 jours à l'avance – juste pensez à vous y prendre au moins 3 heures avant !",
+      "step4_heading": "Résumé de votre événement",
+      "step4_description": "Vérifiez les informations avant de créer",
+      "step5_heading": "Finalisation",
+      "step5_description": "Confirmez vos informations et choisissez le paiement",
+      "postal_code": "Code postal",
+      "postal_code_placeholder": "1000, 1050, Bruxelles...",
+      "capacity": "Capacité",
+      "select": "Choisir",
+      "selected": "Sélectionné",
+      "view_details": "Voir les détails",
+      "no_partners": "Aucun lieu trouvé pour ce code postal",
+      "language": "Langue pratiquée",
+      "select_language": "Sélectionnez une langue",
+      "theme": "Thème de discussion",
+      "theme_placeholder": "Ex : Culture française, Business English...",
+      "difficulty": "Niveau requis",
+      "select_difficulty": "Sélectionnez une difficulté",
+      "date": "Date",
+      "time": "Heure de début",
+      "duration_note": "L'événement dure 1 heure",
+      "game_type": "Type de jeu",
+      "select_game_type": "Sélectionnez un type de jeu",
+      "game_difficulty": "Difficulté du jeu",
+      "select_game_difficulty": "Sélectionnez une difficulté",
+      "summary_location": "Lieu",
+      "summary_language": "Langue",
+      "summary_theme": "Thème",
+      "summary_difficulty": "Niveau",
+      "summary_game_type": "Type de jeu",
+      "summary_game_difficulty": "Difficulté du jeu",
+      "summary_datetime": "Date et heure",
+      "at": "à",
+      "create_event": "Créer mon événement",
+      "create_draft": "Créer le brouillon",
+      "payment_modal_title": "Événement créé !",
+      "payment_modal_message": "Votre événement a été créé en brouillon. Payez maintenant pour le publier ou finalisez le paiement plus tard depuis la liste de vos événements.",
+      "pay_now": "Payer maintenant (7€)",
+      "pay_later": "Je paierai plus tard",
+      "pagination": {
+        "previous": "Précédent",
+        "next": "Suivant"
+      },
+      "day": {
+        "today": "Aujourd'hui",
+        "tomorrow": "Demain"
+      },
+      "errors": {
+        "slot_required": "Veuillez sélectionner un créneau horaire",
+        "form_required": "Veuillez remplir tous les champs requis",
+        "create_failed": "Erreur lors de la création de l'événement"
+      },
+      "loader": {
+        "creating": "Création de votre événement..."
+      }
+    },
+    "detail": {
+      "back_to_events": "Retour aux événements",
+      "about": "À propos de cet événement",
+      "location": "Localisation",
+      "participants": "Participants",
+      "participant": "participant",
+      "participants_plural": "participants",
+      "no_participants_yet": "Aucun participant inscrit pour le moment",
+      "participants_loading": "Chargement des participants...",
+      "participants_error": "Impossible de charger les participants pour le moment.",
+      "participants_forbidden": "Seuls l'organisateur ou les événements publiés peuvent afficher les participants.",
+      "native_languages": "Langues parlées",
+      "target_languages": "Langues apprises",
+      "price_per_person": "Prix par personne",
+      "organized_by": "Organisé par",
+      "spots_remaining": "{{count}} places restantes",
+      "spots_remaining_one": "{{count}} place restante",
+      "book_spot": "Réserver ma place",
+      "pay_booking": "Payer ma réservation",
+      "cancel_booking": "Annuler ma réservation",
+      "starting_soon": "Démarre bientôt",
+      "event_full": "Complet",
+      "event_cancelled": "Événement annulé",
+      "booking_notice": "Confirmation immédiate • Annulation gratuite jusqu'à 3h avant",
+      "pay_notice": "Votre réservation est en attente de paiement. Cliquez pour finaliser.",
+      "cancel_notice": "Vous pouvez annuler votre réservation jusqu'à 3 heures avant le début",
+      "starting_soon_notice": "L'événement démarre dans moins de 3 heures, annulation impossible",
+      "cancel_modal_title": "Annuler la réservation ?",
+      "cancel_modal_message": "Êtes-vous sûr de vouloir annuler votre réservation ? Cette action est irréversible.",
+      "yes_cancel": "Oui, annuler",
+      "not_found": "Événement introuvable",
+      "error": "Une erreur est survenue lors du chargement",
+      "loading": "Chargement...",
+      "pay_and_publish": "Payer et publier",
+      "delete_draft": "Supprimer le brouillon",
+      "organizer_pending": "Paiement en cours...",
+      "cancel_event": "Annuler mon événement",
+      "cancel_event_title": "Annuler cet événement ?",
+      "cancel_event_message": "Annuler la création de votre événement",
+      "yes_cancel_event": "Oui, annuler l'événement",
+      "register_free": "S'inscrire gratuitement",
+      "unregister": "Se désinscrire",
+      "status": {
+        "pending_confirmation": "En attente de confirmation",
+        "published": "Publié",
+        "finished": "Terminé",
+        "you_are_organizer": "Vous êtes l'organisateur"
+      },
+      "test_mode": "Mode Test (ignorer l'heure de l'événement)",
+      "loader": {
+        "preparing_payment": "Préparation du paiement...",
+        "creating_booking": "Création de la réservation...",
+        "redirecting_payment": "Redirection vers le paiement...",
+        "deleting_draft": "Suppression du brouillon...",
+        "checking_game": "Vérification du jeu...",
+        "starting_game": "Lancement du jeu...",
+        "retrieving_game": "Récupération du jeu..."
+      },
+      "errors": {
+        "payment_url_unavailable": "URL de paiement indisponible",
+        "publication_request_failed": "Erreur lors de la demande de publication",
+        "booking_creation_failed": "Erreur lors de la création de la réservation",
+        "checkout_session_failed": "Erreur lors de la création de la session de paiement",
+        "booking_cancellation_failed": "Erreur lors de l'annulation de la réservation",
+        "draft_deletion_failed": "Erreur lors de la suppression du brouillon",
+        "no_active_game": "Aucun jeu actif. L'organisateur doit lancer le jeu.",
+        "game_access_denied": "Vous n'avez pas accès à ce jeu. Assurez-vous d'être inscrit à l'événement.",
+        "game_search_failed": "Erreur lors de la recherche du jeu ({{status}}). Réessayez.",
+        "game_retrieval_failed": "Un jeu existe déjà mais impossible de le rejoindre. Contactez le support.",
+        "game_start_failed": "Erreur lors du lancement du jeu",
+        "event_cancellation_failed": "Erreur lors de l'annulation de l'événement"
+      },
+      "confirm": {
+        "delete_draft": "Voulez-vous vraiment supprimer ce brouillon ? Cette action est irréversible."
+      }
+    }
+  },
+  "checkout": {
+    "title": "Confirmer l'achat",
+    "message": "Voulez-vous confirmer votre achat ?",
+    "buy": "Payer",
+    "confirm": {
+      "title": "Confirmer l'achat",
+      "message": "Voulez-vous confirmer votre achat ?"
+    }
+  },
+  "PAYMENT": {
+    "PUBLISH_EVENT": "Publier l'événement",
+    "PUBLISH_QUESTION": "Souhaitez-vous payer maintenant pour publier immédiatement votre événement, ou payer plus tard ?",
+    "PRICE": "Prix",
+    "PAY_NOW": "Payer maintenant",
+    "PAY_LATER": "Payer plus tard",
+    "PAY_LATER_INFO": "Vous pourrez payer plus tard depuis votre liste d'événements."
+  },
+  "GAMES": {
+    "LOADING": "Chargement du jeu...",
+    "BACK": "Retour",
+    "NO_GAME": {
+      "ORGANIZER_TITLE": "Aucun jeu actif",
+      "ORGANIZER_MESSAGE": "Lancez un jeu collaboratif pour dynamiser votre événement et engager les participants",
+      "CREATE_GAME": "Créer un jeu",
+      "PARTICIPANT_TITLE": "Aucun jeu en cours",
+      "PARTICIPANT_MESSAGE": "L'organisateur peut lancer un jeu pour animer la session"
+    },
+    "CREATE": {
+      "TITLE": "Créer un nouveau jeu",
+      "LOADING": "Chargement...",
+      "ERROR": "Erreur",
+      "TYPE": "Type de jeu",
+      "SELECT_TYPE": "Choisir un type",
+      "DIFFICULTY": "Difficulté",
+      "SELECT_DIFFICULTY": "Choisir une difficulté",
+      "TIMEOUT": "Durée maximale",
+      "MINUTES": "minutes",
+      "START_GAME": "Démarrer le jeu"
+    },
+    "TYPES": {
+      "PICTURE_DESCRIPTION": "Description d'image",
+      "WORD_ASSOCIATION": "Association de mots",
+      "DEBATE": "Débat",
+      "ROLE_PLAY": "Jeu de rôle"
+    },
+    "DIFFICULTY": {
+      "EASY": "Facile",
+      "MEDIUM": "Intermédiaire",
+      "HARD": "Difficile"
+    },
+    "STATUS": {
+      "ACTIVE": "Actif",
+      "SHOWING_RESULTS": "Affichage des résultats",
+      "COMPLETED": "Terminé"
+    },
+    "PLAY": {
+      "TITLE": "Jeu en cours",
+      "LOADING": "Chargement du jeu...",
+      "ERROR": "Erreur",
+      "IMAGE_ALT": "Illustration du jeu",
+      "QUESTION": "Question",
+      "SELECT_ANSWER": "Choisissez votre réponse",
+      "YOUR_ANSWER": "Votre réponse",
+      "ANSWER_PLACEHOLDER": "Écrivez votre réponse...",
+      "SUBMIT_VOTE": "Envoyer",
+      "SUBMITTING": "Envoi...",
+      "VOTE_SUBMITTED": "Vote enregistré !",
+      "YOUR_VOTE": "Votre réponse",
+      "STATS_TITLE": "Statistiques",
+      "TOTAL_VOTES": "Votes",
+      "VOTES_REMAINING": "Votes restants",
+      "VOTE_DISTRIBUTION": "Répartition des votes",
+      "ORGANIZER_CONTROLS": "Contrôles organisateur",
+      "REVEAL_ANSWER": "Vérifier la réponse",
+      "LANGUAGE_BADGE": "Langue :",
+      "REVEALING": "Vérification...",
+      "REVEAL_HINT": "Cliquez pour révéler si l'équipe a répondu correctement",
+      "NEXT_QUESTION": "Question suivante",
+      "MOVING_NEXT": "Chargement...",
+      "NEXT_HINT": "Passez à la question suivante ou terminez la partie",
+      "CORRECT": "Bonne réponse !",
+      "INCORRECT": "Mauvaise réponse",
+      "TEAM_ANSWER": "Réponse de l'équipe",
+      "CORRECT_ANSWER": "Bonne réponse",
+      "EXPLANATION": "Explication",
+      "NO_VOTES": "Aucun vote",
+      "WAITING_ORGANIZER": "En attente que l'organisateur passe à la question suivante..."
+    },
+    "DETAILED_RESULTS": {
+      "TITLE": "Résultats détaillés",
+      "LOADING": "Chargement des résultats...",
+      "ERROR": "Erreur",
+      "IMAGE_ALT": "Image de la question",
+      "CORRECT": "Bonne réponse !",
+      "INCORRECT": "Mauvaise réponse",
+      "TEAM_ANSWER": "Réponse de l'équipe",
+      "CORRECT_ANSWER": "Bonne réponse",
+      "NO_ANSWER": "Pas de réponse",
+      "EXPLANATION": "Explication",
+      "VOTES_TITLE": "Votes des participants",
+      "NO_VOTES": "Aucun vote enregistré",
+      "PREVIOUS": "Précédent",
+      "NEXT_QUESTION": "Question suivante",
+      "VIEW_SUMMARY": "Voir le récapitulatif"
+    },
+    "SUMMARY": {
+      "LOADING": "Chargement du récapitulatif...",
+      "ERROR": "Erreur",
+      "VICTORY": "Victoire !",
+      "PARTICIPATION": "Belle participation !",
+      "VICTORY_MESSAGE": "Félicitations ! Vous avez remporté ce jeu.",
+      "PARTICIPATION_MESSAGE": "Merci d'avoir participé ! Continuez à progresser.",
+      "SCORE_TITLE": "Score final",
+      "CORRECT_ANSWERS": "Bonnes réponses",
+      "PARTICIPANTS": "Participants",
+      "BACK_TO_EVENTS": "Retour aux événements"
+    },
+    "RESULTS": {
+      "TITLE": "Résultats",
+      "LOADING": "Chargement des résultats...",
+      "ERROR": "Erreur",
+      "IMAGE_ALT": "Illustration du jeu",
+      "SUCCESS_TITLE": "Bravo ! Réponse collective correcte !",
+      "FAILURE_TITLE": "Presque ! Vous vous rapprochez !",
+      "TIMEOUT_TITLE": "Temps écoulé",
+      "TIMEOUT_MESSAGE": "Le temps imparti est écoulé. Aucun consensus n'a été trouvé.",
+      "YOUR_ANSWER": "Réponse du groupe",
+      "CORRECT_ANSWER": "Bonne réponse",
+      "STATISTICS": "Statistiques",
+      "TOTAL_PARTICIPANTS": "Participants",
+      "TOTAL_VOTES": "Nombre de votes",
+      "PARTICIPATION_RATE": "Taux de participation",
+      "VOTE_BREAKDOWN": "Répartition des votes",
+      "CORRECT": "Correct",
+      "WINNER": "Gagnant",
+      "VOTES": "votes",
+      "INDIVIDUAL_VOTES": "Votes individuels",
+      "START_NEW_GAME": "Lancer une nouvelle partie"
+    },
+    "HISTORY": {
+      "TITLE": "Historique des jeux",
+      "SUCCESS": "Succès",
+      "FAILURE": "Échec",
+      "TIMEOUT": "Temps écoulé"
+    }
+  },
+  "games": {
+    "types": {
+      "picture_description": "Description d'image",
+      "word_association": "Association de mots",
+      "debate": "Débat",
+      "role_play": "Jeu de rôle"
+    }
+  },
+  "PROFILE": {
+    "TITLE": "Mon profil",
+    "SUBTITLE": "Gérez vos informations personnelles et les paramètres de votre compte",
+    "ACCOUNT_INFO": "Informations du compte",
+    "EMAIL": "Email",
+    "FULL_NAME": "Nom complet",
+    "AGE": "Âge",
+    "YEARS_OLD": "ans",
+    "MEMBER_SINCE": "Membre depuis",
+    "NATIVE_LANGUAGES": "Langues maternelles",
+    "TARGET_LANGUAGES": "Langues cibles",
+    "DANGER_ZONE": "Zone de danger",
+    "DELETE_ACCOUNT": "Supprimer définitivement mon compte",
+    "DELETE_ACCOUNT_WARNING": "⚠️ ATTENTION : Cette action est IRRÉVERSIBLE. Toutes vos données personnelles seront définitivement anonymisées.",
+    "DELETE_ACCOUNT_BUTTON": "Supprimer définitivement",
+    "CONFIRM_DELETE_TITLE": "⚠️ Suppression définitive",
+    "CONFIRM_DELETE_MESSAGE": "ATTENTION : Cette action est IRRÉVERSIBLE ! Toutes vos données personnelles seront définitivement anonymisées.",
+    "DELETE_CONSEQUENCE_1": "Toutes vos données personnelles seront anonymisées",
+    "DELETE_CONSEQUENCE_2": "Votre email sera remplacé par purged_user_[id]@deleted.local",
+    "DELETE_CONSEQUENCE_3": "Vous ne pourrez JAMAIS réactiver ce compte",
+    "DELETE_CONSEQUENCE_4": "Cette action est IRRÉVERSIBLE",
+    "CONFIRM_DELETE_BUTTON": "Oui, supprimer mon compte",
+    "DELETING": "Suppression en cours...",
+    "DELETE_ACCOUNT_ERROR": "Erreur lors de la suppression du compte",
+    "CANNOT_DELETE_WITH_BOOKINGS": "Impossible de supprimer votre compte : vous avez des réservations confirmées à venir. Veuillez les annuler d'abord ou attendre qu'elles soient terminées.",
+    "CANNOT_DELETE_WITH_EVENTS": "Impossible de supprimer votre compte : vous organisez des événements publiés à venir. Veuillez les annuler d'abord."
+  },
+  "COMMON": {
+    "BACK": "Retour",
+    "CANCEL": "Annuler"
+  },
+  "legal": {
+    "privacy_policy": "Politique de confidentialité",
+    "terms_of_service": "Conditions d'utilisation",
+    "last_updated": "Dernière mise à jour : {{date}}",
+    "contact": {
+      "title": "Contact",
+      "text": "Pour toute question concernant cette politique, veuillez nous contacter :",
+      "terms_text": "Pour toute question concernant ces conditions, veuillez nous contacter :",
+      "address": "Adresse :"
+    },
+    "privacy": {
+      "title": "Politique de confidentialité",
+      "intro": {
+        "title": "Introduction",
+        "text1": "Conversa s'engage à protéger votre vie privée et vos données personnelles conformément au Règlement Général sur la Protection des Données (RGPD).",
+        "text2": "Cette politique explique quelles données nous collectons, comment nous les utilisons, et vos droits en tant qu'utilisateur."
+      },
+      "data_collected": {
+        "title": "1. Données collectées",
+        "intro": "Nous collectons les données suivantes lorsque vous utilisez notre plateforme :",
+        "account": {
+          "title": "Données de compte",
+          "email": "Adresse email (utilisée pour l'authentification)",
+          "name": "Nom et prénom",
+          "age": "Âge (minimum 18 ans requis)",
+          "languages": "Langues natives et langues cibles",
+          "location": "Localisation (ville, adresse optionnelle)"
+        },
+        "booking": {
+          "title": "Données de réservation",
+          "events": "Événements réservés et participation",
+          "payment": "Informations de paiement (via Stripe - voir section 4)",
+          "history": "Historique des réservations et annulations"
+        },
+        "technical": {
+          "title": "Données techniques",
+          "ip": "Adresse IP et données de connexion",
+          "browser": "Type de navigateur et appareil",
+          "cookies": "Cookies essentiels (authentification, préférences de langue)"
+        }
+      },
+      "data_usage": {
+        "title": "2. Utilisation des données",
+        "service": "Fournir et gérer votre compte utilisateur",
+        "bookings": "Traiter vos réservations et paiements",
+        "communication": "Vous envoyer des notifications importantes (confirmations, annulations)",
+        "matching": "Faciliter le matching linguistique lors des événements",
+        "improvement": "Améliorer nos services et l'expérience utilisateur",
+        "security": "Assurer la sécurité et prévenir la fraude"
+      },
+      "legal_basis": {
+        "title": "3. Base légale (RGPD)",
+        "intro": "Nous traitons vos données sur les bases légales suivantes :",
+        "consent": {
+          "title": "Consentement :",
+          "text": "Vous avez consenti au traitement de vos données lors de l'inscription"
+        },
+        "contract": {
+          "title": "Exécution d'un contrat :",
+          "text": "Nécessaire pour fournir le service de réservation"
         },
         "legal": {
-            "title": "Légal",
-            "privacy": "Politique de confidentialité",
-            "terms": "Conditions d'utilisation",
-            "cookies": "Cookies"
+          "title": "Obligation légale :",
+          "text": "Conservation des données de facturation (obligations fiscales)"
         },
-        "social": {
-            "title": "Suivez-nous",
-            "facebook": "Facebook",
-            "twitter": "Twitter",
-            "instagram": "Instagram"
-        },
-        "copyright": "© {{year}} Conversa. Tous droits réservés."
-    },
-    "pages": {
-        "home": {
-            "hero": {
-                "title": "Parle une langue, vis une rencontre",
-                "subtitle": "Rejoignez Conversa, une communauté active grâce aux meetups linguistiques. Des jeux immersifs dans des bars à Bruxelles."
-            },
-            "search": {
-                "title": "Trouve tes partenaires de langue en 2 minutes",
-                "desc": "Entre un mot-clé, choisis ta langue et ta zone, puis lance la recherche. On te propose des sessions près de toi."
-            },
-            "howto": {
-                "img_alt": "Rencontres linguistiques conviviales",
-                "title": "Comment ça marche ?",
-                "steps": {
-                    "1": {
-                        "title": "Choisis ta langue et ta zone",
-                        "desc": "Filtre avec la barre de recherche à gauche."
-                    },
-                    "2": {
-                        "title": "Rejoins un groupe",
-                        "desc": "3+ participants, validation sur place."
-                    },
-                    "3": {
-                        "title": "Joue & pratique",
-                        "desc": "Lance le jeu, débloque des badges, partage un avis."
-                    }
-                }
-            },
-            "upcoming": {
-                "title": "Événements à venir"
-            },
-            "categories": {
-                "title": "Explore par catégorie",
-                "items": {
-                    "cafe": {
-                        "title": "Conversa Café",
-                        "subtitle": "Rencontres informelles"
-                    },
-                    "pro": {
-                        "title": "Conversa Pro",
-                        "subtitle": "Échanges professionnels"
-                    },
-                    "events": {
-                        "title": "Conversa Events",
-                        "subtitle": "Événements publics"
-                    }
-                }
-            },
-            "cta": {
-                "title": "Prêt·e à en parler pour de vrai ?",
-                "subtitle": "Rejoins des sessions conviviales près de chez toi et progresse dès cette semaine.",
-                "benefits": {
-                    "rapid": {
-                        "desc": "Inscription en 1 minute, aucun paiement requis"
-                    },
-                    "local": {
-                        "desc": "Groupes à taille humaine dans des bars partenaires"
-                    },
-                    "effective": {
-                        "desc": "Jeux de conversation guidés, feedback des pairs"
-                    }
-                },
-                "hint": "Tu peux explorer sans inscription. Rejoins quand tu veux."
-            }
+        "interest": {
+          "title": "Intérêt légitime :",
+          "text": "Amélioration du service et prévention de la fraude"
         }
-    },
-    "about": {
-        "hero": {
-            "badge": "À propos",
-            "title": "Apprendre des langues, rencontrer des gens",
-            "subtitle": "Conversa rend la pratique des langues simple et conviviale : petits groupes, jeux de conversation, lieux chaleureux. Pas d'école, juste des échanges vrais."
-        },
-        "mission": {
-            "title": "Notre mission",
-            "p1": "Créer des occasions naturelles de parler une langue sans pression académique. Chaque session est pensée pour t'aider à oser, progresser et t'ouvrir aux autres.",
-            "bullets": [
-                "Pratique réelle, pas de cours magistral",
-                "Groupes 3–6 personnes pour laisser de la place à chacun",
-                "Jeux et cartes de discussion pour briser la glace"
-            ]
-        },
-        "difference": {
-            "title": "Ce qui nous différencie",
-            "items": [
-                {
-                    "title": "Ludique",
-                    "desc": "Des jeux de conversation qui relancent l'échange et encouragent l'expression spontanée."
-                },
-                {
-                    "title": "Social",
-                    "desc": "Tu apprends en rencontrant des personnes curieuses comme toi, pas face à un tableau."
-                },
-                {
-                    "title": "Flexible",
-                    "desc": "Des sessions courtes, après le travail ou le week-end, sans engagement long terme."
-                }
-            ]
-        },
-        "values": {
-            "title": "Nos valeurs",
-            "list": [
-                {
-                    "title": "Bienveillance",
-                    "desc": "Un cadre sûr pour essayer, se tromper, réessayer."
-                },
-                {
-                    "title": "Ouverture",
-                    "desc": "Toutes les langues, tous les niveaux, toutes les origines."
-                },
-                {
-                    "title": "Simplicité",
-                    "desc": "Inscription en quelques clics, règles claires, zéro jargon."
-                },
-                {
-                    "title": "Qualité",
-                    "desc": "Animation structurée, retours réguliers, amélioration continue."
-                }
-            ]
-        },
-        "stats": {
-            "title": "En chiffres",
-            "sessions": {
-                "label": "Sessions réalisées",
-                "value": "250+"
-            },
-            "learners": {
-                "label": "Participants",
-                "value": "3 000+"
-            },
-            "languages": {
-                "label": "Langues pratiquées",
-                "value": "10+"
-            },
-            "partners": {
-                "label": "Lieux partenaires",
-                "value": "20+"
-            }
-        },
-        "how": {
-            "title": "Comment ça marche",
-            "steps": [
-                {
-                    "title": "Choisis une langue",
-                    "desc": "Filtre par anglais, néerlandais, espagnol… et ton quartier."
-                },
-                {
-                    "title": "Réserve ta place",
-                    "desc": "Groupes limités pour de vrais échanges."
-                },
-                {
-                    "title": "Rejoins la table",
-                    "desc": "Un animateur lance le jeu et guide le rythme."
-                }
-            ],
-            "a11y_illustration_alt": "Illustration de personnes discutant autour d'une table"
-        },
-        "team": {
-            "title": "L'équipe",
-            "members": [
-                {
-                    "name": "Ana",
-                    "role": "Animation & Pédagogie",
-                    "bio": "Conçoit les jeux et veille à l'expérience sur place."
-                },
-                {
-                    "name": "Bram",
-                    "role": "Partenariats",
-                    "bio": "Trouve des lieux chaleureux et coordonne les hôtes."
-                }
-            ]
+      },
+      "data_sharing": {
+        "title": "4. Partage des données",
+        "intro": "Vos données ne sont partagées qu'avec les entités suivantes :",
+        "stripe": {
+          "title": "Stripe :",
+          "text": "Processeur de paiement sécurisé (informations bancaires uniquement)"
         },
         "partners": {
-            "title": "Nos partenaires",
-            "desc": "Des cafés et bars bruxellois qui aiment l'échange. Tu as un lieu et veux accueillir une table de conversation ?"
+          "title": "Partenaires (cafés/bars) :",
+          "text": "Nom et nombre de participants pour les réservations confirmées"
         },
-        "timeline": {
-            "title": "Notre histoire",
-            "items": [
-                {
-                    "date": "2023",
-                    "text": "Premières tables pilotes avec des amis polyglottes."
-                },
-                {
-                    "date": "2024",
-                    "text": "Lancement public, premiers partenaires et jeux maison."
-                },
-                {
-                    "date": "2025",
-                    "text": "Sessions quotidiennes, nouvelles langues et quartiers."
-                }
-            ]
+        "authorities": {
+          "title": "Autorités :",
+          "text": "Si requis par la loi (obligations fiscales, enquêtes judiciaires)"
         },
-        "testimonials": {
-            "title": "Ils en parlent",
-            "quotes": [
-                {
-                    "author": "Lucía",
-                    "text": "J'ai osé parler dès la première session. Les jeux aident vraiment."
-                },
-                {
-                    "author": "Thomas",
-                    "text": "On progresse sans s'en rendre compte, et on rencontre du monde."
-                }
-            ]
+        "no_sale": "⚠️ Nous ne vendons JAMAIS vos données à des tiers."
+      },
+      "your_rights": {
+        "title": "5. Vos droits RGPD",
+        "intro": "Conformément au RGPD, vous disposez des droits suivants :",
+        "access": {
+          "title": "Droit d'accès :",
+          "text": "Obtenir une copie de toutes vos données personnelles"
         },
-        "cta": {
-            "primary_label": "Rejoindre une session",
-            "secondary_label": "Devenir partenaire",
-            "aria_primary": "Ouvrir la page de réservation",
-            "aria_secondary": "Contacter l'équipe partenaires"
+        "rectification": {
+          "title": "Droit de rectification :",
+          "text": "Corriger des données inexactes via votre profil"
         },
-        "contact": {
-            "title": "Nous contacter",
-            "email_label": "Écrire un email",
-            "email_value": "conversa@hotmail.com",
-            "social_label": "Nous suivre"
+        "deletion": {
+          "title": "Droit à l'effacement ('droit à l'oubli') :",
+          "text": "Supprimer votre compte et anonymiser vos données (voir section 6)"
         },
-        "meta": {
-            "title": "À propos — Conversa",
-            "description": "Conversa — pratique des langues à Bruxelles en petits groupes, avec jeux et échanges conviviaux."
+        "portability": {
+          "title": "Droit à la portabilité :",
+          "text": "Recevoir vos données dans un format structuré"
+        },
+        "objection": {
+          "title": "Droit d'opposition :",
+          "text": "Vous opposer au traitement de vos données"
+        },
+        "limitation": {
+          "title": "Droit à la limitation :",
+          "text": "Demander la limitation du traitement"
+        },
+        "complaint": {
+          "title": "Droit de réclamation :",
+          "text": "Déposer une plainte auprès de l'autorité de protection des données"
+        },
+        "contact": "Pour exercer ces droits, contactez-nous à privacy@conversa.app"
+      },
+      "data_retention": {
+        "title": "6. Conservation des données",
+        "account": "Données de compte : Conservées tant que votre compte est actif",
+        "bookings": "Données de réservation : 7 ans (obligation fiscale)",
+        "deletion": "Suppression de compte : Anonymisation immédiate de 15 champs sensibles (email, nom, bio, adresse, langues, etc.)"
+      },
+      "security": {
+        "title": "7. Sécurité",
+        "intro": "Nous mettons en œuvre des mesures de sécurité robustes :",
+        "encryption": "Chiffrement HTTPS pour toutes les communications",
+        "passwords": "Hachage bcrypt pour les mots de passe",
+        "access": "Contrôle d'accès strict basé sur les rôles",
+        "monitoring": "Surveillance et journalisation des activités sensibles"
+      },
+      "payments": {
+        "title": "8. Paiements et remboursements",
+        "processor": "Tous les paiements sont traités par Stripe. Nous ne stockons JAMAIS vos informations bancaires complètes (seuls les 4 derniers chiffres et la marque de la carte sont conservés pour référence).",
+        "refund_policy": {
+          "title": "Politique de remboursement",
+          "user_cancel": {
+            "title": "Annulation par l'utilisateur :",
+            "text": "Remboursement automatique complet via Stripe (délai 5-10 jours ouvrables)"
+          },
+          "organizer_cancel": {
+            "title": "Annulation par l'organisateur :",
+            "text": "Remboursement automatique complet pour tous les participants"
+          },
+          "account_deletion": {
+            "title": "Suppression de compte :",
+            "text": "Toutes les réservations futures sont automatiquement annulées avec remboursement complet"
+          },
+          "delay": {
+            "title": "Délais de traitement :",
+            "text": "Les remboursements apparaissent sous 5-10 jours ouvrables selon votre banque"
+          }
         }
-    },
-    "faq": {
-        "hero": {
-            "title": "Questions fréquentes",
-            "subtitle": "Tout ce qu'il faut savoir pour démarrer sur Conversa.",
-            "intro": "Bienvenue dans notre centre de questions fréquentes. Ici, tu trouveras des réponses claires aux interrogations les plus courantes sur l'utilisation de Conversa. Si tu ne trouves pas ta réponse, n'hésite pas à nous contacter."
+      },
+      "cookies": {
+        "title": "9. Cookies",
+        "intro": "Nous utilisons uniquement des cookies essentiels :",
+        "essential": {
+          "title": "Cookies d'authentification :",
+          "text": "Token JWT pour maintenir votre session connectée"
         },
-        "qna": {
-            "what_is_conversa_q": "Qu'est-ce que Conversa ?",
-            "what_is_conversa_a": "Conversa est une plateforme qui permet de pratiquer des langues de manière ludique, en petits groupes, dans des bars et cafés partenaires à Bruxelles. Ici, pas de cours magistral : on discute, on joue et on échange, comme avec des amis, tout en rencontrant de nouvelles personnes.",
-            "how_join_event_q": "Comment rejoindre un événement ?",
-            "how_join_event_a": "Depuis la page d'accueil, choisis une langue qui t'intéresse, explore les sessions disponibles et clique sur \"Je participe\". Une fois sur place, confirme ta présence via l'application et rejoins le groupe pour commencer la partie.",
-            "cancel_policy_q": "Puis-je annuler ma participation ?",
-            "cancel_policy_a": "Oui, tant que l'événement n'a pas commencé. Tu peux annuler directement depuis l'application. Cela permet de libérer ta place pour une autre personne et de garder des groupes dynamiques.",
-            "account_data_q": "Que faites-vous de mes données ?",
-            "account_data_a": "Nous ne collectons que les informations nécessaires pour organiser les sessions et garantir la sécurité des participants. Tes données ne sont jamais revendues, et tu peux à tout moment les modifier ou demander leur suppression.",
-            "payment_price_q": "Combien ça coûte ?",
-            "payment_price_a": "Le billet standard est à 7 € par session, ce qui inclut l'accès au jeu de conversation et la mise en relation avec d'autres participants. Certains événements spéciaux ou ateliers peuvent avoir un tarif différent, toujours indiqué à l'avance."
-        },
-        "no_results": "Aucune question ne correspond à ta recherche ? conversa@hotmail.com"
-    },
-    "payment": {
-        "publish_event": "Publier votre événement",
-        "complete_payment": "Finaliser le paiement",
-        "publish_question": "Votre événement est créé ! Souhaitez-vous le publier maintenant ?",
-        "price": "Prix",
-        "pay_now": "Payer maintenant",
-        "pay_later": "Payer plus tard",
-        "pay_later_info": "Vous pourrez publier votre événement plus tard depuis votre liste d'événements.",
-        "secure_payment": "Paiement sécurisé via Stripe",
-        "amount": "Montant",
-        "confirm_payment": "Confirmer le paiement",
-        "payment_success": "Paiement réussi ! Votre événement est maintenant publié.",
-        "payment_error": "Erreur lors du paiement. Veuillez réessayer."
-    },
-    "payments": {
-        "redirecting": "Redirection vers le paiement...",
-        "errors": {
-            "url_not_found": "URL de paiement introuvable.",
-            "session_creation_failed": "Erreur lors de la création de la session de paiement."
-        },
-        "success": {
-            "title": "Paiement confirmé",
-            "thanks": "Merci ! Votre réservation a bien été validée.",
-            "for_booking": "pour la réservation {{id}}",
-            "back_to_event": "Retour à l'événement",
-            "my_bookings": "Mes réservations",
-            "back_to_events": "Retour aux événements"
-        },
-        "cancel": {
-            "title": "Paiement non finalisé",
-            "line1": "Votre paiement a été annulé",
-            "for_booking": "pour la réservation {{id}}",
-            "reassure": "Vous pouvez réessayer à tout moment.",
-            "retry": "Réessayer le paiement",
-            "view_booking": "Voir ma réservation",
-            "back_to_events": "Retour aux événements",
-            "help": "Si le problème persiste, vérifiez votre connexion ou essayez un autre moyen de paiement."
-        },
-        "badge": {
-            "interrupted": "Transaction interrompue",
-            "success": "Paiement réussi"
-        },
-        "meta": {
-            "session": "Session",
-            "booking": "Réservation"
+        "functional": {
+          "title": "Cookies fonctionnels :",
+          "text": "Préférences de langue"
         }
+      },
+      "changes": {
+        "title": "10. Modifications",
+        "text": "Nous nous réservons le droit de modifier cette politique. Les modifications importantes vous seront notifiées par email."
+      }
     },
-    "bookings": {
-        "title": "Mes réservations",
-        "subtitle": "Consultez et gérez toutes vos réservations",
-        "empty": "Aucune réservation pour le moment.",
-        "empty_subtitle": "Découvrez nos événements et réservez votre place",
-        "when": "Quand",
-        "amount": "Montant",
-        "event": "Événement",
-        "location": "Lieu",
-        "event_date": "Date de l'événement",
-        "creating": "Création de la réservation...",
-        "load_error": "Erreur lors du chargement des réservations",
-        "current": "En cours",
-        "current_count": "{{count}} réservation(s) en cours",
-        "future": "À venir",
-        "history": "Historique",
-        "live": "🔴 En direct",
-        "game_live": "JEU EN COURS",
-        "time_until_hours": "Dans {{hours}}h",
-        "time_until_minutes": "Dans {{minutes}} min",
-        "time_until_hours_mins": "Dans {{hours}}h {{minutes}}min",
-        "join_now": "Rejoindre maintenant",
-        "cancelled_by_organizer": "Annulé par l'organisateur",
-        "cancelled_by_you": "Annulé par vous",
-        "finished": "Finalisé",
-        "errors": {
-            "creation_failed": "Erreur lors de la création de la réservation."
+    "terms": {
+      "title": "Conditions d'utilisation",
+      "intro": {
+        "title": "Introduction",
+        "text1": "Bienvenue sur Conversa ! En utilisant notre plateforme, vous acceptez les présentes Conditions d'Utilisation.",
+        "text2": "Ces conditions régissent votre utilisation de notre service de réservation d'événements d'échange linguistique."
+      },
+      "acceptance": {
+        "title": "1. Acceptation des conditions",
+        "text1": "En créant un compte sur Conversa, vous acceptez d'être lié par ces Conditions d'Utilisation et notre Politique de Confidentialité.",
+        "text2": "Si vous n'acceptez pas ces conditions, veuillez ne pas utiliser notre service."
+      },
+      "service_description": {
+        "title": "2. Description du service",
+        "intro": "Conversa propose les services suivants :",
+        "events": "Organisation et participation à des événements d'échange linguistique",
+        "bookings": "Système de réservation en ligne avec paiement sécurisé",
+        "payments": "Traitement des paiements via Stripe",
+        "game": "Jeu interactif pendant les événements (nécessite une connexion Internet)",
+        "matching": "Matching linguistique entre participants"
+      },
+      "account": {
+        "title": "3. Inscription et compte utilisateur",
+        "age": "Vous devez avoir au moins 18 ans pour créer un compte.",
+        "info": "Lors de l'inscription, vous vous engagez à :",
+        "accurate": "Fournir des informations exactes et complètes",
+        "confidential": "Maintenir la confidentialité de votre mot de passe",
+        "responsibility": "Être responsable de toutes les activités sur votre compte",
+        "notify": "Nous notifier immédiatement en cas d'utilisation non autorisée"
+      },
+      "bookings": {
+        "title": "4. Réservations et paiements",
+        "process": {
+          "title": "Processus de réservation",
+          "selection": "Sélectionnez un événement et réservez votre place",
+          "payment": "Effectuez le paiement sécurisé via Stripe",
+          "confirmation": "Recevez une confirmation par email (statut CONFIRMED)",
+          "access": "Accédez au jeu interactif pendant l'événement"
         },
-        "status": {
-            "PENDING": "En attente de paiement",
-            "CONFIRMED": "Confirmée",
-            "CANCELLED": "Annulée",
-            "FAILED": "Échouée",
-            "EXPIRED": "Expirée",
-            "REFUNDED": "Remboursée"
+        "payment": {
+          "title": "Paiements",
+          "stripe": "Tous les paiements sont traités par Stripe (PCI-DSS compliant)",
+          "secure": "Vos informations bancaires ne transitent jamais par nos serveurs",
+          "prices": "Les prix affichés incluent toutes les taxes applicables"
         }
-    },
-    "events": {
-        "title": "Événements",
-        "empty": "Aucun événement pour le moment.",
-        "cancelled": "Annulé",
-        "address": "Adresse",
-        "city": "Ville",
-        "when": "Quand",
-        "theme": "Thème",
-        "price": "Prix",
-        "free": "Gratuit",
-        "book": "Réserver",
-        "already_booked": "Déjà réservé",
-        "errors": {
-            "loading_failed": "Erreur lors du chargement des événements",
-            "publication_request_failed": "Impossible de demander la publication"
+      },
+      "cancellation": {
+        "title": "5. Annulation et remboursement",
+        "user": {
+          "title": "Annulation par l'utilisateur",
+          "right": "Vous pouvez annuler votre réservation à tout moment",
+          "automatic": "Le remboursement est automatique et complet",
+          "delay": "Le remboursement apparaît sous 5-10 jours ouvrables"
         },
-        "badges": {
-            "recommended": "Recommandé",
-            "full": "Complet",
-            "cancelled": "Annulé",
-            "draft": "Brouillon",
-            "pending-confirmation": "En attente",
-            "published": "Publié",
-            "finished": "Terminé",
-            "starting-soon": "Démarre bientôt",
-            "game-live": "🎮 Jeu en direct"
+        "organizer": {
+          "title": "Annulation par l'organisateur",
+          "right": "L'organisateur peut annuler un événement (raisons valables)",
+          "refund": "Remboursement automatique complet pour tous les participants",
+          "notification": "Notification par email à tous les participants"
         },
-        "actions": {
-            "view_details": "Voir les détails",
-            "pay_and_publish": "Payer et publier (7€)",
-            "delete_draft": "Supprimer le brouillon",
-            "cancel_event": "Annuler l'événement",
-            "start_game": "Lancer le jeu",
-            "join_game": "Rejoindre le jeu",
-            "book": "Réserver ma place",
-            "pay_booking": "Payer ma réservation",
-            "cancel_booking": "Annuler ma réservation",
-            "event_full": "Complet",
-            "event_cancelled": "Événement annulé",
-            "event_finished": "Événement terminé",
-            "booking_confirmed": "Réservation confirmée",
-            "booking_closed": "Inscriptions fermées",
-            "starting_soon": "Démarre dans moins de 3h",
-            "pending_confirmation": "En attente de confirmation"
-        },
-        "disabled_reasons": {
-            "event-full": "L'événement est complet. Toutes les places sont réservées.",
-            "event-cancelled": "Cet événement a été annulé par l'organisateur.",
-            "event-finished": "Cet événement est terminé.",
-            "booking-pending": "Vous avez déjà une réservation en attente de paiement.",
-            "booking-confirmed": "Votre réservation est confirmée.",
-            "already-booked": "Vous avez déjà réservé cet événement.",
-            "cancellation-deadline-passed": "Le délai d'annulation est dépassé (moins de 3h avant l'événement).",
-            "booking-cutoff-passed": "Les inscriptions sont fermées (moins de 15 minutes avant l'événement).",
-            "event-not-started": "L'événement n'a pas encore commencé.",
-            "game-not-configured": "Aucun jeu n'est configuré pour cet événement.",
-            "game-not-started": "Le jeu n'a pas encore été lancé par l'organisateur.",
-            "no-confirmed-booking": "Vous devez avoir une réservation confirmée pour rejoindre le jeu.",
-            "insufficient-permissions": "Vous n'avez pas les permissions nécessaires."
-        },
-        "recommended": "Recommandé",
-        "nearby": "Près de vous",
-        "near_city": "Basé sur votre ville : {{city}}",
-        "filters": {
-            "languages_placeholder": "Langues cibles",
-            "search_placeholder": "Rechercher par titre, thème, adresse...",
-            "all_languages": "Toutes les langues",
-            "reset": "Réinitialiser",
-            "show_filters": "Afficher les filtres",
-            "hide_filters": "Masquer les filtres",
-            "active_filters": "Filtres actifs",
-            "languages": "Langues",
-            "select_languages": "Sélectionner les langues",
-            "difficulty_label": "Difficulté",
-            "all_difficulties": "Toutes difficultés",
-            "date_from": "Date de début",
-            "date_to": "Date de fin",
-            "price_label": "Prix",
-            "availability_label": "Disponibilité",
-            "difficulty": {
-                "beginner": "Débutant",
-                "intermediate": "Intermédiaire",
-                "advanced": "Avancé"
-            },
-            "price": {
-                "all": "Tous les prix",
-                "free": "Gratuit",
-                "paid": "Payant"
-            },
-            "availability": {
-                "all": "Tous",
-                "available": "Places disponibles",
-                "almost_full": "Presque complet"
-            }
-        },
-        "sort_reason": {
-            "nearby": "Près de vous",
-            "bidirectional": "Langues compatibles",
-            "target_language": "Langue que vous apprenez",
-            "native_language": "Votre langue maternelle",
-            "support": "Vous pouvez aider",
-            "free": "Événement gratuit",
-            "coming_soon": "Bientôt disponible",
-            "almost_full": "Quasi complet",
-            "already_booked": "Déjà réservé"
-        },
-        "sort_info": {
-            "title": "Tri intelligent activé",
-            "subtitle": "Les événements sont triés selon vos préférences"
-        },
-        "my_events": "Mes événements",
-        "show_my_events": "Afficher mes événements",
-        "hide_my_events": "Masquer mes événements",
-        "all_events": "Tous les événements",
-        "add_event": "Ajouter un événement",
-        "draft": "Brouillon",
-        "empty": "Aucun événement trouvé",
-        "empty_subtitle": "Essayez d'ajuster vos filtres ou revenez plus tard",
-        "results_count": {
-            "singular": "{{count}} événement trouvé",
-            "plural": "{{count}} événements trouvés"
-        },
-        "organizer": "Organisateur",
-        "reserved": "Réservé",
-        "pay_to_publish": "Payer pour publier",
-        "difficulty": {
-            "easy": "Débutant",
-            "medium": "Intermédiaire",
-            "hard": "Avancé"
-        },
-        "create": {
-            "title": "Créer un événement",
-            "back": "Retour",
-            "draft_limit_reached": "Vous avez atteint la limite de 3 événements en préparation.",
-            "step1": "Étape 1",
-            "step2": "Étape 2",
-            "step3": "Étape 3",
-            "step4": "Étape 4",
-            "step5": "Étape 5",
-            "step1_title": "Lieu",
-            "step2_title": "Détails",
-            "step3_title": "Date",
-            "step4_title": "Validation",
-            "step1_heading": "Où souhaitez-vous organiser votre événement ?",
-            "step1_description": "Sélectionnez le lieu parmi nos partenaires",
-            "step2_heading": "Détails de votre événement",
-            "step2_description": "Langue, thème et niveau des participants",
-            "step3_heading": "Quand aura lieu l'événement ?",
-            "step3_description": "Choisissez la date et l'heure de début",
-            "step3_description_full": "Organisez une petite session d'1h entre 12h et 21h. Jusqu'à 7 jours à l'avance – juste pensez à vous y prendre au moins 3 heures avant !",
-            "step4_heading": "Résumé de votre événement",
-            "step4_description": "Vérifiez les informations avant de créer",
-            "step5_heading": "Finalisation",
-            "step5_description": "Confirmez vos informations et choisissez le paiement",
-            "postal_code": "Code postal",
-            "postal_code_placeholder": "1000, 1050, Bruxelles...",
-            "capacity": "Capacité",
-            "select": "Choisir",
-            "selected": "Sélectionné",
-            "view_details": "Voir les détails",
-            "no_partners": "Aucun lieu trouvé pour ce code postal",
-            "language": "Langue pratiquée",
-            "select_language": "Sélectionnez une langue",
-            "theme": "Thème de discussion",
-            "theme_placeholder": "Ex : Culture française, Business English...",
-            "difficulty": "Niveau requis",
-            "select_difficulty": "Sélectionnez une difficulté",
-            "date": "Date",
-            "time": "Heure de début",
-            "duration_note": "L'événement dure 1 heure",
-            "game_type": "Type de jeu",
-            "select_game_type": "Sélectionnez un type de jeu",
-            "game_difficulty": "Difficulté du jeu",
-            "select_game_difficulty": "Sélectionnez une difficulté",
-            "summary_location": "Lieu",
-            "summary_language": "Langue",
-            "summary_theme": "Thème",
-            "summary_difficulty": "Niveau",
-            "summary_game_type": "Type de jeu",
-            "summary_game_difficulty": "Difficulté du jeu",
-            "summary_datetime": "Date et heure",
-            "at": "à",
-            "create_event": "Créer mon événement",
-            "create_draft": "Créer le brouillon",
-            "payment_modal_title": "Événement créé !",
-            "payment_modal_message": "Votre événement a été créé en brouillon. Payez maintenant pour le publier ou finalisez le paiement plus tard depuis la liste de vos événements.",
-            "pay_now": "Payer maintenant (7€)",
-            "pay_later": "Je paierai plus tard",
-            "pagination": {
-                "previous": "Précédent",
-                "next": "Suivant"
-            },
-            "day": {
-                "today": "Aujourd'hui",
-                "tomorrow": "Demain"
-            },
-            "errors": {
-                "slot_required": "Veuillez sélectionner un créneau horaire",
-                "form_required": "Veuillez remplir tous les champs requis",
-                "create_failed": "Erreur lors de la création de l'événement"
-            },
-            "loader": {
-                "creating": "Création de votre événement..."
-            }
-        },
-        "detail": {
-            "back_to_events": "Retour aux événements",
-            "about": "À propos de cet événement",
-            "location": "Localisation",
-            "participants": "Participants",
-            "participant": "participant",
-            "participants_plural": "participants",
-            "no_participants_yet": "Aucun participant inscrit pour le moment",
-            "participants_loading": "Chargement des participants...",
-            "participants_error": "Impossible de charger les participants pour le moment.",
-            "participants_forbidden": "Seuls l'organisateur ou les événements publiés peuvent afficher les participants.",
-            "native_languages": "Langues parlées",
-            "target_languages": "Langues apprises",
-            "price_per_person": "Prix par personne",
-            "organized_by": "Organisé par",
-            "spots_remaining": "{{count}} places restantes",
-            "spots_remaining_one": "{{count}} place restante",
-            "book_spot": "Réserver ma place",
-            "pay_booking": "Payer ma réservation",
-            "cancel_booking": "Annuler ma réservation",
-            "starting_soon": "Démarre bientôt",
-            "event_full": "Complet",
-            "event_cancelled": "Événement annulé",
-            "booking_notice": "Confirmation immédiate • Annulation gratuite jusqu'à 3h avant",
-            "pay_notice": "Votre réservation est en attente de paiement. Cliquez pour finaliser.",
-            "cancel_notice": "Vous pouvez annuler votre réservation jusqu'à 3 heures avant le début",
-            "starting_soon_notice": "L'événement démarre dans moins de 3 heures, annulation impossible",
-            "cancel_modal_title": "Annuler la réservation ?",
-            "cancel_modal_message": "Êtes-vous sûr de vouloir annuler votre réservation ? Cette action est irréversible.",
-            "yes_cancel": "Oui, annuler",
-            "not_found": "Événement introuvable",
-            "error": "Une erreur est survenue lors du chargement",
-            "loading": "Chargement...",
-            "pay_and_publish": "Payer et publier",
-            "delete_draft": "Supprimer le brouillon",
-            "organizer_pending": "Paiement en cours...",
-            "cancel_event": "Annuler mon événement",
-            "cancel_event_title": "Annuler cet événement ?",
-            "cancel_event_message": "Annuler la création de votre événement",
-            "yes_cancel_event": "Oui, annuler l'événement",
-            "register_free": "S'inscrire gratuitement",
-            "unregister": "Se désinscrire",
-            "status": {
-                "pending_confirmation": "En attente de confirmation",
-                "published": "Publié",
-                "finished": "Terminé",
-                "you_are_organizer": "Vous êtes l'organisateur"
-            },
-            "test_mode": "Mode Test (ignorer l'heure de l'événement)",
-            "loader": {
-                "preparing_payment": "Préparation du paiement...",
-                "creating_booking": "Création de la réservation...",
-                "redirecting_payment": "Redirection vers le paiement...",
-                "deleting_draft": "Suppression du brouillon...",
-                "checking_game": "Vérification du jeu...",
-                "starting_game": "Lancement du jeu...",
-                "retrieving_game": "Récupération du jeu..."
-            },
-            "errors": {
-                "payment_url_unavailable": "URL de paiement indisponible",
-                "publication_request_failed": "Erreur lors de la demande de publication",
-                "booking_creation_failed": "Erreur lors de la création de la réservation",
-                "checkout_session_failed": "Erreur lors de la création de la session de paiement",
-                "booking_cancellation_failed": "Erreur lors de l'annulation de la réservation",
-                "draft_deletion_failed": "Erreur lors de la suppression du brouillon",
-                "no_active_game": "Aucun jeu actif. L'organisateur doit lancer le jeu.",
-                "game_access_denied": "Vous n'avez pas accès à ce jeu. Assurez-vous d'être inscrit à l'événement.",
-                "game_search_failed": "Erreur lors de la recherche du jeu ({{status}}). Réessayez.",
-                "game_retrieval_failed": "Un jeu existe déjà mais impossible de le rejoindre. Contactez le support.",
-                "game_start_failed": "Erreur lors du lancement du jeu",
-                "event_cancellation_failed": "Erreur lors de l'annulation de l'événement"
-            },
-            "confirm": {
-                "delete_draft": "Voulez-vous vraiment supprimer ce brouillon ? Cette action est irréversible."
-            }
+        "account_deletion": {
+          "title": "Suppression de compte",
+          "text": "La suppression de votre compte entraîne l'annulation automatique de toutes vos réservations futures avec remboursement complet."
         }
-    },
-    "checkout": {
-        "title": "Confirmer l'achat",
-        "message": "Voulez-vous confirmer votre achat ?",
-        "buy": "Payer",
-        "confirm": {
-            "title": "Confirmer l'achat",
-            "message": "Voulez-vous confirmer votre achat ?"
-        }
-    },
-    "PAYMENT": {
-        "PUBLISH_EVENT": "Publier l'événement",
-        "PUBLISH_QUESTION": "Souhaitez-vous payer maintenant pour publier immédiatement votre événement, ou payer plus tard ?",
-        "PRICE": "Prix",
-        "PAY_NOW": "Payer maintenant",
-        "PAY_LATER": "Payer plus tard",
-        "PAY_LATER_INFO": "Vous pourrez payer plus tard depuis votre liste d'événements."
-    },
-    "GAMES": {
-        "LOADING": "Chargement du jeu...",
-        "BACK": "Retour",
-        "NO_GAME": {
-            "ORGANIZER_TITLE": "Aucun jeu actif",
-            "ORGANIZER_MESSAGE": "Lancez un jeu collaboratif pour dynamiser votre événement et engager les participants",
-            "CREATE_GAME": "Créer un jeu",
-            "PARTICIPANT_TITLE": "Aucun jeu en cours",
-            "PARTICIPANT_MESSAGE": "L'organisateur peut lancer un jeu pour animer la session"
-        },
-        "CREATE": {
-            "TITLE": "Créer un nouveau jeu",
-            "LOADING": "Chargement...",
-            "ERROR": "Erreur",
-            "TYPE": "Type de jeu",
-            "SELECT_TYPE": "Choisir un type",
-            "DIFFICULTY": "Difficulté",
-            "SELECT_DIFFICULTY": "Choisir une difficulté",
-            "TIMEOUT": "Durée maximale",
-            "MINUTES": "minutes",
-            "START_GAME": "Démarrer le jeu"
-        },
-        "TYPES": {
-            "PICTURE_DESCRIPTION": "Description d'image",
-            "WORD_ASSOCIATION": "Association de mots",
-            "DEBATE": "Débat",
-            "ROLE_PLAY": "Jeu de rôle"
-        },
-        "DIFFICULTY": {
-            "EASY": "Facile",
-            "MEDIUM": "Intermédiaire",
-            "HARD": "Difficile"
-        },
-        "STATUS": {
-            "ACTIVE": "Actif",
-            "SHOWING_RESULTS": "Affichage des résultats",
-            "COMPLETED": "Terminé"
-        },
-        "PLAY": {
-            "TITLE": "Jeu en cours",
-            "LOADING": "Chargement du jeu...",
-            "ERROR": "Erreur",
-            "IMAGE_ALT": "Illustration du jeu",
-            "QUESTION": "Question",
-            "SELECT_ANSWER": "Choisissez votre réponse",
-            "YOUR_ANSWER": "Votre réponse",
-            "ANSWER_PLACEHOLDER": "Écrivez votre réponse...",
-            "SUBMIT_VOTE": "Envoyer",
-            "SUBMITTING": "Envoi...",
-            "VOTE_SUBMITTED": "Vote enregistré !",
-            "YOUR_VOTE": "Votre réponse",
-            "STATS_TITLE": "Statistiques",
-            "TOTAL_VOTES": "Votes",
-            "VOTES_REMAINING": "Votes restants",
-            "VOTE_DISTRIBUTION": "Répartition des votes",
-            "ORGANIZER_CONTROLS": "Contrôles organisateur",
-            "REVEAL_ANSWER": "Vérifier la réponse",
-            "LANGUAGE_BADGE": "Langue :",
-            "REVEALING": "Vérification...",
-            "REVEAL_HINT": "Cliquez pour révéler si l'équipe a répondu correctement",
-            "NEXT_QUESTION": "Question suivante",
-            "MOVING_NEXT": "Chargement...",
-            "NEXT_HINT": "Passez à la question suivante ou terminez la partie",
-            "CORRECT": "Bonne réponse !",
-            "INCORRECT": "Mauvaise réponse",
-            "TEAM_ANSWER": "Réponse de l'équipe",
-            "CORRECT_ANSWER": "Bonne réponse",
-            "EXPLANATION": "Explication",
-            "NO_VOTES": "Aucun vote",
-            "WAITING_ORGANIZER": "En attente que l'organisateur passe à la question suivante..."
-        },
-        "DETAILED_RESULTS": {
-            "TITLE": "Résultats détaillés",
-            "LOADING": "Chargement des résultats...",
-            "ERROR": "Erreur",
-            "IMAGE_ALT": "Image de la question",
-            "CORRECT": "Bonne réponse !",
-            "INCORRECT": "Mauvaise réponse",
-            "TEAM_ANSWER": "Réponse de l'équipe",
-            "CORRECT_ANSWER": "Bonne réponse",
-            "NO_ANSWER": "Pas de réponse",
-            "EXPLANATION": "Explication",
-            "VOTES_TITLE": "Votes des participants",
-            "NO_VOTES": "Aucun vote enregistré",
-            "PREVIOUS": "Précédent",
-            "NEXT_QUESTION": "Question suivante",
-            "VIEW_SUMMARY": "Voir le récapitulatif"
-        },
-        "SUMMARY": {
-            "LOADING": "Chargement du récapitulatif...",
-            "ERROR": "Erreur",
-            "VICTORY": "Victoire !",
-            "PARTICIPATION": "Belle participation !",
-            "VICTORY_MESSAGE": "Félicitations ! Vous avez remporté ce jeu.",
-            "PARTICIPATION_MESSAGE": "Merci d'avoir participé ! Continuez à progresser.",
-            "SCORE_TITLE": "Score final",
-            "CORRECT_ANSWERS": "Bonnes réponses",
-            "PARTICIPANTS": "Participants",
-            "BACK_TO_EVENTS": "Retour aux événements"
-        },
-        "RESULTS": {
-            "TITLE": "Résultats",
-            "LOADING": "Chargement des résultats...",
-            "ERROR": "Erreur",
-            "IMAGE_ALT": "Illustration du jeu",
-            "SUCCESS_TITLE": "Bravo ! Réponse collective correcte !",
-            "FAILURE_TITLE": "Presque ! Vous vous rapprochez !",
-            "TIMEOUT_TITLE": "Temps écoulé",
-            "TIMEOUT_MESSAGE": "Le temps imparti est écoulé. Aucun consensus n'a été trouvé.",
-            "YOUR_ANSWER": "Réponse du groupe",
-            "CORRECT_ANSWER": "Bonne réponse",
-            "STATISTICS": "Statistiques",
-            "TOTAL_PARTICIPANTS": "Participants",
-            "TOTAL_VOTES": "Nombre de votes",
-            "PARTICIPATION_RATE": "Taux de participation",
-            "VOTE_BREAKDOWN": "Répartition des votes",
-            "CORRECT": "Correct",
-            "WINNER": "Gagnant",
-            "VOTES": "votes",
-            "INDIVIDUAL_VOTES": "Votes individuels",
-            "START_NEW_GAME": "Lancer une nouvelle partie"
-        },
-        "HISTORY": {
-            "TITLE": "Historique des jeux",
-            "SUCCESS": "Succès",
-            "FAILURE": "Échec",
-            "TIMEOUT": "Temps écoulé"
-        }
-    },
-    "games": {
-        "types": {
-            "picture_description": "Description d'image",
-            "word_association": "Association de mots",
-            "debate": "Débat",
-            "role_play": "Jeu de rôle"
-        }
+      },
+      "game": {
+        "title": "6. Jeu interactif",
+        "intro": "Le jeu interactif est accessible pendant les événements confirmés :",
+        "internet": "⚠️ CONNEXION INTERNET OBLIGATOIRE pour jouer au jeu",
+        "timing": "Le jeu est accessible uniquement pendant la durée de l'événement",
+        "participation": "La participation au jeu est optionnelle",
+        "conduct": "Comportement respectueux et fair-play exigés"
+      },
+      "obligations": {
+        "title": "7. Obligations de l'utilisateur",
+        "intro": "Vous vous engagez à :",
+        "respect": "Respecter les autres participants et organisateurs",
+        "accurate": "Fournir des informations exactes lors de l'inscription",
+        "attendance": "Honorer vos réservations ou les annuler à l'avance",
+        "no_spam": "Ne pas envoyer de spam ou de contenu non sollicité",
+        "no_fraud": "Ne pas tenter de contourner le système de paiement",
+        "no_illegal": "Ne pas utiliser le service à des fins illégales"
+      },
+      "user_content": {
+        "title": "8. Contenu utilisateur",
+        "responsibility": "Vous êtes responsable du contenu que vous publiez (bio, commentaires, etc.).",
+        "license": "En publiant du contenu, vous accordez à Conversa une licence non exclusive pour afficher ce contenu.",
+        "moderation": "Nous nous réservons le droit de modérer ou supprimer tout contenu inapproprié."
+      },
+      "intellectual_property": {
+        "title": "9. Propriété intellectuelle",
+        "ownership": "Conversa et ses licenciants possèdent tous les droits de propriété intellectuelle sur la plateforme.",
+        "license": "Nous vous accordons une licence limitée, non exclusive et révocable pour utiliser notre service.",
+        "prohibited": "Toute reproduction, distribution ou modification non autorisée est strictement interdite."
+      },
+      "liability": {
+        "title": "10. Limitation de responsabilité",
+        "platform": "Conversa est une plateforme de mise en relation. Nous ne sommes pas responsables des interactions entre utilisateurs.",
+        "availability": "Nous ne garantissons pas une disponibilité ininterrompue du service",
+        "content": "Nous ne sommes pas responsables du contenu publié par les utilisateurs",
+        "interactions": "Les interactions physiques lors des événements relèvent de votre responsabilité",
+        "partners": "Les partenaires (cafés/bars) sont indépendants de Conversa"
+      },
+      "termination": {
+        "title": "11. Suspension et résiliation",
+        "user": "Vous pouvez supprimer votre compte à tout moment via votre profil.",
+        "conversa": "Nous nous réservons le droit de suspendre ou résilier votre compte en cas de :",
+        "violation": "Violation de ces Conditions d'Utilisation",
+        "fraud": "Tentative de fraude ou d'abus du système",
+        "abuse": "Comportement abusif envers d'autres utilisateurs",
+        "illegal": "Activités illégales ou non conformes",
+        "consequences": "En cas de résiliation, vous perdez l'accès à votre compte et vos données sont anonymisées."
+      },
+      "modifications": {
+        "title": "12. Modifications des conditions",
+        "right": "Nous nous réservons le droit de modifier ces Conditions d'Utilisation à tout moment.",
+        "notification": "Les modifications importantes vous seront notifiées par email. La poursuite de l'utilisation du service après modification constitue votre acceptation."
+      },
+      "applicable_law": {
+        "title": "13. Loi applicable et juridiction",
+        "text": "Ces Conditions d'Utilisation sont régies par le droit belge. Tout litige sera soumis à la juridiction exclusive des tribunaux de Bruxelles, Belgique."
+      }
     }
+  }
 }

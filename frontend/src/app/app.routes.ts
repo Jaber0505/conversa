@@ -82,6 +82,14 @@ export const routes: Routes = [
       { path: 'faq', component: FaqComponent },
       { path: 'about', component: About },
       {
+        path: 'privacy-policy',
+        loadComponent: () => import('./features/legal/privacy-policy/privacy-policy.component').then(m => m.PrivacyPolicyComponent)
+      },
+      {
+        path: 'terms-of-service',
+        loadComponent: () => import('./features/legal/terms-of-service/terms-of-service.component').then(m => m.TermsOfServiceComponent)
+      },
+      {
         path: 'stripe/success',
         canActivate: [authGuard],
         loadComponent: () => import('./features/payments/success/success.component').then(m => m.PaymentSuccessComponent)
